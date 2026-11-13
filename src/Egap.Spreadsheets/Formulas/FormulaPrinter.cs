@@ -185,7 +185,9 @@ internal static class FormulaPrinter
                     Structured(structured, table);
                     break;
                 case StructuredNode structured:
-                    output.Append(structured.Text);
+                    // A sheet before a table is dropped, as Excel drops it; kept as written it could read as a reference in
+                    // the other style (C2!Sales[] in R1C1).
+                    output.Append(structured.Text.AsSpan(style == ReferenceStyle.Written ? 0 : structured.PrefixLength));
                     break;
                 case InvokeNode invoke:
                     Node(invoke.Callee);

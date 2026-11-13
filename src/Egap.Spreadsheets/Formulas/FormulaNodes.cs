@@ -157,6 +157,9 @@ internal sealed class StructuredNode(string text, string? table, TableItems item
     public string? FirstColumn { get; } = firstColumn;
 
     public string? LastColumn { get; } = lastColumn;
+
+    /// <summary>How much of <see cref="Text"/> is a sheet written before the table, which Excel drops.</summary>
+    public int PrefixLength { get; init; }
 }
 
 /// <summary>A call of what an expression gives, as in <c>LAMBDA(x,x+1)(2)</c>.</summary>

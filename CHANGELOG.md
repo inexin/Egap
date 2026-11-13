@@ -173,6 +173,10 @@ internal milestones whose public API was frozen and reviewed, and they are liste
 
 ## Egap.Spreadsheets 2.3.0 (unreleased)
 
+- Formulas written with a sheet before a table or a name read back in R1C1 style: a sheet before a table is dropped when
+  the formula is written again, as Excel drops it, so `C2!Sales[Amount]` no longer reads as column 2 in R1C1 style; and a
+  word that is a cell reference in either style (`R`, `C`, `RC2`, `A1`) is no table after a sheet (`Sheet1!R[1]`) and no
+  name (`Sheet1!R`), where before it was taken for one in A1 style and could not be written in R1C1 style.
 - New functions, each checked against Excel: REGEXTEST, REGEXEXTRACT and REGEXREPLACE, with Excel's PCRE2 patterns and
   replacements turned into .NET regular expressions (XLOOKUP and XMATCH's regular expression mode now uses them too);
   GROUPBY and PIVOTBY, with HSTACK or VSTACK of functions, LAMBDAs and PERCENTOF; GETPIVOTDATA, from the values a pivot

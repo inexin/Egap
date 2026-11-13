@@ -913,12 +913,7 @@ internal sealed class FormulaParser
                 return Scoped(Function(word, start), start);
             case '[':
                 CheckName(word, start, "table");
-                if (LooksLikeR1C1(word) || TryCell(word, out _, out _, out _, out _))
-                {
-                    pos = start;
-                    throw Error($"'{word}' is a cell reference, not a table.");
-                }
-
+                CheckTableNotReference(word, start);
                 return Structured(word, start);
         }
 
@@ -942,10 +937,11 @@ internal sealed class FormulaParser
     /// cell in R1C1 style. Excel allows no such names, and one would read as a reference once the formula is written in
     /// the other style.
     /// </summary>
-    private void CheckNameNotReference(string word, int start)
+    private void CheckNameNotReference(string word, int start, bool prefixed = false)
     {
-        // A lone R or C means nothing in A1 style, and LET and LAMBDA may name one.
-        if (LooksLikeR1C1(word) && (r1c1 || word.Length > 1))
+        // A lone R or C means nothing in A1 style, and LET and LAMBDA may name one; after a sheet it is the sheet's row or
+        // column, as Excel reads Sheet1!R, never a name.
+        if (LooksLikeR1C1(word) && (r1c1 || prefixed || word.Length > 1))
         {
             pos = start;
             throw Error(r1c1 ? $"'{word}' is not a cell on the sheet." : $"'{word}' is an R1C1 reference, not a name.");
@@ -955,6 +951,19 @@ internal sealed class FormulaParser
         {
             pos = start;
             throw Error($"'{word}' is an A1 reference, not a name.");
+        }
+    }
+
+    /// <summary>
+    /// Refuses a table whose name is a cell reference in either style (<c>R</c>, <c>C2</c>, <c>RC</c>, <c>A1</c>), with or
+    /// without a sheet before it: Excel names no table so, and in R1C1 style <c>R[1]</c> is a row.
+    /// </summary>
+    private void CheckTableNotReference(string word, int start)
+    {
+        if (LooksLikeR1C1(word) || TryCell(word, out _, out _, out _, out _))
+        {
+            pos = start;
+            throw Error($"'{word}' is a cell reference, not a table.");
         }
     }
 
@@ -1146,13 +1155,16 @@ internal sealed class FormulaParser
         // A table belongs to the workbook, so Excel takes any sheet before it and drops it.
         if (Peek() == '[' && prefix.Book is null)
         {
-            CheckNameNotReference(word, start);
             CheckName(word, start, "table");
+            CheckTableNotReference(word, start);
             StructuredNode structured = Structured(word, start);
-            return new StructuredNode(prefix.Text + structured.Text, structured.Table, structured.Items, structured.FirstColumn, structured.LastColumn);
+            return new StructuredNode(prefix.Text + structured.Text, structured.Table, structured.Items, structured.FirstColumn, structured.LastColumn)
+            {
+                PrefixLength = prefix.Text.Length,
+            };
         }
 
-        CheckNameNotReference(word, start);
+        CheckNameNotReference(word, start, prefixed: true);
         CheckName(word, start, "name");
         return new NameNode(prefix, word);
     }
