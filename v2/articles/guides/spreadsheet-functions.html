@@ -87,18 +87,18 @@
         <article data-uid="">
 <h1 id="spreadsheet-functions">Spreadsheet functions</h1>
 
-<p>Egap.Spreadsheets has 476 of the 524 functions on Microsoft's list of Excel's functions. Each is checked
+<p>Egap.Spreadsheets has 491 of the 524 functions on Microsoft's list of Excel's functions. Each is checked
 against what Excel calculates, with the cases in <code>tests/Egap.Spreadsheets.Tests/Oracle/functions*.txt</code>. The tests make
 this page, and fail when it is out of date: <code>python tools/update-function-coverage.py</code> writes it again.</p>
 <p>A file that calls a function not built in keeps the formula and the value saved with it until the cell is calculated,
 when it gives <code>#NAME?</code>. <code>FunctionRegistry.Add</code> adds one of your own.</p>
-<h2 id="built-in-476">Built in (476)</h2>
+<h2 id="built-in-491">Built in (491)</h2>
 <p><code>ABS</code>, <code>ACCRINT</code>, <code>ACCRINTM</code>, <code>ACOS</code>, <code>ACOSH</code>, <code>ACOT</code>, <code>ACOTH</code>, <code>ADDRESS</code>, <code>AGGREGATE</code>, <code>AMORDEGRC</code>,
 <code>AMORLINC</code>, <code>AND</code>, <code>ARABIC</code>, <code>AREAS</code>, <code>ARRAYTOTEXT</code>, <code>ASIN</code>, <code>ASINH</code>, <code>ATAN</code>, <code>ATAN2</code>, <code>ATANH</code>, <code>AVEDEV</code>,
-<code>AVERAGE</code>, <code>AVERAGEA</code>, <code>AVERAGEIF</code>, <code>AVERAGEIFS</code>, <code>BASE</code>, <code>BESSELI</code>, <code>BESSELJ</code>, <code>BESSELK</code>, <code>BESSELY</code>,
-<code>BETA.DIST</code>, <code>BETA.INV</code>, <code>BETADIST</code>, <code>BETAINV</code>, <code>BIN2DEC</code>, <code>BIN2HEX</code>, <code>BIN2OCT</code>, <code>BINOM.DIST</code>,
+<code>AVERAGE</code>, <code>AVERAGEA</code>, <code>AVERAGEIF</code>, <code>AVERAGEIFS</code>, <code>BAHTTEXT</code>, <code>BASE</code>, <code>BESSELI</code>, <code>BESSELJ</code>, <code>BESSELK</code>,
+<code>BESSELY</code>, <code>BETA.DIST</code>, <code>BETA.INV</code>, <code>BETADIST</code>, <code>BETAINV</code>, <code>BIN2DEC</code>, <code>BIN2HEX</code>, <code>BIN2OCT</code>, <code>BINOM.DIST</code>,
 <code>BINOM.DIST.RANGE</code>, <code>BINOM.INV</code>, <code>BINOMDIST</code>, <code>BITAND</code>, <code>BITLSHIFT</code>, <code>BITOR</code>, <code>BITRSHIFT</code>, <code>BITXOR</code>, <code>BYCOL</code>,
-<code>BYROW</code>, <code>CEILING</code>, <code>CEILING.MATH</code>, <code>CEILING.PRECISE</code>, <code>CHAR</code>, <code>CHIDIST</code>, <code>CHIINV</code>, <code>CHISQ.DIST</code>,
+<code>BYROW</code>, <code>CEILING</code>, <code>CEILING.MATH</code>, <code>CEILING.PRECISE</code>, <code>CELL</code>, <code>CHAR</code>, <code>CHIDIST</code>, <code>CHIINV</code>, <code>CHISQ.DIST</code>,
 <code>CHISQ.DIST.RT</code>, <code>CHISQ.INV</code>, <code>CHISQ.INV.RT</code>, <code>CHISQ.TEST</code>, <code>CHITEST</code>, <code>CHOOSE</code>, <code>CHOOSECOLS</code>, <code>CHOOSEROWS</code>,
 <code>CLEAN</code>, <code>CODE</code>, <code>COLUMN</code>, <code>COLUMNS</code>, <code>COMBIN</code>, <code>COMBINA</code>, <code>COMPLEX</code>, <code>CONCAT</code>, <code>CONCATENATE</code>, <code>CONFIDENCE</code>,
 <code>CONFIDENCE.NORM</code>, <code>CONFIDENCE.T</code>, <code>CONVERT</code>, <code>CORREL</code>, <code>COS</code>, <code>COSH</code>, <code>COT</code>, <code>COTH</code>, <code>COUNT</code>, <code>COUNTA</code>,
@@ -106,56 +106,57 @@ when it gives <code>#NAME?</code>. <code>FunctionRegistry.Add</code> adds one of
 <code>COVAR</code>, <code>COVARIANCE.P</code>, <code>COVARIANCE.S</code>, <code>CRITBINOM</code>, <code>CSC</code>, <code>CSCH</code>, <code>CUMIPMT</code>, <code>CUMPRINC</code>, <code>DATE</code>, <code>DATEDIF</code>,
 <code>DATEVALUE</code>, <code>DAVERAGE</code>, <code>DAY</code>, <code>DAYS</code>, <code>DAYS360</code>, <code>DB</code>, <code>DCOUNT</code>, <code>DCOUNTA</code>, <code>DDB</code>, <code>DEC2BIN</code>, <code>DEC2HEX</code>,
 <code>DEC2OCT</code>, <code>DECIMAL</code>, <code>DEGREES</code>, <code>DELTA</code>, <code>DEVSQ</code>, <code>DGET</code>, <code>DISC</code>, <code>DMAX</code>, <code>DMIN</code>, <code>DOLLAR</code>, <code>DOLLARDE</code>,
-<code>DOLLARFR</code>, <code>DPRODUCT</code>, <code>DROP</code>, <code>DSTDEV</code>, <code>DSTDEVP</code>, <code>DSUM</code>, <code>DURATION</code>, <code>DVAR</code>, <code>DVARP</code>, <code>EDATE</code>, <code>EFFECT</code>,
-<code>EOMONTH</code>, <code>ERF</code>, <code>ERF.PRECISE</code>, <code>ERFC</code>, <code>ERFC.PRECISE</code>, <code>ERROR.TYPE</code>, <code>EVEN</code>, <code>EXACT</code>, <code>EXP</code>, <code>EXPAND</code>,
-<code>EXPON.DIST</code>, <code>EXPONDIST</code>, <code>F.DIST</code>, <code>F.DIST.RT</code>, <code>F.INV</code>, <code>F.INV.RT</code>, <code>F.TEST</code>, <code>FACT</code>, <code>FACTDOUBLE</code>,
-<code>FALSE</code>, <code>FDIST</code>, <code>FILTER</code>, <code>FIND</code>, <code>FINV</code>, <code>FISHER</code>, <code>FISHERINV</code>, <code>FIXED</code>, <code>FLOOR</code>, <code>FLOOR.MATH</code>,
-<code>FLOOR.PRECISE</code>, <code>FORECAST</code>, <code>FORECAST.LINEAR</code>, <code>FORMULATEXT</code>, <code>FREQUENCY</code>, <code>FTEST</code>, <code>FV</code>, <code>FVSCHEDULE</code>,
-<code>GAMMA</code>, <code>GAMMA.DIST</code>, <code>GAMMA.INV</code>, <code>GAMMADIST</code>, <code>GAMMAINV</code>, <code>GAMMALN</code>, <code>GAMMALN.PRECISE</code>, <code>GAUSS</code>, <code>GCD</code>,
-<code>GEOMEAN</code>, <code>GESTEP</code>, <code>GROWTH</code>, <code>HARMEAN</code>, <code>HEX2BIN</code>, <code>HEX2DEC</code>, <code>HEX2OCT</code>, <code>HLOOKUP</code>, <code>HOUR</code>, <code>HSTACK</code>,
-<code>HYPERLINK</code>, <code>HYPGEOM.DIST</code>, <code>HYPGEOMDIST</code>, <code>IF</code>, <code>IFERROR</code>, <code>IFNA</code>, <code>IFS</code>, <code>IMABS</code>, <code>IMAGINARY</code>,
-<code>IMARGUMENT</code>, <code>IMCONJUGATE</code>, <code>IMCOS</code>, <code>IMCOSH</code>, <code>IMCOT</code>, <code>IMCSC</code>, <code>IMCSCH</code>, <code>IMDIV</code>, <code>IMEXP</code>, <code>IMLN</code>,
-<code>IMLOG10</code>, <code>IMLOG2</code>, <code>IMPOWER</code>, <code>IMPRODUCT</code>, <code>IMREAL</code>, <code>IMSEC</code>, <code>IMSECH</code>, <code>IMSIN</code>, <code>IMSINH</code>, <code>IMSQRT</code>,
-<code>IMSUB</code>, <code>IMSUM</code>, <code>IMTAN</code>, <code>INDEX</code>, <code>INDIRECT</code>, <code>INT</code>, <code>INTERCEPT</code>, <code>INTRATE</code>, <code>IPMT</code>, <code>IRR</code>, <code>ISBLANK</code>,
-<code>ISERR</code>, <code>ISERROR</code>, <code>ISEVEN</code>, <code>ISFORMULA</code>, <code>ISLOGICAL</code>, <code>ISNA</code>, <code>ISNONTEXT</code>, <code>ISNUMBER</code>, <code>ISO.CEILING</code>,
-<code>ISODD</code>, <code>ISOMITTED</code>, <code>ISOWEEKNUM</code>, <code>ISPMT</code>, <code>ISREF</code>, <code>ISTEXT</code>, <code>KURT</code>, <code>LAMBDA</code>, <code>LARGE</code>, <code>LCM</code>, <code>LEFT</code>,
-<code>LEN</code>, <code>LET</code>, <code>LINEST</code>, <code>LN</code>, <code>LOG</code>, <code>LOG10</code>, <code>LOGEST</code>, <code>LOGINV</code>, <code>LOGNORM.DIST</code>, <code>LOGNORM.INV</code>,
-<code>LOGNORMDIST</code>, <code>LOOKUP</code>, <code>LOWER</code>, <code>MAKEARRAY</code>, <code>MAP</code>, <code>MATCH</code>, <code>MAX</code>, <code>MAXA</code>, <code>MAXIFS</code>, <code>MDETERM</code>,
-<code>MDURATION</code>, <code>MEDIAN</code>, <code>MID</code>, <code>MIN</code>, <code>MINA</code>, <code>MINIFS</code>, <code>MINUTE</code>, <code>MINVERSE</code>, <code>MIRR</code>, <code>MMULT</code>, <code>MOD</code>, <code>MODE</code>,
-<code>MODE.MULT</code>, <code>MODE.SNGL</code>, <code>MONTH</code>, <code>MROUND</code>, <code>MULTINOMIAL</code>, <code>MUNIT</code>, <code>N</code>, <code>NA</code>, <code>NEGBINOM.DIST</code>,
-<code>NEGBINOMDIST</code>, <code>NETWORKDAYS</code>, <code>NETWORKDAYS.INTL</code>, <code>NOMINAL</code>, <code>NORM.DIST</code>, <code>NORM.INV</code>, <code>NORM.S.DIST</code>,
-<code>NORM.S.INV</code>, <code>NORMDIST</code>, <code>NORMINV</code>, <code>NORMSDIST</code>, <code>NORMSINV</code>, <code>NOT</code>, <code>NOW</code>, <code>NPER</code>, <code>NPV</code>, <code>NUMBERVALUE</code>,
-<code>OCT2BIN</code>, <code>OCT2DEC</code>, <code>OCT2HEX</code>, <code>ODD</code>, <code>ODDFPRICE</code>, <code>ODDFYIELD</code>, <code>ODDLPRICE</code>, <code>ODDLYIELD</code>, <code>OFFSET</code>, <code>OR</code>,
-<code>PDURATION</code>, <code>PEARSON</code>, <code>PERCENTILE</code>, <code>PERCENTILE.EXC</code>, <code>PERCENTILE.INC</code>, <code>PERCENTRANK</code>, <code>PERCENTRANK.EXC</code>,
-<code>PERCENTRANK.INC</code>, <code>PERMUT</code>, <code>PERMUTATIONA</code>, <code>PHI</code>, <code>PI</code>, <code>PMT</code>, <code>POISSON</code>, <code>POISSON.DIST</code>, <code>POWER</code>, <code>PPMT</code>,
-<code>PRICE</code>, <code>PRICEDISC</code>, <code>PRICEMAT</code>, <code>PROB</code>, <code>PRODUCT</code>, <code>PROPER</code>, <code>PV</code>, <code>QUARTILE</code>, <code>QUARTILE.EXC</code>,
-<code>QUARTILE.INC</code>, <code>QUOTIENT</code>, <code>RADIANS</code>, <code>RAND</code>, <code>RANDARRAY</code>, <code>RANDBETWEEN</code>, <code>RANK</code>, <code>RANK.AVG</code>, <code>RANK.EQ</code>,
-<code>RATE</code>, <code>RECEIVED</code>, <code>REDUCE</code>, <code>REPLACE</code>, <code>REPT</code>, <code>RIGHT</code>, <code>ROMAN</code>, <code>ROUND</code>, <code>ROUNDDOWN</code>, <code>ROUNDUP</code>, <code>ROW</code>,
-<code>ROWS</code>, <code>RRI</code>, <code>RSQ</code>, <code>SCAN</code>, <code>SEARCH</code>, <code>SEC</code>, <code>SECH</code>, <code>SECOND</code>, <code>SEQUENCE</code>, <code>SERIESSUM</code>, <code>SIGN</code>, <code>SIN</code>,
-<code>SINH</code>, <code>SKEW</code>, <code>SKEW.P</code>, <code>SLN</code>, <code>SLOPE</code>, <code>SMALL</code>, <code>SORT</code>, <code>SORTBY</code>, <code>SQRT</code>, <code>SQRTPI</code>, <code>STANDARDIZE</code>, <code>STDEV</code>,
-<code>STDEV.P</code>, <code>STDEV.S</code>, <code>STDEVA</code>, <code>STDEVP</code>, <code>STDEVPA</code>, <code>STEYX</code>, <code>SUBSTITUTE</code>, <code>SUBTOTAL</code>, <code>SUM</code>, <code>SUMIF</code>,
-<code>SUMIFS</code>, <code>SUMPRODUCT</code>, <code>SUMSQ</code>, <code>SUMX2MY2</code>, <code>SUMX2PY2</code>, <code>SUMXMY2</code>, <code>SWITCH</code>, <code>SYD</code>, <code>T</code>, <code>T.DIST</code>,
-<code>T.DIST.2T</code>, <code>T.DIST.RT</code>, <code>T.INV</code>, <code>T.INV.2T</code>, <code>T.TEST</code>, <code>TAKE</code>, <code>TAN</code>, <code>TANH</code>, <code>TBILLEQ</code>, <code>TBILLPRICE</code>,
-<code>TBILLYIELD</code>, <code>TDIST</code>, <code>TEXT</code>, <code>TEXTAFTER</code>, <code>TEXTBEFORE</code>, <code>TEXTJOIN</code>, <code>TEXTSPLIT</code>, <code>TIME</code>, <code>TIMEVALUE</code>,
-<code>TINV</code>, <code>TOCOL</code>, <code>TODAY</code>, <code>TOROW</code>, <code>TRANSPOSE</code>, <code>TREND</code>, <code>TRIM</code>, <code>TRIMMEAN</code>, <code>TRIMRANGE</code>, <code>TRUE</code>, <code>TRUNC</code>,
-<code>TTEST</code>, <code>TYPE</code>, <code>UNICHAR</code>, <code>UNICODE</code>, <code>UNIQUE</code>, <code>UPPER</code>, <code>VALUE</code>, <code>VALUETOTEXT</code>, <code>VAR</code>, <code>VAR.P</code>, <code>VAR.S</code>,
-<code>VARA</code>, <code>VARP</code>, <code>VARPA</code>, <code>VDB</code>, <code>VLOOKUP</code>, <code>VSTACK</code>, <code>WEEKDAY</code>, <code>WEEKNUM</code>, <code>WEIBULL</code>, <code>WEIBULL.DIST</code>,
-<code>WORKDAY</code>, <code>WORKDAY.INTL</code>, <code>WRAPCOLS</code>, <code>WRAPROWS</code>, <code>XIRR</code>, <code>XLOOKUP</code>, <code>XMATCH</code>, <code>XNPV</code>, <code>XOR</code>, <code>YEAR</code>,
-<code>YEARFRAC</code>, <code>YIELD</code>, <code>YIELDDISC</code>, <code>YIELDMAT</code>, <code>Z.TEST</code>, <code>ZTEST</code></p>
-<h2 id="not-planned-yet-48">Not planned yet (48)</h2>
+<code>DOLLARFR</code>, <code>DPRODUCT</code>, <code>DROP</code>, <code>DSTDEV</code>, <code>DSTDEVP</code>, <code>DSUM</code>, <code>DURATION</code>, <code>DVAR</code>, <code>DVARP</code>, <code>ECMA.CEILING</code>,
+<code>EDATE</code>, <code>EFFECT</code>, <code>ENCODEURL</code>, <code>EOMONTH</code>, <code>ERF</code>, <code>ERF.PRECISE</code>, <code>ERFC</code>, <code>ERFC.PRECISE</code>, <code>ERROR.TYPE</code>, <code>EVEN</code>,
+<code>EXACT</code>, <code>EXP</code>, <code>EXPAND</code>, <code>EXPON.DIST</code>, <code>EXPONDIST</code>, <code>F.DIST</code>, <code>F.DIST.RT</code>, <code>F.INV</code>, <code>F.INV.RT</code>, <code>F.TEST</code>,
+<code>FACT</code>, <code>FACTDOUBLE</code>, <code>FALSE</code>, <code>FDIST</code>, <code>FILTER</code>, <code>FILTERXML</code>, <code>FIND</code>, <code>FINV</code>, <code>FISHER</code>, <code>FISHERINV</code>, <code>FIXED</code>,
+<code>FLOOR</code>, <code>FLOOR.MATH</code>, <code>FLOOR.PRECISE</code>, <code>FORECAST</code>, <code>FORECAST.LINEAR</code>, <code>FORMULATEXT</code>, <code>FREQUENCY</code>, <code>FTEST</code>,
+<code>FV</code>, <code>FVSCHEDULE</code>, <code>GAMMA</code>, <code>GAMMA.DIST</code>, <code>GAMMA.INV</code>, <code>GAMMADIST</code>, <code>GAMMAINV</code>, <code>GAMMALN</code>, <code>GAMMALN.PRECISE</code>,
+<code>GAUSS</code>, <code>GCD</code>, <code>GEOMEAN</code>, <code>GESTEP</code>, <code>GETPIVOTDATA</code>, <code>GROUPBY</code>, <code>GROWTH</code>, <code>HARMEAN</code>, <code>HEX2BIN</code>, <code>HEX2DEC</code>,
+<code>HEX2OCT</code>, <code>HLOOKUP</code>, <code>HOUR</code>, <code>HSTACK</code>, <code>HYPERLINK</code>, <code>HYPGEOM.DIST</code>, <code>HYPGEOMDIST</code>, <code>IF</code>, <code>IFERROR</code>, <code>IFNA</code>,
+<code>IFS</code>, <code>IMABS</code>, <code>IMAGINARY</code>, <code>IMARGUMENT</code>, <code>IMCONJUGATE</code>, <code>IMCOS</code>, <code>IMCOSH</code>, <code>IMCOT</code>, <code>IMCSC</code>, <code>IMCSCH</code>,
+<code>IMDIV</code>, <code>IMEXP</code>, <code>IMLN</code>, <code>IMLOG10</code>, <code>IMLOG2</code>, <code>IMPOWER</code>, <code>IMPRODUCT</code>, <code>IMREAL</code>, <code>IMSEC</code>, <code>IMSECH</code>, <code>IMSIN</code>,
+<code>IMSINH</code>, <code>IMSQRT</code>, <code>IMSUB</code>, <code>IMSUM</code>, <code>IMTAN</code>, <code>INDEX</code>, <code>INDIRECT</code>, <code>INFO</code>, <code>INT</code>, <code>INTERCEPT</code>, <code>INTRATE</code>,
+<code>IPMT</code>, <code>IRR</code>, <code>ISBLANK</code>, <code>ISERR</code>, <code>ISERROR</code>, <code>ISEVEN</code>, <code>ISFORMULA</code>, <code>ISLOGICAL</code>, <code>ISNA</code>, <code>ISNONTEXT</code>,
+<code>ISNUMBER</code>, <code>ISO.CEILING</code>, <code>ISODD</code>, <code>ISOMITTED</code>, <code>ISOWEEKNUM</code>, <code>ISPMT</code>, <code>ISREF</code>, <code>ISTEXT</code>, <code>KURT</code>, <code>LAMBDA</code>,
+<code>LARGE</code>, <code>LCM</code>, <code>LEFT</code>, <code>LEN</code>, <code>LET</code>, <code>LINEST</code>, <code>LN</code>, <code>LOG</code>, <code>LOG10</code>, <code>LOGEST</code>, <code>LOGINV</code>, <code>LOGNORM.DIST</code>,
+<code>LOGNORM.INV</code>, <code>LOGNORMDIST</code>, <code>LOOKUP</code>, <code>LOWER</code>, <code>MAKEARRAY</code>, <code>MAP</code>, <code>MATCH</code>, <code>MAX</code>, <code>MAXA</code>, <code>MAXIFS</code>,
+<code>MDETERM</code>, <code>MDURATION</code>, <code>MEDIAN</code>, <code>MID</code>, <code>MIN</code>, <code>MINA</code>, <code>MINIFS</code>, <code>MINUTE</code>, <code>MINVERSE</code>, <code>MIRR</code>, <code>MMULT</code>,
+<code>MOD</code>, <code>MODE</code>, <code>MODE.MULT</code>, <code>MODE.SNGL</code>, <code>MONTH</code>, <code>MROUND</code>, <code>MULTINOMIAL</code>, <code>MUNIT</code>, <code>N</code>, <code>NA</code>,
+<code>NEGBINOM.DIST</code>, <code>NEGBINOMDIST</code>, <code>NETWORKDAYS</code>, <code>NETWORKDAYS.INTL</code>, <code>NOMINAL</code>, <code>NORM.DIST</code>, <code>NORM.INV</code>,
+<code>NORM.S.DIST</code>, <code>NORM.S.INV</code>, <code>NORMDIST</code>, <code>NORMINV</code>, <code>NORMSDIST</code>, <code>NORMSINV</code>, <code>NOT</code>, <code>NOW</code>, <code>NPER</code>, <code>NPV</code>,
+<code>NUMBERVALUE</code>, <code>OCT2BIN</code>, <code>OCT2DEC</code>, <code>OCT2HEX</code>, <code>ODD</code>, <code>ODDFPRICE</code>, <code>ODDFYIELD</code>, <code>ODDLPRICE</code>, <code>ODDLYIELD</code>,
+<code>OFFSET</code>, <code>OR</code>, <code>PDURATION</code>, <code>PEARSON</code>, <code>PERCENTILE</code>, <code>PERCENTILE.EXC</code>, <code>PERCENTILE.INC</code>, <code>PERCENTOF</code>,
+<code>PERCENTRANK</code>, <code>PERCENTRANK.EXC</code>, <code>PERCENTRANK.INC</code>, <code>PERMUT</code>, <code>PERMUTATIONA</code>, <code>PHI</code>, <code>PI</code>, <code>PIVOTBY</code>, <code>PMT</code>,
+<code>POISSON</code>, <code>POISSON.DIST</code>, <code>POWER</code>, <code>PPMT</code>, <code>PRICE</code>, <code>PRICEDISC</code>, <code>PRICEMAT</code>, <code>PROB</code>, <code>PRODUCT</code>, <code>PROPER</code>,
+<code>PV</code>, <code>QUARTILE</code>, <code>QUARTILE.EXC</code>, <code>QUARTILE.INC</code>, <code>QUOTIENT</code>, <code>RADIANS</code>, <code>RAND</code>, <code>RANDARRAY</code>, <code>RANDBETWEEN</code>,
+<code>RANK</code>, <code>RANK.AVG</code>, <code>RANK.EQ</code>, <code>RATE</code>, <code>RECEIVED</code>, <code>REDUCE</code>, <code>REGEXEXTRACT</code>, <code>REGEXREPLACE</code>, <code>REGEXTEST</code>,
+<code>REPLACE</code>, <code>REPT</code>, <code>RIGHT</code>, <code>ROMAN</code>, <code>ROUND</code>, <code>ROUNDDOWN</code>, <code>ROUNDUP</code>, <code>ROW</code>, <code>ROWS</code>, <code>RRI</code>, <code>RSQ</code>, <code>SCAN</code>,
+<code>SEARCH</code>, <code>SEC</code>, <code>SECH</code>, <code>SECOND</code>, <code>SEQUENCE</code>, <code>SERIESSUM</code>, <code>SHEET</code>, <code>SHEETS</code>, <code>SIGN</code>, <code>SIN</code>, <code>SINH</code>, <code>SKEW</code>,
+<code>SKEW.P</code>, <code>SLN</code>, <code>SLOPE</code>, <code>SMALL</code>, <code>SORT</code>, <code>SORTBY</code>, <code>SQRT</code>, <code>SQRTPI</code>, <code>STANDARDIZE</code>, <code>STDEV</code>, <code>STDEV.P</code>,
+<code>STDEV.S</code>, <code>STDEVA</code>, <code>STDEVP</code>, <code>STDEVPA</code>, <code>STEYX</code>, <code>SUBSTITUTE</code>, <code>SUBTOTAL</code>, <code>SUM</code>, <code>SUMIF</code>, <code>SUMIFS</code>,
+<code>SUMPRODUCT</code>, <code>SUMSQ</code>, <code>SUMX2MY2</code>, <code>SUMX2PY2</code>, <code>SUMXMY2</code>, <code>SWITCH</code>, <code>SYD</code>, <code>T</code>, <code>T.DIST</code>, <code>T.DIST.2T</code>,
+<code>T.DIST.RT</code>, <code>T.INV</code>, <code>T.INV.2T</code>, <code>T.TEST</code>, <code>TAKE</code>, <code>TAN</code>, <code>TANH</code>, <code>TBILLEQ</code>, <code>TBILLPRICE</code>, <code>TBILLYIELD</code>,
+<code>TDIST</code>, <code>TEXT</code>, <code>TEXTAFTER</code>, <code>TEXTBEFORE</code>, <code>TEXTJOIN</code>, <code>TEXTSPLIT</code>, <code>TIME</code>, <code>TIMEVALUE</code>, <code>TINV</code>, <code>TOCOL</code>,
+<code>TODAY</code>, <code>TOROW</code>, <code>TRANSPOSE</code>, <code>TREND</code>, <code>TRIM</code>, <code>TRIMMEAN</code>, <code>TRIMRANGE</code>, <code>TRUE</code>, <code>TRUNC</code>, <code>TTEST</code>, <code>TYPE</code>,
+<code>UNICHAR</code>, <code>UNICODE</code>, <code>UNIQUE</code>, <code>UPPER</code>, <code>VALUE</code>, <code>VALUETOTEXT</code>, <code>VAR</code>, <code>VAR.P</code>, <code>VAR.S</code>, <code>VARA</code>, <code>VARP</code>,
+<code>VARPA</code>, <code>VDB</code>, <code>VLOOKUP</code>, <code>VSTACK</code>, <code>WEEKDAY</code>, <code>WEEKNUM</code>, <code>WEIBULL</code>, <code>WEIBULL.DIST</code>, <code>WORKDAY</code>,
+<code>WORKDAY.INTL</code>, <code>WRAPCOLS</code>, <code>WRAPROWS</code>, <code>XIRR</code>, <code>XLOOKUP</code>, <code>XMATCH</code>, <code>XNPV</code>, <code>XOR</code>, <code>YEAR</code>, <code>YEARFRAC</code>,
+<code>YIELD</code>, <code>YIELDDISC</code>, <code>YIELDMAT</code>, <code>Z.TEST</code>, <code>ZTEST</code></p>
+<h2 id="not-planned-yet-33">Not planned yet (33)</h2>
 <p>They ask a service on the web, which a library that calculates offline has no answer from.</p>
 <p><code>DETECTLANGUAGE</code>, <code>IMAGE</code>, <code>STOCKHISTORY</code>, <code>TRANSLATE</code>, <code>WEBSERVICE</code></p>
-<p>They ask a data model or a pivot table, which Egap does not load.</p>
+<p>They ask a data model, which Egap does not load.</p>
 <p><code>CUBEKPIMEMBER</code>, <code>CUBEMEMBER</code>, <code>CUBEMEMBERPROPERTY</code>, <code>CUBERANKEDMEMBER</code>, <code>CUBESET</code>, <code>CUBESETCOUNT</code>,
-<code>CUBEVALUE</code>, <code>GETPIVOTDATA</code></p>
+<code>CUBEVALUE</code></p>
 <p>They run code from outside the workbook.</p>
 <p><code>CALL</code>, <code>EUROCONVERT</code>, <code>REGISTER.ID</code>, <code>RTD</code></p>
 <p>They work in the bytes of double-byte text or on East Asian text conversions, which need the tables of those code pages.</p>
 <p><code>ASC</code>, <code>DBCS</code>, <code>FINDB</code>, <code>JIS</code>, <code>LEFTB</code>, <code>LENB</code>, <code>MIDB</code>, <code>PHONETIC</code>, <code>REPLACEB</code>, <code>RIGHTB</code>, <code>SEARCHB</code></p>
-<p>Nothing stands in their way; they are not done yet.</p>
-<p><code>BAHTTEXT</code>, <code>CELL</code>, <code>ECMA.CEILING</code>, <code>ENCODEURL</code>, <code>FILTERXML</code>, <code>FORECAST.ETS</code>, <code>FORECAST.ETS.CONFINT</code>,
-<code>FORECAST.ETS.SEASONALITY</code>, <code>FORECAST.ETS.STAT</code>, <code>GROUPBY</code>, <code>IMPORTCSV</code>, <code>IMPORTTEXT</code>, <code>INFO</code>, <code>PERCENTOF</code>,
-<code>PIVOTBY</code>, <code>REGEXEXTRACT</code>, <code>REGEXREPLACE</code>, <code>REGEXTEST</code>, <code>SHEET</code>, <code>SHEETS</code></p>
+<p>They read a file or a web page as they calculate, which a library should not do for a workbook it opens.</p>
+<p><code>IMPORTCSV</code>, <code>IMPORTTEXT</code></p>
+<p>Excel does not document how it fits their model's parameters, so Egap leaves them out rather than give other numbers.</p>
+<p><code>FORECAST.ETS</code>, <code>FORECAST.ETS.CONFINT</code>, <code>FORECAST.ETS.SEASONALITY</code>, <code>FORECAST.ETS.STAT</code></p>
 
 </article>
 

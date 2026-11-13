@@ -652,7 +652,7 @@ from any sheet, and gives <code>#VALUE!</code> in a row the table's data does no
 stores, such as <code>Sales[[#This Row],[Qty]]*2</code>. A column or table that does not exist gives <code>#REF!</code>, where Excel refuses the
 formula when it is typed.</p>
 <h3 id="functions">Functions</h3>
-<p>Over 470 of Excel's functions are built in, and <a href="spreadsheet-functions.html">Spreadsheet functions</a> lists them and those that
+<p>Over 500 of Excel's functions are built in, and <a href="spreadsheet-functions.html">Spreadsheet functions</a> lists them and those that
 are not: math and trigonometry, logic, text, date and time, lookup and reference, financial, engineering, database,
 information and statistics, with the COUNTIF, SUMIF and AVERAGEIF families and their criteria (<code>&quot;&gt;20&quot;</code>,
 <code>&quot;a*&quot;</code>, <code>&quot;&lt;&gt;&quot;</code>). <code>FunctionRegistry.BuiltInFunctions</code> lists them. Each follows Microsoft's function reference and is
@@ -661,6 +661,40 @@ checked against what Excel calculates: <code>tools/excel-function-oracle.ps1</co
 <code>tools/excel-workbook-oracle.ps1</code> has Excel build, calculate and save whole workbooks, which the tests calculate again
 with <code>CalculateFull</code> and compare cell by cell. Text that depends on the culture, such as FIXED, DOLLAR, dates read from
 text and numbers joined into text, follows <code>book.Culture</code>.</p>
+<h4 id="regular-expressions">Regular expressions</h4>
+<p>REGEXTEST, REGEXEXTRACT, REGEXREPLACE and the regular expression match mode of XLOOKUP and XMATCH take Excel's patterns,
+which follow PCRE2: Unicode throughout, so <code>\w</code> and <code>\d</code> take any letter and digit, <code>^</code> and <code>$</code> know CR, LF and CRLF line
+breaks, and classes nest and combine (<code>[\w--\d]</code>). Replacements take PCRE2's extended forms: <code>$1</code>, <code>${name}</code>, <code>$&amp;</code>,
+<code>${1:-none}</code>, <code>${1:+yes:no}</code> and the case changes <code>\U</code>, <code>\L</code>, <code>\u</code> and <code>\l</code>. Egap turns each pattern into a .NET regular
+expression and runs it without backtracking where it can. Where it differs from Excel:</p>
+<ul>
+<li>Recursion (<code>(?R)</code>, <code>(?1)</code>), subroutine calls, branch reset groups (<code>(?|</code>) and the backtracking verbs other than <code>(*FAIL)</code>
+have no .NET form, so the pattern gives <code>#VALUE!</code>.</li>
+<li>A script in <code>\p{...}</code>, such as <code>\p{Greek}</code>, is the letters and marks of its Unicode blocks below U+10000, and <code>\P{...}</code>
+is every other character, digits, spaces and punctuation included. PCRE2 also counts the characters a script shares
+with others (its Script_Extensions), so <code>\p{Han}</code> matches the CJK comma <code>、</code> in Excel and not in Egap. Classes test
+characters of the Basic Multilingual Plane; a character beyond U+FFFF counts as one only for <code>.</code>, <code>\X</code>, <code>\P{...}</code> of a
+script and negated classes.</li>
+<li>Excel stops a pattern that backtracks past PCRE2's match limit with <code>#VALUE!</code>, so <code>REGEXTEST(REPT(&quot;a&quot;,25)&amp;&quot;b&quot;,&quot;^(a+)+$&quot;)</code>
+is <code>#VALUE!</code> there. Egap runs every pattern it can without backtracking, in time linear in the text, so the answer does
+not depend on the machine: that one is <code>FALSE</code>. A pattern that needs backtracking (lookarounds, back references,
+atomic groups, or a <code>$</code> on text with a CR) runs with a two-second limit per match and gives <code>#VALUE!</code> when it hits it,
+as Excel does at its limit.</li>
+<li>A global replace with a pattern that matches empty text skips the place after a CRLF in Excel, not in Egap.</li>
+</ul>
+<h4 id="grouping-pivots-and-the-workbook">Grouping, pivots and the workbook</h4>
+<p>GROUPBY and PIVOTBY lay out their headers, subtotals and totals as Excel does, and take HSTACK or VSTACK of functions
+(<code>HSTACK(SUM,AVERAGE)</code>), LAMBDAs, and functions of two parameters such as PERCENTOF, which get the values their result is
+relative to. When the headers argument is left out, the first row is a header when the first value is text and the values
+below it are not. Where they differ: a function that gives an array gives <code>#CALC!</code> in its cell, where Excel keeps the
+array inside the result; and COUNTA of a group skips an empty value cell, which Excel counts.</p>
+<p>GETPIVOTDATA reads the value a pivot table shows, as it was last laid out or refreshed, from the row and column whose
+items match; an item is matched by its text, without case, or by its number, and an empty item is <code>&quot;(blank)&quot;</code>.</p>
+<p>CELL, INFO, SHEET and SHEETS answer from the workbook: CELL's <code>&quot;filename&quot;</code> is the path the workbook was loaded from or
+last saved to (empty until then), <code>&quot;width&quot;</code> gives the column's width in characters and whether it is the default, and
+<code>&quot;format&quot;</code> gives Excel's codes for the cell's number format. Without a reference, CELL is about the formula's own cell
+(Excel takes the cell changed last); INFO gives <code>&quot;16.0&quot;</code> for <code>&quot;release&quot;</code> and <code>#N/A</code> for the memory it once reported, and
+SHEET numbers worksheets without counting chart sheets.</p>
 <p><code>FunctionRegistry.Add</code> adds a function of your own, as a user-defined function in Excel; files that call one (stored as
 <code>_xludf.NAME</code>) then calculate too. The function gets its arguments as given: <code>Value</code> reads one value, <code>Values</code> the cells
 of a range, and an exception gives <code>#VALUE!</code> in the cell:</p>
