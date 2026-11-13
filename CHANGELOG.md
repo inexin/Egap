@@ -37,6 +37,8 @@ internal milestones whose public API was frozen and reviewed, and they are liste
   on per style: the reader turns `AutoHyphenation` on when a style hyphenates, and the paragraphs of styles that do not
   hyphenate suppress it. The ODT writer puts the settings on the default paragraph style, where LibreOffice reads them.
   Layout does not hyphenate yet.
+- An optional hyphen (DOCX `w:softHyphen`, RTF `\-`, a soft hyphen in DOC, ODT or HTML) that ends a line now draws a
+  hyphen, as Word, LibreOffice and browsers draw it. Before, the line broke there with no hyphen.
 - Word shapes of all 187 DrawingML preset geometries, and custom geometries, draw on pages and in PDFs as Word draws them:
   the theme's fill, line and effect styles, gradient, pattern and picture fills, dashes, compound lines, arrowheads, shadows,
   glow and soft edges. Shape groups draw their shapes, pictures and nested groups. Before, a shape other than a rectangle,
