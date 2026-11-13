@@ -715,10 +715,16 @@ expression and runs it without backtracking where it can. Where it differs from 
 
 - Recursion (`(?R)`, `(?1)`), subroutine calls, branch reset groups (`(?|`) and the backtracking verbs other than `(*FAIL)`
   have no .NET form, so the pattern gives `#VALUE!`.
-- A script in `\p{...}`, such as `\p{Greek}`, is matched by its Unicode blocks, and classes test characters of the Basic
-  Multilingual Plane; a character beyond U+FFFF counts as one only for `.`, `\X` and negated classes.
-- Excel stops a pattern that backtracks too long with `#VALUE!`. Egap runs most patterns in linear time, and gives `#VALUE!`
-  for one that runs more than two seconds.
+- A script in `\p{...}`, such as `\p{Greek}`, is the letters and marks of its Unicode blocks below U+10000, and `\P{...}`
+  is every other character, digits, spaces and punctuation included. PCRE2 also counts the characters a script shares
+  with others (its Script_Extensions), so `\p{Han}` matches the CJK comma `、` in Excel and not in Egap. Classes test
+  characters of the Basic Multilingual Plane; a character beyond U+FFFF counts as one only for `.`, `\X`, `\P{...}` of a
+  script and negated classes.
+- Excel stops a pattern that backtracks past PCRE2's match limit with `#VALUE!`, so `REGEXTEST(REPT("a",25)&"b","^(a+)+$")`
+  is `#VALUE!` there. Egap runs every pattern it can without backtracking, in time linear in the text, so the answer does
+  not depend on the machine: that one is `FALSE`. A pattern that needs backtracking (lookarounds, back references,
+  atomic groups, or a `$` on text with a CR) runs with a two-second limit per match and gives `#VALUE!` when it hits it,
+  as Excel does at its limit.
 - A global replace with a pattern that matches empty text skips the place after a CRLF in Excel, not in Egap.
 
 #### Grouping, pivots and the workbook

@@ -455,7 +455,7 @@ internal static partial class FormulaFunctions
             return -1;
         }
 
-        if (PcreRegex.Get(pattern, ignoreCase: false)?.Regex is not { } regex)
+        if (PcreRegex.Get(pattern, ignoreCase: false) is not { } regex)
         {
             return -2;
         }
@@ -466,7 +466,7 @@ internal static partial class FormulaFunctions
             {
                 int i = searchMode == -1 ? count - 1 - n : n;
                 EvalValue value = item(i);
-                if (!value.IsError && ExcelValues.TryText(value, context.Culture, out string text, out _) && regex.IsMatch(text))
+                if (!value.IsError && ExcelValues.TryText(value, context.Culture, out string text, out _) && regex.For(text).IsMatch(text))
                 {
                     return i;
                 }

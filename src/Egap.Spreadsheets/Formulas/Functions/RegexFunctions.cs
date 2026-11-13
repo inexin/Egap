@@ -57,7 +57,7 @@ internal static partial class FormulaFunctions
 
         try
         {
-            return EvalValue.FromBoolean(regex!.Regex.IsMatch(text));
+            return EvalValue.FromBoolean(regex!.For(text).IsMatch(text));
         }
         catch (RegexMatchTimeoutException)
         {
@@ -85,7 +85,7 @@ internal static partial class FormulaFunctions
             {
                 case 0:
                     {
-                        Match match = regex!.Regex.Match(text);
+                        Match match = regex!.For(text).Match(text);
                         return match.Success ? EvalValue.FromText(regex.Value(match, text)) : Error(CellError.NotAvailable);
                     }
 
@@ -104,7 +104,7 @@ internal static partial class FormulaFunctions
 
                 case 2:
                     {
-                        Match match = regex!.Regex.Match(text);
+                        Match match = regex!.For(text).Match(text);
                         if (!match.Success || regex.GroupCount == 0)
                         {
                             return Error(CellError.Value);

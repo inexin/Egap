@@ -27,11 +27,13 @@ internal sealed partial class PcreRegex
 
     private readonly string translated;
     private readonly RegexOptions options;
+    private readonly Regex? lineFeeds;
     private Regex? nonEmpty;
 
-    private PcreRegex(Regex regex, string translated, RegexOptions options, int groups, Dictionary<string, int> names, bool keeps)
+    private PcreRegex(Regex regex, Regex? lineFeeds, string translated, RegexOptions options, int groups, Dictionary<string, int> names, bool keeps)
     {
         Regex = regex;
+        this.lineFeeds = lineFeeds;
         this.translated = translated;
         this.options = options;
         GroupCount = groups;
@@ -41,6 +43,26 @@ internal sealed partial class PcreRegex
 
     /// <summary>The .NET expression.</summary>
     public Regex Regex { get; }
+
+    /// <summary>The expression to run on a text: the one without backtracking for text with no CR, where there is one.</summary>
+    public Regex For(string text) => lineFeeds is not null && !text.Contains('\r', StringComparison.Ordinal) ? lineFeeds : Regex;
+
+    /// <summary>The expression on the engine without backtracking, or null when that engine cannot run it.</summary>
+    private static Regex? Linear(string text, RegexOptions options)
+    {
+        try
+        {
+            return new Regex(text, options | RegexOptions.NonBacktracking, Timeout);
+        }
+        catch (NotSupportedException)
+        {
+            return null;
+        }
+        catch (ArgumentException)
+        {
+            return null;
+        }
+    }
 
     /// <summary>The capturing groups, as PCRE2 counts them.</summary>
     public int GroupCount { get; }
@@ -95,19 +117,21 @@ internal sealed partial class PcreRegex
             return null;
         }
 
-        // The engine without backtracking finds the same matches in time linear in the text, where it can run the pattern.
-        try
+        // The engine without backtracking finds the same matches in time linear in the text, where it can run the pattern;
+        // then the answer does not hang on how fast the machine is. Where PCRE2's end of subject needs a lookahead to count
+        // a CR as a line break, a second form for text without CRs has .NET's own anchors, which that engine runs.
+        Regex? linear = Linear(text, options);
+        Regex? lineFeeds = null;
+        if (linear is null)
         {
-            regex = new Regex(text, options | RegexOptions.NonBacktracking, Timeout);
-        }
-        catch (NotSupportedException)
-        {
-        }
-        catch (ArgumentException)
-        {
+            Translator third = new(pattern, first, lineFeeds: true);
+            if (third.Run() && third.Output != text)
+            {
+                lineFeeds = Linear(third.Output, options);
+            }
         }
 
-        return new PcreRegex(regex, text, options, second.Groups, second.NameMap, second.Keeps);
+        return new PcreRegex(linear ?? regex, lineFeeds, text, options, second.Groups, second.NameMap, second.Keeps);
     }
 
     /// <summary>Where a match starts once <c>\K</c> is counted.</summary>
@@ -144,7 +168,7 @@ internal sealed partial class PcreRegex
         bool notEmpty = false;
         while (position <= text.Length)
         {
-            Match match = notEmpty ? NonEmpty.Match(text, position) : Regex.Match(text, position);
+            Match match = notEmpty ? NonEmpty.Match(text, position) : For(text).Match(text, position);
             if (!match.Success)
             {
                 if (!notEmpty)
@@ -182,7 +206,7 @@ internal sealed partial class PcreRegex
     /// Writes the PCRE2 pattern as a .NET one. It runs twice: the first time counts the groups and finds their names, which
     /// the second needs to tell a back reference from an octal escape and to number a reference to a group named later.
     /// </summary>
-    private sealed class Translator(string pattern, Translator? counted)
+    private sealed class Translator(string pattern, Translator? counted, bool lineFeeds = false)
     {
         /// <summary>The high surrogates, which a single unit never matches alone: they start a pair.</summary>
         private const string Highs = @"\uD800-\uDBFF";
@@ -319,7 +343,9 @@ internal sealed partial class PcreRegex
                         continue;
                     case '$':
                         index++;
-                        output.Append(flags.HasFlag(Flags.Multiline) ? @"(?:(?=[\r\n]|\z)(?<!\r(?=\n)))" : @"(?=(?:\r\n|\r|\n)?\z)");
+                        output.Append(flags.HasFlag(Flags.Multiline)
+                            ? lineFeeds ? "(?m:$)" : @"(?:(?=[\r\n]|\z)(?<!\r(?=\n)))"
+                            : lineFeeds ? @"\Z" : @"(?=(?:\r\n|\r|\n)?\z)");
                         atom = -1;
                         continue;
                     case '*' or '+' or '?':
@@ -994,7 +1020,7 @@ internal sealed partial class PcreRegex
                     repeatable = false;
                     return true;
                 case 'Z':
-                    output.Append(@"(?=(?:\r\n|\r|\n)?\z)");
+                    output.Append(lineFeeds ? @"\Z" : @"(?=(?:\r\n|\r|\n)?\z)");
                     repeatable = false;
                     return true;
                 case 'K':
@@ -1468,7 +1494,7 @@ internal sealed partial class PcreRegex
                             {
                                 string saved = output.ToString();
                                 output.Clear();
-                                bool read = Property(e == 'P', inClass: true);
+                                bool read = Property(e == 'P', inClass: true, items.Wide);
                                 items.Items.Append(output);
                                 output.Clear().Append(saved);
                                 if (!read)
@@ -1788,7 +1814,7 @@ internal sealed partial class PcreRegex
         }
 
         /// <summary><c>\p{...}</c> or <c>\P{...}</c>: a general category, one of PCRE2's special properties, or a script.</summary>
-        private bool Property(bool negated, bool inClass)
+        private bool Property(bool negated, bool inClass, List<string>? wide = null)
         {
             if (AtEnd)
             {
@@ -1836,18 +1862,29 @@ internal sealed partial class PcreRegex
                 "xwd" => WordItems,
                 _ => null,
             };
-            if (items is null && Scripts.TryGetValue(loose, out string? blocks))
+            if (items is null && Scripts.ContainsKey(loose))
             {
-                // A script is near enough the letters and marks of its blocks; .NET has blocks, not scripts.
+                // A script is near enough the letters and marks of its blocks; .NET has blocks, not scripts. Its complement
+                // is everything else (digits, spaces, punctuation, other scripts), with a pair beyond U+FFFF one character.
+                (string script, string others) = ScriptRanges(loose);
                 if (inClass)
                 {
-                    items = blocks;
+                    output.Append(negated ? others : script);
+                    if (negated)
+                    {
+                        wide?.Add(HighLow);
+                    }
+                }
+                else if (negated)
+                {
+                    output.Append("(?:").Append(HighLow).Append("|[").Append(others).Append(@"\uDC00-\uDFFF])");
                 }
                 else
                 {
-                    output.Append(negated ? "[^" : "[").Append(blocks).Append(@"-[^\p{L}\p{M}]]");
-                    return true;
+                    output.Append('[').Append(script).Append(']');
                 }
+
+                return true;
             }
 
             if (items is null)
@@ -1875,6 +1912,62 @@ internal sealed partial class PcreRegex
             "L", "Lu", "Ll", "Lt", "Lm", "Lo", "M", "Mn", "Mc", "Me", "N", "Nd", "Nl", "No", "P", "Pc", "Pd", "Ps", "Pe", "Pi",
             "Pf", "Po", "S", "Sm", "Sc", "Sk", "So", "Z", "Zs", "Zl", "Zp", "C", "Cc", "Cf", "Cs", "Co", "Cn",
         ];
+
+        private static readonly ConcurrentDictionary<string, (string Script, string Others)> ScriptRangeCache = new(StringComparer.Ordinal);
+
+        /// <summary>
+        /// A script's letters and marks below U+10000 as class ranges, and the ranges of every other character there but the
+        /// surrogates; worked out once per script from its blocks and the Unicode categories .NET has.
+        /// </summary>
+        private static (string Script, string Others) ScriptRanges(string script) => ScriptRangeCache.GetOrAdd(script, static key =>
+        {
+            Regex blocks = new("[" + Scripts[key] + "]", RegexOptions.CultureInvariant);
+            bool[] inScript = new bool[0x10000];
+            for (int c = 0; c < 0x10000; c++)
+            {
+                if (c is >= 0xD800 and <= 0xDFFF)
+                {
+                    continue;
+                }
+
+                UnicodeCategory category = CharUnicodeInfo.GetUnicodeCategory((char)c);
+                bool letterOrMark = category is UnicodeCategory.UppercaseLetter or UnicodeCategory.LowercaseLetter
+                    or UnicodeCategory.TitlecaseLetter or UnicodeCategory.ModifierLetter or UnicodeCategory.OtherLetter
+                    or UnicodeCategory.NonSpacingMark or UnicodeCategory.SpacingCombiningMark or UnicodeCategory.EnclosingMark;
+                inScript[c] = letterOrMark && blocks.IsMatch(((char)c).ToString());
+            }
+
+            return (Ranges(inScript, want: true), Ranges(inScript, want: false));
+
+            static string Ranges(bool[] set, bool want)
+            {
+                StringBuilder text = new();
+                for (int c = 0; c < 0x10000;)
+                {
+                    if (set[c] != want || c is >= 0xD800 and <= 0xDFFF)
+                    {
+                        c++;
+                        continue;
+                    }
+
+                    int end = c;
+                    while (end + 1 < 0x10000 && set[end + 1] == want && end + 1 is not (>= 0xD800 and <= 0xDFFF))
+                    {
+                        end++;
+                    }
+
+                    text.Append(U(c));
+                    if (end > c)
+                    {
+                        text.Append('-').Append(U(end));
+                    }
+
+                    c = end + 1;
+                }
+
+                return text.ToString();
+            }
+        });
 
         private static readonly Dictionary<string, string> Scripts = new(StringComparer.Ordinal)
         {
