@@ -38,6 +38,11 @@ follows with the rest of Egap. Install it with `dotnet tool install -g Egap.Cli 
 
 - Built on Egami 1.5.0-preview.1 and Egami.Fonts.Substitutes 1.1.0, whose fonts read the OpenType MATH table that
   equations are set with, and on Egami.Metafiles 1.0.2 and Egami.Barcodes 1.0.1.
+- Equations lay out and draw as Word sets them, on pages, in images and in PDFs, where before they showed the picture
+  saved with them, if any. Word (`m:oMath`, `m:oMathPara`) and RTF (`\mmath`) equations are set with the OpenType
+  MATH table of Cambria Math or, where it is missing, the bundled STIX Two Math: fractions, scripts, radicals, n-ary
+  operators, delimiters, accents, bars, boxes, borders, group characters, limits, matrices, equation arrays and phantoms.
+  Display equations sit on lines of their own, justified as the document's math settings say.
 
 ## Egap.Documents 2.3.0-preview.1 (2026-11-13)
 

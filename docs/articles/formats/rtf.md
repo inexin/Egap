@@ -38,11 +38,11 @@ The reader follows the RTF 1.9.1 specification and what Word 2007 and later writ
 - Document information (`\info`) and custom properties (`\userprops`).
 - Automatic hyphenation (`\hyphauto`, `\hyphconsec`, `\hyphhotz`, `\hyphcaps`), which the writer saves too.
 
-What the model cannot hold comes in as an island: equations (`\mmath`) keep their RTF and their plain text, and other
-drawing shapes and embedded objects (`\object`) keep their RTF and draw the picture the file holds for them. Each of
-those is reported as a `ConversionWarning`, and so is a picture in a format Egap does not read (old Macintosh PICT and
-Windows bitmap pictures). Groups marked `\*` that the reader does not know, such as Word's theme and data store, are kept
-in the document's extension data under the format name `rtf`.
+What the model cannot hold comes in as an island: equations (`\mmath`) keep their RTF and their plain text and lay out
+and draw as Word sets them, and other drawing shapes and embedded objects (`\object`) keep their RTF and draw the
+picture the file holds for them. Each of those is reported as a `ConversionWarning`, and so is a picture in a format
+Egap does not read (old Macintosh PICT and Windows bitmap pictures). Groups marked `\*` that the reader does not know,
+such as Word's theme and data store, are kept in the document's extension data under the format name `rtf`.
 
 ## Writing
 
@@ -139,8 +139,8 @@ egap convert old.rtf -o clean.rtf --set unknown-groups=false
 Reading:
 
 - Old Macintosh PICT pictures and Windows bitmap (`\wbitmap`) pictures are left out with a warning.
-- Equations, shape groups, other drawing shapes and embedded objects are islands: they draw their picture, and their
-  content is not in the model.
+- Shape groups, other drawing shapes and embedded objects are islands: they draw their picture, and their content is
+  not in the model. Equations are islands too; they draw as math, but cannot be edited through the model.
 - Line numbering (`\linemod`) is not read: the model has none.
 - A style keeps only what it changes from its base chain; a value it repeats from further up is dropped, which leaves
   the formatting in effect as it was. Picture sizes are whole twips.
