@@ -147,7 +147,7 @@ internal sealed class MathLayout
             }
 
             line.Add(atom);
-            if (lastBreak > 0 && float.IsFinite(limit) && Join([.. line], ctx).Width > limit)
+            if (lastBreak > 0 && float.IsFinite(limit) && Width(line, ctx) > limit)
             {
                 // Break at the last operator that fits; what follows it starts the next line.
                 List<MathBox> rest = line[lastBreak..];
@@ -245,7 +245,7 @@ internal sealed class MathLayout
         {
             if (Breakable(atoms, i) && ++seen == n)
             {
-                return Join(atoms[..i], ctx).Width;
+                return Width(atoms[..i], ctx);
             }
         }
 
@@ -450,7 +450,21 @@ internal sealed class MathLayout
     /// </summary>
     private List<MathBox> Segments(List<MathBox> atoms, Context ctx)
     {
-        MathClass[] classes = new MathClass[atoms.Count];
+        List<MathBox> segments = [];
+        Space(atoms, ctx, segments);
+        return segments;
+    }
+
+    /// <summary>The width <see cref="Join"/> gives <paramref name="atoms"/>, without building the boxes.</summary>
+    private float Width(List<MathBox> atoms, Context ctx) => Space(atoms, ctx, null);
+
+    /// <summary>
+    /// Spaces <paramref name="atoms"/> and returns their joined width; with <paramref name="segments"/>, also adds a box for each
+    /// run between alignment points.
+    /// </summary>
+    private float Space(List<MathBox> atoms, Context ctx, List<MathBox>? segments)
+    {
+        Span<MathClass> classes = atoms.Count <= 128 ? stackalloc MathClass[atoms.Count] : new MathClass[atoms.Count];
         int previous = -1;
         for (int i = 0; i < atoms.Count; i++)
         {
@@ -481,8 +495,8 @@ internal sealed class MathLayout
 
         float mu = Size(ctx) / 18;
         bool tight = ctx.Style >= MathStyle.Script;
-        List<MathBox> segments = [];
-        List<(MathBox Box, float X)> current = [];
+        List<(MathBox Box, float X)>? current = segments is null ? null : [];
+        float total = 0;
         float x = 0;
         bool crossed = false;
         previous = -1;
@@ -497,8 +511,13 @@ internal sealed class MathLayout
                     x += last.Italic;
                 }
 
-                segments.Add(Segment(current, x));
-                current = [];
+                if (segments is not null)
+                {
+                    segments.Add(Segment(current!, x));
+                    current = [];
+                }
+
+                total += x;
                 x = 0;
                 crossed = true;
                 continue;
@@ -525,14 +544,14 @@ internal sealed class MathLayout
                 };
             }
 
-            current.Add((atom, x));
+            current?.Add((atom, x));
             x += atom.Width;
             previous = i;
             crossed = false;
         }
 
-        segments.Add(Segment(current, x));
-        return segments;
+        segments?.Add(Segment(current!, x));
+        return total + x;
     }
 
     private static MathBox Segment(List<(MathBox Box, float X)> atoms, float width)
