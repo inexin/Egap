@@ -178,6 +178,8 @@ clamps a paragraph to a number of lines (see <a href="../guides/flow-documents.h
 margin boxes. An element with <code>position: running(name)</code> leaves the body and shows in the boxes whose content is
 <code>element(name)</code>. Margin boxes are written back as the same rules.</li>
 <li><code>&lt;nav data-toc&gt;</code> is read as a table of contents field.</li>
+<li>A MathML <code>&lt;math&gt;</code> element is an equation: it lays out as math, its <code>Island.Text</code> is its linear form, and the HTML writer
+writes it back.</li>
 </ul>
 <h2 id="css-layout">CSS layout</h2>
 <p><code>display: flex</code> and <code>display: grid</code> read into <a href="../guides/flow-documents.html#flex-and-grid-layout">flex and grid containers</a>,
@@ -226,7 +228,8 @@ of the text (behind it for a negative <code>z-index</code>), placed on the first
 first line; a fixed box goes in the header, so it shows on every page. <code>position: sticky</code>, subgrid, masonry, named grid
 lines and <code>inline-flex</code> and <code>inline-grid</code> boxes are not laid out as such; the last two read as inline content.</p>
 <h2 id="writing">Writing</h2>
-<p>The model is written as HTML in UTF-8, with what HTML cannot hold returned as warnings.</p>
+<p>The model is written as HTML in UTF-8, with what HTML cannot hold returned as warnings. Equations, from Word, RTF,
+OpenDocument or HTML, are written as MathML Core, which browsers draw.</p>
 <table>
 <thead>
 <tr>

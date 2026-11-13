@@ -132,9 +132,10 @@ inline or floating, placed and wrapped as the frame says. A frame holding only a
 floating tables, is a floating table.</li>
 </ul>
 <p>Charts, formulas and other embedded objects come in as islands that keep their markup and draw the picture the file
-holds for them; other drawing shapes and groups are islands too. Each of those is reported as a <code>ConversionWarning</code>,
-and so is a picture the package does not hold. Markup the reader does not know is kept in the document's extension data
-under the format name <code>odt</code>.</p>
+holds for them; other drawing shapes and groups are islands too. A formula is read from its MathML, in the package or
+inline in a flat file, and lays out and draws as an equation; its <code>Island.Text</code> is its linear form. Each of those is
+reported as a <code>ConversionWarning</code>, and so is a picture the package does not hold. Markup the reader does not know is
+kept in the document's extension data under the format name <code>odt</code>.</p>
 <h2 id="writing">Writing</h2>
 <p><code>OdtFormat.Save</code> writes a document to a file or a stream, and <code>Document.Save</code> writes one to a file named .odt, .ott,
 .fodt or .fott. Both return the <code>ConversionWarning</code>s for what OpenDocument could not hold. <code>OdtSaveOptions</code> picks the
