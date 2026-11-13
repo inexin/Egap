@@ -6,6 +6,11 @@ XLTM files and OpenDocument spreadsheets (ODS, OTS and flat FODS), and reads Exc
 workbooks (XLS). The types are in
 `Egap.Spreadsheets`.
 
+> [!NOTE]
+> Egap.Spreadsheets is a preview, 2.3.0-preview.1, and its API may still change before the stable 2.3.0. Install it with
+> `dotnet add package Egap.Spreadsheets --prerelease`; it brings a preview of Egap.Documents with it.
+> [Known limits](#known-limits) lists what it does not do yet.
+
 ```csharp
 using Egap.Spreadsheets;
 
@@ -695,7 +700,7 @@ formula when it is typed.
 
 ### Functions
 
-Over 500 of Excel's functions are built in, and [Spreadsheet functions](spreadsheet-functions.md) lists them and those that
+491 of the 524 functions on Microsoft's list of Excel's functions are built in, and [Spreadsheet functions](spreadsheet-functions.md) lists them and those that
 are not: math and trigonometry, logic, text, date and time, lookup and reference, financial, engineering, database,
 information and statistics, with the COUNTIF, SUMIF and AVERAGEIF families and their criteria (`">20"`,
 `"a*"`, `"<>"`). `FunctionRegistry.BuiltInFunctions` lists them. Each follows Microsoft's function reference and is
@@ -1189,3 +1194,22 @@ is about 16 KB and a lone cell far from the others a few KB at most. A cell with
 room, and a block goes again when its last cell is cleared.
 
 A workbook is not safe to change from more than one thread at a time.
+
+## Known limits
+
+Egap.Spreadsheets does not do these yet. Tell us on [GitHub](https://github.com/inexin/Egap/issues) if you need one.
+
+- XLS and XLSB files are read, not written: they save as XLSX.
+- Excel 5.0/95 (BIFF5) and older workbooks, SpreadsheetML 2003 and Apple Numbers files are not read.
+- XLS form controls and OLE objects are not read. XLSB pivot tables are kept as they are and saved again, but not read
+  into the model. XLS pivot tables from encrypted files, with calculated or grouped fields, or from a database or cube are
+  not read.
+- 33 of Excel's functions are not built in, among them the FORECAST.ETS functions, the cube functions, WEBSERVICE, RTD
+  and STOCKHISTORY. External data, Power Query, OLAP pivot tables and the Data Model are not supported.
+- Formulas are written with Excel's English function names; translated names are not read.
+- Macros are kept and saved again, but not run.
+- Map charts show the picture saved with them. 3D column charts and surface charts may draw a little differently from
+  Excel.
+- Protection is read, written and checked, but code may still change protected cells, as the [Protection](#protection)
+  section says.
+- An XLSX encrypted with a password is built in memory as a whole; `SheetWriter` streams only unencrypted files.

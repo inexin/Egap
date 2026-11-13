@@ -35,7 +35,22 @@ internal static class DocumentFormatRegistry
         Func<Document, string, IReadOnlyList<ConversionWarning>>? Save,
         FolderReader? ReadInFolder = null,
         Func<string, string?, Document>? ParseInFolder = null,
-        OptionsReader? ReadWithOptions = null);
+        OptionsReader? ReadWithOptions = null)
+    {
+        /// <summary>
+        /// The constructor from before <c>ReadWithOptions</c>, which Egap.Documents.Html and Egap.Documents.Markdown 2.2.0
+        /// call; kept so they run on a later Egap.Documents.
+        /// </summary>
+        public Format(
+            DocumentFormatKind Kind,
+            Reader? Read,
+            Func<Document, string, IReadOnlyList<ConversionWarning>>? Save,
+            FolderReader? ReadInFolder,
+            Func<string, string?, Document>? ParseInFolder)
+            : this(Kind, Read, Save, ReadInFolder, ParseInFolder, null)
+        {
+        }
+    }
 
     private static readonly ConcurrentDictionary<DocumentFormatKind, Format> Formats = new()
     {

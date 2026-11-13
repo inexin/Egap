@@ -17,9 +17,12 @@
     <PackageProjectUrl>https://github.com/inexin/Egap</PackageProjectUrl>
     <RepositoryUrl>https://github.com/inexin/Egap</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
-    <!-- One version for every Egap package: Egap.Pdf, Egap.Documents and its add-ons, and Egap.Preview. They release together
-         on the tag v<version>. -->
+    <!-- One version for every Egap package: Egap.Pdf, Egap.Documents and its add-ons, Egap.Spreadsheets, Egap.Preview and
+         Egap.Cli. They release together on the tag v<version>. -->
     <EgapVersion>2.2.0</EgapVersion>
+    <!-- Egap.Documents and Egap.Spreadsheets ship ahead of the train as a prerelease, each on its own tag
+         (Egap.Documents-v<version>, Egap.Spreadsheets-v<version>). At the next stable release they go back to EgapVersion. -->
+    <EgapPreviewVersion>2.3.0-preview.1</EgapPreviewVersion>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(GITHUB_ACTIONS)' == 'true'">

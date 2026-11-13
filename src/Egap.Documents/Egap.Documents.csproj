@@ -3,7 +3,8 @@
   <PropertyGroup>
     <RootNamespace>Egap.Documents</RootNamespace>
     <PackageId>Egap.Documents</PackageId>
-    <VersionPrefix>$(EgapVersion)</VersionPrefix>
+    <!-- A preview ahead of the train: EgapPreviewVersion in Directory.Build.props. -->
+    <Version>$(EgapPreviewVersion)</Version>
     <Description>Flow documents for .NET: one editable document model with DOCX and plain-text readers and writers (HTML and Markdown in add-on packages), a page layout engine that draws onto any Egami canvas, PDF export with links, outline and tags, and PDF pages analysed back into documents.</Description>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <IsTrimmable>true</IsTrimmable>

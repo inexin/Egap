@@ -1,5 +1,8 @@
 # Egap.Spreadsheets
 
+**Preview:** 2.3.0-preview.1 is the first release, and the API may still change before the stable 2.3.0. Install it with
+`dotnet add package Egap.Spreadsheets --prerelease`; it brings Egap.Documents 2.3.0-preview.1.
+
 Spreadsheets for .NET 10: workbooks you create and edit from code, and Excel files (XLSX, XLSM, XLTX, XLTM) loaded and
 saved with what they hold kept. OpenDocument spreadsheets (ODS, OTS, FODS) load and save too, encrypted with a password if asked, their formulas translated between OpenFormula and Excel's. Excel files can be encrypted with a password, Excel binary workbooks (XLSB) load with their formulas decoded, and Excel 97-2003 workbooks (XLS) load with their formulas decoded and their charts, pictures, notes and pivot tables. Sheets are sparse, up to 1,048,576 rows by 16,384 columns, and keep text and cell styles once
 per workbook, as Excel does. Fully managed and MIT-licensed; part of [Egap](https://github.com/inexin/Egap).
@@ -35,11 +38,15 @@ and `ToDataTable` and `ToList<T>` read ranges back. Sheets and workbooks are pro
 as Excel hashes them. Formulas are read and checked against Excel's grammar, in A1 or R1C1 style
 (`cell.FormulaR1C1`), `sheet.Evaluate` evaluates one with Excel's rules for values, errors, references and dates, and
 `book.Calculate()` recalculates what changed through a dependency graph, with shared and array formulas, circular
-references and iteration, dynamic arrays that spill, LET, LAMBDA and structured references. Over 470 of Excel's functions are built in and checked against Excel itself;
+references and iteration, dynamic arrays that spill, LET, LAMBDA and structured references. 491 of the 524 functions on Microsoft's list are built in and checked against Excel itself;
 `FunctionRegistry` adds functions of your own. `sheet.SaveAsPdf` and `book.SaveAsPdf` print as Excel prints, with its page
 breaks, print titles, fit to pages, headers and footers, cell formatting, conditional colours and pictures, to PDF (tagged,
 PDF/A or PDF/UA when asked), and `Paginate` lays the pages out to draw on any Egami canvas or render to images.
 `SpreadsheetFormat.Register()` lets `Document.Load` read XLSX and CSV, a section per sheet with its table of displayed values,
 so HTML, Markdown, DOCX, text and RAG chunks work on them, and `Workbook.FromTables` puts the tables of a document or a PDF on
 sheets.
+Not yet in the preview: writing XLS and XLSB, Excel 95 and older files, XLS form controls, the FORECAST.ETS and cube
+functions, external data and Power Query, translated function names, and running macros. The guide's
+[Known limits](https://github.com/inexin/Egap/blob/main/docs/articles/guides/spreadsheets.md#known-limits) has the full list.
+
 Source, guide and changelog: [github.com/inexin/Egap](https://github.com/inexin/Egap).

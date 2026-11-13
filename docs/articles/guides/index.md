@@ -34,7 +34,7 @@ One document model for DOCX, DOC, RTF, OpenDocument Text, HTML, Markdown and pla
 
 ## Egap.Spreadsheets
 
-Workbooks built and edited from code.
+Workbooks built and edited from code. Egap.Spreadsheets is a preview (2.3.0-preview.1): install it with `--prerelease`.
 
 - [Charts](charts.md): one chart model for workbooks and Word documents: reading, editing, creating and saving.
 - [Spreadsheets](spreadsheets.md): workbooks, sheets, cells, ranges, formulas and cell styles.
