@@ -92,6 +92,12 @@ cell styles, rows and columns, names and print settings, as Excel keeps them. It
 XLTM files and OpenDocument spreadsheets (ODS, OTS and flat FODS), and reads Excel binary workbooks (XLSB) and Excel 97-2003
 workbooks (XLS). The types are in
 <code>Egap.Spreadsheets</code>.</p>
+<div class="NOTE">
+<h5>Note</h5>
+<p>Egap.Spreadsheets is a preview, 2.3.0-preview.1, and its API may still change before the stable 2.3.0. Install it with
+<code>dotnet add package Egap.Spreadsheets --prerelease</code>; it brings a preview of Egap.Documents with it.
+<a href="#known-limits">Known limits</a> lists what it does not do yet.</p>
+</div>
 <pre><code class="lang-csharp">using Egap.Spreadsheets;
 
 Workbook book = Workbook.Create();                   // one empty sheet, Sheet1
@@ -652,7 +658,7 @@ from any sheet, and gives <code>#VALUE!</code> in a row the table's data does no
 stores, such as <code>Sales[[#This Row],[Qty]]*2</code>. A column or table that does not exist gives <code>#REF!</code>, where Excel refuses the
 formula when it is typed.</p>
 <h3 id="functions">Functions</h3>
-<p>Over 500 of Excel's functions are built in, and <a href="spreadsheet-functions.html">Spreadsheet functions</a> lists them and those that
+<p>491 of the 524 functions on Microsoft's list of Excel's functions are built in, and <a href="spreadsheet-functions.html">Spreadsheet functions</a> lists them and those that
 are not: math and trigonometry, logic, text, date and time, lookup and reference, financial, engineering, database,
 information and statistics, with the COUNTIF, SUMIF and AVERAGEIF families and their criteria (<code>&quot;&gt;20&quot;</code>,
 <code>&quot;a*&quot;</code>, <code>&quot;&lt;&gt;&quot;</code>). <code>FunctionRegistry.BuiltInFunctions</code> lists them. Each follows Microsoft's function reference and is
@@ -1073,6 +1079,24 @@ XFD1048576 holds two blocks. A cell takes 16 bytes, and a block makes its rows o
 is about 16 KB and a lone cell far from the others a few KB at most. A cell with no value and the default style takes no
 room, and a block goes again when its last cell is cleared.</p>
 <p>A workbook is not safe to change from more than one thread at a time.</p>
+<h2 id="known-limits">Known limits</h2>
+<p>Egap.Spreadsheets does not do these yet. Tell us on <a href="https://github.com/inexin/Egap/issues">GitHub</a> if you need one.</p>
+<ul>
+<li>XLS and XLSB files are read, not written: they save as XLSX.</li>
+<li>Excel 5.0/95 (BIFF5) and older workbooks, SpreadsheetML 2003 and Apple Numbers files are not read.</li>
+<li>XLS form controls and OLE objects are not read. XLSB pivot tables are kept as they are and saved again, but not read
+into the model. XLS pivot tables from encrypted files, with calculated or grouped fields, or from a database or cube are
+not read.</li>
+<li>33 of Excel's functions are not built in, among them the FORECAST.ETS functions, the cube functions, WEBSERVICE, RTD
+and STOCKHISTORY. External data, Power Query, OLAP pivot tables and the Data Model are not supported.</li>
+<li>Formulas are written with Excel's English function names; translated names are not read.</li>
+<li>Macros are kept and saved again, but not run.</li>
+<li>Map charts show the picture saved with them. 3D column charts and surface charts may draw a little differently from
+Excel.</li>
+<li>Protection is read, written and checked, but code may still change protected cells, as the <a href="#protection">Protection</a>
+section says.</li>
+<li>An XLSX encrypted with a password is built in memory as a whole; <code>SheetWriter</code> streams only unencrypted files.</li>
+</ul>
 
 </article>
 
