@@ -69,22 +69,187 @@ internal sealed class MathLayout
     /// <summary>The face the layout sets glyphs in.</summary>
     public Typeface Face => face;
 
-    /// <summary>Lays out an equation: inline in text style, or a display line in display style.</summary>
-    public MathBox Zone(MathZone zone, bool display) => Row(zone.Content, new Context(display ? MathStyle.Display : MathStyle.Text, false));
+    /// <summary>
+    /// Lays out an equation: inline in text style, or a display equation in display style, broken into lines at its manual
+    /// breaks (<c>m:brk</c>) and, when it is wider than <paramref name="maxWidth"/> points, at its operators.
+    /// </summary>
+    public MathBox Zone(MathZone zone, bool display, float maxWidth = float.PositiveInfinity)
+    {
+        Context ctx = new(display ? MathStyle.Display : MathStyle.Text, false);
+        if (!display || zone.Content.Items.Count == 0)
+        {
+            return Row(zone.Content, ctx);
+        }
 
-    /// <summary>Lays out each equation of a display paragraph, one line each.</summary>
-    public List<MathBox> Lines(MathParagraph paragraph)
+        List<MathBox> atoms = Atoms(zone.Content, ctx);
+        MathBox whole = Join(atoms, ctx);
+        if (!atoms.Exists(a => a.BreakBefore) && whole.Width <= maxWidth)
+        {
+            return whole;
+        }
+
+        return Wrap(atoms, whole, maxWidth, ctx);
+    }
+
+    /// <summary>Lays out each equation of a display paragraph, one line each (or more, where it breaks).</summary>
+    public List<MathBox> Lines(MathParagraph paragraph, float maxWidth = float.PositiveInfinity)
     {
         List<MathBox> lines = [];
         foreach (MathNode item in paragraph.Items)
         {
             if (item is MathZone zone)
             {
-                lines.Add(Zone(zone, display: true));
+                lines.Add(Zone(zone, display: true, maxWidth));
             }
         }
 
         return lines;
+    }
+
+    /// <summary>
+    /// Breaks a display equation into lines (ECMA-376 Part 1, §22.1.2): before a run marked <c>m:brk</c>, and otherwise at the
+    /// last binary operator or relation that keeps a line within <paramref name="maxWidth"/>. A binary operator starts the next
+    /// line, ends this one or does both, by <c>m:brkBin</c> (with <c>m:brkBinSub</c> choosing the signs of a repeated minus); a
+    /// relation starts the next line. Lines after the first indent by <c>m:wrapIndent</c>, align right with <c>m:wrapRight</c>,
+    /// or align under an operator of the first line by <c>m:brk m:alnAt</c>.
+    /// </summary>
+    private MathBox Wrap(List<MathBox> atoms, MathBox whole, float maxWidth, Context ctx)
+    {
+        List<List<MathBox>> lines = [];
+        List<int> alignments = [];
+        List<MathBox> line = [];
+        int alignAt = 0;
+        float indent = settings.WrapIndent / 20f;
+        float limit = maxWidth;
+        int lastBreak = -1;
+
+        void Flush()
+        {
+            lines.Add(line);
+            alignments.Add(alignAt);
+            line = [];
+            lastBreak = -1;
+            limit = maxWidth - indent;
+        }
+
+        for (int i = 0; i < atoms.Count; i++)
+        {
+            MathBox atom = atoms[i];
+            if (atom.BreakBefore && line.Count > 0)
+            {
+                Flush();
+                alignAt = atom.AlignAt;
+            }
+
+            if (line.Count > 0 && Breakable(atoms, i))
+            {
+                lastBreak = line.Count;
+            }
+
+            line.Add(atom);
+            if (lastBreak > 0 && float.IsFinite(limit) && Width(line, ctx) > limit)
+            {
+                // Break at the last operator that fits; what follows it starts the next line.
+                List<MathBox> rest = line[lastBreak..];
+                line = line[..lastBreak];
+                MathBox op = rest[0];
+                string rule = op.Class == MathClass.Binary ? settings.BreakBinary : "before";
+                if (rule is "after" or "repeat")
+                {
+                    line.Add(op);
+                    rest.RemoveAt(0);
+                }
+
+                if (rule == "repeat")
+                {
+                    (MathBox end, MathBox start) = RepeatedOperator(op, ctx);
+                    line[^1] = end;
+                    rest.Insert(0, start);
+                }
+
+                Flush();
+                alignAt = 0;
+                line.AddRange(rest);
+                lastBreak = -1;
+            }
+        }
+
+        if (line.Count > 0)
+        {
+            Flush();
+        }
+
+        if (lines.Count < 2)
+        {
+            return whole;
+        }
+
+        List<MathBox> boxes = [.. lines.Select(l => Join(l, ctx))];
+        float gap = settings.SpaceWithin / 20f;
+        float width = boxes.Max(b => b.Width);
+        MathBox box = new() { Class = MathClass.Ordinary };
+        float y = 0;
+        for (int i = 0; i < boxes.Count; i++)
+        {
+            if (i > 0)
+            {
+                // Broken lines keep at least single spacing (1.17 em, as Word's arrays), plus m:intraSp.
+                y += Math.Max(boxes[i - 1].Descent + (Size(ctx) * 0.15f) + boxes[i].Ascent, Size(ctx) * 1.17f) + gap;
+            }
+
+            float x = i == 0 ? 0
+                : alignments[i] > 0 ? OperatorX(lines[0], alignments[i], ctx)
+                : settings.WrapRight ? Math.Max(0, width - boxes[i].Width)
+                : indent;
+            box.Add(boxes[i], x, y);
+            box.Width = Math.Max(box.Width, x + boxes[i].Width);
+        }
+
+        return Finish(box);
+    }
+
+    /// <summary>Whether a display line may break at atom <paramref name="i"/>: a binary operator or relation after an operand.</summary>
+    private static bool Breakable(List<MathBox> atoms, int i) =>
+        i > 0 && atoms[i].Class is MathClass.Binary or MathClass.Relation
+        && atoms[i - 1].Class is not (MathClass.Binary or MathClass.Relation or MathClass.Open or MathClass.Operator or MathClass.Punctuation);
+
+    /// <summary>The signs a repeated binary operator shows at the end of a line and the start of the next.</summary>
+    private (MathBox End, MathBox Start) RepeatedOperator(MathBox atom, Context ctx)
+    {
+        ushort minus = face.GetGlyph(0x2212);
+        if (atom.Glyph == 0 || atom.Glyph != minus)
+        {
+            return (atom, atom);
+        }
+
+        MathBox Plus()
+        {
+            MathBox box = GlyphBox(face.GetGlyph('+'), Size(ctx));
+            box.Class = MathClass.Binary;
+            return box;
+        }
+
+        return settings.BreakBinarySubtraction switch
+        {
+            "-+" => (atom, Plus()),
+            "+-" => (Plus(), atom),
+            _ => (atom, atom),
+        };
+    }
+
+    /// <summary>The x of the <paramref name="n"/>th (1-based) operator of a line, for a break that aligns under it.</summary>
+    private float OperatorX(List<MathBox> atoms, int n, Context ctx)
+    {
+        int seen = 0;
+        for (int i = 1; i < atoms.Count; i++)
+        {
+            if (Breakable(atoms, i) && ++seen == n)
+            {
+                return Width(atoms[..i], ctx);
+            }
+        }
+
+        return settings.WrapIndent / 20f;
     }
 
     /// <summary>Lays out any node of a tree as a display or inline equation.</summary>
@@ -187,6 +352,36 @@ internal sealed class MathLayout
 
     private void Run(MathRun run, Context ctx, List<MathBox> atoms)
     {
+        int first = atoms.Count;
+        RunAtoms(run, ctx, atoms);
+        // Word honours a manual break only before an operator, where an automatic break could also fall.
+        if (atoms.Count > first && atoms[first].Class is MathClass.Binary or MathClass.Relation && Break(run) is int alignAt)
+        {
+            atoms[first].BreakBefore = true;
+            atoms[first].AlignAt = alignAt;
+        }
+    }
+
+    /// <summary>A run's manual break (<c>m:brk</c>): the operator its next line aligns under, 0 for none given; null for no break.</summary>
+    private static int? Break(MathRun run)
+    {
+        foreach (object item in run.Properties?.Items ?? [])
+        {
+            switch (item)
+            {
+                case MathProperty { Name: "brk" }:
+                    return 0;
+                case System.Xml.Linq.XElement { Name.LocalName: "brk" } element:
+                    string? value = element.Attributes().FirstOrDefault(a => a.Name.LocalName == "alnAt")?.Value;
+                    return int.TryParse(value, System.Globalization.NumberStyles.Integer, System.Globalization.CultureInfo.InvariantCulture, out int at) && at is > 0 and < 256 ? at : 0;
+            }
+        }
+
+        return null;
+    }
+
+    private void RunAtoms(MathRun run, Context ctx, List<MathBox> atoms)
+    {
         bool normal = run.Normal;
         string? style = normal ? "p" : run.Style;
         string? script = normal ? null : run.Script;
@@ -255,7 +450,21 @@ internal sealed class MathLayout
     /// </summary>
     private List<MathBox> Segments(List<MathBox> atoms, Context ctx)
     {
-        MathClass[] classes = new MathClass[atoms.Count];
+        List<MathBox> segments = [];
+        Space(atoms, ctx, segments);
+        return segments;
+    }
+
+    /// <summary>The width <see cref="Join"/> gives <paramref name="atoms"/>, without building the boxes.</summary>
+    private float Width(List<MathBox> atoms, Context ctx) => Space(atoms, ctx, null);
+
+    /// <summary>
+    /// Spaces <paramref name="atoms"/> and returns their joined width; with <paramref name="segments"/>, also adds a box for each
+    /// run between alignment points.
+    /// </summary>
+    private float Space(List<MathBox> atoms, Context ctx, List<MathBox>? segments)
+    {
+        Span<MathClass> classes = atoms.Count <= 128 ? stackalloc MathClass[atoms.Count] : new MathClass[atoms.Count];
         int previous = -1;
         for (int i = 0; i < atoms.Count; i++)
         {
@@ -286,8 +495,8 @@ internal sealed class MathLayout
 
         float mu = Size(ctx) / 18;
         bool tight = ctx.Style >= MathStyle.Script;
-        List<MathBox> segments = [];
-        List<(MathBox Box, float X)> current = [];
+        List<(MathBox Box, float X)>? current = segments is null ? null : [];
+        float total = 0;
         float x = 0;
         bool crossed = false;
         previous = -1;
@@ -302,8 +511,13 @@ internal sealed class MathLayout
                     x += last.Italic;
                 }
 
-                segments.Add(Segment(current, x));
-                current = [];
+                if (segments is not null)
+                {
+                    segments.Add(Segment(current!, x));
+                    current = [];
+                }
+
+                total += x;
                 x = 0;
                 crossed = true;
                 continue;
@@ -330,14 +544,14 @@ internal sealed class MathLayout
                 };
             }
 
-            current.Add((atom, x));
+            current?.Add((atom, x));
             x += atom.Width;
             previous = i;
             crossed = false;
         }
 
-        segments.Add(Segment(current, x));
-        return segments;
+        segments?.Add(Segment(current!, x));
+        return total + x;
     }
 
     private static MathBox Segment(List<(MathBox Box, float X)> atoms, float width)

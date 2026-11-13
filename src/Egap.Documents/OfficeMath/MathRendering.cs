@@ -19,9 +19,10 @@ internal static class MathRendering
 
     /// <summary>
     /// The box of a math island at <paramref name="size"/> points (the surrounding text's size, unless the equation's own runs
-    /// set one); null when the island isn't math or its markup doesn't read.
+    /// set one), a display equation broken into lines to fit <paramref name="maxWidth"/> points; null when the island isn't
+    /// math or its markup doesn't read.
     /// </summary>
-    public static MathBox? Layout(Island island, FontProvider fonts, Document document, float size)
+    public static MathBox? Layout(Island island, FontProvider fonts, Document document, float size, float maxWidth = float.PositiveInfinity)
     {
         if (island.Kind != IslandKind.Math || MathIslands.Tree(island) is not { } tree)
         {
@@ -29,7 +30,7 @@ internal static class MathRendering
         }
 
         size = RunSize(tree) ?? size;
-        if (Boxes.TryGetValue(island, out Laid? laid) && laid.Size == size && laid.Fonts == fonts)
+        if (Boxes.TryGetValue(island, out Laid? laid) && laid.Size == size && laid.Fonts == fonts && laid.MaxWidth.Equals(maxWidth))
         {
             return laid.Box;
         }
@@ -37,8 +38,10 @@ internal static class MathRendering
         MathSettings settings = document.MathSettings;
         (Typeface face, TypefaceMath math) = MathFonts.Resolve(fonts, settings);
         MathLayout layout = new(face, math, settings, size);
-        MathBox box = tree is MathParagraph paragraph ? Display(layout, paragraph, settings) : layout.Node(tree, display: IsDisplayTree(tree));
-        Boxes.AddOrUpdate(island, new Laid(box, size, fonts));
+        // The paragraph's margins for math (m:lMargin, m:rMargin) narrow the room display lines break to fit.
+        float room = maxWidth - ((settings.LeftMargin + settings.RightMargin) / 20f);
+        MathBox box = tree is MathParagraph paragraph ? Display(layout, paragraph, settings, room) : layout.Node(tree, display: IsDisplayTree(tree));
+        Boxes.AddOrUpdate(island, new Laid(box, size, fonts, maxWidth));
         return box;
     }
 
@@ -68,9 +71,9 @@ internal static class MathRendering
         return jc is "left" or "right" ? jc : "center";
     }
 
-    private static MathBox Display(MathLayout layout, MathParagraph paragraph, MathSettings settings)
+    private static MathBox Display(MathLayout layout, MathParagraph paragraph, MathSettings settings, float maxWidth)
     {
-        List<MathBox> lines = layout.Lines(paragraph);
+        List<MathBox> lines = layout.Lines(paragraph, maxWidth);
         string jc = paragraph.Justification ?? settings.DisplayJustification;
         float width = lines.Count == 0 ? 0 : lines.Max(l => l.Width);
         MathBox box = new() { Width = width };
@@ -165,5 +168,5 @@ internal static class MathRendering
         }
     }
 
-    private sealed record Laid(MathBox Box, float Size, FontProvider Fonts);
+    private sealed record Laid(MathBox Box, float Size, FontProvider Fonts, float MaxWidth);
 }

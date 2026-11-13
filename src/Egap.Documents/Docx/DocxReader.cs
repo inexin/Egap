@@ -719,7 +719,8 @@ internal sealed partial class DocxReader
             {
                 Add(inlines, new Island(document, IslandKind.Math, DocxExtension.Format, element.ToString(SaveOptions.DisableFormatting))
                 {
-                    Text = string.Concat(element.Descendants(Ns.M + "t").Select(t => t.Value)),
+                    // The equation's text is its UnicodeMath (UTN #28), as Word copies it as plain text.
+                    Text = OfficeMath.UnicodeMath.Write(OfficeMath.Omml.Read(element)),
                 }, state, element);
             }
 
