@@ -757,6 +757,10 @@ internal sealed partial class HtmlWriter
                 case Island island when island.Format == "html":
                     body.Append(island.Markup);
                     break;
+                case Island { Kind: IslandKind.Math } island when Documents.OfficeMath.MathIslands.Tree(island) is { } equation:
+                    // MathML Core, which browsers draw; the namespace declaration is allowed on math in HTML.
+                    body.Append(Documents.OfficeMath.MathMLWriter.ToText(equation));
+                    break;
                 case Island island:
                     warnings.Add(ConversionWarningKind.DrawingDropped, "equations, charts and other kept objects" + (island.Text.Length > 0 ? ", written as their text" : ""));
                     body.Append(Text(island.Text));

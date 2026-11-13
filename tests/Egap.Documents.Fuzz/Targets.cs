@@ -29,6 +29,7 @@ internal static class Targets
         ["epub"] = Epub,
         ["chart"] = ChartPart,
         ["chartstyle"] = ChartStylePart,
+        ["math"] = MathTarget,
     };
 
     public static IEnumerable<string> Names => All.Keys;
@@ -140,6 +141,34 @@ internal static class Targets
                 _ = layout.HitTest(page, line.Bounds.X + 5, line.Bounds.Y + 1);
             }
         }
+    }
+
+    /// <summary>
+    /// Any bytes as an equation: OMML (an <c>m:oMath</c> or <c>m:oMathPara</c>) when they name its namespace, else MathML;
+    /// laid out in a line that breaks, drawn, written as UnicodeMath, MathML (HTML) and a tagged PDF with its formula tags.
+    /// Nothing may throw.
+    /// </summary>
+    private static void MathTarget(Stream input)
+    {
+        using StreamReader reader = new(input);
+        string markup = reader.ReadToEnd();
+        bool omml = markup.Contains("officeDocument/2006/math", StringComparison.Ordinal);
+        Document document = new();
+        Section section = document.AddSection();
+        section.PageSetup.PageWidth = 200;
+        Paragraph paragraph = section.Body.AddParagraph("x ");
+        Island island = new(document, IslandKind.Math, omml ? "docx" : "html", markup);
+        paragraph.Inlines.Add(island);
+        _ = Egap.Documents.OfficeMath.MathIslands.Tree(island) is { } tree ? Egap.Documents.OfficeMath.UnicodeMath.Write(tree) : "";
+
+        Egap.Documents.Layout.DocumentLayout layout = document.Layout(new Egap.Documents.Layout.LayoutOptions { Fonts = new Egap.Documents.Layout.FontSettings { UseSystemFonts = false } });
+        foreach (Egap.Documents.Layout.PageLayout page in layout.Pages.Take(2))
+        {
+            _ = page.Render(6);
+        }
+
+        _ = HtmlFormat.Parse(HtmlFormat.ToHtml(document, out _)).GetText();
+        Egap.Documents.Pdf.PdfExport.SaveAsPdf(document, Stream.Null, new Egap.Documents.Pdf.PdfExportOptions { Tagged = true });
     }
 
     /// <summary>

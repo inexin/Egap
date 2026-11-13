@@ -19,6 +19,7 @@ reports hangs.
 | `opf` | Any bytes read as an EPUB package document in a book that holds nothing else; may throw only `DocumentException` | `tests/fuzz-seeds/opf/*` |
 | `nav` | Any bytes read as an EPUB 3 navigation document and as an EPUB 2 NCX; may throw only `DocumentException` | `tests/fuzz-seeds/nav/*` |
 | `epub` | Any bytes read as an EPUB book; written as EPUB that must read again; may throw only `DocumentException` | `tests/fuzz-seeds/epub/*` |
+| `math` | Any bytes as an equation, OMML when they name its namespace and MathML otherwise; laid out on a narrow page so it breaks, drawn, written as UnicodeMath, as HTML (MathML) that must read again, and as a tagged PDF with formula tags | `tests/fuzz-seeds/math/*` |
 | `chart` | Any bytes read as a chart part: every property read, an edit made, saved and read again; may throw only `DocumentException` | `tests/fuzz-seeds/chart/*` |
 
 Daytime runs are 10 minutes per target: `python tools/fuzz-afl.py 0.17 markdown`.
