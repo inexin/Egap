@@ -331,4 +331,22 @@ public sealed class OfficeMathLayoutTests
 
         Assert.True(dark > 10, $"{dark} dark pixels");
     }
+
+    [Fact]
+    public void RulesDrawAsWholePixelsOnARaster()
+    {
+        // A 0.5 pt bar half way across a pixel row at 96 dpi: one crisp black row, as PDF viewers draw it, not two grey ones.
+        MathBox box = new() { Width = 20, Ascent = 10, Descent = 10 };
+        box.Items.Add(new MathItem.Rule(0, 0.4f, 15, 0.5f));
+        using Raster<Rgba8> raster = Raster.Create(30, 30, new Rgba8(255, 255, 255, 255));
+        using (Egami.Drawing.RasterCanvas<Rgba8> canvas = new(raster))
+        {
+            canvas.Scale(96 / 72f, 96 / 72f);
+            box.Draw(canvas, new System.Numerics.Vector2(2, 10), new Egami.Drawing.SolidPaint(new Rgba8(0, 0, 0, 255)));
+        }
+
+        int[] inked = [.. Enumerable.Range(0, 30).Where(y => raster.Row(y)[10].R < 250)];
+        int row = Assert.Single(inked);
+        Assert.Equal(0, raster.Row(row)[10].R);
+    }
 }

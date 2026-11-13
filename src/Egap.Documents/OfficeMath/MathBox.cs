@@ -78,13 +78,32 @@ internal sealed class MathBox
                     canvas.DrawGlyphRun(GlyphRun.Create(new Font(glyphs.Face, glyphs.Size), glyphs.Ids, glyphs.Positions), origin, paint);
                     break;
                 case MathItem.Rule rule:
-                    canvas.FillRect(new RectF(origin.X + rule.X, origin.Y + rule.Y, rule.Width, rule.Height), paint);
+                    canvas.FillRect(Snap(canvas, new RectF(origin.X + rule.X, origin.Y + rule.Y, rule.Width, rule.Height)), paint);
                     break;
                 case MathItem.Line line:
                     canvas.DrawLine(origin + line.Start, origin + line.End, new Stroke(line.Thickness), paint);
                     break;
             }
         }
+    }
+
+    /// <summary>
+    /// A rule on a raster at whole pixels, at least one pixel thick, as PDF viewers draw thin filled rectangles: a fraction
+    /// bar or overbar is then one crisp line, not two grey ones. Vector output and turned canvases keep the rule as it is.
+    /// </summary>
+    private static RectF Snap(Canvas canvas, RectF rect)
+    {
+        Matrix3x2 m = canvas.Matrix;
+        if (canvas is not RasterCanvas<Egami.Pixels.Rgba8> || m.M12 != 0 || m.M21 != 0 || m.M11 <= 0 || m.M22 <= 0)
+        {
+            return rect;
+        }
+
+        float left = MathF.Round(rect.Left * m.M11 + m.M31), right = MathF.Round(rect.Right * m.M11 + m.M31);
+        float top = MathF.Round(rect.Top * m.M22 + m.M32), bottom = MathF.Round(rect.Bottom * m.M22 + m.M32);
+        bottom = Math.Max(bottom, top + 1);
+        right = Math.Max(right, left + 1);
+        return new RectF((left - m.M31) / m.M11, (top - m.M32) / m.M22, (right - left) / m.M11, (bottom - top) / m.M22);
     }
 
     /// <summary>The boxes inside, depth first, with their offsets from this box's origin (for tests and alternative text).</summary>
