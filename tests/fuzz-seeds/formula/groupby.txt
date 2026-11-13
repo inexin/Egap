@@ -1,0 +1,1 @@
+=GROUPBY({"a";"b";"a"},{1;2;3},HSTACK(SUM,PERCENTOF),3,-2,-2,{TRUE;TRUE;FALSE},0)

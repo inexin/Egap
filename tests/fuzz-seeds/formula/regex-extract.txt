@@ -1,0 +1,1 @@
+=REGEXEXTRACT("ab12cd345","(?<n>\d+)[a-z]*",2,1)

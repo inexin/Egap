@@ -1,0 +1,6 @@
+# Cases where Egap knowingly differs from Excel: the formula as in functions-regex.txt, a tab, and why.
+REGEXTEST("((a))","\((?:[^()]|(?R))*\)")	Recursion, (?R), has no .NET form: Egap gives #VALUE! for the pattern.
+REGEXTEST("ab","(?|(a)|(b))\1")	A branch reset group, (?|, has no .NET form: Egap gives #VALUE! for the pattern.
+REGEXREPLACE("a"&CHAR(13)&CHAR(10)&"b","","-")	An empty match inside a CRLF: Excel skips the place after the LF, Egap does not.
+REGEXTEST("、","\p{Han}")	PCRE2 matches a script by its Script_Extensions, so CJK punctuation such as U+3001 is Han too; Egap takes the letters and marks of the Han blocks.
+REGEXTEST(REPT("a",25)&"b","^(a+)+$")	PCRE2 stops at its match limit and Excel gives #VALUE!; Egap runs the pattern without backtracking and finds there is no match.

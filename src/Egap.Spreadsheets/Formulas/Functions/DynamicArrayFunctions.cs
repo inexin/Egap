@@ -31,7 +31,7 @@ internal static partial class FormulaFunctions
         new("DROP", 2, 3, [ArgumentKind.Array, ArgumentKind.Value], Drop),
         new("EXPAND", 2, 4, TakesExpand, Expand),
         new("FILTER", 2, 3, TakesFilter, Filter),
-        new("HSTACK", 1, 254, Kinds.Array, (a, c) => Stack(a, vertical: false)),
+        new("HSTACK", 1, 254, Kinds.Array, (a, c) => Stack(a, vertical: false), takesFunctions: true),
         new("SORT", 1, 4, Kinds.Array, Sort),
         new("SORTBY", 2, 255, Kinds.Array, SortBy),
         new("TAKE", 2, 3, [ArgumentKind.Array, ArgumentKind.Value], Take),
@@ -43,7 +43,7 @@ internal static partial class FormulaFunctions
         new("TRIMRANGE", 1, 3, [ArgumentKind.Any, ArgumentKind.Value], TrimRange),
         new("UNIQUE", 1, 3, [ArgumentKind.Array, ArgumentKind.Value], Unique),
         new("VALUETOTEXT", 1, 2, Kinds.Value, ValueToText),
-        new("VSTACK", 1, 254, Kinds.Array, (a, c) => Stack(a, vertical: true)),
+        new("VSTACK", 1, 254, Kinds.Array, (a, c) => Stack(a, vertical: true), takesFunctions: true),
         new("WRAPCOLS", 2, 3, TakesWrap, (a, c) => Wrap(a, c, rows: false)),
         new("WRAPROWS", 2, 3, TakesWrap, (a, c) => Wrap(a, c, rows: true)),
         new("XLOOKUP", 3, 6, TakesXLookup, XLookup),
@@ -455,12 +455,7 @@ internal static partial class FormulaFunctions
             return -1;
         }
 
-        Regex regex;
-        try
-        {
-            regex = new Regex(pattern, RegexOptions.CultureInvariant, TimeSpan.FromSeconds(1));
-        }
-        catch (ArgumentException)
+        if (PcreRegex.Get(pattern, ignoreCase: false) is not { } regex)
         {
             return -2;
         }
@@ -471,7 +466,7 @@ internal static partial class FormulaFunctions
             {
                 int i = searchMode == -1 ? count - 1 - n : n;
                 EvalValue value = item(i);
-                if (!value.IsError && ExcelValues.TryText(value, context.Culture, out string text, out _) && regex.IsMatch(text))
+                if (!value.IsError && ExcelValues.TryText(value, context.Culture, out string text, out _) && regex.For(text).IsMatch(text))
                 {
                     return i;
                 }
@@ -823,6 +818,15 @@ internal static partial class FormulaFunctions
 
     private static EvalValue Stack(EvalValue[] arguments, bool vertical)
     {
+        // Functions stack only with functions, for GROUPBY and PIVOTBY: HSTACK(SUM,AVERAGE).
+        int lambdas = arguments.Count(a => a.Kind == EvalKind.Lambda);
+        if (lambdas > 0)
+        {
+            return lambdas < arguments.Length
+                ? Error(CellError.Calc)
+                : Result(vertical ? arguments.Length : 1, vertical ? 1 : arguments.Length, [.. arguments]);
+        }
+
         List<EvalArray> parts = [];
         foreach (EvalValue argument in arguments)
         {

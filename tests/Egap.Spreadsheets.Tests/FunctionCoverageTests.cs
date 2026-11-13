@@ -14,10 +14,11 @@ public sealed partial class FunctionCoverageTests
     private static readonly (string Key, string Text)[] Reasons =
     [
         ("service", "They ask a service on the web, which a library that calculates offline has no answer from."),
-        ("data", "They ask a data model or a pivot table, which Egap does not load."),
+        ("data", "They ask a data model, which Egap does not load."),
         ("code", "They run code from outside the workbook."),
         ("bytes", "They work in the bytes of double-byte text or on East Asian text conversions, which need the tables of those code pages."),
-        ("later", "Nothing stands in their way; they are not done yet."),
+        ("files", "They read a file or a web page as they calculate, which a library should not do for a workbook it opens."),
+        ("model", "Excel does not document how it fits their model's parameters, so Egap leaves them out rather than give other numbers."),
     ];
 
     private static string Folder => Path.Combine(AppContext.BaseDirectory, "Oracle");

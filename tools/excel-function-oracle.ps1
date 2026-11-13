@@ -98,7 +98,7 @@ try {
             elseif ($value -is [int]) { $kind = 'error'; $code = $value + 2146828288; $text = $errors[$code]; if ($null -eq $text) { $text = "#$code" } }
             elseif ($value -is [bool]) { $kind = 'boolean'; $text = $(if ($value) { 'TRUE' } else { 'FALSE' }) }
             elseif ($value -is [double]) { $kind = 'number'; $text = $value.ToString('R', $invariant) }
-            else { $kind = 'text'; $text = ([string]$value).Replace('\', '\').Replace("`t", '\t').Replace("`r", '\r').Replace("`n", '\n') }
+            else { $kind = 'text'; $text = ([string]$value).Replace('\', '\\').Replace("`t", '\t').Replace("`r", '\r').Replace("`n", '\n') }
         }
         $lines.Add("$i`t$kind`t$text`t$($formulas[$i])")
     }

@@ -1,0 +1,4 @@
+# Cases where Egap knowingly differs from Excel: the formula as in functions-info.txt, a tab, and why.
+CELL("address")	Without a reference CELL is about the cell changed last in Excel, which a file does not record; Egap takes the formula's own cell.
+CELL("row")	As CELL("address").
+CELL("col")	As CELL("address").

@@ -33,6 +33,9 @@ public sealed partial class Workbook
     /// <summary>The sheets of a loaded workbook that hold one chart and no cells.</summary>
     public IReadOnlyList<ChartSheet> ChartSheets => ChartSheetList;
 
+    /// <summary>The full path of the file the workbook was loaded from or last saved to, for CELL and INFO; null for one only in memory.</summary>
+    internal string? FilePath { get; set; }
+
     internal List<ChartSheet> ChartSheetList { get; } = [];
 
     /// <summary>The defined names, the print areas and print titles among them.</summary>
@@ -476,13 +479,19 @@ public sealed partial class Workbook
     public static Workbook Load(string path, WorkbookLoadOptions? options = null)
     {
         ArgumentException.ThrowIfNullOrEmpty(path);
+        Workbook book;
         if (IsCsv(path))
         {
-            return LoadCsv(path, options?.Csv);
+            book = LoadCsv(path, options?.Csv);
+        }
+        else
+        {
+            using FileStream stream = File.OpenRead(path);
+            book = Load(stream, options);
         }
 
-        using FileStream stream = File.OpenRead(path);
-        return Load(stream, options);
+        book.FilePath = Path.GetFullPath(path);
+        return book;
     }
 
     /// <summary>
@@ -588,6 +597,7 @@ public sealed partial class Workbook
         using FileStream stream = File.Create(path);
         buffer.Position = 0;
         buffer.CopyTo(stream);
+        FilePath = Path.GetFullPath(path);
     }
 
     /// <summary>Saves the workbook to a stream, which is left open, as <see cref="WorkbookSaveOptions.Format"/> or else <see cref="Format"/>.</summary>

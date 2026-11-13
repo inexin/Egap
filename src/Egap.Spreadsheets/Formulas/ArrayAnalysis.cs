@@ -20,7 +20,7 @@ internal static class ArrayAnalysis
         "CHOOSECOLS", "CHOOSEROWS", "DROP", "EXPAND", "FILTER", "FREQUENCY", "GROWTH", "HSTACK", "INDIRECT", "LINEST", "LOGEST",
         "BYCOL", "BYROW", "MAKEARRAY", "MAP", "REDUCE", "SCAN",
         "MINVERSE", "MMULT", "MUNIT", "OFFSET", "RANDARRAY", "SEQUENCE", "SORT", "SORTBY", "TAKE", "TEXTSPLIT", "TOCOL", "TOROW", "TRANSPOSE",
-        "TREND", "UNIQUE", "VSTACK", "WRAPCOLS", "WRAPROWS", "XLOOKUP",
+        "TREND", "UNIQUE", "VSTACK", "WRAPCOLS", "WRAPROWS", "XLOOKUP", "REGEXEXTRACT", "FILTERXML", "GROUPBY", "PIVOTBY",
     ], StringComparer.Ordinal);
 
     /// <summary>Functions that hand on one of their arguments.</summary>

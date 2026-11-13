@@ -695,7 +695,7 @@ formula when it is typed.
 
 ### Functions
 
-Over 470 of Excel's functions are built in, and [Spreadsheet functions](spreadsheet-functions.md) lists them and those that
+Over 500 of Excel's functions are built in, and [Spreadsheet functions](spreadsheet-functions.md) lists them and those that
 are not: math and trigonometry, logic, text, date and time, lookup and reference, financial, engineering, database,
 information and statistics, with the COUNTIF, SUMIF and AVERAGEIF families and their criteria (`">20"`,
 `"a*"`, `"<>"`). `FunctionRegistry.BuiltInFunctions` lists them. Each follows Microsoft's function reference and is
@@ -704,6 +704,45 @@ checked against what Excel calculates: `tools/excel-function-oracle.ps1` runs th
 `tools/excel-workbook-oracle.ps1` has Excel build, calculate and save whole workbooks, which the tests calculate again
 with `CalculateFull` and compare cell by cell. Text that depends on the culture, such as FIXED, DOLLAR, dates read from
 text and numbers joined into text, follows `book.Culture`.
+
+#### Regular expressions
+
+REGEXTEST, REGEXEXTRACT, REGEXREPLACE and the regular expression match mode of XLOOKUP and XMATCH take Excel's patterns,
+which follow PCRE2: Unicode throughout, so `\w` and `\d` take any letter and digit, `^` and `$` know CR, LF and CRLF line
+breaks, and classes nest and combine (`[\w--\d]`). Replacements take PCRE2's extended forms: `$1`, `${name}`, `$&`,
+`${1:-none}`, `${1:+yes:no}` and the case changes `\U`, `\L`, `\u` and `\l`. Egap turns each pattern into a .NET regular
+expression and runs it without backtracking where it can. Where it differs from Excel:
+
+- Recursion (`(?R)`, `(?1)`), subroutine calls, branch reset groups (`(?|`) and the backtracking verbs other than `(*FAIL)`
+  have no .NET form, so the pattern gives `#VALUE!`.
+- A script in `\p{...}`, such as `\p{Greek}`, is the letters and marks of its Unicode blocks below U+10000, and `\P{...}`
+  is every other character, digits, spaces and punctuation included. PCRE2 also counts the characters a script shares
+  with others (its Script_Extensions), so `\p{Han}` matches the CJK comma `、` in Excel and not in Egap. Classes test
+  characters of the Basic Multilingual Plane; a character beyond U+FFFF counts as one only for `.`, `\X`, `\P{...}` of a
+  script and negated classes.
+- Excel stops a pattern that backtracks past PCRE2's match limit with `#VALUE!`, so `REGEXTEST(REPT("a",25)&"b","^(a+)+$")`
+  is `#VALUE!` there. Egap runs every pattern it can without backtracking, in time linear in the text, so the answer does
+  not depend on the machine: that one is `FALSE`. A pattern that needs backtracking (lookarounds, back references,
+  atomic groups, or a `$` on text with a CR) runs with a two-second limit per match and gives `#VALUE!` when it hits it,
+  as Excel does at its limit.
+- A global replace with a pattern that matches empty text skips the place after a CRLF in Excel, not in Egap.
+
+#### Grouping, pivots and the workbook
+
+GROUPBY and PIVOTBY lay out their headers, subtotals and totals as Excel does, and take HSTACK or VSTACK of functions
+(`HSTACK(SUM,AVERAGE)`), LAMBDAs, and functions of two parameters such as PERCENTOF, which get the values their result is
+relative to. When the headers argument is left out, the first row is a header when the first value is text and the values
+below it are not. Where they differ: a function that gives an array gives `#CALC!` in its cell, where Excel keeps the
+array inside the result; and COUNTA of a group skips an empty value cell, which Excel counts.
+
+GETPIVOTDATA reads the value a pivot table shows, as it was last laid out or refreshed, from the row and column whose
+items match; an item is matched by its text, without case, or by its number, and an empty item is `"(blank)"`.
+
+CELL, INFO, SHEET and SHEETS answer from the workbook: CELL's `"filename"` is the path the workbook was loaded from or
+last saved to (empty until then), `"width"` gives the column's width in characters and whether it is the default, and
+`"format"` gives Excel's codes for the cell's number format. Without a reference, CELL is about the formula's own cell
+(Excel takes the cell changed last); INFO gives `"16.0"` for `"release"` and `#N/A` for the memory it once reported, and
+SHEET numbers worksheets without counting chart sheets.
 
 `FunctionRegistry.Add` adds a function of your own, as a user-defined function in Excel; files that call one (stored as
 `_xludf.NAME`) then calculate too. The function gets its arguments as given: `Value` reads one value, `Values` the cells
