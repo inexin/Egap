@@ -41,6 +41,12 @@ internal sealed class MathSettings
     /// <summary>The justification of display equations (<c>m:defJc</c>: left, right, center, centerGroup); centerGroup when not set.</summary>
     public string DefaultJustification => Properties.Get("defJc") ?? "centerGroup";
 
+    /// <summary>
+    /// The justification display equations get: <see cref="DefaultJustification"/> when <see cref="DisplayDefaults"/> is on;
+    /// with it off Word centres the group whatever <c>m:defJc</c> says.
+    /// </summary>
+    public string DisplayJustification => DisplayDefaults ? DefaultJustification : "centerGroup";
+
     /// <summary>Space before a display equation (<c>m:preSp</c>).</summary>
     public int SpaceBefore => Properties.Int("preSp", 0);
 

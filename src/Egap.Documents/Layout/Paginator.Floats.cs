@@ -320,8 +320,22 @@ internal sealed partial class Paginator
                 }
 
                 Inline node = content.InlineObjects[run.Placeholder];
-                double height = content.Text.RichText.Placeholders[run.Placeholder].Height;
-                LayoutRect bounds = new(line.Bounds.X + run.X, line.Baseline - height, run.Advance, height);
+                Placeholder placeholder = content.Text.RichText.Placeholders[run.Placeholder];
+                double height = placeholder.Height;
+                double above = placeholder.Alignment == PlaceholderAlignment.Baseline ? placeholder.BaselineOffset : height;
+                double x = line.Bounds.X + run.X;
+                if (node is Island island && OfficeMath.MathRendering.IsDisplay(island))
+                {
+                    // A display equation sits on its own line, placed per its justification rather than the paragraph's.
+                    x = line.Bounds.X + OfficeMath.MathRendering.Justification(island, island.Document) switch
+                    {
+                        "left" => 0,
+                        "right" => line.Bounds.Width - run.Advance,
+                        _ => (line.Bounds.Width - run.Advance) / 2,
+                    };
+                }
+
+                LayoutRect bounds = new(x, line.Baseline - above, run.Advance, height);
                 boxes.Add(new ObjectBox(node, bounds, floating: false, ObjectContent(node, bounds)));
             }
         }
