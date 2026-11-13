@@ -146,6 +146,7 @@ internal sealed partial class OdtReader
 
         FinishStory(main);
         CloseComments();
+        FinishHyphenation();
 
         for (int i = document.Sections.Count - 1; i > 0; i--)
         {

@@ -32,6 +32,11 @@ internal milestones whose public API was frozen and reviewed, and they are liste
 
 ## Egap.Documents 2.3.0 (unreleased)
 
+- `DocumentSettings` has Word's hyphenation settings: `AutoHyphenation`, `ConsecutiveHyphenLimit`, `HyphenationZone` and
+  `HyphenateCapitals`. They are read from DOCX, DOC and RTF files and saved to DOCX and RTF. ODT files switch hyphenation
+  on per style: the reader turns `AutoHyphenation` on when a style hyphenates, and the paragraphs of styles that do not
+  hyphenate suppress it. The ODT writer puts the settings on the default paragraph style, where LibreOffice reads them.
+  Layout does not hyphenate yet.
 - Word shapes of all 187 DrawingML preset geometries, and custom geometries, draw on pages and in PDFs as Word draws them:
   the theme's fill, line and effect styles, gradient, pattern and picture fills, dashes, compound lines, arrowheads, shadows,
   glow and soft edges. Shape groups draw their shapes, pictures and nested groups. Before, a shape other than a rectangle,

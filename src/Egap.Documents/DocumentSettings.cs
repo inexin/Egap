@@ -2,7 +2,7 @@ namespace Egap.Documents;
 
 /// <summary>
 /// Document-wide settings that change layout and numbering: the default tab stop, odd and even headers, footnote and endnote
-/// numbering, change tracking and Word's compatibility mode and options. Word's other settings are kept by the DOCX reader as extension
+/// numbering, change tracking, automatic hyphenation and Word's compatibility mode and options. Word's other settings are kept by the DOCX reader as extension
 /// data on the document.
 /// </summary>
 public sealed class DocumentSettings
@@ -18,6 +18,10 @@ public sealed class DocumentSettings
     private int compatibilityMode = 15;
     private bool mirrorMargins;
     private bool gutterAtTop;
+    private bool autoHyphenation;
+    private int consecutiveHyphenLimit;
+    private double hyphenationZone = 18;
+    private bool hyphenateCapitals = true;
 
     internal DocumentSettings(Document document)
     {
@@ -101,6 +105,40 @@ public sealed class DocumentSettings
         set => Set(ref gutterAtTop, value);
     }
 
+    /// <summary>
+    /// Words are hyphenated automatically at line ends, in paragraphs that do not suppress it
+    /// (<see cref="ParagraphFormat.SuppressAutoHyphens"/>). Off by default, as in Word.
+    /// </summary>
+    public bool AutoHyphenation
+    {
+        get => autoHyphenation;
+        set => Set(ref autoHyphenation, value);
+    }
+
+    /// <summary>The most lines in a row that may end in an automatic hyphen; 0 (the default) sets no limit.</summary>
+    public int ConsecutiveHyphenLimit
+    {
+        get => consecutiveHyphenLimit;
+        set => Set(ref consecutiveHyphenLimit, value is >= 0 and <= short.MaxValue ? value : throw new ArgumentOutOfRangeException(nameof(value)));
+    }
+
+    /// <summary>
+    /// The hyphenation zone, in points: a word is hyphenated only when the space it would leave at the line end is wider than
+    /// this. Word applies it to justified and ragged lines alike. Word's default is 0.25 inch (18 points).
+    /// </summary>
+    public double HyphenationZone
+    {
+        get => hyphenationZone;
+        set => Set(ref hyphenationZone, double.IsFinite(value) && value >= 0 ? value : throw new ArgumentOutOfRangeException(nameof(value)));
+    }
+
+    /// <summary>Words in capitals are hyphenated too (the default); false is Word's "do not hyphenate caps".</summary>
+    public bool HyphenateCapitals
+    {
+        get => hyphenateCapitals;
+        set => Set(ref hyphenateCapitals, value);
+    }
+
     internal void CopyFrom(DocumentSettings source)
     {
         defaultTabStop = source.defaultTabStop;
@@ -113,6 +151,10 @@ public sealed class DocumentSettings
         compatibilityMode = source.compatibilityMode;
         mirrorMargins = source.mirrorMargins;
         gutterAtTop = source.gutterAtTop;
+        autoHyphenation = source.autoHyphenation;
+        consecutiveHyphenLimit = source.consecutiveHyphenLimit;
+        hyphenationZone = source.hyphenationZone;
+        hyphenateCapitals = source.hyphenateCapitals;
         WordCompatibility.CopyFrom(source.WordCompatibility);
     }
 

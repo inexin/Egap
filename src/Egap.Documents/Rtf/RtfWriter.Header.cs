@@ -624,6 +624,26 @@ internal sealed partial class RtfWriter
             Word("revisions");
         }
 
+        if (settings.AutoHyphenation)
+        {
+            Word("hyphauto");
+        }
+
+        if (!settings.HyphenateCapitals)
+        {
+            Word("hyphcaps", 0);
+        }
+
+        if (settings.ConsecutiveHyphenLimit > 0)
+        {
+            Word("hyphconsec", settings.ConsecutiveHyphenLimit);
+        }
+
+        if (settings.HyphenationZone != Docx.DocxHyphenation.DefaultZone)
+        {
+            Word("hyphhotz", Twips(settings.HyphenationZone));
+        }
+
         Word("ftnstart", Math.Max(1, settings.FootnoteStartAt));
         Word("aftnstart", Math.Max(1, settings.EndnoteStartAt));
         Word("ftnn" + NoteNumbers(settings.FootnoteNumberStyle));

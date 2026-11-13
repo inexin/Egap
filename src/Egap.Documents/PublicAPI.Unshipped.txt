@@ -583,6 +583,14 @@ Egap.Documents.DocumentProtection.Salt.get -> System.ReadOnlyMemory<byte>
 Egap.Documents.DocumentProtection.SpinCount.get -> int
 Egap.Documents.DocumentProtection.Unprotect() -> void
 Egap.Documents.DocumentProtection.Verify(string? password) -> bool
+Egap.Documents.DocumentSettings.AutoHyphenation.get -> bool
+Egap.Documents.DocumentSettings.AutoHyphenation.set -> void
+Egap.Documents.DocumentSettings.ConsecutiveHyphenLimit.get -> int
+Egap.Documents.DocumentSettings.ConsecutiveHyphenLimit.set -> void
+Egap.Documents.DocumentSettings.HyphenateCapitals.get -> bool
+Egap.Documents.DocumentSettings.HyphenateCapitals.set -> void
+Egap.Documents.DocumentSettings.HyphenationZone.get -> double
+Egap.Documents.DocumentSettings.HyphenationZone.set -> void
 Egap.Documents.DocxLoadOptions.Password.get -> string?
 Egap.Documents.DocxLoadOptions.Password.init -> void
 Egap.Documents.DocxLoadOptions.PasswordCallback.get -> System.Func<int, string?>?

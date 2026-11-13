@@ -337,6 +337,7 @@ internal sealed partial class DocxReader
         settings.TrackRevisions = root.Element(Ns.W + "trackRevisions") is { } track && DocxUnits.OnOff(track);
         settings.MirrorMargins = root.Element(Ns.W + "mirrorMargins") is { } mirror && DocxUnits.OnOff(mirror);
         settings.GutterAtTop = root.Element(Ns.W + "gutterAtTop") is { } gutterAtTop && DocxUnits.OnOff(gutterAtTop);
+        DocxHyphenation.Read(root, settings);
         if (root.Element(Ns.W + "footnotePr") is { } footnotePr)
         {
             if (footnotePr.Element(Ns.W + "numFmt").Val() is { } format)
