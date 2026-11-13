@@ -120,11 +120,11 @@ changes with their authors and dates.</li>
 <li>Document information (<code>\info</code>) and custom properties (<code>\userprops</code>).</li>
 <li>Automatic hyphenation (<code>\hyphauto</code>, <code>\hyphconsec</code>, <code>\hyphhotz</code>, <code>\hyphcaps</code>), which the writer saves too.</li>
 </ul>
-<p>What the model cannot hold comes in as an island: equations (<code>\mmath</code>) keep their RTF and their plain text, and other
-drawing shapes and embedded objects (<code>\object</code>) keep their RTF and draw the picture the file holds for them. Each of
-those is reported as a <code>ConversionWarning</code>, and so is a picture in a format Egap does not read (old Macintosh PICT and
-Windows bitmap pictures). Groups marked <code>\*</code> that the reader does not know, such as Word's theme and data store, are kept
-in the document's extension data under the format name <code>rtf</code>.</p>
+<p>What the model cannot hold comes in as an island: equations (<code>\mmath</code>) keep their RTF and their plain text and lay out
+and draw as Word sets them, and other drawing shapes and embedded objects (<code>\object</code>) keep their RTF and draw the
+picture the file holds for them. Each of those is reported as a <code>ConversionWarning</code>, and so is a picture in a format
+Egap does not read (old Macintosh PICT and Windows bitmap pictures). Groups marked <code>\*</code> that the reader does not know,
+such as Word's theme and data store, are kept in the document's extension data under the format name <code>rtf</code>.</p>
 <h2 id="writing">Writing</h2>
 <p><code>RtfFormat.Save</code> writes a document to a path or a stream, and <code>Document.Save</code> writes RTF for a path ending in <code>.rtf</code>. Both
 return the <code>ConversionWarning</code>s for what RTF could not hold.</p>
@@ -203,8 +203,8 @@ egap convert old.rtf -o clean.rtf --set unknown-groups=false
 <p>Reading:</p>
 <ul>
 <li>Old Macintosh PICT pictures and Windows bitmap (<code>\wbitmap</code>) pictures are left out with a warning.</li>
-<li>Equations, shape groups, other drawing shapes and embedded objects are islands: they draw their picture, and their
-content is not in the model.</li>
+<li>Shape groups, other drawing shapes and embedded objects are islands: they draw their picture, and their content is
+not in the model. Equations are islands too; they draw as math, but cannot be edited through the model.</li>
 <li>Line numbering (<code>\linemod</code>) is not read: the model has none.</li>
 <li>A style keeps only what it changes from its base chain; a value it repeats from further up is dropped, which leaves
 the formatting in effect as it was. Picture sizes are whole twips.</li>

@@ -105,6 +105,10 @@ DocxFormat.Save(report, &quot;report.dotx&quot;, new DocxSaveOptions { Kind = Do
 </code></pre>
 <p>The settings part's automatic hyphenation (<code>w:autoHyphenation</code>, <code>w:consecutiveHyphenLimit</code>, <code>w:hyphenationZone</code> and
 <code>w:doNotHyphenateCaps</code>) reads into <code>DocumentSettings</code> and is saved from there. A missing zone is Word's 0.25 inch.</p>
+<p>Equations (Office Math, <code>m:oMath</code> and <code>m:oMathPara</code>) are islands that keep their markup, and they lay out and draw as
+Word sets them, with the OpenType MATH table of Cambria Math or, where it is missing, the bundled STIX Two Math:
+fractions, scripts, radicals, n-ary operators, delimiters, accents, matrices, equation arrays and the other Office Math
+objects. Display equations sit on lines of their own, justified as the document's math settings (<code>m:mathPr</code>) say.</p>
 <h2 id="passwords">Passwords</h2>
 <p>A Word file saved with a password to open it is encrypted: its package sits, encrypted, in a compound file.
 <code>Document.Identify</code> calls it <code>Encrypted</code>, so a program can ask for the password before it loads the file. Give the password
