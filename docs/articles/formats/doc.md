@@ -26,7 +26,8 @@ The reader follows [MS-DOC] and what Word writes. It reads:
 - Sections with their page setup and columns, and their headers and footers.
 - Footnotes and endnotes, comments with their ranges, authors and initials, fields, bookmarks, and tracked insertions and
   deletions with their authors and dates.
-- The document settings Word keeps in the file (the DOP), such as the default tab stop and track changes.
+- The document settings Word keeps in the file (the DOP), such as the default tab stop, track changes and automatic
+  hyphenation with its zone, line limit and capitals switch.
 - Pictures in the line (PNG, JPEG, EMF, WMF, Macintosh PICT, device-independent bitmaps and TIFF) with their size, scale
   and cropping.
 - Floating pictures, text boxes, rectangles, ellipses and other simple shapes from the file's drawings ([MS-ODRAW]),

@@ -21,6 +21,9 @@ report.SaveAsDocx("report-copy.docx");                            // what the mo
 DocxFormat.Save(report, "report.dotx", new DocxSaveOptions { Kind = DocxKind.Template });
 ```
 
+The settings part's automatic hyphenation (`w:autoHyphenation`, `w:consecutiveHyphenLimit`, `w:hyphenationZone` and
+`w:doNotHyphenateCaps`) reads into `DocumentSettings` and is saved from there. A missing zone is Word's 0.25 inch.
+
 ## Passwords
 
 A Word file saved with a password to open it is encrypted: its package sits, encrypted, in a compound file.

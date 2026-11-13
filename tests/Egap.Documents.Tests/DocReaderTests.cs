@@ -505,4 +505,34 @@ public sealed class DocReaderTests
             }
         }
     }
+
+    [Fact]
+    public void HyphenationSettingsComeFromTheDop()
+    {
+        // As Word 16 saves a document with automatic hyphenation, capitals not hyphenated, a 0.5 inch zone and at most 3 lines:
+        // fAutoHyphen (bit 12) set and fHyphCapitals (bit 11) clear in the word at 4, dxaHotZ 720, cConsecHypLim 3.
+        DocBuilder builder = new() { Dop = new byte[84] };
+        BinaryPrimitives.WriteUInt16LittleEndian(builder.Dop.AsSpan(4), 0x1031);
+        BinaryPrimitives.WriteUInt16LittleEndian(builder.Dop.AsSpan(14), 720);
+        BinaryPrimitives.WriteUInt16LittleEndian(builder.Dop.AsSpan(16), 3);
+        builder.Run("x").Paragraph();
+
+        Document document = Read(builder);
+
+        Assert.True(document.Settings.AutoHyphenation);
+        Assert.False(document.Settings.HyphenateCapitals);
+        Assert.Equal(36, document.Settings.HyphenationZone);
+        Assert.Equal(3, document.Settings.ConsecutiveHyphenLimit);
+
+        // Word's defaults: off, capitals hyphenated, 360 twips, no limit.
+        builder = new() { Dop = new byte[84] };
+        BinaryPrimitives.WriteUInt16LittleEndian(builder.Dop.AsSpan(4), 0x0831);
+        BinaryPrimitives.WriteUInt16LittleEndian(builder.Dop.AsSpan(14), 360);
+        builder.Run("x").Paragraph();
+        document = Read(builder);
+        Assert.False(document.Settings.AutoHyphenation);
+        Assert.True(document.Settings.HyphenateCapitals);
+        Assert.Equal(18, document.Settings.HyphenationZone);
+        Assert.Equal(0, document.Settings.ConsecutiveHyphenLimit);
+    }
 }

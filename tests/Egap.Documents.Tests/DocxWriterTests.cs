@@ -216,6 +216,53 @@ public class DocxWriterTests
         Assert.Equal(DocxKind.Template, DocxFormat.KindOf(DocxFormat.Load(new MemoryStream(asTemplate.ToArray()))));
     }
 
+    [Fact]
+    public void HyphenationSettingsRoundTrip()
+    {
+        Document document = new();
+        document.AddSection().Body.AddParagraph("Hyphenation");
+        Assert.False(document.Settings.AutoHyphenation);
+        Assert.Equal(18, document.Settings.HyphenationZone);
+        XElement plain = Part(Save(document), "word/settings.xml");
+        Assert.Null(plain.Element(W + "autoHyphenation"));
+        Assert.Null(plain.Element(W + "hyphenationZone"));
+        Assert.Null(plain.Element(W + "consecutiveHyphenLimit"));
+        Assert.Null(plain.Element(W + "doNotHyphenateCaps"));
+
+        document.Settings.AutoHyphenation = true;
+        document.Settings.ConsecutiveHyphenLimit = 3;
+        document.Settings.HyphenationZone = 36;
+        document.Settings.HyphenateCapitals = false;
+        byte[] saved = Save(document);
+        XElement settings = Part(saved, "word/settings.xml");
+        Assert.NotNull(settings.Element(W + "autoHyphenation"));
+        Assert.Equal("3", settings.Element(W + "consecutiveHyphenLimit")?.Attribute(W + "val")?.Value);
+        Assert.Equal("720", settings.Element(W + "hyphenationZone")?.Attribute(W + "val")?.Value);
+        Assert.NotNull(settings.Element(W + "doNotHyphenateCaps"));
+
+        // Schema order: defaultTabStop, then the four in ECMA-376's order.
+        string[] names = [.. settings.Elements().Select(e => e.Name.LocalName)];
+        int tab = Array.IndexOf(names, "defaultTabStop");
+        Assert.Equal(["autoHyphenation", "consecutiveHyphenLimit", "hyphenationZone", "doNotHyphenateCaps"], names[(tab + 1)..(tab + 5)]);
+
+        Document read = DocxFormat.Load(new MemoryStream(saved));
+        Assert.True(read.Settings.AutoHyphenation);
+        Assert.Equal(3, read.Settings.ConsecutiveHyphenLimit);
+        Assert.Equal(36, read.Settings.HyphenationZone);
+        Assert.False(read.Settings.HyphenateCapitals);
+
+        // Turning them back off on a read document removes the elements again.
+        read.Settings.AutoHyphenation = false;
+        read.Settings.ConsecutiveHyphenLimit = 0;
+        read.Settings.HyphenationZone = 18;
+        read.Settings.HyphenateCapitals = true;
+        XElement cleared = Part(Save(read), "word/settings.xml");
+        Assert.Null(cleared.Element(W + "autoHyphenation"));
+        Assert.Null(cleared.Element(W + "consecutiveHyphenLimit"));
+        Assert.Null(cleared.Element(W + "hyphenationZone"));
+        Assert.Null(cleared.Element(W + "doNotHyphenateCaps"));
+    }
+
     private static Document RoundTrip(Document document)
     {
         return DocxFormat.Load(new MemoryStream(Save(document)));

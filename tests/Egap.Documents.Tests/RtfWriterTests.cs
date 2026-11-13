@@ -549,6 +549,31 @@ public class RtfWriterTests
         Assert.Equal(Dump(read), Dump(Reread(read)));
     }
 
+    [Fact]
+    public void HyphenationSettingsRoundTrip()
+    {
+        Document document = new();
+        Body(document).AddParagraph("Hyphenation");
+        string plain = Encoding.ASCII.GetString(Save(document));
+        Assert.DoesNotContain(@"\hyph", plain, StringComparison.Ordinal);
+
+        document.Settings.AutoHyphenation = true;
+        document.Settings.ConsecutiveHyphenLimit = 3;
+        document.Settings.HyphenationZone = 36;
+        document.Settings.HyphenateCapitals = false;
+        string rtf = Encoding.ASCII.GetString(Save(document));
+        Assert.Contains(@"\hyphauto", rtf, StringComparison.Ordinal);
+        Assert.Contains(@"\hyphcaps0", rtf, StringComparison.Ordinal);
+        Assert.Contains(@"\hyphconsec3", rtf, StringComparison.Ordinal);
+        Assert.Contains(@"\hyphhotz720", rtf, StringComparison.Ordinal);
+
+        Document read = Reread(document);
+        Assert.True(read.Settings.AutoHyphenation);
+        Assert.Equal(3, read.Settings.ConsecutiveHyphenLimit);
+        Assert.Equal(36, read.Settings.HyphenationZone);
+        Assert.False(read.Settings.HyphenateCapitals);
+    }
+
     // ---- Helpers ----
 
     private static void Same(string expected, string actual, string name)
