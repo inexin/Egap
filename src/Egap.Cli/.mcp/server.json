@@ -9,13 +9,13 @@
     "source": "github",
     "subfolder": "src/Egap.Cli"
   },
-  "version": "2.2.0",
+  "version": "2.3.0-preview.1",
   "packages": [
     {
       "registryType": "nuget",
       "registryBaseUrl": "https://api.nuget.org",
       "identifier": "Egap.Cli",
-      "version": "2.2.0",
+      "version": "2.3.0-preview.1",
       "transport": {
         "type": "stdio"
       },

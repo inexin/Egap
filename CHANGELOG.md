@@ -1,10 +1,13 @@
 # Changelog
 
 What each Egap package adds, newest first. From 2.1.0 all Egap packages share one version and release together; a preview
-may go out ahead of the others on its own tag, as Egap.Documents and Egap.Spreadsheets 2.3.0-preview.1 did. Nothing before the first release below was published; those versions were
+may go out ahead of the others on its own tag, as Egap.Documents, Egap.Spreadsheets and Egap.Cli 2.3.0-preview.1 did. Nothing before the first release below was published; those versions were
 internal milestones whose public API was frozen and reviewed, and they are listed so the version numbers make sense.
 
-## Egap.Cli 2.3.0 (unreleased)
+## Egap.Cli 2.3.0-preview.1 (2026-11-13)
+
+A preview with the workbook commands, built on Egap.Spreadsheets and Egap.Documents 2.3.0-preview.1; the stable 2.3.0
+follows with the rest of Egap. Install it with `dotnet tool install -g Egap.Cli --prerelease`.
 
 - Workbooks: `convert` reads XLSX, XLSM, XLTX, XLTM, CSV and TSV, and writes them as PDF (Excel's page setup decides the
   pages), images (one per page, `--dpi`), HTML, Markdown, or CSV per visible sheet. It also writes XLSX, from a workbook or

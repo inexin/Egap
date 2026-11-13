@@ -39,12 +39,13 @@ Add only the packages you use. Each one has its own guides.
 | [Egap.Documents.Markdown](https://www.nuget.org/packages/Egap.Documents.Markdown) | 2.2.0 | CommonMark and GitHub Markdown read and written, Markdown to PDF | [Markdown](docs/articles/formats/markdown.md) |
 | [Egap.Spreadsheets](https://www.nuget.org/packages/Egap.Spreadsheets) | 2.3.0-preview.1 (preview) | Workbooks built and edited from code and Excel files read and written: sheets, cells, formulas and calculation, charts, pivot tables, printing | [Spreadsheets](docs/articles/guides/spreadsheets.md) |
 | [Egap.Preview](https://www.nuget.org/packages/Egap.Preview) | 2.2.0 | The `egap-preview` dotnet tool: a live preview of documents on a local web page | [Packages](docs/articles/packages.md) |
-| [Egap.Cli](https://www.nuget.org/packages/Egap.Cli) | 2.2.0 | The `egap` dotnet tool: convert, inspect, merge, split, stamp, redact, fill, sign and check PDFs from a shell, and as an MCP server | [Command line](docs/articles/cli/index.md) |
+| [Egap.Cli](https://www.nuget.org/packages/Egap.Cli) | 2.2.0 (2.3.0-preview.1) | The `egap` dotnet tool: convert, inspect, merge, split, stamp, redact, fill, sign and check PDFs from a shell, and as an MCP server | [Command line](docs/articles/cli/index.md) |
 
 All seven are on [NuGet](https://www.nuget.org/packages?q=Egap). [Packages](docs/articles/packages.md) lists what each one
 needs. From 2.1.0 every Egap package shares one version and they release together. Egap.Spreadsheets is a preview,
-2.3.0-preview.1, with a preview of Egap.Documents beside it (`dotnet add package Egap.Spreadsheets --prerelease`); both
-turn stable with Egap 2.3.0. Egap.Pdf.Conversion is retired; its code is in Egap.Documents 2.0.
+2.3.0-preview.1, with a preview of Egap.Documents beside it (`dotnet add package Egap.Spreadsheets --prerelease`), and so
+is the `egap` tool with its workbook commands (`dotnet tool install -g Egap.Cli --prerelease`); all three turn stable with
+Egap 2.3.0. Egap.Pdf.Conversion is retired; its code is in Egap.Documents 2.0.
 
 ## Documentation
 

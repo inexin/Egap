@@ -4,6 +4,9 @@ The `egap` command: turn HTML, Markdown, DOCX, RTF and images into PDF, and insp
 check PDFs from a shell, a build script or an AI assistant, with [Egap](https://github.com/inexin/Egap), a fully managed PDF
 and document library for .NET.
 
+**Preview:** 2.3.0-preview.1 adds the workbook commands; install it with `dotnet tool install --global Egap.Cli --prerelease`.
+The stable 2.2.0 installs without `--prerelease`.
+
 ```sh
 dotnet tool install --global Egap.Cli
 egap info report.pdf
