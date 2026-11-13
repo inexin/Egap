@@ -15,9 +15,10 @@ internal static class GroupPainter
 
     /// <summary>
     /// Draws the group's children into <paramref name="box"/>. <paramref name="group"/> is the group element; its group shape
-    /// properties (<c>grpSpPr</c>) map the children's coordinates onto the box, or, with none, the children's own extent does.
+    /// properties (<c>grpSpPr</c>) map the children's coordinates onto the box, or, with none, the children's own extent does;
+    /// <paramref name="space"/>, in EMUs, overrides both (a SmartArt drawing's coordinates are its frame's).
     /// </summary>
-    public static void Draw(Canvas canvas, RectF box, XElement group, ShapePaintContext context, XElement? outerFill = null)
+    public static void Draw(Canvas canvas, RectF box, XElement group, ShapePaintContext context, XElement? outerFill = null, (double X, double Y, double Width, double Height)? space = null)
     {
         XElement? properties = Child(group, "grpSpPr");
         XElement? xfrm = properties?.Element(A + "xfrm");
@@ -27,7 +28,7 @@ internal static class GroupPainter
             fill = outerFill;
         }
 
-        (double X, double Y, double Width, double Height)? space = ChildSpace(xfrm) ?? Extent(group);
+        space ??= ChildSpace(xfrm) ?? Extent(group);
         if (space is not { Width: > 0, Height: > 0 } child)
         {
             return;
@@ -67,7 +68,11 @@ internal static class GroupPainter
                         DrawPicture(canvas, rect, element, spPr, context);
                         break;
                     default:
-                        ShapePainter.Draw(canvas, rect, spPr, Child(element, "style"), context, fill);
+                        RectF? textBox = Offset(Child(element, "txXfrm")) is { } text
+                            ? new RectF((float)(box.X + ((text.X - child.X) * sx)), (float)(box.Y + ((text.Y - child.Y) * sy)), (float)(text.Width * sx), (float)(text.Height * sy))
+                            : null;
+                        double textRotation = (DrawingNs.Double((string?)Child(element, "txXfrm")?.Attribute("rot")) ?? 0) / 60000;
+                        ShapePainter.Draw(canvas, rect, spPr, Child(element, "style"), context, fill, Child(element, "txBody"), textBox, textRotation);
                         break;
                 }
             }

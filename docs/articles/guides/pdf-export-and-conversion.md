@@ -172,6 +172,30 @@ handbook.SaveAsEpub("handbook.epub", new EpubSaveOptions { NavigationDepth = 2 }
 
 Each level 1 heading starts a chapter, and the headings make the book's table of contents. See [EPUB](../formats/epub.md).
 
+### Check a report's diagrams before you send it
+
+```csharp
+using Egap.Documents;
+using Egap.Documents.Layout;
+using Egap.Documents.Pdf;
+
+Document report = Document.Load("report.docx");
+foreach (Island diagram in report.Sections.SelectMany(s => s.Body.Paragraphs).SelectMany(p => p.Inlines).OfType<Island>().Where(i => i.Kind == IslandKind.SmartArt))
+{
+    Console.WriteLine($"Diagram: {diagram.Text.Replace("\n", "; ")}");
+}
+
+report.SaveAsPdf("report.pdf", new PdfExportOptions
+{
+    Tagged = true,
+    Layout = new LayoutOptions { OnWarning = w => Console.WriteLine(w) },
+});
+```
+
+Each SmartArt diagram's `Text` holds its points, one per line, in the diagram's order. In a tagged PDF a diagram is a
+figure whose alternative text is the description the file gives it or, without one, those points. A diagram drawn as a
+list because the file stores no drawing of it shows up as a `SmartArtDrawnAsList` warning.
+
 ### Print an e-book as PDF
 
 ```csharp

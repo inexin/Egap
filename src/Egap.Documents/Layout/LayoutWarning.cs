@@ -8,6 +8,12 @@ public enum LayoutWarningKind
     /// so one in a table cell, header, footer, note, text box or margin box takes its place in the text there.
     /// </summary>
     FloatLaidOutInline,
+
+    /// <summary>
+    /// A SmartArt diagram whose file stores no drawing of it (Word 2007 wrote none), drawn as a stacked list of its text instead
+    /// of in its layout.
+    /// </summary>
+    SmartArtDrawnAsList,
 }
 
 /// <summary>Something a layout laid out differently from what the document asks for, with the node and page it is on.</summary>

@@ -70,6 +70,17 @@ internal sealed partial class Paginator
             }
         }
 
+        foreach (PageLayout page in layout.Pages)
+        {
+            foreach (ObjectBox box in page.Boxes.SelectMany(b => b.Descendants()).OfType<ObjectBox>())
+            {
+                if (box.Node is Island island && Docx.DocxDrawings.DrawsAsList(island))
+                {
+                    warnings.Add(new LayoutWarning(LayoutWarningKind.SmartArtDrawnAsList, "A SmartArt diagram has no stored drawing and is drawn as a list of its text.", island, page.Index));
+                }
+            }
+        }
+
         return [.. warnings.OrderBy(w => w.PageIndex)];
     }
 

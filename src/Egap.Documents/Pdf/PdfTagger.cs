@@ -190,6 +190,7 @@ internal sealed class PdfTagger
             {
                 Picture picture => picture.Description ?? picture.Title,
                 Shape shape => shape.Description ?? shape.Title,
+                Island { Kind: IslandKind.SmartArt } island => Docx.DocxDrawings.AlternateText(island),
                 _ => null,
             };
             element.AlternateText = string.IsNullOrWhiteSpace(alternate) ? null : alternate;

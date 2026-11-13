@@ -268,6 +268,17 @@ internal static class PageDrawing
             case Island { Kind: IslandKind.ShapeGroup } island when DocxDrawings.GroupMarkup(island) is { } group:
                 GroupPainter.Draw(canvas, rect, group, DocxDrawings.Context(island, (c, image, r) => DrawImage(c, island.Document, image, r)));
                 break;
+            case Island { Kind: IslandKind.SmartArt } island when DocxDrawings.DiagramTree(island) is { } tree:
+                GroupPainter.Draw(
+                    canvas,
+                    rect,
+                    tree,
+                    DocxDrawings.Context(island, (c, image, r) => DrawImage(c, island.Document, image, r)),
+                    space: (0, 0, island.Width * DrawingNs.EmuPerPoint, island.Height * DrawingNs.EmuPerPoint));
+                break;
+            case Island island when DocxDrawings.DrawsAsList(island):
+                SmartArtList.Draw(canvas, rect, island.Text, DocxDrawings.Context(island, (_, _, _) => { }));
+                break;
             case Island { Fallback: { } fallback } island:
                 DrawImage(canvas, island.Document, fallback, rect);
                 break;
@@ -434,6 +445,9 @@ internal static class PageDrawing
     /// <summary>Draws an image the file stores, decoding it with Egami's codecs; one Egami cannot decode is left out.</summary>
     /// <summary>The font chain of a document's last layout, for what draws later than it lays out.</summary>
     internal static void RememberFonts(Document document, FontProvider fonts) => Fonts.AddOrUpdate(document, fonts);
+
+    /// <summary>The fonts the document was laid out with, if it was.</summary>
+    internal static FontProvider? FontsOf(Document document) => Fonts.TryGetValue(document, out FontProvider? fonts) ? fonts : null;
 
     private static void DrawChart(Canvas canvas, Island island, Chart chart, RectF rect)
     {
