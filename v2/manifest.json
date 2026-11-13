@@ -1381,7 +1381,7 @@
       "Uid": null,
       "IsMRef": true,
       "Title": "Egap.Documents.DocumentSettings",
-      "Summary": "<p sourcefile=\"api/Egap.Documents.DocumentSettings.yml\" sourcestartlinenumber=\"1\">Document-wide settings that change layout and numbering: the default tab stop, odd and even headers, footnote and endnote\nnumbering, change tracking and Word's compatibility mode and options. Word's other settings are kept by the DOCX reader as extension\ndata on the document.</p>\n"
+      "Summary": "<p sourcefile=\"api/Egap.Documents.DocumentSettings.yml\" sourcestartlinenumber=\"1\">Document-wide settings that change layout and numbering: the default tab stop, odd and even headers, footnote and endnote\nnumbering, change tracking, automatic hyphenation and Word's compatibility mode and options. Word's other settings are kept by the DOCX reader as extension\ndata on the document.</p>\n"
     },
     {
       "type": "ManagedReference",

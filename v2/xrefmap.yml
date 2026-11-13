@@ -9335,6 +9335,19 @@ references:
   commentId: T:Egap.Documents.DocumentSettings
   fullName: Egap.Documents.DocumentSettings
   nameWithType: DocumentSettings
+- uid: Egap.Documents.DocumentSettings.AutoHyphenation
+  name: AutoHyphenation
+  href: api/Egap.Documents.DocumentSettings.html#Egap_Documents_DocumentSettings_AutoHyphenation
+  commentId: P:Egap.Documents.DocumentSettings.AutoHyphenation
+  fullName: Egap.Documents.DocumentSettings.AutoHyphenation
+  nameWithType: DocumentSettings.AutoHyphenation
+- uid: Egap.Documents.DocumentSettings.AutoHyphenation*
+  name: AutoHyphenation
+  href: api/Egap.Documents.DocumentSettings.html#Egap_Documents_DocumentSettings_AutoHyphenation_
+  commentId: Overload:Egap.Documents.DocumentSettings.AutoHyphenation
+  isSpec: "True"
+  fullName: Egap.Documents.DocumentSettings.AutoHyphenation
+  nameWithType: DocumentSettings.AutoHyphenation
 - uid: Egap.Documents.DocumentSettings.CompatibilityMode
   name: CompatibilityMode
   href: api/Egap.Documents.DocumentSettings.html#Egap_Documents_DocumentSettings_CompatibilityMode
@@ -9348,6 +9361,19 @@ references:
   isSpec: "True"
   fullName: Egap.Documents.DocumentSettings.CompatibilityMode
   nameWithType: DocumentSettings.CompatibilityMode
+- uid: Egap.Documents.DocumentSettings.ConsecutiveHyphenLimit
+  name: ConsecutiveHyphenLimit
+  href: api/Egap.Documents.DocumentSettings.html#Egap_Documents_DocumentSettings_ConsecutiveHyphenLimit
+  commentId: P:Egap.Documents.DocumentSettings.ConsecutiveHyphenLimit
+  fullName: Egap.Documents.DocumentSettings.ConsecutiveHyphenLimit
+  nameWithType: DocumentSettings.ConsecutiveHyphenLimit
+- uid: Egap.Documents.DocumentSettings.ConsecutiveHyphenLimit*
+  name: ConsecutiveHyphenLimit
+  href: api/Egap.Documents.DocumentSettings.html#Egap_Documents_DocumentSettings_ConsecutiveHyphenLimit_
+  commentId: Overload:Egap.Documents.DocumentSettings.ConsecutiveHyphenLimit
+  isSpec: "True"
+  fullName: Egap.Documents.DocumentSettings.ConsecutiveHyphenLimit
+  nameWithType: DocumentSettings.ConsecutiveHyphenLimit
 - uid: Egap.Documents.DocumentSettings.DefaultTabStop
   name: DefaultTabStop
   href: api/Egap.Documents.DocumentSettings.html#Egap_Documents_DocumentSettings_DefaultTabStop
@@ -9439,6 +9465,32 @@ references:
   isSpec: "True"
   fullName: Egap.Documents.DocumentSettings.GutterAtTop
   nameWithType: DocumentSettings.GutterAtTop
+- uid: Egap.Documents.DocumentSettings.HyphenateCapitals
+  name: HyphenateCapitals
+  href: api/Egap.Documents.DocumentSettings.html#Egap_Documents_DocumentSettings_HyphenateCapitals
+  commentId: P:Egap.Documents.DocumentSettings.HyphenateCapitals
+  fullName: Egap.Documents.DocumentSettings.HyphenateCapitals
+  nameWithType: DocumentSettings.HyphenateCapitals
+- uid: Egap.Documents.DocumentSettings.HyphenateCapitals*
+  name: HyphenateCapitals
+  href: api/Egap.Documents.DocumentSettings.html#Egap_Documents_DocumentSettings_HyphenateCapitals_
+  commentId: Overload:Egap.Documents.DocumentSettings.HyphenateCapitals
+  isSpec: "True"
+  fullName: Egap.Documents.DocumentSettings.HyphenateCapitals
+  nameWithType: DocumentSettings.HyphenateCapitals
+- uid: Egap.Documents.DocumentSettings.HyphenationZone
+  name: HyphenationZone
+  href: api/Egap.Documents.DocumentSettings.html#Egap_Documents_DocumentSettings_HyphenationZone
+  commentId: P:Egap.Documents.DocumentSettings.HyphenationZone
+  fullName: Egap.Documents.DocumentSettings.HyphenationZone
+  nameWithType: DocumentSettings.HyphenationZone
+- uid: Egap.Documents.DocumentSettings.HyphenationZone*
+  name: HyphenationZone
+  href: api/Egap.Documents.DocumentSettings.html#Egap_Documents_DocumentSettings_HyphenationZone_
+  commentId: Overload:Egap.Documents.DocumentSettings.HyphenationZone
+  isSpec: "True"
+  fullName: Egap.Documents.DocumentSettings.HyphenationZone
+  nameWithType: DocumentSettings.HyphenationZone
 - uid: Egap.Documents.DocumentSettings.MirrorMargins
   name: MirrorMargins
   href: api/Egap.Documents.DocumentSettings.html#Egap_Documents_DocumentSettings_MirrorMargins

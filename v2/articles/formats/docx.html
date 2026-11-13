@@ -103,6 +103,8 @@ DocxKind? kind = DocxFormat.KindOf(report);                       // Document, T
 report.SaveAsDocx(&quot;report-copy.docx&quot;);                            // what the model does not name is kept
 DocxFormat.Save(report, &quot;report.dotx&quot;, new DocxSaveOptions { Kind = DocxKind.Template });
 </code></pre>
+<p>The settings part's automatic hyphenation (<code>w:autoHyphenation</code>, <code>w:consecutiveHyphenLimit</code>, <code>w:hyphenationZone</code> and
+<code>w:doNotHyphenateCaps</code>) reads into <code>DocumentSettings</code> and is saved from there. A missing zone is Word's 0.25 inch.</p>
 <h2 id="passwords">Passwords</h2>
 <p>A Word file saved with a password to open it is encrypted: its package sits, encrypted, in a compound file.
 <code>Document.Identify</code> calls it <code>Encrypted</code>, so a program can ask for the password before it loads the file. Give the password
