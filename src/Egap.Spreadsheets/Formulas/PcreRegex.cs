@@ -93,6 +93,21 @@ internal sealed partial class PcreRegex
 
     private static PcreRegex? Make(string pattern, bool ignoreCase)
     {
+        // A malformed pattern the translator did not foresee is not a pattern, as one .NET refuses is not: #VALUE!, never a
+        // failed calculation.
+        try
+        {
+            return Translate(pattern, ignoreCase);
+        }
+        catch (Exception e) when (e is ArgumentException or IndexOutOfRangeException or InvalidOperationException)
+        {
+            return null;
+        }
+    }
+
+    /// <summary>The expression for a pattern, or null when it is not one; malformed patterns may throw, which <see cref="Make"/> catches.</summary>
+    internal static PcreRegex? Translate(string pattern, bool ignoreCase)
+    {
         Translator first = new(pattern, null);
         if (!first.Run())
         {
@@ -765,12 +780,18 @@ internal sealed partial class PcreRegex
             }
             else
             {
-                string name = condition.StartsWith('<') && condition.EndsWith('>') || condition.StartsWith('\'') && condition.EndsWith('\'')
+                string name = condition.Length >= 2 && (condition.StartsWith('<') && condition.EndsWith('>') || condition.StartsWith('\'') && condition.EndsWith('\''))
                     ? condition[1..^1]
                     : condition;
-                if (name is "DEFINE" || name.StartsWith('R') && (name.Length == 1 || name[1] == '&' || char.IsAsciiDigit(name[1])) && !NameMap.ContainsKey(name))
+                // (?(R), (?(Rn) and (?(R&name) ask whether the match is inside a recursion, which Egap never is, and
+                // (?(DEFINE) is never true: the condition is false, so the "no" branch runs, as in Excel.
+                if (name == condition && (name is "DEFINE"
+                    || name.StartsWith('R') && (name.Length == 1 || name[1] == '&' || name[1..].All(char.IsAsciiDigit)) && !NameMap.ContainsKey(name)))
                 {
-                    return false;
+                    open.Push((flags, start, false));
+                    output.Append("(?(?!)");
+                    atom = -1;
+                    return true;
                 }
 
                 if (counted is null)
