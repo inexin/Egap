@@ -347,14 +347,17 @@ internal static partial class FormulaFunctions
                     if (i < to && replacement[i] == '{')
                     {
                         int close = replacement.IndexOf('}', i);
-                        if (close < 0 || close >= to || !int.TryParse(replacement.AsSpan(i + 1, close - i - 1), NumberStyles.AllowHexSpecifier, CultureInfo.InvariantCulture, out code)
-                            || code > 0x10FFFF || code is >= 0xD800 and <= 0xDFFF)
+                        // Read as a long and checked for sign, so no count of digits wraps to a negative code; past U+10FFFF
+                        // is #VALUE!, as in Excel.
+                        if (close < 0 || close >= to
+                            || !long.TryParse(replacement.AsSpan(i + 1, close - i - 1), NumberStyles.AllowHexSpecifier, CultureInfo.InvariantCulture, out long wide)
+                            || wide is < 0 or > 0x10FFFF or (>= 0xD800 and <= 0xDFFF))
                         {
                             return null;
                         }
 
                         i = close + 1;
-                        return char.ConvertFromUtf32(code);
+                        return char.ConvertFromUtf32((int)wide);
                     }
 
                     int digits = 0;
