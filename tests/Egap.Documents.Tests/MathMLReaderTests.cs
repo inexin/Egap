@@ -119,6 +119,6 @@ public sealed class MathMLReaderTests
     {
         string deep = string.Concat(Enumerable.Repeat("<mrow><mfrac>", 500)) + "<mi>x</mi><mi>y</mi>" + string.Concat(Enumerable.Repeat("</mfrac><mi>z</mi></mrow>", 500));
         Assert.NotNull(Read(deep));
-        Assert.NotNull(Read("<mfrac/><msub/><mroot/><mmultiscripts/><mtable><mtr/></mtable><munderover><mo>\u2211</mo></munderover><unknown><mi>x</mi></unknown>"));
+        Assert.NotNull(Read("<mfrac/><msub/><mroot/><mmultiscripts/><mmultiscripts><mprescripts/><mi>a</mi></mmultiscripts><mtable><mtr/></mtable><munderover><mo>\u2211</mo></munderover><unknown><mi>x</mi></unknown>"));
     }
 }

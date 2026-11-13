@@ -590,10 +590,13 @@ internal static class MathMLReader
         }
 
         int pre = children.FindIndex(c => c.Name.LocalName == "mprescripts");
-        List<XElement> post = pre < 0 ? children[1..] : children[1..pre];
+        int end = pre < 0 ? children.Count : pre;
+        List<XElement> post = end > 1 ? children[1..end] : [];
         List<XElement> prescripts = pre < 0 ? [] : children[(pre + 1)..];
         MathRow Script(List<XElement> list, int i) => i < list.Count && list[i].Name.LocalName != "none" ? Arg(list[i], depth) : new MathRow();
-        MathRow e = children.Count > 0 ? Arg(children[0], depth) : new MathRow();
+
+        // An mprescripts first leaves no base.
+        MathRow e = pre == 0 ? new MathRow() : Arg(children[0], depth);
         MathNode node = new MathRow(e.Items);
         if (post.Count > 0)
         {
