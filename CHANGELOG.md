@@ -34,6 +34,11 @@ follows with the rest of Egap. Install it with `dotnet tool install -g Egap.Cli 
   memory only.
 - Built on System.CommandLine 2.0.14 and Egami.Cli.Host 1.4.0.
 
+## Egap.Documents 2.3.0 (unreleased)
+
+- Built on Egami 1.5.0-preview.1 and Egami.Fonts.Substitutes 1.1.0, whose fonts read the OpenType MATH table that
+  equations are set with, and on Egami.Metafiles 1.0.2 and Egami.Barcodes 1.0.1.
+
 ## Egap.Documents 2.3.0-preview.1 (2026-11-13)
 
 A preview, published ahead of the other Egap packages so that Egap.Spreadsheets 2.3.0-preview.1 can run; the stable 2.3.0
@@ -432,7 +437,7 @@ it brings Egap.Documents 2.3.0-preview.1. The spreadsheets guide lists what it d
 
 ## Egap.Pdf 2.3.0 (unreleased)
 
-- Built on Egami 1.4.0, Egami.Barcodes 1.0.1 and System.Security.Cryptography.Pkcs 10.0.14.
+- Built on Egami 1.5.0-preview.1, Egami.Barcodes 1.0.1 and System.Security.Cryptography.Pkcs 10.0.14.
 
 ## Egap.Cli 2.2.0 (2026-10-29)
 
