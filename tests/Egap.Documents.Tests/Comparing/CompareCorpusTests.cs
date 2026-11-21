@@ -72,6 +72,19 @@ public sealed class CompareCorpusTests
         }
     }
 
+    [Theory]
+    [MemberData(nameof(Corpus))]
+    public void StoryEditedCorpusRoundTrips(string name)
+    {
+        Document original = Load(name);
+        for (int seed = 0; seed < 6; seed++)
+        {
+            Document revised = new EditMutator(700 + seed, stories: true).Mutate(original, 1 + (seed * 3));
+            RoundTrip.CheckStories(original, revised);
+            RoundTrip.CheckStories(original, revised, new DocumentCompareOptions { Base = CompareBase.Original });
+        }
+    }
+
     internal static Document Load(string name)
     {
         string path = Path.Combine(AppContext.BaseDirectory, "files", name);

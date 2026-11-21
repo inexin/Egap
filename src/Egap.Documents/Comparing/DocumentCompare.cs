@@ -7,8 +7,9 @@ namespace Egap.Documents.Comparing;
 /// <remarks>
 /// The comparison lines up blocks first (paragraphs and tables, by a hash of their content), pairs changed paragraphs that
 /// share at least half their words, and then marks the words that differ inside each pair. Accepting every change of the
-/// result gives the revised content; rejecting every change gives the original. Main body text is compared; tables that
-/// differ are marked deleted and inserted whole.
+/// result gives the revised content; rejecting every change gives the original. The main text is compared, tables row by
+/// row, and, as the options say, headers and footers, the text of notes and text boxes, and fields; the result gets the
+/// revised document's comments.
 /// </remarks>
 public static class DocumentCompare
 {
@@ -33,7 +34,13 @@ public static class DocumentCompare
         Document a = Prepare(original, "original", copy: !baseIsRevised, options, warnings);
         Document b = Prepare(revised, "revised", copy: baseIsRevised, options, warnings);
         BlockComparer comparer = new(baseIsRevised ? b : a, baseIsRevised, options, warnings);
+        comparer.ReadComments(a, b);
         comparer.CompareBodies(a, b);
+        if (options.HeadersFooters)
+        {
+            comparer.CompareHeadersFooters(a, b);
+        }
+
         return comparer.Finish();
     }
 

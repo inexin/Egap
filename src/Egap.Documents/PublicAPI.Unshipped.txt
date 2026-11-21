@@ -579,14 +579,24 @@ Egap.Documents.Comparing.DocumentCompareOptions.Base.get -> Egap.Documents.Compa
 Egap.Documents.Comparing.DocumentCompareOptions.Base.init -> void
 Egap.Documents.Comparing.DocumentCompareOptions.CaseChanges.get -> bool
 Egap.Documents.Comparing.DocumentCompareOptions.CaseChanges.init -> void
+Egap.Documents.Comparing.DocumentCompareOptions.Comments.get -> bool
+Egap.Documents.Comparing.DocumentCompareOptions.Comments.init -> void
 Egap.Documents.Comparing.DocumentCompareOptions.Date.get -> System.DateTimeOffset?
 Egap.Documents.Comparing.DocumentCompareOptions.Date.init -> void
 Egap.Documents.Comparing.DocumentCompareOptions.DocumentCompareOptions() -> void
 Egap.Documents.Comparing.DocumentCompareOptions.Equals(Egap.Documents.Comparing.DocumentCompareOptions? other) -> bool
 Egap.Documents.Comparing.DocumentCompareOptions.ExistingRevisions.get -> Egap.Documents.Comparing.ExistingRevisionHandling
 Egap.Documents.Comparing.DocumentCompareOptions.ExistingRevisions.init -> void
+Egap.Documents.Comparing.DocumentCompareOptions.Fields.get -> bool
+Egap.Documents.Comparing.DocumentCompareOptions.Fields.init -> void
 Egap.Documents.Comparing.DocumentCompareOptions.Granularity.get -> Egap.Documents.Comparing.CompareGranularity
 Egap.Documents.Comparing.DocumentCompareOptions.Granularity.init -> void
+Egap.Documents.Comparing.DocumentCompareOptions.HeadersFooters.get -> bool
+Egap.Documents.Comparing.DocumentCompareOptions.HeadersFooters.init -> void
+Egap.Documents.Comparing.DocumentCompareOptions.Notes.get -> bool
+Egap.Documents.Comparing.DocumentCompareOptions.Notes.init -> void
+Egap.Documents.Comparing.DocumentCompareOptions.TextBoxes.get -> bool
+Egap.Documents.Comparing.DocumentCompareOptions.TextBoxes.init -> void
 Egap.Documents.Comparing.DocumentCompareOptions.Whitespace.get -> bool
 Egap.Documents.Comparing.DocumentCompareOptions.Whitespace.init -> void
 Egap.Documents.Comparing.DocumentCompareStatistics

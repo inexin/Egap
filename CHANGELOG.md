@@ -60,6 +60,13 @@ follows with the rest of Egap. Install it with `dotnet tool install -g Egap.Cli 
   that keeps the old formatting. `DocumentComparison` lists each change, which accepts or rejects on its own, with word
   counts and warnings; `DocumentCompareOptions` sets granularity, case and whitespace folding, author, date, which
   document is the base and what happens to revisions already in the inputs.
+- Document compare also covers the stories beside the main text: headers and footers, each compared with the one of the
+  same kind in the same section; footnote and endnote text, compared as a story of its own when both documents have the
+  note (a note in one only is inserted or deleted whole); text box text, while a shape whose kind or size changed is
+  deleted and inserted; and fields, one token each, compared by code and result or by result only. The result gets the
+  revised document's comments, matched by the text they anchor: one only in the original is removed and one only in the
+  revised document is added at the same text, never as a tracked change. `DocumentCompareOptions` turns each off with
+  `HeadersFooters`, `Notes`, `Comments`, `TextBoxes` and `Fields`.
 - `FormatRevision` has `StyleChanged` and `OldStyle`, so a format change can also change a run's character style or a
   paragraph's style, and rejecting it puts the old style back. DOCX files keep the old style in `w:rPrChange` and
   `w:pPrChange`, read and written; before, the reader dropped it and the writer wrote none.

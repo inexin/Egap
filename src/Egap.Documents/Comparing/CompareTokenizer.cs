@@ -151,7 +151,7 @@ internal sealed class ParagraphTokens
             if (atomAt[start] >= 0)
             {
                 starts.Add(start);
-                ids.Add(table.Atom(AtomKey(pieces[atomAt[start]])));
+                ids.Add(table.Atom(AtomKey(pieces[atomAt[start]], table.FieldCodes)));
                 words.Add(false);
                 start++;
                 continue;
@@ -269,12 +269,35 @@ internal sealed class ParagraphTokens
         return null;
     }
 
-    /// <summary>What an atom is compared by: its kind, its settings that show, and its text.</summary>
-    private static string AtomKey(ParagraphPiece atom)
+    /// <summary>
+    /// What an atom is compared by: its kind, its settings that show, and its text. A note goes by its kind and mark and a
+    /// shape by its kind and size, as their text is compared as a story of its own; a picture by its image and size; a field
+    /// by its code and result, or by its result only.
+    /// </summary>
+    private static string AtomKey(ParagraphPiece atom, bool fieldCodes)
     {
         StringBuilder key = new();
+        bool skipping = !fieldCodes && atom.First is FieldStart;
+        int depth = 0;
         foreach (Inline inline in InlinesOf(atom))
         {
+            if (skipping)
+            {
+                // A field's result only: what follows its own separator, nested fields' codes skipped likewise.
+                depth += inline switch
+                {
+                    FieldStart => 1,
+                    FieldEnd => -1,
+                    _ => 0,
+                };
+                if (inline is FieldSeparator && depth == 1)
+                {
+                    skipping = false;
+                }
+
+                continue;
+            }
+
             key.Append(inline.GetType().Name).Append(':');
             switch (inline)
             {
@@ -289,10 +312,10 @@ internal sealed class ParagraphTokens
                 case Shape shape:
                     key.Append(shape.Kind).Append(':').Append(shape.Width.ToString("R", CultureInfo.InvariantCulture))
                         .Append('x').Append(shape.Height.ToString("R", CultureInfo.InvariantCulture)).Append(':')
-                        .Append(shape.TextBox?.GetText());
+                        .Append(shape.TextBox is null ? '-' : '+');
                     break;
                 case Footnote note:
-                    key.Append(note.Kind).Append(':').Append(note.CustomMark).Append(':').Append(note.Story.GetText());
+                    key.Append(note.Kind).Append(':').Append(note.CustomMark);
                     break;
                 case Hyperlink link:
                     key.Append(link.Address).Append('#').Append(link.Anchor).Append(':').Append(link.GetText());
@@ -328,12 +351,15 @@ internal sealed class ParagraphTokens
 /// Token ids shared by the two documents of a comparison: equal text (after the comparison's case and white-space
 /// folding) or equal atoms get equal ids.
 /// </summary>
-internal sealed class TokenTable(bool characters, bool ignoreCase, bool ignoreWhitespace)
+internal sealed class TokenTable(bool characters, bool ignoreCase, bool ignoreWhitespace, bool fieldCodes = true)
 {
     private readonly Dictionary<string, int> ids = new(StringComparer.Ordinal);
 
     /// <summary>Whether tokens are grapheme clusters rather than words.</summary>
     public bool Characters => characters;
+
+    /// <summary>Whether a field is compared by its code as well as its result.</summary>
+    public bool FieldCodes => fieldCodes;
 
     /// <summary>The id of a text token.</summary>
     public int Text(ReadOnlySpan<char> token)

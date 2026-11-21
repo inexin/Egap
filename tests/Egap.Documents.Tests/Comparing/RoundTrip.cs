@@ -112,6 +112,99 @@ internal static class RoundTrip
         return lines;
     }
 
+    /// <summary>
+    /// Compares the two documents and checks the result both ways in the other stories too: headers and footers, notes and
+    /// text boxes (accepting gives the revised text, rejecting the original); and that the result has the revised
+    /// document's comments.
+    /// </summary>
+    public static DocumentComparison CheckStories(Document original, Document revised, DocumentCompareOptions? options = null)
+    {
+        DocumentComparison comparison = Check(original, revised, options);
+        Document accepted = comparison.Document.Clone();
+        accepted.Revisions.AcceptAll();
+        Document rejected = comparison.Document.Clone();
+        rejected.Revisions.RejectAll();
+        Assert.Equal(Stories(revised), Stories(accepted));
+        Assert.Equal(Stories(original), Stories(rejected));
+        Assert.Equal(Comments(revised), Comments(accepted));
+        return comparison;
+    }
+
+    /// <summary>The text of every header and footer (by section and kind), note and text box, in order; empty ones left out.</summary>
+    public static List<string> Stories(Document document)
+    {
+        if (document.Revisions.Count > 0)
+        {
+            document = document.Clone();
+            document.Revisions.AcceptAll();
+        }
+
+        List<string> lines = [];
+        for (int k = 0; k < document.Sections.Count; k++)
+        {
+            foreach (HeaderFooter story in document.Sections[k].HeadersFooters.OrderBy(h => h.Kind))
+            {
+                if (story.GetText().Trim(ControlChar.ParagraphBreak, ' ').Length > 0)
+                {
+                    lines.Add($"{k}:{story.Kind}|{story.GetText()}");
+                }
+            }
+        }
+
+        foreach (Section section in document.Sections)
+        {
+            foreach (Inline inline in section.Body.Descendants<Inline>())
+            {
+                switch (inline)
+                {
+                    case Footnote note:
+                        lines.Add($"{note.Kind}|{note.Story.GetText()}");
+                        break;
+                    case Shape { TextBox: { } box }:
+                        lines.Add($"TextBox|{box.GetText()}");
+                        break;
+                }
+            }
+        }
+
+        return lines;
+    }
+
+    /// <summary>Every comment as its anchor text and its own text, sorted.</summary>
+    public static List<string> Comments(Document document)
+    {
+        Dictionary<int, System.Text.StringBuilder> open = [];
+        Dictionary<int, string> anchors = [];
+        List<string> comments = [];
+        foreach (Inline inline in document.Descendants<Inline>())
+        {
+            switch (inline)
+            {
+                case CommentRangeStart start:
+                    open[start.CommentId] = new();
+                    break;
+                case CommentRangeEnd end when open.Remove(end.CommentId, out var text):
+                    anchors[end.CommentId] = text.ToString();
+                    break;
+                case Run run when run.GetAncestor<Comment>() is null && run.Revision is not { Removes: true }:
+                    foreach (System.Text.StringBuilder text in open.Values)
+                    {
+                        text.Append(run.Text);
+                    }
+
+                    break;
+            }
+        }
+
+        foreach (Comment comment in document.Descendants<Comment>())
+        {
+            comments.Add((anchors.TryGetValue(comment.Id, out string? anchor) ? anchor : "") + "|" + comment.Story.GetText());
+        }
+
+        comments.Sort(StringComparer.Ordinal);
+        return comments;
+    }
+
     private static string Describe(Block block)
     {
         return block switch

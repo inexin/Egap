@@ -5,7 +5,7 @@ namespace Egap.Documents.Comparing;
 /// and builds the result on the base document's copy. "A" is always the original and "B" the revised document; the base is
 /// one of them, its nodes become the result's, and content only in the other is imported.
 /// </summary>
-internal sealed class BlockComparer
+internal sealed partial class BlockComparer
 {
     /// <summary>How far from the diagonal of a changed stretch paragraphs are tried as pairs, when the stretch is long.</summary>
     private const int PairBand = 64;
@@ -26,6 +26,10 @@ internal sealed class BlockComparer
     private readonly Dictionary<Paragraph, int[]> wordSets = [];
     private readonly List<PendingChange> changes = [];
     private readonly List<Action> marks = [];
+    private readonly DocumentCompareOptions options;
+
+    // Each paragraph of the non-base document and the result's paragraph that holds its text, for placing comments.
+    private readonly Dictionary<Paragraph, Paragraph>? placed;
     private int insertedWords;
     private int deletedWords;
     private int paragraphsTouched;
@@ -37,7 +41,9 @@ internal sealed class BlockComparer
         this.result = result;
         this.baseIsRevised = baseIsRevised;
         this.warnings = warnings;
-        table = new TokenTable(options.Granularity == CompareGranularity.Character, !options.CaseChanges, !options.Whitespace);
+        table = new TokenTable(options.Granularity == CompareGranularity.Character, !options.CaseChanges, !options.Whitespace, options.Fields);
+        this.options = options;
+        placed = options.Comments && !baseIsRevised ? [] : null;
         insertion = new Revision(RevisionKind.Insertion, options.Author, options.Date);
         deletion = new Revision(RevisionKind.Deletion, options.Author, options.Date);
         author = options.Author;
@@ -123,6 +129,8 @@ internal sealed class BlockComparer
         {
             mark();
         }
+
+        PlaceComments();
 
         if (limitReached)
         {
@@ -599,7 +607,7 @@ internal sealed class BlockComparer
         return node;
     }
 
-    private void CompareContainer(NodeCollection<Block> a, NodeCollection<Block> b, NodeCollection<Block> target)
+    private void CompareContainer(IEnumerable<Block> a, IEnumerable<Block> b, NodeCollection<Block> target)
     {
         List<Block> list = [];
         CompareBlocks([.. a], [.. b], (block, _) => list.Add(block));
@@ -616,7 +624,22 @@ internal sealed class BlockComparer
             mark.Remove();
         }
 
+        if (placed is not null)
+        {
+            foreach ((Paragraph from, Paragraph to) in ParagraphsOf(node).Zip(ParagraphsOf(copy)))
+            {
+                placed[from] = to;
+            }
+        }
+
         return copy;
+    }
+
+    private static IEnumerable<Paragraph> ParagraphsOf(Node node)
+    {
+        // Comments are left out of imported copies, so their paragraphs are too.
+        IEnumerable<Paragraph> all = node is Paragraph paragraph ? [paragraph, .. paragraph.Descendants<Paragraph>()] : node.Descendants<Paragraph>();
+        return all.Where(p => p.GetAncestor<Comment>() is null);
     }
 
     private static bool IsMarker(Inline inline)
@@ -635,6 +658,7 @@ internal sealed class BlockComparer
         List<DiffStep> script = SequenceDiff.Diff<int>(a.Ids, b.Ids, out bool limit);
         limitReached |= limit;
         ParagraphTokens baseTokens = baseIsRevised ? b : a;
+        placed?.TryAdd(b.Paragraph, a.Paragraph);
         Emitter fromA = new(this, a, isBase: !baseIsRevised), fromB = new(this, b, isBase: baseIsRevised);
         List<Inline> output = [];
         int i = 0, j = 0;
@@ -702,7 +726,10 @@ internal sealed class BlockComparer
 
         if (a is Table or ContentControl or FlexContainer or GridContainer && a.GetType() == b.GetType())
         {
-            List<Paragraph> paragraphsA = [.. a.Descendants<Paragraph>()], paragraphsB = [.. b.Descendants<Paragraph>()];
+            // The blocks' own paragraphs, not those of notes, comments and text boxes in them (their keys leave those out).
+            Inline? ownerA = a.GetAncestor<Inline>(), ownerB = b.GetAncestor<Inline>();
+            List<Paragraph> paragraphsA = [.. a.Descendants<Paragraph>().Where(p => p.GetAncestor<Inline>() == ownerA)];
+            List<Paragraph> paragraphsB = [.. b.Descendants<Paragraph>().Where(p => p.GetAncestor<Inline>() == ownerB)];
             if (paragraphsA.Count == paragraphsB.Count)
             {
                 for (int k = 0; k < paragraphsA.Count; k++)
@@ -739,7 +766,7 @@ internal sealed class BlockComparer
             }
         }
 
-        bool changed = false;
+        bool changed = CompareAtoms(a, b, i, j, count);
         foreach ((int start, int end, Run? runA, Run? runB) in pieces)
         {
             int before = output.Count;
@@ -764,6 +791,67 @@ internal sealed class BlockComparer
                 pieces.Add((start, end, runA, runB));
             }
         }
+    }
+
+    /// <summary>
+    /// Compares the stories of equal atoms: a note's text, a text box's text, each as a story of its own. Returns whether any
+    /// differed.
+    /// </summary>
+    private bool CompareAtoms(ParagraphTokens a, ParagraphTokens b, int i, int j, int count)
+    {
+        if (!options.Notes && !options.TextBoxes)
+        {
+            return false;
+        }
+
+        int before = changes.Count;
+        for (int k = 0; k < count; k++)
+        {
+            int startA = a.Starts[i + k], startB = b.Starts[j + k];
+            if (a.Text[startA] != ParagraphTokens.AtomChar || AtomAt(a, startA) is not Inline atomA || AtomAt(b, startB) is not Inline atomB)
+            {
+                continue;
+            }
+
+            Inline target = baseIsRevised ? atomB : atomA;
+            switch (atomA, atomB)
+            {
+                case (Footnote noteA, Footnote noteB) when options.Notes:
+                    CompareContainer(noteA.Story.Blocks, noteB.Story.Blocks, ((Footnote)target).Story.Blocks);
+                    break;
+                case (Shape { TextBox: { } boxA }, Shape { TextBox: { } boxB }) when options.TextBoxes:
+                    CompareContainer(boxA.Blocks, boxB.Blocks, ((Shape)target).TextBox!.Blocks);
+                    break;
+            }
+        }
+
+        return changes.Count > before;
+    }
+
+    /// <summary>The single inline of the atom at <paramref name="start"/> in a paragraph's text, if it is one inline.</summary>
+    private static Inline? AtomAt(ParagraphTokens paragraph, int start)
+    {
+        ParagraphPiece[] pieces = paragraph.Pieces;
+        int low = 0, high = pieces.Length - 1;
+        while (low <= high)
+        {
+            int middle = (low + high) / 2;
+            ParagraphPiece piece = pieces[middle];
+            if (piece.Start < start || (piece.Start == start && piece.Length == 0))
+            {
+                low = middle + 1;
+            }
+            else if (piece.Start > start)
+            {
+                high = middle - 1;
+            }
+            else
+            {
+                return piece.Kind == PieceKind.Atom && piece.Count == 1 ? piece.First : null;
+            }
+        }
+
+        return null;
     }
 
     /// <summary>The run each character of a paragraph's compared text is in; null for atoms and marks.</summary>
@@ -1125,7 +1213,11 @@ internal sealed class BlockComparer
                 {
                     foreach (Inline inline in ParagraphTokens.InlinesOf(p).ToList())
                     {
-                        Add(isBase ? inline : owner.Import(inline), revision, output, tracked);
+                        // Marks inside a field from the other document stay behind, as marks elsewhere do.
+                        if (isBase || !IsMarker(inline))
+                        {
+                            Add(isBase ? inline : owner.Import(inline), revision, output, tracked);
+                        }
                     }
                 }
 
