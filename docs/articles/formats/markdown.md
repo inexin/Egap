@@ -72,6 +72,11 @@ Pictures with an address of their own are written as links to it. The others, su
 | `KeepBackgroundImages` | `false` | Keeps pictures behind the text, such as page backgrounds and watermarks |
 | `CaptionsAsFigures` | `false` | Writes a picture with its caption as an HTML figure instead of an image and an italic paragraph |
 | `WriteFrontMatter` | `false` | Writes YAML front matter with the title and author when the document has them |
+| `RevisionView` | `Final` | How tracked changes are written: `Final` as if accepted (with a `ChangesAccepted` warning), `Markup` with inserted and deleted text marked, `Original` as if rejected |
+| `RevisionStyle` | `Html` | How `Markup` marks changes: `Html` writes `<ins>` and `<del>`, `CriticMarkup` writes `{++inserted++}` and `{--deleted--}` |
+
+In `Markup`, a paragraph deleted whole is written as one `<del>` (or `{--…--}`) around its text. Code blocks are written as
+if accepted.
 
 ```csharp
 using Egap.Documents;

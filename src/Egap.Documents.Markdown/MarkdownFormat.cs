@@ -119,6 +119,28 @@ public sealed class MarkdownSaveOptions
     /// its own (front matter that was read is always written back).
     /// </summary>
     public bool WriteFrontMatter { get; init; }
+
+    /// <summary>
+    /// How tracked changes are written: as if accepted (<see cref="Layout.RevisionView.Final"/>, the default, with a
+    /// <see cref="ConversionWarningKind.ChangesAccepted"/> warning), as markup (<see cref="Layout.RevisionView.Markup"/>:
+    /// inserted and deleted text marked as <see cref="RevisionStyle"/> says, a deleted paragraph marked whole), or as if
+    /// rejected (<see cref="Layout.RevisionView.Original"/>). Code blocks are written as if accepted in every view but
+    /// <see cref="Layout.RevisionView.Original"/>.
+    /// </summary>
+    public Layout.RevisionView RevisionView { get; init; }
+
+    /// <summary>How <see cref="Layout.RevisionView.Markup"/> marks changes: as inline HTML (the default) or as CriticMarkup.</summary>
+    public MarkdownRevisionStyle RevisionStyle { get; init; }
+}
+
+/// <summary>How the Markdown writer marks tracked changes in <see cref="Layout.RevisionView.Markup"/>.</summary>
+public enum MarkdownRevisionStyle
+{
+    /// <summary>Inline HTML: <c>&lt;ins&gt;</c> around inserted text and <c>&lt;del&gt;</c> around deleted text, which GitHub and most viewers show.</summary>
+    Html,
+
+    /// <summary>CriticMarkup: <c>{++inserted++}</c> and <c>{--deleted--}</c>.</summary>
+    CriticMarkup,
 }
 
 /// <summary>

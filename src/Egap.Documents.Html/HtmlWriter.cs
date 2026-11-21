@@ -26,10 +26,18 @@ internal sealed partial class HtmlWriter
     private readonly HashSet<Style> used = [];
     private readonly Dictionary<Style, string> classNames = [];
 
+    // Markup view: each author's place in the palette, the authors whose colours the style sheet needs, and the change
+    // whose ins or del element is open.
+    private readonly bool markup;
+    private Dictionary<string, int>? authors;
+    private SortedSet<int>? authorsUsed;
+    private Revision? openRevision;
+
     private HtmlWriter(Document document, HtmlSaveOptions options)
     {
         this.document = document;
         this.options = options;
+        markup = options.RevisionView == Layout.RevisionView.Markup;
     }
 
     public static string Write(Document document, HtmlSaveOptions options, out IReadOnlyList<ConversionWarning> warnings)
@@ -43,6 +51,13 @@ internal sealed partial class HtmlWriter
     /// </summary>
     internal static string Write(Document document, HtmlSaveOptions options, IReadOnlyList<Block>? blocks, string? extraCss, out IReadOnlyList<ConversionWarning> warnings)
     {
+        if (options.RevisionView == Layout.RevisionView.Original && blocks is null && document.Revisions.Count > 0)
+        {
+            // The original is the document with every change rejected: a copy, so the caller's document keeps its changes.
+            document = document.Clone();
+            document.Revisions.RejectAll();
+        }
+
         HtmlWriter writer = new(document, options);
         string html = writer.WriteDocument(blocks, extraCss);
         warnings = writer.warnings.ToList();
@@ -110,6 +125,16 @@ internal sealed partial class HtmlWriter
         css.Append("p, h1, h2, h3, h4, h5, h6, li, pre { margin: 0; }\nh1, h2, h3, h4, h5, h6 { font-size: inherit; font-weight: inherit; }\n");
         css.Append("ul, ol { margin: 0; }\ntable { border-collapse: collapse; }\ntd, th { vertical-align: top; text-align: inherit; font-weight: inherit; }\n");
         css.Append("body {").Append(Declarations(RunCss(document.Styles.DefaultRunFormat, null))).Append(" }\n");
+        if (authorsUsed is not null)
+        {
+            css.Append(".egap-format-change { text-decoration: underline dotted; }\n");
+            foreach (int author in authorsUsed)
+            {
+                Rgba8 color = Layout.ParagraphBridge.AuthorColors[author % Layout.ParagraphBridge.AuthorColors.Length];
+                css.Append(Invariant, $".egap-author-{author + 1} {{ color: #{color.R:x2}{color.G:x2}{color.B:x2}; text-decoration-color: #{color.R:x2}{color.G:x2}{color.B:x2}; }}\n");
+            }
+        }
+
         foreach (Style style in used.OrderBy(s => s.Id, StringComparer.Ordinal))
         {
             List<(string, string)> declarations = style switch
@@ -678,9 +703,20 @@ internal sealed partial class HtmlWriter
     {
         int fieldCode = 0;
         Stack<bool> fields = new();
+        // Inside a hyperlink or control the marks start afresh, so elements nest; its own change is marked around it.
+        Revision? outer = openRevision;
+        openRevision = null;
         foreach (Inline inline in inlines)
         {
-            if (inline.Revision is { } revision)
+            if (markup)
+            {
+                Revision? wanted = inline.Revision == outer ? null : inline.Revision;
+                if (wanted != openRevision)
+                {
+                    MarkRevision(wanted);
+                }
+            }
+            else if (inline.Revision is { } revision)
             {
                 warnings.Add(ConversionWarningKind.ChangesAccepted, "tracked changes, written as if accepted");
                 if (revision.Removes)
@@ -696,6 +732,12 @@ internal sealed partial class HtmlWriter
 
             switch (inline)
             {
+                case Run { FormatRevision: { } change } run when markup && run.Text.Length > 0:
+                    body.Append("<span class=\"egap-format-change ").Append(AuthorClass(change.Author)).Append("\" data-author=\"").Append(Attribute(change.Author))
+                        .Append("\" title=\"").Append(Attribute(OldFormatting(change))).Append("\">");
+                    WriteRun(run);
+                    body.Append("</span>");
+                    break;
                 case Run run:
                     WriteRun(run);
                     break;
@@ -802,6 +844,92 @@ internal sealed partial class HtmlWriter
                     }
 
                     break;
+            }
+        }
+
+        if (openRevision is not null)
+        {
+            MarkRevision(null);
+        }
+
+        openRevision = outer;
+    }
+
+    /// <summary>Closes the open ins or del element, if any, and opens one for <paramref name="revision"/>, if any.</summary>
+    private void MarkRevision(Revision? revision)
+    {
+        if (openRevision is { } open)
+        {
+            body.Append(open.Removes ? "</del>" : "</ins>");
+        }
+
+        openRevision = revision;
+        if (revision is null)
+        {
+            return;
+        }
+
+        body.Append(revision.Removes ? "<del" : "<ins").Append(" class=\"").Append(AuthorClass(revision.Author)).Append("\" data-author=\"").Append(Attribute(revision.Author)).Append('"');
+        if (revision.Date is { } date)
+        {
+            body.Append(" datetime=\"").Append(date.ToString("yyyy-MM-dd'T'HH:mm:sszzz", Invariant)).Append('"');
+        }
+
+        body.Append('>');
+    }
+
+    /// <summary>The class that colours an author's changes, egap-author-1 for the first author of the document's changes.</summary>
+    private string AuthorClass(string author)
+    {
+        authors ??= Layout.ParagraphBridge.AuthorOrder(document);
+        if (!authors.TryGetValue(author, out int index))
+        {
+            index = authors.Count;
+            authors[author] = index;
+        }
+
+        index %= Layout.ParagraphBridge.AuthorColors.Length;
+        (authorsUsed ??= []).Add(index);
+        return "egap-author-" + (index + 1).ToString(Invariant);
+    }
+
+    /// <summary>The formatting before a format change, in words: "Formatted. Was: bold, 12 pt, Arial".</summary>
+    private static string OldFormatting(FormatRevision change)
+    {
+        List<string> parts = [];
+        if (change.OldFormat is RunFormat old)
+        {
+            Add(old.Bold, "bold");
+            Add(old.Italic, "italic");
+            Add(old.Strikethrough, "strikethrough");
+            if (old.Underline is { } underline)
+            {
+                parts.Add(underline == UnderlineStyle.None ? "not underlined" : "underlined");
+            }
+
+            if (old.Size is { } size)
+            {
+                parts.Add(size.ToString("0.#", Invariant) + " pt");
+            }
+
+            if (old.FontAscii is { } font)
+            {
+                parts.Add(font);
+            }
+
+            if (old.Color is { } color && color.Rgb is { } rgb)
+            {
+                parts.Add($"colour #{rgb.R:x2}{rgb.G:x2}{rgb.B:x2}");
+            }
+        }
+
+        return "Formatted. Was: " + (parts.Count == 0 ? "no direct formatting" : string.Join(", ", parts));
+
+        void Add(bool? value, string name)
+        {
+            if (value is { } set)
+            {
+                parts.Add(set ? name : "not " + name);
             }
         }
     }

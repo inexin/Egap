@@ -106,6 +106,7 @@ EpubFormat.Save(report, "report.epub", new EpubSaveOptions
 | `CoverImage` | None | A picture for a cover page before the first chapter |
 | `Identifier` | Kept, or made from the title and author | The book's unique identifier |
 | `AccessibilitySummary` | A sentence about what the book has | The accessibility summary in the package |
+| `RevisionView` | `Final` | How tracked changes are written, as for [HTML](html.md#writing) |
 | `Modified` | The document's saved time, else now | The book's last-modified time |
 
 Embedding fonts is a licence question only you can answer, so it is off until you turn it on. A reading system that lacks
