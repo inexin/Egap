@@ -26,6 +26,14 @@ public sealed record PdfExportOptions
     public LayoutOptions? Layout { get; init; }
 
     /// <summary>
+    /// How tracked changes show in the PDF: as if accepted (<see cref="RevisionView.Final"/>, the default, unless
+    /// <see cref="Layout"/> asks for another view), marked up in their authors' colours with change bars
+    /// (<see cref="RevisionView.Markup"/>), or as if rejected (<see cref="RevisionView.Original"/>). A view other than
+    /// <see cref="RevisionView.Final"/> here wins over the one in <see cref="Layout"/>.
+    /// </summary>
+    public RevisionView RevisionView { get; init; }
+
+    /// <summary>
     /// Whether the PDF is tagged: a structure tree from the model (headings, paragraphs, lists, tables, figures with their
     /// alternative text, notes, links), with headers, footers and borders as artifacts. Always on for PDF/A level a and for
     /// <see cref="UniversalAccessibility"/>.

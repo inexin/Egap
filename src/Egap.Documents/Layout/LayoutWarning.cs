@@ -14,6 +14,12 @@ public enum LayoutWarningKind
     /// of in its layout.
     /// </summary>
     SmartArtDrawnAsList,
+
+    /// <summary>
+    /// The document has tracked changes, laid out as if accepted (<see cref="RevisionView.Final"/>); one warning names the
+    /// first paragraph with a change. <see cref="LayoutOptions.RevisionView"/> shows them or the original instead.
+    /// </summary>
+    ChangesAccepted,
 }
 
 /// <summary>Something a layout laid out differently from what the document asks for, with the node and page it is on.</summary>

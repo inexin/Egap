@@ -1,5 +1,22 @@
 namespace Egap.Documents.Layout;
 
+/// <summary>How tracked changes show on pages, in images and in PDFs.</summary>
+public enum RevisionView
+{
+    /// <summary>As if every change were accepted: inserted text shows, deleted text does not. The default.</summary>
+    Final,
+
+    /// <summary>
+    /// Every change shows, in its author's colour: inserted text underlined, deleted text struck through and still taking
+    /// its space, text whose formatting changed in its new look with a dotted underline, and a bar in the outside margin
+    /// beside each line with a change.
+    /// </summary>
+    Markup,
+
+    /// <summary>As if every change were rejected: the document before the changes.</summary>
+    Original,
+}
+
 /// <summary>How <see cref="Document.Layout(LayoutOptions?)"/> lays a document out.</summary>
 public sealed class LayoutOptions
 {
@@ -19,6 +36,13 @@ public sealed class LayoutOptions
     /// lists them: the way to hear of them when the layout is not kept, as when a document is saved as PDF.
     /// </summary>
     public Action<LayoutWarning>? OnWarning { get; init; }
+
+    /// <summary>
+    /// How tracked changes show; <see cref="RevisionView.Final"/> by default. <see cref="RevisionView.Original"/> lays out a
+    /// copy of the document with its changes rejected, so the layout's boxes and <see cref="DocumentLayout.Document"/> are
+    /// that copy's.
+    /// </summary>
+    public RevisionView RevisionView { get; init; }
 }
 
 /// <summary>
@@ -157,6 +181,9 @@ public sealed class PageLayout
 
     /// <summary>The page's areas: header, body columns, notes and footer, then floating objects.</summary>
     public IReadOnlyList<LayoutBox> Boxes { get; }
+
+    /// <summary>Whether the page is drawn with change bars beside lines with tracked changes (<see cref="RevisionView.Markup"/>).</summary>
+    internal bool ChangeBars { get; set; }
 
     /// <summary>
     /// Draws the page onto <paramref name="canvas"/> with its top left corner at the canvas's origin, one canvas unit to the

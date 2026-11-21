@@ -51,6 +51,7 @@ internal sealed partial class Paginator
     private int pageNumber;
     private int measuring;
     private readonly bool strict;
+    private readonly RevisionView view;
     private readonly Action<LayoutWarning>? onWarning;
 
     /// <summary>The floating tables and framed paragraphs met where they cannot float, in the order met, each once.</summary>
@@ -64,11 +65,18 @@ internal sealed partial class Paginator
     {
         this.document = document;
         // A second layout with the same font settings reuses the fonts and every paragraph that did not change.
+        // Another revision view keeps the fonts but needs paragraphs built again.
+        view = options?.RevisionView == RevisionView.Markup ? RevisionView.Markup : RevisionView.Final;
         if (!Caches.TryGetValue(document, out LayoutCache? cache) || !ReferenceEquals(cache.Settings, options?.Fonts))
         {
             FontProvider provider = new(document, options?.Fonts);
             PageDrawing.RememberFonts(document, provider);
-            cache = new LayoutCache(options?.Fonts, provider, new ParagraphBridge(provider, document));
+            cache = new LayoutCache(options?.Fonts, provider, new ParagraphBridge(provider, document, view));
+            Caches.AddOrUpdate(document, cache);
+        }
+        else if (cache.Bridge.View != view)
+        {
+            cache = new LayoutCache(cache.Settings, cache.Fonts, new ParagraphBridge(cache.Fonts, document, view));
             Caches.AddOrUpdate(document, cache);
         }
 
@@ -128,6 +136,14 @@ internal sealed partial class Paginator
 
         Balance();
         List<PageLayout> built = [.. pages.Select((p, i) => p.Build(i, this))];
+        if (view == RevisionView.Markup)
+        {
+            foreach (PageLayout shown in built)
+            {
+                shown.ChangeBars = true;
+            }
+        }
+
         DocumentLayout layout = new(document, built, fonts.Substitutions);
         layout.Warnings = Warnings(layout);
         foreach (LayoutWarning warning in layout.Warnings)

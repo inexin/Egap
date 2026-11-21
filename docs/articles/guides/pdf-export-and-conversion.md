@@ -58,6 +58,26 @@ their page go to a Comments list at the end of the document, each with its page 
 smaller page; form fields cannot be written with this mode. In tagged output each balloon is a `Note` beside the
 paragraph its comment is in. Tracked changes are not printed in the margin.
 
+### Tracked changes
+
+A document's tracked changes print as if accepted unless `RevisionView` says otherwise; the layout then warns
+`ChangesAccepted` once. `RevisionView.Markup` prints a redline: inserted text underlined and deleted text struck through,
+each in its author's colour (the first author red, then blue, green and five more), text whose formatting changed in its new
+look with a dotted underline, and a bar in the outside margin beside each changed line. Deleted paragraphs and rows keep
+their space. `RevisionView.Original` prints the document as if every change were rejected. The same views are on
+`LayoutOptions`, for pages, images and previews. In tagged output the marked-up text keeps its reading order and the
+change bars are artifacts.
+
+```csharp
+using Egap.Documents;
+using Egap.Documents.Layout;
+using Egap.Documents.Pdf;
+
+Document contract = Document.Load("contract-redline.docx");
+contract.SaveAsPdf("contract-markup.pdf", new PdfExportOptions { RevisionView = RevisionView.Markup, Tagged = true });
+contract.SaveAsPdf("contract-before.pdf", new PdfExportOptions { RevisionView = RevisionView.Original });
+```
+
 ## One-line conversions
 
 `PdfConvert` turns HTML, Markdown, DOCX and images into PDF in one call. A page size and margins in the options replace the

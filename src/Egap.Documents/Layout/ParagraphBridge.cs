@@ -64,6 +64,12 @@ internal sealed class ParagraphContent
     /// <summary>The largest font size in the paragraph (its mark when empty), for an empty line's height.</summary>
     public required double MaxFontSize { get; init; }
 
+    /// <summary>Whether the paragraph has tracked changes: of its inlines, their formatting, its mark or its formatting.</summary>
+    public bool HasRevisions { get; init; }
+
+    /// <summary>The text ranges with tracked changes, for change bars; null unless changes are shown (<see cref="RevisionView.Markup"/>).</summary>
+    public IReadOnlyList<(int Start, int Length)>? Changes { get; init; }
+
     /// <summary>The lines last broken for this content, at the width they were broken for; layout keeps them here.</summary>
     internal (double Width, object Lines)? Broken { get; set; }
 
@@ -85,9 +91,20 @@ internal sealed class ParagraphContent
 }
 
 /// <summary>Builds <see cref="ParagraphContent"/> from model paragraphs with one <see cref="FontProvider"/>.</summary>
-internal sealed class ParagraphBridge(FontProvider fonts, Document document)
+internal sealed class ParagraphBridge(FontProvider fonts, Document document, RevisionView view = RevisionView.Final)
 {
+    /// <summary>The authors' colours in order: the first author of the document's changes gets the first.</summary>
+    private static readonly Rgba8[] AuthorColors =
+    [
+        new(192, 0, 0, 255), new(0, 70, 190, 255), new(0, 128, 0, 255), new(128, 0, 160, 255),
+        new(210, 105, 0, 255), new(0, 128, 128, 255), new(190, 0, 120, 255), new(120, 80, 30, 255),
+    ];
+
     private readonly Dictionary<string, IReadOnlyList<FontFamily>> families = new(StringComparer.OrdinalIgnoreCase);
+    private Dictionary<string, int>? authors;
+
+    /// <summary>How tracked changes show: <see cref="RevisionView.Final"/> or <see cref="RevisionView.Markup"/>.</summary>
+    public RevisionView View => view;
 
     /// <param name="paragraph">The paragraph.</param>
     /// <param name="pageField">The text of a page field (PAGE, NUMPAGES, SECTIONPAGES, PAGEREF) on the page being laid out, or null to show its stored result.</param>
@@ -107,6 +124,11 @@ internal sealed class ParagraphBridge(FontProvider fonts, Document document)
         TextStyle? last = null;
         TextStyle? mark = null;
         bool afterDisplay = false;
+        bool markup = view == RevisionView.Markup;
+        bool hasRevisions = false;
+        List<(int, int)>? changes = markup ? [] : null;
+        Revision? marking = null;
+        FormatRevision? formatMarking = null;
 
         int labelLength = 0;
         if (paragraph.ListLabel is { } label && label.Text.Length + 1 is int length)
@@ -150,6 +172,12 @@ internal sealed class ParagraphBridge(FontProvider fonts, Document document)
             }
         }
 
+        if (paragraph.MarkRevision is not null || paragraph.FormatRevision is not null)
+        {
+            hasRevisions = true;
+            changes?.Add((Math.Max(0, text.Length - 1), 1));
+        }
+
         RichText rich = text.ToRichText();
         // Text outside every span (a placeholder's character) takes the default style, which must name fonts.
         EgamiParagraphStyle paragraphStyle = ParagraphStyleOf(format, Mark(), labelLength > 0);
@@ -165,6 +193,8 @@ internal sealed class ParagraphBridge(FontProvider fonts, Document document)
             Floats = floats,
             PageFields = pageFields,
             MaxFontSize = maxSize,
+            HasRevisions = hasRevisions,
+            Changes = changes,
         };
 
         // The mark's style, resolved once for the paragraph.
@@ -178,10 +208,22 @@ internal sealed class ParagraphBridge(FontProvider fonts, Document document)
             foreach (Inline inline in inlines)
             {
                 bool inCode = (fields.Count > 0 && fields.Peek().InCode) || replacing > 0;
-                if (inline.Revision?.Removes == true && inline is not (FieldStart or FieldSeparator or FieldEnd))
+                Revision? revision = inline.Revision;
+                if (revision is not null)
                 {
-                    // Layout shows the document with its changes accepted.
-                    continue;
+                    hasRevisions = true;
+                    if (revision.Removes && !markup && inline is not (FieldStart or FieldSeparator or FieldEnd))
+                    {
+                        // The final view shows the document with its changes accepted.
+                        continue;
+                    }
+                }
+
+                // Markup marks an inline by its own change, or else by the change of the hyperlink or field around it.
+                Revision? outer = marking;
+                if (revision is not null)
+                {
+                    marking = revision;
                 }
 
                 switch (inline)
@@ -283,6 +325,8 @@ internal sealed class ParagraphBridge(FontProvider fonts, Document document)
 
                         break;
                 }
+
+                marking = outer;
             }
         }
 
@@ -292,10 +336,23 @@ internal sealed class ParagraphBridge(FontProvider fonts, Document document)
         void AddRun(Run run)
         {
             ResolvedRunFormat runFormat = run.GetEffectiveFormat();
+            if (run.FormatRevision is not null)
+            {
+                hasRevisions = true;
+            }
+
             if (runFormat.Hidden || run.Text.Length == 0)
             {
                 return;
             }
+
+            formatMarking = markup ? run.FormatRevision : null;
+            AddRunText(run, runFormat);
+            formatMarking = null;
+        }
+
+        void AddRunText(Run run, ResolvedRunFormat runFormat)
+        {
 
             TextStyle style = Style(paragraph, runFormat);
             maxSize = Math.Max(maxSize, runFormat.Size);
@@ -335,6 +392,11 @@ internal sealed class ParagraphBridge(FontProvider fonts, Document document)
                 return;
             }
 
+            if (markup && (marking is not null || formatMarking is not null))
+            {
+                style = Marked(style, marking, formatMarking);
+            }
+
             BreakAfterDisplay();
 
             // Egami shapes a run past 65536 characters only with a fresh shaping buffer (its limit is the last text's), so
@@ -350,6 +412,11 @@ internal sealed class ParagraphBridge(FontProvider fonts, Document document)
                 }
 
                 return;
+            }
+
+            if (markup && (marking is not null || formatMarking is not null))
+            {
+                changes!.Add((text.Length, value.Length));
             }
 
             spans.Add(new InlineSpan(text.Length, value.Length, node, nodeOffset));
@@ -369,6 +436,11 @@ internal sealed class ParagraphBridge(FontProvider fonts, Document document)
         void AddObject(Inline node, FloatingPlacement? floating, double width, double height)
         {
             BreakAfterDisplay();
+            if (markup && marking is not null)
+            {
+                changes!.Add((text.Length, floating is null ? 1 : 0));
+            }
+
             if (floating is not null)
             {
                 floats.Add(new FloatingObject(text.Length, node, floating, width, height));
@@ -379,6 +451,53 @@ internal sealed class ParagraphBridge(FontProvider fonts, Document document)
             objects.Add(node);
             text.AddPlaceholder(new Placeholder((float)width, (float)height, PlaceholderAlignment.AboveBaseline));
         }
+    }
+
+    /// <summary>
+    /// <paramref name="style"/> marked up as a tracked change shows, in its author's colour: inserted text underlined,
+    /// deleted text struck through, text whose formatting changed in its new look with a dotted underline.
+    /// </summary>
+    private TextStyle Marked(TextStyle style, Revision? revision, FormatRevision? format)
+    {
+        Rgba8 color = AuthorColor(revision?.Author ?? format!.Author);
+        TextDecorationLines lines = style.Decoration?.Lines ?? TextDecorationLines.None;
+        TextDecorationStyle decoration = style.Decoration?.Style ?? TextDecorationStyle.Solid;
+        if (revision is not null)
+        {
+            lines |= revision.Removes ? TextDecorationLines.LineThrough : TextDecorationLines.Underline;
+        }
+        else if (!lines.HasFlag(TextDecorationLines.Underline))
+        {
+            lines |= TextDecorationLines.Underline;
+            decoration = TextDecorationStyle.Dotted;
+        }
+
+        return style with
+        {
+            Color = revision is null ? style.Color : color,
+            Decoration = new TextDecoration { Lines = lines, Style = decoration, Color = color },
+        };
+    }
+
+    /// <summary>The colour of an author's changes: the palette's, in the order authors first appear, round again past eight.</summary>
+    internal Rgba8 AuthorColor(string author)
+    {
+        if (authors is null)
+        {
+            authors = new(StringComparer.Ordinal);
+            foreach (TrackedChange change in document.Revisions)
+            {
+                authors.TryAdd(change.Author, authors.Count);
+            }
+        }
+
+        if (!authors.TryGetValue(author, out int index))
+        {
+            index = authors.Count;
+            authors[author] = index;
+        }
+
+        return AuthorColors[index % AuthorColors.Length];
     }
 
     /// <summary>The text style of a run (or, without one, of the paragraph's mark).</summary>

@@ -84,7 +84,23 @@ public sealed partial class Document : Node
     /// </summary>
     public Layout.DocumentLayout Layout(Layout.LayoutOptions? options = null)
     {
-        return new Layout.Paginator(this, options ?? DefaultLayoutOptions).Run();
+        options ??= DefaultLayoutOptions;
+        if (options?.RevisionView == Egap.Documents.Layout.RevisionView.Original && HasRevisions())
+        {
+            // The original is the document with every change rejected: a copy, so this document keeps its changes.
+            Document original = Clone();
+            original.Revisions.RejectAll();
+            return new Layout.Paginator(original, options).Run();
+        }
+
+        return new Layout.Paginator(this, options).Run();
+    }
+
+    /// <summary>Whether the document has at least one tracked change, found without counting them all.</summary>
+    private bool HasRevisions()
+    {
+        using IEnumerator<TrackedChange> changes = Revisions.GetEnumerator();
+        return changes.MoveNext();
     }
 
     /// <summary>

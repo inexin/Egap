@@ -699,6 +699,8 @@ Egap.Documents.Island.Island(Egap.Documents.Document! document, Egap.Documents.C
 Egap.Documents.Layout.DocumentLayout.Warnings.get -> System.Collections.Generic.IReadOnlyList<Egap.Documents.Layout.LayoutWarning!>!
 Egap.Documents.Layout.LayoutOptions.OnWarning.get -> System.Action<Egap.Documents.Layout.LayoutWarning!>?
 Egap.Documents.Layout.LayoutOptions.OnWarning.init -> void
+Egap.Documents.Layout.LayoutOptions.RevisionView.get -> Egap.Documents.Layout.RevisionView
+Egap.Documents.Layout.LayoutOptions.RevisionView.init -> void
 Egap.Documents.Layout.LayoutWarning
 Egap.Documents.Layout.LayoutWarning.<Clone>$() -> Egap.Documents.Layout.LayoutWarning!
 Egap.Documents.Layout.LayoutWarning.Deconstruct(out Egap.Documents.Layout.LayoutWarningKind Kind, out string! Message, out Egap.Documents.Node! Node, out int PageIndex) -> void
@@ -713,8 +715,13 @@ Egap.Documents.Layout.LayoutWarning.Node.init -> void
 Egap.Documents.Layout.LayoutWarning.PageIndex.get -> int
 Egap.Documents.Layout.LayoutWarning.PageIndex.init -> void
 Egap.Documents.Layout.LayoutWarningKind
+Egap.Documents.Layout.LayoutWarningKind.ChangesAccepted = 2 -> Egap.Documents.Layout.LayoutWarningKind
 Egap.Documents.Layout.LayoutWarningKind.FloatLaidOutInline = 0 -> Egap.Documents.Layout.LayoutWarningKind
 Egap.Documents.Layout.LayoutWarningKind.SmartArtDrawnAsList = 1 -> Egap.Documents.Layout.LayoutWarningKind
+Egap.Documents.Layout.RevisionView
+Egap.Documents.Layout.RevisionView.Final = 0 -> Egap.Documents.Layout.RevisionView
+Egap.Documents.Layout.RevisionView.Markup = 1 -> Egap.Documents.Layout.RevisionView
+Egap.Documents.Layout.RevisionView.Original = 2 -> Egap.Documents.Layout.RevisionView
 Egap.Documents.OdfVersion
 Egap.Documents.OdfVersion.Odf12 = 0 -> Egap.Documents.OdfVersion
 Egap.Documents.OdfVersion.Odf13 = 1 -> Egap.Documents.OdfVersion
@@ -750,6 +757,8 @@ Egap.Documents.OdtSaveOptions.Version.get -> Egap.Documents.OdfVersion
 Egap.Documents.OdtSaveOptions.Version.init -> void
 Egap.Documents.Pdf.PdfConvertOptions.Password.get -> string?
 Egap.Documents.Pdf.PdfConvertOptions.Password.init -> void
+Egap.Documents.Pdf.PdfExportOptions.RevisionView.get -> Egap.Documents.Layout.RevisionView
+Egap.Documents.Pdf.PdfExportOptions.RevisionView.init -> void
 Egap.Documents.ProtectionKind
 Egap.Documents.ProtectionKind.Comments = 2 -> Egap.Documents.ProtectionKind
 Egap.Documents.ProtectionKind.Forms = 4 -> Egap.Documents.ProtectionKind
