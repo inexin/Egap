@@ -148,6 +148,29 @@ foreach (Document invoice in template.MailMerge(customers))
 Document statements = template.MailMergeAll(customers, new MailMergeOptions { OnWarning = w => Console.WriteLine(w) });
 ```
 
+## Comparing documents
+
+`DocumentCompare.Run` compares two versions of a document and gives a copy of the later one with the differences as
+tracked changes, as Word's *Compare* does: words inserted and deleted within paragraphs, and paragraphs and table rows
+added and removed. Accepting every change gives the revised document and rejecting every change gives the original.
+`Changes` lists each difference with its old and new text and can accept or reject it on its own. The options choose word
+or character granularity, whether case and spacing count, and the author and date of the changes; tables that differ are
+replaced whole for now.
+
+```csharp
+using Egap.Documents;
+using Egap.Documents.Comparing;
+
+DocumentComparison comparison = DocumentCompare.Run(Document.Load("contract-v1.docx"), Document.Load("contract-v2.docx"),
+    new DocumentCompareOptions { Author = "Legal" });
+foreach (DocumentChange change in comparison.Changes)
+{
+    Console.WriteLine($"{change.Kind}: '{change.OldText}' -> '{change.NewText}'");
+}
+
+comparison.Document.Save("contract-redline.docx");
+```
+
 ## Page layout
 
 `Layout` breaks the document into pages, with floats, columns, headers and footers, and footnotes. Each page draws onto any

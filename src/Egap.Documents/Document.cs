@@ -195,6 +195,11 @@ public sealed partial class Document : Node
 
         copy.MathSettings = MathSettings;
 
+        // The copy counts on from this document's versions: format extensions carried over remember the versions their nodes
+        // had when read, and an edit of the copy must never land on one of those numbers by chance.
+        copy.Version = Version;
+        copy.FormattingVersion = FormattingVersion;
+
         copy.fileName = fileName;
         copy.CopyExtensionsFrom(this);
         foreach (EmbeddedFont font in EmbeddedFonts)

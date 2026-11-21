@@ -86,7 +86,13 @@ public sealed class TrackedChange
             case TrackedChangeTarget.Row when Node is Row row && row.Revision is { } revision:
                 if (revision.Removes == accept)
                 {
+                    Table? owner = row.Table;
                     row.Remove();
+                    if (owner is { Rows.Count: 0 })
+                    {
+                        // A table whose last row goes goes with it.
+                        owner.Remove();
+                    }
                 }
                 else
                 {
@@ -125,12 +131,18 @@ public sealed class TrackedChange
 
     /// <summary>
     /// Removes a paragraph's mark: its inlines move to the start of the next paragraph, which keeps its own formatting, as when
-    /// a paragraph mark is deleted in Word. A paragraph with no next paragraph in its container stays.
+    /// a paragraph mark is deleted in Word. A paragraph with no next paragraph in its container (the last one, or one before a
+    /// table) stays, unless it is empty and not alone in its container: then it goes.
     /// </summary>
     private static void JoinWithNext(Paragraph paragraph)
     {
         if (paragraph.NextSibling is not Paragraph next)
         {
+            if (paragraph.Inlines.Count == 0 && (paragraph.NextSibling is not null || paragraph.PreviousSibling is not null))
+            {
+                paragraph.Remove();
+            }
+
             return;
         }
 
@@ -185,14 +197,20 @@ public sealed class TrackedChangeCollection : IEnumerable<TrackedChange>
 
     private int ApplyAll(bool accept)
     {
-        // Format changes first, then node changes from the end, so removing nodes and joining paragraphs moves nothing still to do.
+        // Format changes first, then inline and row changes from the end, then paragraph marks from the end, so removing nodes
+        // and joining paragraphs moves nothing still to do, and a paragraph whose content all went is empty when its mark goes.
         List<TrackedChange> changes = [.. Find()];
         foreach (TrackedChange change in changes.Where(c => c.Target == TrackedChangeTarget.Format))
         {
             Do(change, accept);
         }
 
-        foreach (TrackedChange change in Enumerable.Reverse(changes).Where(c => c.Target != TrackedChangeTarget.Format))
+        foreach (TrackedChange change in Enumerable.Reverse(changes).Where(c => c.Target is TrackedChangeTarget.Node or TrackedChangeTarget.Row))
+        {
+            Do(change, accept);
+        }
+
+        foreach (TrackedChange change in Enumerable.Reverse(changes).Where(c => c.Target == TrackedChangeTarget.ParagraphMark))
         {
             Do(change, accept);
         }

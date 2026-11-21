@@ -262,6 +262,7 @@ public abstract class Node : IFormatOwner
     {
         Node copy = CloneShallow(context);
         copy.extensions = extensions?.Copy();
+        CopyVersion(this, copy, context);
         if (deep)
         {
             Stack<(Node Source, Node Copy)> pending = new();
@@ -287,8 +288,35 @@ public abstract class Node : IFormatOwner
     {
         T copy = (T)child.CloneShallow(context);
         copy.extensions = child.extensions?.Copy();
+        CopyVersion(child, copy, context);
         pending.Push((child, copy));
         return copy;
+    }
+
+    /// <summary>
+    /// In a whole-document copy, carries over the versions that say when a paragraph, story or table was last edited, so
+    /// writers that keep the markup they read for unedited nodes still see the edits made before the copy.
+    /// </summary>
+    private static void CopyVersion(Node source, Node copy, CloneContext context)
+    {
+        if (!context.WholeDocument)
+        {
+            return;
+        }
+
+        switch (source, copy)
+        {
+            // An edited chart is copied as a new chart, so its paragraph cannot go back as it was read.
+            case (Paragraph from, Paragraph to) when !from.Descendants<Island>().Any(i => i.LoadedChart is { } chart && (i.NewChart || chart.IsChanged)):
+                to.Version = from.Version;
+                break;
+            case (Story from, Story to):
+                to.Version = from.Version;
+                break;
+            case (Table from, Table to):
+                to.Stamp = from.Stamp;
+                break;
+        }
     }
 
     void IFormatOwner.FormatChanged(FormatBase format, string property)

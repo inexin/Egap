@@ -51,6 +51,16 @@ follows with the rest of Egap. Install it with `dotnet tool install -g Egap.Cli 
   file (PDF/UA-2).
 - OpenDocument formulas are read from their MathML, in the package or inline in a flat file, and lay out, draw and tag
   as Word equations do, with their linear form as text; before, they showed the picture saved with them.
+- `DocumentCompare.Run` compares two documents and returns the revised one with the differences as tracked changes, in
+  the new `Egap.Documents.Comparing` namespace: words and characters within paragraphs (UAX #29 word boundaries, with
+  fields, pictures and other inline objects as single tokens), paragraphs added, removed, split and joined, rows and
+  whole tables, content controls and flex and grid items. `DocumentComparison` lists each change, which accepts or
+  rejects on its own, with word counts and warnings; `DocumentCompareOptions` sets granularity, case and whitespace
+  folding, author, date, which document is the base and what happens to revisions already in the inputs.
+- Accepting or rejecting all changes now removes a deleted paragraph that is the last in its story, and a table whose
+  last row is removed; before, an empty paragraph or an empty table was left behind.
+- A copy of a whole document (`Document.Clone`) keeps the edit counts of the original, so saving to DOCX after editing
+  the copy writes those edits; before, the copy could write some edited paragraphs as they were read.
 - Tracked changes can print as a redline: `RevisionView` on `LayoutOptions` and `PdfExportOptions` lays a document out
   as if its changes were accepted (`Final`, the default), marked up (`Markup`: inserted text underlined and deleted text
   struck through in their authors' colours, changed formatting with a dotted underline, change bars in the outside margin,
