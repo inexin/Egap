@@ -11,6 +11,9 @@ public enum CompareChangeKind
 
     /// <summary>Content of the original replaced by other content in the revised document.</summary>
     Replaced,
+
+    /// <summary>The same text with other formatting, or a paragraph with other formatting or another style.</summary>
+    Formatted,
 }
 
 /// <summary>

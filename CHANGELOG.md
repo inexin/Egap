@@ -53,10 +53,16 @@ follows with the rest of Egap. Install it with `dotnet tool install -g Egap.Cli 
   as Word equations do, with their linear form as text; before, they showed the picture saved with them.
 - `DocumentCompare.Run` compares two documents and returns the revised one with the differences as tracked changes, in
   the new `Egap.Documents.Comparing` namespace: words and characters within paragraphs (UAX #29 word boundaries, with
-  fields, pictures and other inline objects as single tokens), paragraphs added, removed, split and joined, rows and
-  whole tables, content controls and flex and grid items. `DocumentComparison` lists each change, which accepts or
-  rejects on its own, with word counts and warnings; `DocumentCompareOptions` sets granularity, case and whitespace
-  folding, author, date, which document is the base and what happens to revisions already in the inputs.
+  fields, pictures and other inline objects as single tokens), paragraphs added, removed, split and joined, tables row
+  by row (rows added and removed as tracked rows, edited cells word by word, nested tables in turn; a table with no row
+  in common is replaced whole), content controls and flex and grid items, and formatting: the same text with another
+  look, or a paragraph with another style or paragraph formatting, becomes a format change (`CompareChangeKind.Formatted`)
+  that keeps the old formatting. `DocumentComparison` lists each change, which accepts or rejects on its own, with word
+  counts and warnings; `DocumentCompareOptions` sets granularity, case and whitespace folding, author, date, which
+  document is the base and what happens to revisions already in the inputs.
+- `FormatRevision` has `StyleChanged` and `OldStyle`, so a format change can also change a run's character style or a
+  paragraph's style, and rejecting it puts the old style back. DOCX files keep the old style in `w:rPrChange` and
+  `w:pPrChange`, read and written; before, the reader dropped it and the writer wrote none.
 - Accepting or rejecting all changes now removes a deleted paragraph that is the last in its story, and a table whose
   last row is removed; before, an empty paragraph or an empty table was left behind.
 - A copy of a whole document (`Document.Clone`) keeps the edit counts of the original, so saving to DOCX after editing

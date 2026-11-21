@@ -176,7 +176,7 @@ internal sealed partial class DocxWriter
         if (run.FormatRevision is { OldFormat: RunFormat old } revision)
         {
             change = new XElement(Ns.W + "rPrChange", new XAttribute(Ns.W + "id", nextRevisionId++), RevisionAttributes(revision.Author, revision.Date),
-                DocxPropertyWriter.Run(old, null, null) ?? new XElement(Ns.W + "rPr"));
+                DocxPropertyWriter.Run(old, revision.StyleChanged ? (CharacterStyle?)revision.OldStyle : run.Style, null) ?? new XElement(Ns.W + "rPr"));
         }
 
         if (DocxPropertyWriter.Run(run.Format, run.Style, kept?.UnknownProperties?.GetValueOrDefault("rPr"), change) is { } rPr)

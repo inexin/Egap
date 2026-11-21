@@ -129,7 +129,26 @@ public sealed record Revision(RevisionKind Kind, string Author, DateTimeOffset? 
 /// <param name="Author">Who made the change.</param>
 /// <param name="Date">When, if known.</param>
 /// <param name="OldFormat">The direct formatting before the change; a stand-alone copy.</param>
-public sealed record FormatRevision(string Author, DateTimeOffset? Date, FormatBase OldFormat);
+public sealed record FormatRevision(string Author, DateTimeOffset? Date, FormatBase OldFormat)
+{
+    /// <summary>
+    /// Whether the change also changed the style: a run's character style or a paragraph's style. When it did,
+    /// <see cref="OldStyle"/> is the style before, and rejecting the change puts it back.
+    /// </summary>
+    public bool StyleChanged { get; init; }
+
+    /// <summary>
+    /// The style before the change, when <see cref="StyleChanged"/> is set: a <see cref="CharacterStyle"/> for a run, a
+    /// <see cref="ParagraphStyle"/> for a paragraph, or null for the document's default.
+    /// </summary>
+    public Style? OldStyle { get; init; }
+
+    /// <summary>This revision with its old style in <paramref name="context"/>'s document, for a copy of its node.</summary>
+    internal FormatRevision CopyFor(CloneContext context)
+    {
+        return OldStyle is null || OldStyle.Document == context.Target ? this : this with { OldStyle = context.Map(OldStyle) };
+    }
+}
 
 /// <summary>Image bytes as a file stores them, with their media type, such as image/png or image/x-emf.</summary>
 /// <param name="Bytes">The encoded image.</param>

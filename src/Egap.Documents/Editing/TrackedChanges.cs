@@ -113,6 +113,10 @@ public sealed class TrackedChange
                 {
                     run.Format.ClearFormatting();
                     run.Format.Apply(change.OldFormat);
+                    if (change.StyleChanged)
+                    {
+                        run.Style = (CharacterStyle?)change.OldStyle;
+                    }
                 }
 
                 run.FormatRevision = null;
@@ -122,6 +126,10 @@ public sealed class TrackedChange
                 {
                     paragraph.Format.ClearFormatting();
                     paragraph.Format.Apply(change.OldFormat);
+                    if (change.StyleChanged)
+                    {
+                        paragraph.Style = (ParagraphStyle?)change.OldStyle;
+                    }
                 }
 
                 paragraph.FormatRevision = null;

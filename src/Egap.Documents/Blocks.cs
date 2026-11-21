@@ -51,9 +51,9 @@ public sealed class Paragraph : Block
         get => formatRevision;
         set
         {
-            if (value is not null && value.OldFormat is not ParagraphFormat)
+            if (value is not null && (value.OldFormat is not ParagraphFormat || value.OldStyle is not (null or ParagraphStyle)))
             {
-                throw new ArgumentException("A paragraph's format revision holds a ParagraphFormat.", nameof(value));
+                throw new ArgumentException("A paragraph's format revision holds a ParagraphFormat and, if any, a ParagraphStyle.", nameof(value));
             }
 
             SetProperty(ref formatRevision, value);
@@ -247,7 +247,7 @@ public sealed class Paragraph : Block
 
     private protected override Node CloneShallow(CloneContext context)
     {
-        Paragraph copy = new(context.Target) { style = context.Map(style), markRevision = markRevision, formatRevision = formatRevision };
+        Paragraph copy = new(context.Target) { style = context.Map(style), markRevision = markRevision, formatRevision = formatRevision?.CopyFor(context) };
         copy.Format.CopyRaw(Format);
         copy.MarkFormat.CopyRaw(MarkFormat);
         context.FixLists(copy.Format);

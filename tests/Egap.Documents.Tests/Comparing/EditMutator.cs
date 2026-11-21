@@ -2,9 +2,10 @@ namespace Egap.Documents.Tests.Comparing;
 
 /// <summary>
 /// Makes a revised copy of a document with seeded random edits of the kinds people make: words inserted, deleted and
-/// replaced, paragraphs split, joined, added, removed and moved, table rows added and dropped.
+/// replaced, paragraphs split, joined, added, removed and moved, table rows added and dropped, and with
+/// <paramref name="formatting"/> also words reformatted (bold, size, a paragraph's alignment) and words put in capitals.
 /// </summary>
-internal sealed class EditMutator(int seed)
+internal sealed class EditMutator(int seed, bool formatting = false)
 {
     private static readonly string[] Vocabulary =
     [
@@ -32,7 +33,7 @@ internal sealed class EditMutator(int seed)
             }
 
             Paragraph paragraph = paragraphs[random.Next(paragraphs.Count)];
-            switch (random.Next(10))
+            switch (random.Next(formatting ? 13 : 10))
             {
                 case 0:
                 case 1:
@@ -58,8 +59,17 @@ internal sealed class EditMutator(int seed)
                 case 8:
                     RemoveOrMove(paragraph, paragraphs);
                     break;
-                default:
+                case 9:
                     ChangeRows(paragraph);
+                    break;
+                case 10:
+                    Reformat(paragraph);
+                    break;
+                case 11:
+                    ChangeCase(paragraph);
+                    break;
+                default:
+                    paragraph.Format.Alignment = paragraph.GetEffectiveFormat().Alignment == ParagraphAlignment.Center ? ParagraphAlignment.Right : ParagraphAlignment.Center;
                     break;
             }
         }
@@ -187,6 +197,65 @@ internal sealed class EditMutator(int seed)
                 into.Insert(into.IndexOf(target), paragraph);
             }
         }
+    }
+
+    /// <summary>Splits off a stretch of a run, at word boundaries, and makes it bold (or not) or another size.</summary>
+    private void Reformat(Paragraph paragraph)
+    {
+        if (PickRun(paragraph) is not Run run)
+        {
+            return;
+        }
+
+        int start = WordBoundary(run.Text);
+        int end = start;
+        while (end < run.Text.Length && !char.IsWhiteSpace(run.Text[end]))
+        {
+            end++;
+        }
+
+        if (end == start)
+        {
+            return;
+        }
+
+        int index = paragraph.Inlines.IndexOf(run);
+        Run middle = run.Clone(), tail = run.Clone();
+        middle.Text = run.Text[start..end];
+        tail.Text = run.Text[end..];
+        run.Text = run.Text[..start];
+        paragraph.Inlines.Insert(index + 1, middle);
+        if (tail.Text.Length > 0)
+        {
+            paragraph.Inlines.Insert(index + 2, tail);
+        }
+
+        if (random.Next(2) == 0)
+        {
+            middle.Format.Bold = !middle.GetEffectiveFormat().Bold;
+        }
+        else
+        {
+            middle.Format.Size = middle.GetEffectiveFormat().Size + 2;
+        }
+    }
+
+    /// <summary>Puts a word of a run in capitals.</summary>
+    private void ChangeCase(Paragraph paragraph)
+    {
+        if (PickRun(paragraph) is not Run run)
+        {
+            return;
+        }
+
+        int start = WordBoundary(run.Text);
+        int end = start;
+        while (end < run.Text.Length && !char.IsWhiteSpace(run.Text[end]))
+        {
+            end++;
+        }
+
+        run.Text = run.Text[..start] + run.Text[start..end].ToUpperInvariant() + run.Text[end..];
     }
 
     private void ChangeRows(Paragraph paragraph)

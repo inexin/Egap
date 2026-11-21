@@ -430,7 +430,15 @@ internal sealed partial class DocxReader
             XElement? oldPPr = change.Element(Ns.W + "pPr");
             DocxProperties.ReadParagraph(oldPPr, old);
             ReadNumbering(oldPPr?.Element(Ns.W + "numPr"), old);
-            paragraph.FormatRevision = new FormatRevision(change.W("author") ?? "", DateOf(change), old);
+
+            // The old properties are the whole set before the change, its style with them.
+            ParagraphStyle? oldStyle = oldPPr?.Element(Ns.W + "pStyle").Val() is { } oldStyleId ? document.Styles[oldStyleId] as ParagraphStyle : null;
+            bool styleChanged = oldStyle != paragraph.Style;
+            paragraph.FormatRevision = new FormatRevision(change.W("author") ?? "", DateOf(change), old)
+            {
+                StyleChanged = styleChanged,
+                OldStyle = styleChanged ? oldStyle : null,
+            };
         }
 
         if (pPr.Element(Ns.W + "sectPr") is { } sectPr)
@@ -1074,8 +1082,15 @@ internal sealed partial class DocxReader
                     if (e.Name == Ns.W + "rPrChange")
                     {
                         RunFormat old = new();
-                        DocxProperties.ReadRun(e.Element(Ns.W + "rPr"), old);
-                        run.FormatRevision = new FormatRevision(e.W("author") ?? "", DateOf(e), old);
+                        XElement? oldRPr = e.Element(Ns.W + "rPr");
+                        DocxProperties.ReadRun(oldRPr, old);
+                        CharacterStyle? oldStyle = oldRPr?.Element(Ns.W + "rStyle").Val() is { } oldStyleId ? document.Styles[oldStyleId] as CharacterStyle : null;
+                        bool styleChanged = oldStyle != run.Style;
+                        run.FormatRevision = new FormatRevision(e.W("author") ?? "", DateOf(e), old)
+                        {
+                            StyleChanged = styleChanged,
+                            OldStyle = styleChanged ? oldStyle : null,
+                        };
                     }
                     else
                     {

@@ -21,9 +21,15 @@ internal static class RoundTrip
     /// <summary>Checks that <paramref name="comparison"/> accepts to <paramref name="revised"/> and rejects to <paramref name="original"/>.</summary>
     public static void Check(Document original, Document revised, DocumentComparison comparison)
     {
-        Document accepted = comparison.Document.Clone();
+        Check(original, revised, comparison.Document);
+    }
+
+    /// <summary>Checks that the tracked changes of <paramref name="result"/> accept to <paramref name="revised"/> and reject to <paramref name="original"/>.</summary>
+    public static void Check(Document original, Document revised, Document result)
+    {
+        Document accepted = result.Clone();
         accepted.Revisions.AcceptAll();
-        Document rejected = comparison.Document.Clone();
+        Document rejected = result.Clone();
         rejected.Revisions.RejectAll();
         Assert.Equal(Blocks(revised), Blocks(accepted));
         Assert.Equal(Blocks(original), Blocks(rejected));
@@ -45,6 +51,62 @@ internal static class RoundTrip
             {
                 lines.Add(Describe(block));
             }
+        }
+
+        return lines;
+    }
+
+    /// <summary>
+    /// Compares the two documents and checks the result both ways by text and by look: each paragraph's style and resolved
+    /// formatting, and each stretch of text with its resolved run formatting.
+    /// </summary>
+    public static DocumentComparison CheckFormatting(Document original, Document revised, DocumentCompareOptions? options = null)
+    {
+        DocumentComparison comparison = Check(original, revised, options);
+        Document accepted = comparison.Document.Clone();
+        accepted.Revisions.AcceptAll();
+        Document rejected = comparison.Document.Clone();
+        rejected.Revisions.RejectAll();
+        Assert.Equal(Looks(revised), Looks(accepted));
+        Assert.Equal(Looks(original), Looks(rejected));
+        return comparison;
+    }
+
+    /// <summary>Every paragraph of a document as its style, look and runs with their looks, in document order.</summary>
+    public static List<string> Looks(Document document)
+    {
+        if (document.Revisions.Count > 0)
+        {
+            document = document.Clone();
+            document.Revisions.AcceptAll();
+        }
+
+        List<string> lines = [];
+        // Paragraphs of the body and its tables and containers; not those inside inlines (comments, notes, text boxes).
+        foreach (Paragraph paragraph in document.Sections.SelectMany(s => s.Body.Descendants<Paragraph>()).Where(p => p.GetAncestor<Inline>() is null))
+        {
+            ResolvedParagraphFormat f = paragraph.GetEffectiveFormat();
+            StringBuilder line = new($"{paragraph.Style?.Id}|{f.Alignment}|{f.LeftIndent}|{f.SpaceAfter}|{f.OutlineLevel}:");
+            string? last = null;
+            foreach (Run run in paragraph.Descendants<Run>())
+            {
+                if (run.Text.Length == 0 || run.GetAncestor<Paragraph>() != paragraph)
+                {
+                    continue;
+                }
+
+                ResolvedRunFormat r = run.GetEffectiveFormat();
+                string look = $"[{run.Style?.Id}|{r.Bold}|{r.Italic}|{r.Underline}|{r.Size}|{r.Color}|{r.FontAscii}]";
+                if (look != last)
+                {
+                    line.Append(look);
+                    last = look;
+                }
+
+                line.Append(run.Text);
+            }
+
+            lines.Add(line.ToString());
         }
 
         return lines;
