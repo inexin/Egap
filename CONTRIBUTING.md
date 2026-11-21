@@ -12,8 +12,8 @@ Thanks for helping build Egap, a fully managed, MIT-licensed family of document 
    libraries. Using .NET's own APIs (for example `System.IO.Compression.ZLibStream`) is fine.
 3. **Every contributed commit is signed off.** Add `Signed-off-by: Your Name <you@example.com>` to each commit in a pull
    request (`git commit -s`). This is the [Developer Certificate of Origin](https://developercertificate.org/): you certify
-   that you wrote the change or have the right to contribute it under the MIT license. The maintainer's own commits are
-   exempt.
+   that you wrote the change or have the right to contribute it under the MIT license. The maintainer's own commits and
+   Dependabot's version bumps are exempt.
 
 Comparisons with other PDF libraries (output, speed, conformance) do not belong in this repository.
 

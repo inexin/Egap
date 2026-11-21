@@ -17,3 +17,8 @@ updates:
     groups:
       nuget:
         patterns: ['*']
+    ignore:
+      # System.Security.Cryptography.Pkcs follows .NET's version: 11.x belongs to .NET 11 and pulls in the
+      # System.Formats.Asn1 package, which the CI package check rejects in src/. Stay on the 10.x line that matches .NET 10.
+      - dependency-name: System.Security.Cryptography.Pkcs
+        update-types: ['version-update:semver-major']
