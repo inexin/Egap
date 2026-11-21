@@ -551,6 +551,78 @@ Egap.Documents.Charts.ChartView3D.RotationX.get -> int?
 Egap.Documents.Charts.ChartView3D.RotationX.set -> void
 Egap.Documents.Charts.ChartView3D.RotationY.get -> int?
 Egap.Documents.Charts.ChartView3D.RotationY.set -> void
+Egap.Documents.Comparing.CompareBase
+Egap.Documents.Comparing.CompareBase.Original = 1 -> Egap.Documents.Comparing.CompareBase
+Egap.Documents.Comparing.CompareBase.Revised = 0 -> Egap.Documents.Comparing.CompareBase
+Egap.Documents.Comparing.CompareGranularity
+Egap.Documents.Comparing.CompareGranularity.Character = 1 -> Egap.Documents.Comparing.CompareGranularity
+Egap.Documents.Comparing.CompareGranularity.Word = 0 -> Egap.Documents.Comparing.CompareGranularity
+Egap.Documents.Comparing.DocumentChange
+Egap.Documents.Comparing.DocumentChange.Accept() -> void
+Egap.Documents.Comparing.DocumentChange.Kind.get -> Egap.Documents.Comparing.CompareChangeKind
+Egap.Documents.Comparing.DocumentChange.NewText.get -> string!
+Egap.Documents.Comparing.DocumentChange.OldText.get -> string!
+Egap.Documents.Comparing.DocumentChange.Reject() -> void
+Egap.Documents.Comparing.DocumentChange.Story.get -> Egap.Documents.Story!
+Egap.Documents.Comparing.DocumentChange.TrackedChanges.get -> System.Collections.Generic.IReadOnlyList<Egap.Documents.TrackedChange!>!
+Egap.Documents.Comparing.CompareChangeKind
+Egap.Documents.Comparing.CompareChangeKind.Deleted = 1 -> Egap.Documents.Comparing.CompareChangeKind
+Egap.Documents.Comparing.CompareChangeKind.Inserted = 0 -> Egap.Documents.Comparing.CompareChangeKind
+Egap.Documents.Comparing.CompareChangeKind.Replaced = 2 -> Egap.Documents.Comparing.CompareChangeKind
+Egap.Documents.Comparing.DocumentCompare
+Egap.Documents.Comparing.DocumentCompareOptions
+Egap.Documents.Comparing.DocumentCompareOptions.<Clone>$() -> Egap.Documents.Comparing.DocumentCompareOptions!
+Egap.Documents.Comparing.DocumentCompareOptions.Author.get -> string!
+Egap.Documents.Comparing.DocumentCompareOptions.Author.init -> void
+Egap.Documents.Comparing.DocumentCompareOptions.Base.get -> Egap.Documents.Comparing.CompareBase
+Egap.Documents.Comparing.DocumentCompareOptions.Base.init -> void
+Egap.Documents.Comparing.DocumentCompareOptions.CaseChanges.get -> bool
+Egap.Documents.Comparing.DocumentCompareOptions.CaseChanges.init -> void
+Egap.Documents.Comparing.DocumentCompareOptions.Date.get -> System.DateTimeOffset?
+Egap.Documents.Comparing.DocumentCompareOptions.Date.init -> void
+Egap.Documents.Comparing.DocumentCompareOptions.DocumentCompareOptions() -> void
+Egap.Documents.Comparing.DocumentCompareOptions.Equals(Egap.Documents.Comparing.DocumentCompareOptions? other) -> bool
+Egap.Documents.Comparing.DocumentCompareOptions.ExistingRevisions.get -> Egap.Documents.Comparing.ExistingRevisionHandling
+Egap.Documents.Comparing.DocumentCompareOptions.ExistingRevisions.init -> void
+Egap.Documents.Comparing.DocumentCompareOptions.Granularity.get -> Egap.Documents.Comparing.CompareGranularity
+Egap.Documents.Comparing.DocumentCompareOptions.Granularity.init -> void
+Egap.Documents.Comparing.DocumentCompareOptions.Whitespace.get -> bool
+Egap.Documents.Comparing.DocumentCompareOptions.Whitespace.init -> void
+Egap.Documents.Comparing.DocumentCompareStatistics
+Egap.Documents.Comparing.DocumentCompareStatistics.<Clone>$() -> Egap.Documents.Comparing.DocumentCompareStatistics!
+Egap.Documents.Comparing.DocumentCompareStatistics.DeletedWords.get -> int
+Egap.Documents.Comparing.DocumentCompareStatistics.DeletedWords.init -> void
+Egap.Documents.Comparing.DocumentCompareStatistics.DocumentCompareStatistics() -> void
+Egap.Documents.Comparing.DocumentCompareStatistics.Equals(Egap.Documents.Comparing.DocumentCompareStatistics? other) -> bool
+Egap.Documents.Comparing.DocumentCompareStatistics.InsertedWords.get -> int
+Egap.Documents.Comparing.DocumentCompareStatistics.InsertedWords.init -> void
+Egap.Documents.Comparing.DocumentCompareStatistics.ParagraphsTouched.get -> int
+Egap.Documents.Comparing.DocumentCompareStatistics.ParagraphsTouched.init -> void
+Egap.Documents.Comparing.DocumentCompareWarning
+Egap.Documents.Comparing.DocumentCompareWarning.<Clone>$() -> Egap.Documents.Comparing.DocumentCompareWarning!
+Egap.Documents.Comparing.DocumentCompareWarning.Count.get -> int
+Egap.Documents.Comparing.DocumentCompareWarning.Count.init -> void
+Egap.Documents.Comparing.DocumentCompareWarning.Deconstruct(out Egap.Documents.Comparing.DocumentCompareWarningKind Kind, out string! Message, out int Count) -> void
+Egap.Documents.Comparing.DocumentCompareWarning.DocumentCompareWarning(Egap.Documents.Comparing.DocumentCompareWarningKind Kind, string! Message, int Count = 1) -> void
+Egap.Documents.Comparing.DocumentCompareWarning.Equals(Egap.Documents.Comparing.DocumentCompareWarning? other) -> bool
+Egap.Documents.Comparing.DocumentCompareWarning.Kind.get -> Egap.Documents.Comparing.DocumentCompareWarningKind
+Egap.Documents.Comparing.DocumentCompareWarning.Kind.init -> void
+Egap.Documents.Comparing.DocumentCompareWarning.Message.get -> string!
+Egap.Documents.Comparing.DocumentCompareWarning.Message.init -> void
+Egap.Documents.Comparing.DocumentCompareWarningKind
+Egap.Documents.Comparing.DocumentCompareWarningKind.ContentNotTracked = 3 -> Egap.Documents.Comparing.DocumentCompareWarningKind
+Egap.Documents.Comparing.DocumentCompareWarningKind.EditLimitReached = 1 -> Egap.Documents.Comparing.DocumentCompareWarningKind
+Egap.Documents.Comparing.DocumentCompareWarningKind.ExistingRevisionsAccepted = 0 -> Egap.Documents.Comparing.DocumentCompareWarningKind
+Egap.Documents.Comparing.DocumentCompareWarningKind.SectionsDiffer = 2 -> Egap.Documents.Comparing.DocumentCompareWarningKind
+Egap.Documents.Comparing.DocumentComparison
+Egap.Documents.Comparing.DocumentComparison.Changes.get -> System.Collections.Generic.IReadOnlyList<Egap.Documents.Comparing.DocumentChange!>!
+Egap.Documents.Comparing.DocumentComparison.Document.get -> Egap.Documents.Document!
+Egap.Documents.Comparing.DocumentComparison.HasChanges.get -> bool
+Egap.Documents.Comparing.DocumentComparison.Statistics.get -> Egap.Documents.Comparing.DocumentCompareStatistics!
+Egap.Documents.Comparing.DocumentComparison.Warnings.get -> System.Collections.Generic.IReadOnlyList<Egap.Documents.Comparing.DocumentCompareWarning!>!
+Egap.Documents.Comparing.ExistingRevisionHandling
+Egap.Documents.Comparing.ExistingRevisionHandling.Accept = 0 -> Egap.Documents.Comparing.ExistingRevisionHandling
+Egap.Documents.Comparing.ExistingRevisionHandling.Throw = 1 -> Egap.Documents.Comparing.ExistingRevisionHandling
 Egap.Documents.Document.Protection.get -> Egap.Documents.DocumentProtection!
 Egap.Documents.DocumentBuilder.EndEditableRange(Egap.Documents.EditableRangeStart! start) -> Egap.Documents.EditableRangeEnd!
 Egap.Documents.DocumentBuilder.StartEditableRange(Egap.Documents.EditorGroup group = Egap.Documents.EditorGroup.Everyone) -> Egap.Documents.EditableRangeStart!
@@ -698,6 +770,17 @@ override Egap.Documents.Charts.ChartColor.GetHashCode() -> int
 override Egap.Documents.Charts.ChartColor.ToString() -> string!
 override Egap.Documents.Charts.ChartColorChange.GetHashCode() -> int
 override Egap.Documents.Charts.ChartGradientStop.GetHashCode() -> int
+override Egap.Documents.Comparing.DocumentChange.ToString() -> string!
+override Egap.Documents.Comparing.DocumentCompareOptions.Equals(object? obj) -> bool
+override Egap.Documents.Comparing.DocumentCompareOptions.GetHashCode() -> int
+override Egap.Documents.Comparing.DocumentCompareOptions.ToString() -> string!
+override Egap.Documents.Comparing.DocumentCompareStatistics.Equals(object? obj) -> bool
+override Egap.Documents.Comparing.DocumentCompareStatistics.GetHashCode() -> int
+override Egap.Documents.Comparing.DocumentCompareStatistics.ToString() -> string!
+override Egap.Documents.Comparing.DocumentCompareWarning.Equals(object? obj) -> bool
+override Egap.Documents.Comparing.DocumentCompareWarning.GetHashCode() -> int
+override Egap.Documents.Comparing.DocumentCompareWarning.ToString() -> string!
+override Egap.Documents.Comparing.DocumentComparison.ToString() -> string!
 override Egap.Documents.EditableRangeEnd.Clone(bool deep = true) -> Egap.Documents.EditableRangeEnd!
 override Egap.Documents.EditableRangeStart.Clone(bool deep = true) -> Egap.Documents.EditableRangeStart!
 override Egap.Documents.Layout.LayoutWarning.Equals(object? obj) -> bool
@@ -712,6 +795,14 @@ static Egap.Documents.Charts.ChartColorChange.operator !=(Egap.Documents.Charts.
 static Egap.Documents.Charts.ChartColorChange.operator ==(Egap.Documents.Charts.ChartColorChange left, Egap.Documents.Charts.ChartColorChange right) -> bool
 static Egap.Documents.Charts.ChartGradientStop.operator !=(Egap.Documents.Charts.ChartGradientStop left, Egap.Documents.Charts.ChartGradientStop right) -> bool
 static Egap.Documents.Charts.ChartGradientStop.operator ==(Egap.Documents.Charts.ChartGradientStop left, Egap.Documents.Charts.ChartGradientStop right) -> bool
+static Egap.Documents.Comparing.DocumentCompare.Run(Egap.Documents.Document! original, Egap.Documents.Document! revised, Egap.Documents.Comparing.DocumentCompareOptions? options = null) -> Egap.Documents.Comparing.DocumentComparison!
+static Egap.Documents.Comparing.DocumentCompareOptions.Default.get -> Egap.Documents.Comparing.DocumentCompareOptions!
+static Egap.Documents.Comparing.DocumentCompareOptions.operator !=(Egap.Documents.Comparing.DocumentCompareOptions? left, Egap.Documents.Comparing.DocumentCompareOptions? right) -> bool
+static Egap.Documents.Comparing.DocumentCompareOptions.operator ==(Egap.Documents.Comparing.DocumentCompareOptions? left, Egap.Documents.Comparing.DocumentCompareOptions? right) -> bool
+static Egap.Documents.Comparing.DocumentCompareStatistics.operator !=(Egap.Documents.Comparing.DocumentCompareStatistics? left, Egap.Documents.Comparing.DocumentCompareStatistics? right) -> bool
+static Egap.Documents.Comparing.DocumentCompareStatistics.operator ==(Egap.Documents.Comparing.DocumentCompareStatistics? left, Egap.Documents.Comparing.DocumentCompareStatistics? right) -> bool
+static Egap.Documents.Comparing.DocumentCompareWarning.operator !=(Egap.Documents.Comparing.DocumentCompareWarning? left, Egap.Documents.Comparing.DocumentCompareWarning? right) -> bool
+static Egap.Documents.Comparing.DocumentCompareWarning.operator ==(Egap.Documents.Comparing.DocumentCompareWarning? left, Egap.Documents.Comparing.DocumentCompareWarning? right) -> bool
 static Egap.Documents.Document.Load(string! path, Egap.Documents.DocumentLoadOptions? options) -> Egap.Documents.Document!
 static Egap.Documents.Document.Load(string! path, out System.Collections.Generic.IReadOnlyList<Egap.Documents.ConversionWarning!>! warnings, Egap.Documents.DocumentLoadOptions? options) -> Egap.Documents.Document!
 static Egap.Documents.Document.Load(System.IO.Stream! stream, Egap.Documents.DocumentLoadOptions? options) -> Egap.Documents.Document!
