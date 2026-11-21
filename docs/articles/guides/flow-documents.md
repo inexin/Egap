@@ -158,6 +158,12 @@ every change gives the original. `Changes` lists each difference with its old an
 its own. The options choose word or character granularity, whether case and spacing count, and the author and date of
 the changes.
 
+Headers and footers are compared with the one of the same kind in the same section, and the text of notes and text
+boxes as stories of their own. A field is one token, compared by its code and result (or its result only, with
+`Fields = false`); a picture goes by its image and size, and a shape by its kind and size, so a changed one is deleted
+and inserted. Comments are not tracked changes: the result simply has the revised document's comments, at the same
+text. `HeadersFooters`, `Notes`, `Comments` and `TextBoxes` turn each of these off, keeping the base document's.
+
 ```csharp
 using Egap.Documents;
 using Egap.Documents.Comparing;
