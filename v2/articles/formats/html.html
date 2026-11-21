@@ -254,8 +254,18 @@ OpenDocument or HTML, are written as MathML Core, which browsers draw.</p>
 <td><code>true</code></td>
 <td>Writes the page size, margins and simple headers and footers as <code>@page</code> rules</td>
 </tr>
+<tr>
+<td><code>RevisionView</code></td>
+<td><code>Final</code></td>
+<td>How tracked changes are written: <code>Final</code> as if accepted (with a <code>ChangesAccepted</code> warning), <code>Markup</code> as a redline, <code>Original</code> as if rejected</td>
+</tr>
 </tbody>
 </table>
+<p>In <code>Markup</code>, inserted text is in <code>&lt;ins&gt;</code> and deleted text in <code>&lt;del&gt;</code>, each with <code>data-author</code> and <code>datetime</code> and a class
+<code>egap-author-1</code>, <code>egap-author-2</code> and so on that colours it per author, in the colours of PDF markup. A deleted paragraph is
+a <code>&lt;p&gt;</code> holding a <code>&lt;del&gt;</code>. Text whose formatting changed is in a <code>&lt;span class=&quot;egap-format-change&quot;&gt;</code> whose <code>title</code> names
+the formatting before, such as &quot;Formatted. Was: not bold, 12 pt&quot;. MHTML and EPUB (<code>EpubSaveOptions.RevisionView</code>) write
+the same.</p>
 <h2 id="html-to-pdf">HTML to PDF</h2>
 <p><code>PdfConvert.FromHtml</code> turns HTML into a PDF in one call, with page size, margins, header and footer bands and a table of
 contents. <code>PdfStamp.Html</code> lays out a piece of HTML as a stamp on every page of a PDF, and <code>PageBand.Html</code> makes a header

@@ -223,8 +223,20 @@ thing left out comes back as a warning. Front matter that was read is always wri
 <td><code>false</code></td>
 <td>Writes YAML front matter with the title and author when the document has them</td>
 </tr>
+<tr>
+<td><code>RevisionView</code></td>
+<td><code>Final</code></td>
+<td>How tracked changes are written: <code>Final</code> as if accepted (with a <code>ChangesAccepted</code> warning), <code>Markup</code> with inserted and deleted text marked, <code>Original</code> as if rejected</td>
+</tr>
+<tr>
+<td><code>RevisionStyle</code></td>
+<td><code>Html</code></td>
+<td>How <code>Markup</code> marks changes: <code>Html</code> writes <code>&lt;ins&gt;</code> and <code>&lt;del&gt;</code>, <code>CriticMarkup</code> writes <code>{++inserted++}</code> and <code>{--deleted--}</code></td>
+</tr>
 </tbody>
 </table>
+<p>In <code>Markup</code>, a paragraph deleted whole is written as one <code>&lt;del&gt;</code> (or <code>{--…--}</code>) around its text. Code blocks are written as
+if accepted.</p>
 <pre><code class="lang-csharp">using Egap.Documents;
 
 Document report = Document.Load(&quot;report.docx&quot;);

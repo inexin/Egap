@@ -11469,6 +11469,19 @@ references:
   isSpec: "True"
   fullName: Egap.Documents.EpubSaveOptions.NavigationDepth
   nameWithType: EpubSaveOptions.NavigationDepth
+- uid: Egap.Documents.EpubSaveOptions.RevisionView
+  name: RevisionView
+  href: api/Egap.Documents.EpubSaveOptions.html#Egap_Documents_EpubSaveOptions_RevisionView
+  commentId: P:Egap.Documents.EpubSaveOptions.RevisionView
+  fullName: Egap.Documents.EpubSaveOptions.RevisionView
+  nameWithType: EpubSaveOptions.RevisionView
+- uid: Egap.Documents.EpubSaveOptions.RevisionView*
+  name: RevisionView
+  href: api/Egap.Documents.EpubSaveOptions.html#Egap_Documents_EpubSaveOptions_RevisionView_
+  commentId: Overload:Egap.Documents.EpubSaveOptions.RevisionView
+  isSpec: "True"
+  fullName: Egap.Documents.EpubSaveOptions.RevisionView
+  nameWithType: EpubSaveOptions.RevisionView
 - uid: Egap.Documents.EpubSaveOptions.SplitAt
   name: SplitAt
   href: api/Egap.Documents.EpubSaveOptions.html#Egap_Documents_EpubSaveOptions_SplitAt
@@ -14859,6 +14872,19 @@ references:
   isSpec: "True"
   fullName: Egap.Documents.HtmlSaveOptions.ImageWriter
   nameWithType: HtmlSaveOptions.ImageWriter
+- uid: Egap.Documents.HtmlSaveOptions.RevisionView
+  name: RevisionView
+  href: api/Egap.Documents.HtmlSaveOptions.html#Egap_Documents_HtmlSaveOptions_RevisionView
+  commentId: P:Egap.Documents.HtmlSaveOptions.RevisionView
+  fullName: Egap.Documents.HtmlSaveOptions.RevisionView
+  nameWithType: HtmlSaveOptions.RevisionView
+- uid: Egap.Documents.HtmlSaveOptions.RevisionView*
+  name: RevisionView
+  href: api/Egap.Documents.HtmlSaveOptions.html#Egap_Documents_HtmlSaveOptions_RevisionView_
+  commentId: Overload:Egap.Documents.HtmlSaveOptions.RevisionView
+  isSpec: "True"
+  fullName: Egap.Documents.HtmlSaveOptions.RevisionView
+  nameWithType: HtmlSaveOptions.RevisionView
 - uid: Egap.Documents.HtmlSaveOptions.WritePageSetup
   name: WritePageSetup
   href: api/Egap.Documents.HtmlSaveOptions.html#Egap_Documents_HtmlSaveOptions_WritePageSetup
@@ -18381,6 +18407,24 @@ references:
   isSpec: "True"
   fullName: Egap.Documents.MarkdownLoadOptions.ImageResolver
   nameWithType: MarkdownLoadOptions.ImageResolver
+- uid: Egap.Documents.MarkdownRevisionStyle
+  name: MarkdownRevisionStyle
+  href: api/Egap.Documents.MarkdownRevisionStyle.html
+  commentId: T:Egap.Documents.MarkdownRevisionStyle
+  fullName: Egap.Documents.MarkdownRevisionStyle
+  nameWithType: MarkdownRevisionStyle
+- uid: Egap.Documents.MarkdownRevisionStyle.CriticMarkup
+  name: CriticMarkup
+  href: api/Egap.Documents.MarkdownRevisionStyle.html#Egap_Documents_MarkdownRevisionStyle_CriticMarkup
+  commentId: F:Egap.Documents.MarkdownRevisionStyle.CriticMarkup
+  fullName: Egap.Documents.MarkdownRevisionStyle.CriticMarkup
+  nameWithType: MarkdownRevisionStyle.CriticMarkup
+- uid: Egap.Documents.MarkdownRevisionStyle.Html
+  name: Html
+  href: api/Egap.Documents.MarkdownRevisionStyle.html#Egap_Documents_MarkdownRevisionStyle_Html
+  commentId: F:Egap.Documents.MarkdownRevisionStyle.Html
+  fullName: Egap.Documents.MarkdownRevisionStyle.Html
+  nameWithType: MarkdownRevisionStyle.Html
 - uid: Egap.Documents.MarkdownSaveOptions
   name: MarkdownSaveOptions
   href: api/Egap.Documents.MarkdownSaveOptions.html
@@ -18504,6 +18548,32 @@ references:
   isSpec: "True"
   fullName: Egap.Documents.MarkdownSaveOptions.MinImageSize
   nameWithType: MarkdownSaveOptions.MinImageSize
+- uid: Egap.Documents.MarkdownSaveOptions.RevisionStyle
+  name: RevisionStyle
+  href: api/Egap.Documents.MarkdownSaveOptions.html#Egap_Documents_MarkdownSaveOptions_RevisionStyle
+  commentId: P:Egap.Documents.MarkdownSaveOptions.RevisionStyle
+  fullName: Egap.Documents.MarkdownSaveOptions.RevisionStyle
+  nameWithType: MarkdownSaveOptions.RevisionStyle
+- uid: Egap.Documents.MarkdownSaveOptions.RevisionStyle*
+  name: RevisionStyle
+  href: api/Egap.Documents.MarkdownSaveOptions.html#Egap_Documents_MarkdownSaveOptions_RevisionStyle_
+  commentId: Overload:Egap.Documents.MarkdownSaveOptions.RevisionStyle
+  isSpec: "True"
+  fullName: Egap.Documents.MarkdownSaveOptions.RevisionStyle
+  nameWithType: MarkdownSaveOptions.RevisionStyle
+- uid: Egap.Documents.MarkdownSaveOptions.RevisionView
+  name: RevisionView
+  href: api/Egap.Documents.MarkdownSaveOptions.html#Egap_Documents_MarkdownSaveOptions_RevisionView
+  commentId: P:Egap.Documents.MarkdownSaveOptions.RevisionView
+  fullName: Egap.Documents.MarkdownSaveOptions.RevisionView
+  nameWithType: MarkdownSaveOptions.RevisionView
+- uid: Egap.Documents.MarkdownSaveOptions.RevisionView*
+  name: RevisionView
+  href: api/Egap.Documents.MarkdownSaveOptions.html#Egap_Documents_MarkdownSaveOptions_RevisionView_
+  commentId: Overload:Egap.Documents.MarkdownSaveOptions.RevisionView
+  isSpec: "True"
+  fullName: Egap.Documents.MarkdownSaveOptions.RevisionView
+  nameWithType: MarkdownSaveOptions.RevisionView
 - uid: Egap.Documents.MarkdownSaveOptions.VectorFiguresAsSvg
   name: VectorFiguresAsSvg
   href: api/Egap.Documents.MarkdownSaveOptions.html#Egap_Documents_MarkdownSaveOptions_VectorFiguresAsSvg
