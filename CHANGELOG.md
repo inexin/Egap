@@ -215,6 +215,10 @@ Egap.Documents.Html, Egap.Documents.Markdown and Egap.Preview 2.2.0 work with it
 
 ## Egap.Documents.Html 2.3.0 (unreleased)
 
+- `HtmlSaveOptions.RevisionView` and `EpubSaveOptions.RevisionView` write tracked changes as if accepted (`Final`, the
+  default, as before), as a redline (`Markup`: `<ins>` and `<del>` with `data-author` and `datetime`, coloured per author
+  as in PDF markup, and format changes in a `span.egap-format-change` whose title names the old formatting), or as if
+  rejected (`Original`). MHTML follows `HtmlSaveOptions`.
 - MathML `<math>` elements read as equations that lay out as math, and every equation (from Word, RTF, OpenDocument or
   HTML) is written as MathML Core; before, MathML was left out and equations were written as their text.
 - Built on AngleSharp 1.9.1. AngleSharp's new nesting limit is turned off, so deeply nested tables still read in full;
@@ -222,6 +226,9 @@ Egap.Documents.Html, Egap.Documents.Markdown and Egap.Preview 2.2.0 work with it
 
 ## Egap.Documents.Markdown 2.3.0 (unreleased)
 
+- `MarkdownSaveOptions.RevisionView` writes tracked changes as if accepted (`Final`, the default, as before), marked
+  (`Markup`), or as if rejected (`Original`). `MarkdownSaveOptions.RevisionStyle` picks the marks: inline `<ins>` and
+  `<del>` HTML (the default) or CriticMarkup (`{++ ++}`, `{-- --}`).
 - Built on Markdig 1.5.1, which fixes tabs after block quote markers and in fenced code, a thematic break inside a list
   item closing the list, and autolink schemes of 2 to 32 characters.
 

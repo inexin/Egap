@@ -71,6 +71,11 @@ internal sealed class EpubWriter
 
         // A copy, so headings can get the ids the navigation links to without changing the caller's document.
         Document document = source.Clone();
+        if (options.RevisionView == Layout.RevisionView.Original)
+        {
+            document.Revisions.RejectAll();
+        }
+
         EpubWriter writer = new(document, options);
         writer.WriteBook(stream);
         return writer.warnings.ToList();
@@ -284,6 +289,7 @@ internal sealed class EpubWriter
         {
             EmbedImages = false,
             WritePageSetup = false,
+            RevisionView = options.RevisionView,
             ImageWriter = picture =>
             {
                 if (picture.Image.Bytes.IsEmpty)
