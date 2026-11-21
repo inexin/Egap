@@ -51,6 +51,14 @@ follows with the rest of Egap. Install it with `dotnet tool install -g Egap.Cli 
   file (PDF/UA-2).
 - OpenDocument formulas are read from their MathML, in the package or inline in a flat file, and lay out, draw and tag
   as Word equations do, with their linear form as text; before, they showed the picture saved with them.
+- Tracked changes can print as a redline: `RevisionView` on `LayoutOptions` and `PdfExportOptions` lays a document out
+  as if its changes were accepted (`Final`, the default), marked up (`Markup`: inserted text underlined and deleted text
+  struck through in their authors' colours, changed formatting with a dotted underline, change bars in the outside margin,
+  deleted paragraphs and rows keeping their space) or as if they were rejected (`Original`). A `Final` layout of a
+  document with changes warns `LayoutWarningKind.ChangesAccepted` once.
+- Text that differs from the text before it in the line only in colour, underline, strike-through or shading is drawn in
+  its own style; before, it took the style of the text it shared a shaped run with, so a red word in a black line printed
+  black.
 
 ## Egap.Documents 2.3.0-preview.1 (2026-11-13)
 

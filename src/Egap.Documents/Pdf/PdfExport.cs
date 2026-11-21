@@ -36,7 +36,14 @@ public static class PdfExport
     public static PdfDocument ToPdf(this Document document, PdfExportOptions? options = null)
     {
         ArgumentNullException.ThrowIfNull(document);
-        return document.Layout(options?.Layout).ToPdf(options);
+        LayoutOptions? layout = options?.Layout;
+        if (options is { RevisionView: not RevisionView.Final } && layout?.RevisionView != options.RevisionView)
+        {
+            layout ??= document.DefaultLayoutOptions;
+            layout = new LayoutOptions { Fonts = layout?.Fonts, Strict = layout?.Strict ?? false, OnWarning = layout?.OnWarning, RevisionView = options.RevisionView };
+        }
+
+        return document.Layout(layout).ToPdf(options);
     }
 
     /// <summary>Makes a new PDF of a layout already made, open for more changes before it is saved.</summary>

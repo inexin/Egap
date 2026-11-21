@@ -70,13 +70,19 @@ internal sealed partial class Paginator
             }
         }
 
+        bool changesSeen = view != RevisionView.Final;
         foreach (PageLayout page in layout.Pages)
         {
-            foreach (ObjectBox box in page.Boxes.SelectMany(b => b.Descendants()).OfType<ObjectBox>())
+            foreach (LayoutBox box in page.Boxes.SelectMany(b => b.Descendants()))
             {
-                if (box.Node is Island island && Docx.DocxDrawings.DrawsAsList(island))
+                if (box is ObjectBox { Node: Island island } && Docx.DocxDrawings.DrawsAsList(island))
                 {
                     warnings.Add(new LayoutWarning(LayoutWarningKind.SmartArtDrawnAsList, "A SmartArt diagram has no stored drawing and is drawn as a list of its text.", island, page.Index));
+                }
+                else if (!changesSeen && box is ParagraphBox paragraph && paragraph.Lines.Count > 0 && paragraph.Lines[0].Content.HasRevisions)
+                {
+                    changesSeen = true;
+                    warnings.Add(new LayoutWarning(LayoutWarningKind.ChangesAccepted, "The document has tracked changes, laid out as if accepted.", paragraph.Paragraph, page.Index));
                 }
             }
         }
