@@ -56,4 +56,37 @@ public sealed record DocumentCompareOptions
 
     /// <summary>What to do with inputs that already hold tracked changes. Default <see cref="ExistingRevisionHandling.Accept"/>.</summary>
     public ExistingRevisionHandling ExistingRevisions { get; init; } = ExistingRevisionHandling.Accept;
+
+    /// <summary>
+    /// Whether headers and footers are compared, each with the one of the same kind (first, even, default) in the section at
+    /// the same place. Default true; when false the base document's are kept as they are.
+    /// </summary>
+    public bool HeadersFooters { get; init; } = true;
+
+    /// <summary>
+    /// Whether the text of footnotes and endnotes is compared. A note's reference mark is always compared as one token; with
+    /// this on (the default), the text of a note in both documents is compared as a story of its own. When false the base
+    /// document's note text is kept.
+    /// </summary>
+    public bool Notes { get; init; } = true;
+
+    /// <summary>
+    /// Whether the result gets the revised document's comments (the default): comments are matched by the text they anchor
+    /// and their own text, a comment only in the original is removed and one only in the revised document is added, at the
+    /// same anchor text. Comments are never tracked changes. When false the base document's comments are kept.
+    /// </summary>
+    public bool Comments { get; init; } = true;
+
+    /// <summary>
+    /// Whether the text of text boxes is compared as a story of its own (the default). A shape is always compared by its kind
+    /// and size as one token: a shape whose geometry changed is marked deleted and inserted. When false the base document's
+    /// text box text is kept.
+    /// </summary>
+    public bool TextBoxes { get; init; } = true;
+
+    /// <summary>
+    /// Whether fields are compared by their code and result (the default) or by their result only. Either way a field is one
+    /// token, marked deleted and inserted whole when it differs.
+    /// </summary>
+    public bool Fields { get; init; } = true;
 }

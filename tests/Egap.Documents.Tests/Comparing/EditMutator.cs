@@ -3,9 +3,11 @@ namespace Egap.Documents.Tests.Comparing;
 /// <summary>
 /// Makes a revised copy of a document with seeded random edits of the kinds people make: words inserted, deleted and
 /// replaced, paragraphs split, joined, added, removed and moved, table rows added and dropped, and with
-/// <paramref name="formatting"/> also words reformatted (bold, size, a paragraph's alignment) and words put in capitals.
+/// <paramref name="formatting"/> also words reformatted (bold, size, a paragraph's alignment) and words put in capitals, and
+/// with <paramref name="stories"/> also headers and footers, notes and text boxes edited, notes added, and comments added
+/// and removed.
 /// </summary>
-internal sealed class EditMutator(int seed, bool formatting = false)
+internal sealed class EditMutator(int seed, bool formatting = false, bool stories = false)
 {
     private static readonly string[] Vocabulary =
     [
@@ -33,6 +35,12 @@ internal sealed class EditMutator(int seed, bool formatting = false)
             }
 
             Paragraph paragraph = paragraphs[random.Next(paragraphs.Count)];
+            if (stories && random.Next(2) == 0)
+            {
+                EditStory(copy, paragraph);
+                continue;
+            }
+
             switch (random.Next(formatting ? 13 : 10))
             {
                 case 0:
@@ -237,6 +245,65 @@ internal sealed class EditMutator(int seed, bool formatting = false)
         else
         {
             middle.Format.Size = middle.GetEffectiveFormat().Size + 2;
+        }
+    }
+
+    /// <summary>Edits a story beside the main text: a header, footer, note or text box, or the comments.</summary>
+    private void EditStory(Document document, Paragraph paragraph)
+    {
+        List<Story> others =
+        [
+            .. document.Sections.SelectMany(s => s.HeadersFooters),
+            .. document.Descendants<Footnote>().Select(n => n.Story),
+            .. document.Descendants<Shape>().Where(s => s.TextBox is not null).Select(s => (Story)s.TextBox!),
+        ];
+        switch (random.Next(5))
+        {
+            case 0 when others.Count > 0:
+            case 1 when others.Count > 0:
+                Story story = others[random.Next(others.Count)];
+                List<Paragraph> inStory = [.. story.Blocks.OfType<Paragraph>()];
+                if (inStory.Count == 0)
+                {
+                    story.Blocks.Add(new Paragraph(document));
+                    inStory = [.. story.Blocks.OfType<Paragraph>()];
+                }
+
+                Paragraph target = inStory[random.Next(inStory.Count)];
+                if (random.Next(2) == 0)
+                {
+                    InsertWords(target);
+                }
+                else
+                {
+                    DeleteWords(target);
+                }
+
+                break;
+            case 2:
+                paragraph.AddFootnote(Words(2 + random.Next(4)));
+                break;
+            case 3 when document.Descendants<Comment>().FirstOrDefault() is Comment old:
+                int id = old.Id;
+                foreach (Inline mark in document.Descendants<Inline>().Where(i => i is CommentRangeStart s && s.CommentId == id || i is CommentRangeEnd e && e.CommentId == id).ToList())
+                {
+                    mark.Remove();
+                }
+
+                old.Remove();
+                break;
+            default:
+                if (PickRun(paragraph) is Run run)
+                {
+                    Comment comment = new(document, "Mutator");
+                    comment.AddParagraph(Words(3));
+                    int index = paragraph.Inlines.IndexOf(run);
+                    paragraph.Inlines.Insert(index + 1, comment);
+                    paragraph.Inlines.Insert(index + 1, new CommentRangeEnd(document, comment.Id));
+                    paragraph.Inlines.Insert(index, new CommentRangeStart(document, comment));
+                }
+
+                break;
         }
     }
 
