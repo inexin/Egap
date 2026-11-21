@@ -1,1 +1,5 @@
 #nullable enable
+Egap.Documents.EpubSaveOptions.RevisionView.get -> Egap.Documents.Layout.RevisionView
+Egap.Documents.EpubSaveOptions.RevisionView.init -> void
+Egap.Documents.HtmlSaveOptions.RevisionView.get -> Egap.Documents.Layout.RevisionView
+Egap.Documents.HtmlSaveOptions.RevisionView.init -> void

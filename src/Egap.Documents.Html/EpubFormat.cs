@@ -73,6 +73,9 @@ public sealed class EpubSaveOptions
 
     /// <summary>When the book was last changed (dcterms:modified); the document's saved time, else now, by default.</summary>
     public DateTimeOffset? Modified { get; init; }
+
+    /// <summary>How tracked changes are written, as <see cref="HtmlSaveOptions.RevisionView"/> says for HTML; as if accepted by default.</summary>
+    public Layout.RevisionView RevisionView { get; init; }
 }
 
 /// <summary>

@@ -53,6 +53,15 @@ public sealed class HtmlSaveOptions
 
     /// <summary>Whether the page size, margins and simple headers and footers are written as @page rules; on by default.</summary>
     public bool WritePageSetup { get; init; } = true;
+
+    /// <summary>
+    /// How tracked changes are written: as if accepted (<see cref="Layout.RevisionView.Final"/>, the default, with a
+    /// <see cref="ConversionWarningKind.ChangesAccepted"/> warning), as markup (<see cref="Layout.RevisionView.Markup"/>:
+    /// inserted text in <c>ins</c>, deleted text in <c>del</c>, both with <c>data-author</c> and <c>datetime</c> and
+    /// coloured per author, and text whose formatting changed in a <c>span class="egap-format-change"</c> whose title names
+    /// the old formatting), or as if rejected (<see cref="Layout.RevisionView.Original"/>).
+    /// </summary>
+    public Layout.RevisionView RevisionView { get; init; }
 }
 
 /// <summary>

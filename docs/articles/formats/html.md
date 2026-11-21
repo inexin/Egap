@@ -104,6 +104,13 @@ OpenDocument or HTML, are written as MathML Core, which browsers draw.
 | `ImageWriter` | None | Stores a picture and returns the URL the page uses for it, such as a file beside the page |
 | `EmbedImages` | `true` | Embeds pictures no writer stored as `data:` URLs |
 | `WritePageSetup` | `true` | Writes the page size, margins and simple headers and footers as `@page` rules |
+| `RevisionView` | `Final` | How tracked changes are written: `Final` as if accepted (with a `ChangesAccepted` warning), `Markup` as a redline, `Original` as if rejected |
+
+In `Markup`, inserted text is in `<ins>` and deleted text in `<del>`, each with `data-author` and `datetime` and a class
+`egap-author-1`, `egap-author-2` and so on that colours it per author, in the colours of PDF markup. A deleted paragraph is
+a `<p>` holding a `<del>`. Text whose formatting changed is in a `<span class="egap-format-change">` whose `title` names
+the formatting before, such as "Formatted. Was: not bold, 12 pt". MHTML and EPUB (`EpubSaveOptions.RevisionView`) write
+the same.
 
 ## HTML to PDF
 

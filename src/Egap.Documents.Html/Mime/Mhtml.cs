@@ -122,6 +122,7 @@ internal static class MhtmlWriter
         {
             EmbedImages = false,
             WritePageSetup = options.WritePageSetup,
+            RevisionView = options.RevisionView,
             ImageWriter = picture =>
             {
                 if (options.ImageWriter?.Invoke(picture) is { } url)

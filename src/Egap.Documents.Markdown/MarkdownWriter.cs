@@ -21,6 +21,11 @@ internal sealed class MarkdownWriter
     private readonly List<Footnote> notes = [];
     private readonly StringBuilder output = new();
 
+    // Markup view: the change whose mark is open, and the change marked around the inlines being written (a hyperlink's
+    // text inside its mark), which they need not mark again.
+    private Revision? openRevision;
+    private Revision? outerRevision;
+
     private MarkdownWriter(Document document, MarkdownSaveOptions options)
     {
         this.document = document;
@@ -40,6 +45,13 @@ internal sealed class MarkdownWriter
     /// <summary>The document as Markdown; with <paramref name="path"/>, images go to a folder beside that file.</summary>
     public static string Write(Document document, MarkdownSaveOptions options, string? path, out IReadOnlyList<ConversionWarning> warnings)
     {
+        if (options.RevisionView == Layout.RevisionView.Original && document.Revisions.Count > 0)
+        {
+            // The original is the document with every change rejected: a copy, so the caller's document keeps its changes.
+            document = document.Clone();
+            document.Revisions.RejectAll();
+        }
+
         MarkdownWriter writer = new(document, options);
         if (path is not null)
         {
@@ -705,7 +717,7 @@ internal sealed class MarkdownWriter
             WriteInline(inline, text, state);
         }
 
-        state.Close(text);
+        Finish(text, state);
         string result = text.ToString().TrimEnd(' ', '\t');
         if (result.Length == 0)
         {
@@ -733,9 +745,62 @@ internal sealed class MarkdownWriter
         return [.. lines];
     }
 
+    /// <summary>Closes what is open at the end of a stretch of inlines: emphasis, then a change's mark.</summary>
+    private void Finish(StringBuilder text, InlineState state)
+    {
+        state.Close(text);
+        if (openRevision is { } open)
+        {
+            text.Append(CloseMark(open));
+            openRevision = null;
+        }
+    }
+
+    private string OpenMark(Revision revision)
+    {
+        return (options.RevisionStyle, revision.Removes) switch
+        {
+            (MarkdownRevisionStyle.CriticMarkup, true) => "{--",
+            (MarkdownRevisionStyle.CriticMarkup, false) => "{++",
+            (_, true) => "<del>",
+            _ => "<ins>",
+        };
+    }
+
+    private string CloseMark(Revision revision)
+    {
+        return (options.RevisionStyle, revision.Removes) switch
+        {
+            (MarkdownRevisionStyle.CriticMarkup, true) => "--}",
+            (MarkdownRevisionStyle.CriticMarkup, false) => "++}",
+            (_, true) => "</del>",
+            _ => "</ins>",
+        };
+    }
+
     private void WriteInline(Inline inline, StringBuilder text, InlineState state)
     {
-        if (inline.Revision is { } revision)
+        if (options.RevisionView == Layout.RevisionView.Markup)
+        {
+            // Inlines with the same change share one mark; emphasis closes at its edges, so marks and emphasis nest.
+            Revision? wanted = inline.Revision == outerRevision ? null : inline.Revision;
+            if (wanted != openRevision)
+            {
+                state.Close(text);
+                if (openRevision is { } open)
+                {
+                    text.Append(CloseMark(open));
+                }
+
+                if (wanted is not null)
+                {
+                    text.Append(OpenMark(wanted));
+                }
+
+                openRevision = wanted;
+            }
+        }
+        else if (inline.Revision is { } revision)
         {
             warnings.Add(ConversionWarningKind.ChangesAccepted, "tracked changes, written as if accepted");
             if (revision.Removes)
@@ -783,12 +848,15 @@ internal sealed class MarkdownWriter
                     state.Set(text, shareBold, shareItalic, shareStrike, "");
                     StringBuilder inner = new();
                     InlineState innerState = new() { Outer = (shareBold, shareItalic, shareStrike) };
+                    (Revision? savedOpen, Revision? savedOuter) = (openRevision, outerRevision);
+                    (openRevision, outerRevision) = (null, savedOpen ?? savedOuter);
                     foreach (Inline child in link.Inlines)
                     {
                         WriteInline(child, inner, innerState);
                     }
 
-                    innerState.Close(inner);
+                    Finish(inner, innerState);
+                    (openRevision, outerRevision) = (savedOpen, savedOuter);
                     string destination = link.Address is { } address ? address + (link.Anchor is { } a ? "#" + a : "") : "#" + link.Anchor;
                     if (inner.ToString() == Escape(destination, atLineStart: false) && link.Address is not null && link.Tooltip is null && Uri.TryCreate(destination, UriKind.Absolute, out _) && !destination.Contains('>'))
                     {

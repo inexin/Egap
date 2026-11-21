@@ -65,7 +65,8 @@ A document's tracked changes print as if accepted unless `RevisionView` says oth
 each in its author's colour (the first author red, then blue, green and five more), text whose formatting changed in its new
 look with a dotted underline, and a bar in the outside margin beside each changed line. Deleted paragraphs and rows keep
 their space. `RevisionView.Original` prints the document as if every change were rejected. The same views are on
-`LayoutOptions`, for pages, images and previews. In tagged output the marked-up text keeps its reading order and the
+`LayoutOptions`, for pages, images and previews, and on the HTML, EPUB and Markdown save options, where a redline is
+`<ins>` and `<del>` markup ([HTML](../formats/html.md#writing), [Markdown](../formats/markdown.md#writing)). In tagged output the marked-up text keeps its reading order and the
 change bars are artifacts.
 
 ```csharp

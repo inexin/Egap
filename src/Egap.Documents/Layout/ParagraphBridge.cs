@@ -94,7 +94,7 @@ internal sealed class ParagraphContent
 internal sealed class ParagraphBridge(FontProvider fonts, Document document, RevisionView view = RevisionView.Final)
 {
     /// <summary>The authors' colours in order: the first author of the document's changes gets the first.</summary>
-    private static readonly Rgba8[] AuthorColors =
+    internal static readonly Rgba8[] AuthorColors =
     [
         new(192, 0, 0, 255), new(0, 70, 190, 255), new(0, 128, 0, 255), new(128, 0, 160, 255),
         new(210, 105, 0, 255), new(0, 128, 128, 255), new(190, 0, 120, 255), new(120, 80, 30, 255),
@@ -479,18 +479,22 @@ internal sealed class ParagraphBridge(FontProvider fonts, Document document, Rev
         };
     }
 
+    /// <summary>The authors of a document's changes, each with its place in the order they first appear.</summary>
+    internal static Dictionary<string, int> AuthorOrder(Document document)
+    {
+        Dictionary<string, int> order = new(StringComparer.Ordinal);
+        foreach (TrackedChange change in document.Revisions)
+        {
+            order.TryAdd(change.Author, order.Count);
+        }
+
+        return order;
+    }
+
     /// <summary>The colour of an author's changes: the palette's, in the order authors first appear, round again past eight.</summary>
     internal Rgba8 AuthorColor(string author)
     {
-        if (authors is null)
-        {
-            authors = new(StringComparer.Ordinal);
-            foreach (TrackedChange change in document.Revisions)
-            {
-                authors.TryAdd(change.Author, authors.Count);
-            }
-        }
-
+        authors ??= AuthorOrder(document);
         if (!authors.TryGetValue(author, out int index))
         {
             index = authors.Count;
