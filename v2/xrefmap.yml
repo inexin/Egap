@@ -6649,6 +6649,19 @@ references:
   isSpec: "True"
   fullName: Egap.Documents.Comparing.DocumentCompareOptions.CaseChanges
   nameWithType: DocumentCompareOptions.CaseChanges
+- uid: Egap.Documents.Comparing.DocumentCompareOptions.Comments
+  name: Comments
+  href: api/Egap.Documents.Comparing.DocumentCompareOptions.html#Egap_Documents_Comparing_DocumentCompareOptions_Comments
+  commentId: P:Egap.Documents.Comparing.DocumentCompareOptions.Comments
+  fullName: Egap.Documents.Comparing.DocumentCompareOptions.Comments
+  nameWithType: DocumentCompareOptions.Comments
+- uid: Egap.Documents.Comparing.DocumentCompareOptions.Comments*
+  name: Comments
+  href: api/Egap.Documents.Comparing.DocumentCompareOptions.html#Egap_Documents_Comparing_DocumentCompareOptions_Comments_
+  commentId: Overload:Egap.Documents.Comparing.DocumentCompareOptions.Comments
+  isSpec: "True"
+  fullName: Egap.Documents.Comparing.DocumentCompareOptions.Comments
+  nameWithType: DocumentCompareOptions.Comments
 - uid: Egap.Documents.Comparing.DocumentCompareOptions.Date
   name: Date
   href: api/Egap.Documents.Comparing.DocumentCompareOptions.html#Egap_Documents_Comparing_DocumentCompareOptions_Date
@@ -6688,6 +6701,19 @@ references:
   isSpec: "True"
   fullName: Egap.Documents.Comparing.DocumentCompareOptions.ExistingRevisions
   nameWithType: DocumentCompareOptions.ExistingRevisions
+- uid: Egap.Documents.Comparing.DocumentCompareOptions.Fields
+  name: Fields
+  href: api/Egap.Documents.Comparing.DocumentCompareOptions.html#Egap_Documents_Comparing_DocumentCompareOptions_Fields
+  commentId: P:Egap.Documents.Comparing.DocumentCompareOptions.Fields
+  fullName: Egap.Documents.Comparing.DocumentCompareOptions.Fields
+  nameWithType: DocumentCompareOptions.Fields
+- uid: Egap.Documents.Comparing.DocumentCompareOptions.Fields*
+  name: Fields
+  href: api/Egap.Documents.Comparing.DocumentCompareOptions.html#Egap_Documents_Comparing_DocumentCompareOptions_Fields_
+  commentId: Overload:Egap.Documents.Comparing.DocumentCompareOptions.Fields
+  isSpec: "True"
+  fullName: Egap.Documents.Comparing.DocumentCompareOptions.Fields
+  nameWithType: DocumentCompareOptions.Fields
 - uid: Egap.Documents.Comparing.DocumentCompareOptions.Granularity
   name: Granularity
   href: api/Egap.Documents.Comparing.DocumentCompareOptions.html#Egap_Documents_Comparing_DocumentCompareOptions_Granularity
@@ -6701,6 +6727,45 @@ references:
   isSpec: "True"
   fullName: Egap.Documents.Comparing.DocumentCompareOptions.Granularity
   nameWithType: DocumentCompareOptions.Granularity
+- uid: Egap.Documents.Comparing.DocumentCompareOptions.HeadersFooters
+  name: HeadersFooters
+  href: api/Egap.Documents.Comparing.DocumentCompareOptions.html#Egap_Documents_Comparing_DocumentCompareOptions_HeadersFooters
+  commentId: P:Egap.Documents.Comparing.DocumentCompareOptions.HeadersFooters
+  fullName: Egap.Documents.Comparing.DocumentCompareOptions.HeadersFooters
+  nameWithType: DocumentCompareOptions.HeadersFooters
+- uid: Egap.Documents.Comparing.DocumentCompareOptions.HeadersFooters*
+  name: HeadersFooters
+  href: api/Egap.Documents.Comparing.DocumentCompareOptions.html#Egap_Documents_Comparing_DocumentCompareOptions_HeadersFooters_
+  commentId: Overload:Egap.Documents.Comparing.DocumentCompareOptions.HeadersFooters
+  isSpec: "True"
+  fullName: Egap.Documents.Comparing.DocumentCompareOptions.HeadersFooters
+  nameWithType: DocumentCompareOptions.HeadersFooters
+- uid: Egap.Documents.Comparing.DocumentCompareOptions.Notes
+  name: Notes
+  href: api/Egap.Documents.Comparing.DocumentCompareOptions.html#Egap_Documents_Comparing_DocumentCompareOptions_Notes
+  commentId: P:Egap.Documents.Comparing.DocumentCompareOptions.Notes
+  fullName: Egap.Documents.Comparing.DocumentCompareOptions.Notes
+  nameWithType: DocumentCompareOptions.Notes
+- uid: Egap.Documents.Comparing.DocumentCompareOptions.Notes*
+  name: Notes
+  href: api/Egap.Documents.Comparing.DocumentCompareOptions.html#Egap_Documents_Comparing_DocumentCompareOptions_Notes_
+  commentId: Overload:Egap.Documents.Comparing.DocumentCompareOptions.Notes
+  isSpec: "True"
+  fullName: Egap.Documents.Comparing.DocumentCompareOptions.Notes
+  nameWithType: DocumentCompareOptions.Notes
+- uid: Egap.Documents.Comparing.DocumentCompareOptions.TextBoxes
+  name: TextBoxes
+  href: api/Egap.Documents.Comparing.DocumentCompareOptions.html#Egap_Documents_Comparing_DocumentCompareOptions_TextBoxes
+  commentId: P:Egap.Documents.Comparing.DocumentCompareOptions.TextBoxes
+  fullName: Egap.Documents.Comparing.DocumentCompareOptions.TextBoxes
+  nameWithType: DocumentCompareOptions.TextBoxes
+- uid: Egap.Documents.Comparing.DocumentCompareOptions.TextBoxes*
+  name: TextBoxes
+  href: api/Egap.Documents.Comparing.DocumentCompareOptions.html#Egap_Documents_Comparing_DocumentCompareOptions_TextBoxes_
+  commentId: Overload:Egap.Documents.Comparing.DocumentCompareOptions.TextBoxes
+  isSpec: "True"
+  fullName: Egap.Documents.Comparing.DocumentCompareOptions.TextBoxes
+  nameWithType: DocumentCompareOptions.TextBoxes
 - uid: Egap.Documents.Comparing.DocumentCompareOptions.Whitespace
   name: Whitespace
   href: api/Egap.Documents.Comparing.DocumentCompareOptions.html#Egap_Documents_Comparing_DocumentCompareOptions_Whitespace

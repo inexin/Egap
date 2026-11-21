@@ -89,7 +89,7 @@
 
 
   <h1 id="Egap_Documents_Comparing_DocumentCompare" data-uid="Egap.Documents.Comparing.DocumentCompare" class="text-break">
-Class DocumentCompare  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Comparing/DocumentCompare.cs/#L13"><i class="bi bi-code-slash"></i></a>
+Class DocumentCompare  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Comparing/DocumentCompare.cs/#L14"><i class="bi bi-code-slash"></i></a>
   </h1>
 
   <div class="facts text-secondary">
@@ -151,8 +151,9 @@ documents may come from any format Egap reads, also from two different formats, 
   <h2 id="Egap_Documents_Comparing_DocumentCompare_remarks">Remarks</h2>
   <div class="markdown level0 remarks"><p>The comparison lines up blocks first (paragraphs and tables, by a hash of their content), pairs changed paragraphs that
 share at least half their words, and then marks the words that differ inside each pair. Accepting every change of the
-result gives the revised content; rejecting every change gives the original. Main body text is compared; tables that
-differ are marked deleted and inserted whole.</p>
+result gives the revised content; rejecting every change gives the original. The main text is compared, tables row by
+row, and, as the options say, headers and footers, the text of notes and text boxes, and fields; the result gets the
+revised document's comments.</p>
 </div>
 
 
@@ -164,7 +165,7 @@ differ are marked deleted and inserted whole.</p>
 
   <h3 id="Egap_Documents_Comparing_DocumentCompare_Run_Egap_Documents_Document_Egap_Documents_Document_Egap_Documents_Comparing_DocumentCompareOptions_" data-uid="Egap.Documents.Comparing.DocumentCompare.Run(Egap.Documents.Document,Egap.Documents.Document,Egap.Documents.Comparing.DocumentCompareOptions)">
   Run(Document, Document, DocumentCompareOptions?)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Comparing/DocumentCompare.cs/#L24"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Comparing/DocumentCompare.cs/#L25"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Compares <code class="paramref">original</code> with <code class="paramref">revised</code>; neither is changed.</p>
@@ -216,7 +217,7 @@ differ are marked deleted and inserted whole.</p>
 </article>
 
         <div class="contribution d-print-none">
-          <a href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Comparing/DocumentCompare.cs/#L13" class="edit-link">Edit this page</a>
+          <a href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Comparing/DocumentCompare.cs/#L14" class="edit-link">Edit this page</a>
         </div>
 
 

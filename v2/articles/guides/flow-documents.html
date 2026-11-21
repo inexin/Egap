@@ -214,6 +214,11 @@ style) as format changes that keep the old formatting. Accepting every change gi
 every change gives the original. <code>Changes</code> lists each difference with its old and new text and can accept or reject it on
 its own. The options choose word or character granularity, whether case and spacing count, and the author and date of
 the changes.</p>
+<p>Headers and footers are compared with the one of the same kind in the same section, and the text of notes and text
+boxes as stories of their own. A field is one token, compared by its code and result (or its result only, with
+<code>Fields = false</code>); a picture goes by its image and size, and a shape by its kind and size, so a changed one is deleted
+and inserted. Comments are not tracked changes: the result simply has the revised document's comments, at the same
+text. <code>HeadersFooters</code>, <code>Notes</code>, <code>Comments</code> and <code>TextBoxes</code> turn each of these off, keeping the base document's.</p>
 <pre><code class="lang-csharp">using Egap.Documents;
 using Egap.Documents.Comparing;
 

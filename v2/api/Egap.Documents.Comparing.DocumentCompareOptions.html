@@ -252,6 +252,40 @@ Class DocumentCompareOptions  <a class="header-action link-secondary" title="Vie
 
 
 
+  <a id="Egap_Documents_Comparing_DocumentCompareOptions_Comments_" data-uid="Egap.Documents.Comparing.DocumentCompareOptions.Comments*"></a>
+
+  <h3 id="Egap_Documents_Comparing_DocumentCompareOptions_Comments" data-uid="Egap.Documents.Comparing.DocumentCompareOptions.Comments">
+  Comments
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Comparing/DocumentCompareOptions.cs/#L78"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Whether the result gets the revised document's comments (the default): comments are matched by the text they anchor
+and their own text, a comment only in the original is removed and one only in the revised document is added, at the
+same anchor text. Comments are never tracked changes. When false the base document's comments are kept.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool Comments { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
   <a id="Egap_Documents_Comparing_DocumentCompareOptions_Date_" data-uid="Egap.Documents.Comparing.DocumentCompareOptions.Date*"></a>
 
   <h3 id="Egap_Documents_Comparing_DocumentCompareOptions_Date" data-uid="Egap.Documents.Comparing.DocumentCompareOptions.Date">
@@ -348,6 +382,39 @@ Class DocumentCompareOptions  <a class="header-action link-secondary" title="Vie
 
 
 
+  <a id="Egap_Documents_Comparing_DocumentCompareOptions_Fields_" data-uid="Egap.Documents.Comparing.DocumentCompareOptions.Fields*"></a>
+
+  <h3 id="Egap_Documents_Comparing_DocumentCompareOptions_Fields" data-uid="Egap.Documents.Comparing.DocumentCompareOptions.Fields">
+  Fields
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Comparing/DocumentCompareOptions.cs/#L91"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Whether fields are compared by their code and result (the default) or by their result only. Either way a field is one
+token, marked deleted and inserted whole when it differs.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool Fields { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
   <a id="Egap_Documents_Comparing_DocumentCompareOptions_Granularity_" data-uid="Egap.Documents.Comparing.DocumentCompareOptions.Granularity*"></a>
 
   <h3 id="Egap_Documents_Comparing_DocumentCompareOptions_Granularity" data-uid="Egap.Documents.Comparing.DocumentCompareOptions.Granularity">
@@ -370,6 +437,107 @@ Class DocumentCompareOptions  <a class="header-action link-secondary" title="Vie
   <h4 class="section">Property Value</h4>
   <dl class="parameters">
     <dt><a class="xref" href="Egap.Documents.Comparing.CompareGranularity.html">CompareGranularity</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Egap_Documents_Comparing_DocumentCompareOptions_HeadersFooters_" data-uid="Egap.Documents.Comparing.DocumentCompareOptions.HeadersFooters*"></a>
+
+  <h3 id="Egap_Documents_Comparing_DocumentCompareOptions_HeadersFooters" data-uid="Egap.Documents.Comparing.DocumentCompareOptions.HeadersFooters">
+  HeadersFooters
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Comparing/DocumentCompareOptions.cs/#L64"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Whether headers and footers are compared, each with the one of the same kind (first, even, default) in the section at
+the same place. Default true; when false the base document's are kept as they are.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool HeadersFooters { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Egap_Documents_Comparing_DocumentCompareOptions_Notes_" data-uid="Egap.Documents.Comparing.DocumentCompareOptions.Notes*"></a>
+
+  <h3 id="Egap_Documents_Comparing_DocumentCompareOptions_Notes" data-uid="Egap.Documents.Comparing.DocumentCompareOptions.Notes">
+  Notes
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Comparing/DocumentCompareOptions.cs/#L71"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Whether the text of footnotes and endnotes is compared. A note's reference mark is always compared as one token; with
+this on (the default), the text of a note in both documents is compared as a story of its own. When false the base
+document's note text is kept.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool Notes { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Egap_Documents_Comparing_DocumentCompareOptions_TextBoxes_" data-uid="Egap.Documents.Comparing.DocumentCompareOptions.TextBoxes*"></a>
+
+  <h3 id="Egap_Documents_Comparing_DocumentCompareOptions_TextBoxes" data-uid="Egap.Documents.Comparing.DocumentCompareOptions.TextBoxes">
+  TextBoxes
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Comparing/DocumentCompareOptions.cs/#L85"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Whether the text of text boxes is compared as a story of its own (the default). A shape is always compared by its kind
+and size as one token: a shape whose geometry changed is marked deleted and inserted. When false the base document's
+text box text is kept.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool TextBoxes { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
     <dd></dd>
   </dl>
 
