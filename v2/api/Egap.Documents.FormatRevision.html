@@ -295,6 +295,72 @@ Class FormatRevision  <a class="header-action link-secondary" title="View source
 
 
 
+  <a id="Egap_Documents_FormatRevision_OldStyle_" data-uid="Egap.Documents.FormatRevision.OldStyle*"></a>
+
+  <h3 id="Egap_Documents_FormatRevision_OldStyle" data-uid="Egap.Documents.FormatRevision.OldStyle">
+  OldStyle
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Extensions.cs/#L144"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>The style before the change, when <a class="xref" href="Egap.Documents.FormatRevision.html#Egap_Documents_FormatRevision_StyleChanged">StyleChanged</a> is set: a <a class="xref" href="Egap.Documents.CharacterStyle.html">CharacterStyle</a> for a run, a
+<a class="xref" href="Egap.Documents.ParagraphStyle.html">ParagraphStyle</a> for a paragraph, or null for the document's default.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Style? OldStyle { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Egap.Documents.Style.html">Style</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Egap_Documents_FormatRevision_StyleChanged_" data-uid="Egap.Documents.FormatRevision.StyleChanged*"></a>
+
+  <h3 id="Egap_Documents_FormatRevision_StyleChanged" data-uid="Egap.Documents.FormatRevision.StyleChanged">
+  StyleChanged
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Extensions.cs/#L138"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Whether the change also changed the style: a run's character style or a paragraph's style. When it did,
+<a class="xref" href="Egap.Documents.FormatRevision.html#Egap_Documents_FormatRevision_OldStyle">OldStyle</a> is the style before, and rejecting the change puts it back.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool StyleChanged { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
 
 </article>
 

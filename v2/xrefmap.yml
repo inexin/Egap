@@ -6436,6 +6436,12 @@ references:
   commentId: F:Egap.Documents.Comparing.CompareChangeKind.Deleted
   fullName: Egap.Documents.Comparing.CompareChangeKind.Deleted
   nameWithType: CompareChangeKind.Deleted
+- uid: Egap.Documents.Comparing.CompareChangeKind.Formatted
+  name: Formatted
+  href: api/Egap.Documents.Comparing.CompareChangeKind.html#Egap_Documents_Comparing_CompareChangeKind_Formatted
+  commentId: F:Egap.Documents.Comparing.CompareChangeKind.Formatted
+  fullName: Egap.Documents.Comparing.CompareChangeKind.Formatted
+  nameWithType: CompareChangeKind.Formatted
 - uid: Egap.Documents.Comparing.CompareChangeKind.Inserted
   name: Inserted
   href: api/Egap.Documents.Comparing.CompareChangeKind.html#Egap_Documents_Comparing_CompareChangeKind_Inserted
@@ -13135,6 +13141,32 @@ references:
   isSpec: "True"
   fullName: Egap.Documents.FormatRevision.OldFormat
   nameWithType: FormatRevision.OldFormat
+- uid: Egap.Documents.FormatRevision.OldStyle
+  name: OldStyle
+  href: api/Egap.Documents.FormatRevision.html#Egap_Documents_FormatRevision_OldStyle
+  commentId: P:Egap.Documents.FormatRevision.OldStyle
+  fullName: Egap.Documents.FormatRevision.OldStyle
+  nameWithType: FormatRevision.OldStyle
+- uid: Egap.Documents.FormatRevision.OldStyle*
+  name: OldStyle
+  href: api/Egap.Documents.FormatRevision.html#Egap_Documents_FormatRevision_OldStyle_
+  commentId: Overload:Egap.Documents.FormatRevision.OldStyle
+  isSpec: "True"
+  fullName: Egap.Documents.FormatRevision.OldStyle
+  nameWithType: FormatRevision.OldStyle
+- uid: Egap.Documents.FormatRevision.StyleChanged
+  name: StyleChanged
+  href: api/Egap.Documents.FormatRevision.html#Egap_Documents_FormatRevision_StyleChanged
+  commentId: P:Egap.Documents.FormatRevision.StyleChanged
+  fullName: Egap.Documents.FormatRevision.StyleChanged
+  nameWithType: FormatRevision.StyleChanged
+- uid: Egap.Documents.FormatRevision.StyleChanged*
+  name: StyleChanged
+  href: api/Egap.Documents.FormatRevision.html#Egap_Documents_FormatRevision_StyleChanged_
+  commentId: Overload:Egap.Documents.FormatRevision.StyleChanged
+  isSpec: "True"
+  fullName: Egap.Documents.FormatRevision.StyleChanged
+  nameWithType: FormatRevision.StyleChanged
 - uid: Egap.Documents.FramePosition
   name: FramePosition
   href: api/Egap.Documents.FramePosition.html
