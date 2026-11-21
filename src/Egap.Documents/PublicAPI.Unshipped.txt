@@ -558,6 +558,7 @@ Egap.Documents.Comparing.CompareChangeKind
 Egap.Documents.Comparing.CompareChangeKind.Deleted = 1 -> Egap.Documents.Comparing.CompareChangeKind
 Egap.Documents.Comparing.CompareChangeKind.Formatted = 3 -> Egap.Documents.Comparing.CompareChangeKind
 Egap.Documents.Comparing.CompareChangeKind.Inserted = 0 -> Egap.Documents.Comparing.CompareChangeKind
+Egap.Documents.Comparing.CompareChangeKind.Moved = 4 -> Egap.Documents.Comparing.CompareChangeKind
 Egap.Documents.Comparing.CompareChangeKind.Replaced = 2 -> Egap.Documents.Comparing.CompareChangeKind
 Egap.Documents.Comparing.CompareGranularity
 Egap.Documents.Comparing.CompareGranularity.Character = 1 -> Egap.Documents.Comparing.CompareGranularity
@@ -589,10 +590,14 @@ Egap.Documents.Comparing.DocumentCompareOptions.ExistingRevisions.get -> Egap.Do
 Egap.Documents.Comparing.DocumentCompareOptions.ExistingRevisions.init -> void
 Egap.Documents.Comparing.DocumentCompareOptions.Fields.get -> bool
 Egap.Documents.Comparing.DocumentCompareOptions.Fields.init -> void
+Egap.Documents.Comparing.DocumentCompareOptions.Formatting.get -> bool?
+Egap.Documents.Comparing.DocumentCompareOptions.Formatting.init -> void
 Egap.Documents.Comparing.DocumentCompareOptions.Granularity.get -> Egap.Documents.Comparing.CompareGranularity
 Egap.Documents.Comparing.DocumentCompareOptions.Granularity.init -> void
 Egap.Documents.Comparing.DocumentCompareOptions.HeadersFooters.get -> bool
 Egap.Documents.Comparing.DocumentCompareOptions.HeadersFooters.init -> void
+Egap.Documents.Comparing.DocumentCompareOptions.Moves.get -> bool
+Egap.Documents.Comparing.DocumentCompareOptions.Moves.init -> void
 Egap.Documents.Comparing.DocumentCompareOptions.Notes.get -> bool
 Egap.Documents.Comparing.DocumentCompareOptions.Notes.init -> void
 Egap.Documents.Comparing.DocumentCompareOptions.TextBoxes.get -> bool
@@ -605,8 +610,12 @@ Egap.Documents.Comparing.DocumentCompareStatistics.DeletedWords.get -> int
 Egap.Documents.Comparing.DocumentCompareStatistics.DeletedWords.init -> void
 Egap.Documents.Comparing.DocumentCompareStatistics.DocumentCompareStatistics() -> void
 Egap.Documents.Comparing.DocumentCompareStatistics.Equals(Egap.Documents.Comparing.DocumentCompareStatistics? other) -> bool
+Egap.Documents.Comparing.DocumentCompareStatistics.FormattingChanges.get -> int
+Egap.Documents.Comparing.DocumentCompareStatistics.FormattingChanges.init -> void
 Egap.Documents.Comparing.DocumentCompareStatistics.InsertedWords.get -> int
 Egap.Documents.Comparing.DocumentCompareStatistics.InsertedWords.init -> void
+Egap.Documents.Comparing.DocumentCompareStatistics.MovedWords.get -> int
+Egap.Documents.Comparing.DocumentCompareStatistics.MovedWords.init -> void
 Egap.Documents.Comparing.DocumentCompareStatistics.ParagraphsTouched.get -> int
 Egap.Documents.Comparing.DocumentCompareStatistics.ParagraphsTouched.init -> void
 Egap.Documents.Comparing.DocumentCompareWarning
@@ -624,6 +633,7 @@ Egap.Documents.Comparing.DocumentCompareWarningKind
 Egap.Documents.Comparing.DocumentCompareWarningKind.ContentNotTracked = 3 -> Egap.Documents.Comparing.DocumentCompareWarningKind
 Egap.Documents.Comparing.DocumentCompareWarningKind.EditLimitReached = 1 -> Egap.Documents.Comparing.DocumentCompareWarningKind
 Egap.Documents.Comparing.DocumentCompareWarningKind.ExistingRevisionsAccepted = 0 -> Egap.Documents.Comparing.DocumentCompareWarningKind
+Egap.Documents.Comparing.DocumentCompareWarningKind.FormattingNotCompared = 4 -> Egap.Documents.Comparing.DocumentCompareWarningKind
 Egap.Documents.Comparing.DocumentCompareWarningKind.SectionsDiffer = 2 -> Egap.Documents.Comparing.DocumentCompareWarningKind
 Egap.Documents.Comparing.DocumentComparison
 Egap.Documents.Comparing.DocumentComparison.Changes.get -> System.Collections.Generic.IReadOnlyList<Egap.Documents.Comparing.DocumentChange!>!
@@ -635,6 +645,7 @@ Egap.Documents.Comparing.ExistingRevisionHandling
 Egap.Documents.Comparing.ExistingRevisionHandling.Accept = 0 -> Egap.Documents.Comparing.ExistingRevisionHandling
 Egap.Documents.Comparing.ExistingRevisionHandling.Throw = 1 -> Egap.Documents.Comparing.ExistingRevisionHandling
 Egap.Documents.Document.Protection.get -> Egap.Documents.DocumentProtection!
+Egap.Documents.Document.SourceFormat.get -> Egap.Documents.DocumentFormatKind
 Egap.Documents.DocumentBuilder.EndEditableRange(Egap.Documents.EditableRangeStart! start) -> Egap.Documents.EditableRangeEnd!
 Egap.Documents.DocumentBuilder.StartEditableRange(Egap.Documents.EditorGroup group = Egap.Documents.EditorGroup.Everyone) -> Egap.Documents.EditableRangeStart!
 Egap.Documents.DocumentBuilder.StartEditableRange(string! editor) -> Egap.Documents.EditableRangeStart!
@@ -780,6 +791,8 @@ Egap.Documents.ProtectionKind.Forms = 4 -> Egap.Documents.ProtectionKind
 Egap.Documents.ProtectionKind.None = 0 -> Egap.Documents.ProtectionKind
 Egap.Documents.ProtectionKind.ReadOnly = 1 -> Egap.Documents.ProtectionKind
 Egap.Documents.ProtectionKind.TrackedChanges = 3 -> Egap.Documents.ProtectionKind
+Egap.Documents.Revision.MoveName.get -> string?
+Egap.Documents.Revision.MoveName.init -> void
 Egap.Documents.RtfFormat
 Egap.Documents.RtfLoadOptions
 Egap.Documents.RtfLoadOptions.Limits.get -> Egap.Documents.DocumentLimits!

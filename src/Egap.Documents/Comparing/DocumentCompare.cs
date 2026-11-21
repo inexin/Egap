@@ -8,8 +8,8 @@ namespace Egap.Documents.Comparing;
 /// The comparison lines up blocks first (paragraphs and tables, by a hash of their content), pairs changed paragraphs that
 /// share at least half their words, and then marks the words that differ inside each pair. Accepting every change of the
 /// result gives the revised content; rejecting every change gives the original. The main text is compared, tables row by
-/// row, and, as the options say, headers and footers, the text of notes and text boxes, and fields; the result gets the
-/// revised document's comments.
+/// row, and, as the options say, formatting, moved paragraphs, headers and footers, the text of notes and text boxes, and
+/// fields; the result gets the revised document's comments.
 /// </remarks>
 public static class DocumentCompare
 {
@@ -33,7 +33,17 @@ public static class DocumentCompare
         bool baseIsRevised = options.Base == CompareBase.Revised;
         Document a = Prepare(original, "original", copy: !baseIsRevised, options, warnings);
         Document b = Prepare(revised, "revised", copy: baseIsRevised, options, warnings);
-        BlockComparer comparer = new(baseIsRevised ? b : a, baseIsRevised, options, warnings);
+        bool formatting = options.Formatting ?? true;
+        if (options.Formatting is null && original.SourceFormat != DocumentFormatKind.Unknown && revised.SourceFormat != DocumentFormatKind.Unknown
+            && original.SourceFormat != revised.SourceFormat)
+        {
+            formatting = false;
+            warnings.Add(new DocumentCompareWarning(
+                DocumentCompareWarningKind.FormattingNotCompared,
+                $"The original was read from {original.SourceFormat} and the revised document from {revised.SourceFormat}, so formatting was not compared."));
+        }
+
+        BlockComparer comparer = new(baseIsRevised ? b : a, baseIsRevised, options, formatting, warnings);
         comparer.ReadComments(a, b);
         comparer.CompareBodies(a, b);
         if (options.HeadersFooters)

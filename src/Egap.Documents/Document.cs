@@ -132,6 +132,14 @@ public sealed partial class Document : Node
     public long FormattingVersion { get; private set; }
 
     /// <summary>
+    /// The kind of file <see cref="Load(string)"/> (or another <c>Document.Load</c> overload) read this document from;
+    /// <see cref="DocumentFormatKind.Unknown"/> for a document built in code or read with a format's own <c>Load</c>. A copy
+    /// keeps it. <see cref="Comparing.DocumentCompare"/> uses it to leave formatting out when two inputs come from different
+    /// formats.
+    /// </summary>
+    public DocumentFormatKind SourceFormat { get; internal set; }
+
+    /// <summary>
     /// Counts the changes made to this document: every change, through any public member, adds one and stamps the paragraph
     /// and story it touched with the new value (<see cref="Paragraph.Version"/>, <see cref="Story.Version"/>).
     /// </summary>
@@ -201,6 +209,7 @@ public sealed partial class Document : Node
         copy.FormattingVersion = FormattingVersion;
 
         copy.fileName = fileName;
+        copy.SourceFormat = SourceFormat;
         copy.CopyExtensionsFrom(this);
         foreach (EmbeddedFont font in EmbeddedFonts)
         {

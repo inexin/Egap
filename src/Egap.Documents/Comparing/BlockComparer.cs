@@ -13,6 +13,9 @@ internal sealed partial class BlockComparer
     /// <summary>The smallest share of common words (Dice coefficient) for two changed paragraphs to be compared word by word.</summary>
     private const double PairThreshold = 0.5;
 
+    /// <summary>The fewest words a run of moved paragraphs has, so a short line that repeats is not taken for a move.</summary>
+    private const int MoveWords = 6;
+
     private readonly Document result;
     private readonly bool baseIsRevised;
     private readonly List<DocumentCompareWarning> warnings;
@@ -27,17 +30,22 @@ internal sealed partial class BlockComparer
     private readonly List<PendingChange> changes = [];
     private readonly List<Action> marks = [];
     private readonly DocumentCompareOptions options;
+    private readonly bool formatting;
+    private readonly List<Move> moves = [];
 
     // Each paragraph of the non-base document and the result's paragraph that holds its text, for placing comments.
     private readonly Dictionary<Paragraph, Paragraph>? placed;
     private int insertedWords;
     private int deletedWords;
     private int paragraphsTouched;
+    private int movedWords;
+    private int formattingChanges;
     private bool limitReached;
     private int notTracked;
 
-    public BlockComparer(Document result, bool baseIsRevised, DocumentCompareOptions options, List<DocumentCompareWarning> warnings)
+    public BlockComparer(Document result, bool baseIsRevised, DocumentCompareOptions options, bool formatting, List<DocumentCompareWarning> warnings)
     {
+        this.formatting = formatting;
         this.result = result;
         this.baseIsRevised = baseIsRevised;
         this.warnings = warnings;
@@ -52,6 +60,20 @@ internal sealed partial class BlockComparer
 
     /// <summary>A change found, kept until the result's tree is final so its story can be named.</summary>
     private sealed record PendingChange(CompareChangeKind Kind, string OldText, string NewText, Node Anchor, List<TrackedChange> Tracked);
+
+    /// <summary>A run of moved paragraphs: its two revisions, its change once one side is placed, and its text.</summary>
+    private sealed class Move(Revision from, Revision to)
+    {
+        public Revision From => from;
+
+        public Revision To => to;
+
+        public int Change { get; set; } = -1;
+
+        public List<TrackedChange> Tracked { get; } = [];
+
+        public System.Text.StringBuilder Text { get; } = new();
+    }
 
     /// <summary>
     /// Compares the main text: section by section when both documents have as many sections, else every section's body as
@@ -132,6 +154,12 @@ internal sealed partial class BlockComparer
 
         PlaceComments();
 
+        foreach (Move move in moves.Where(m => m.Change >= 0))
+        {
+            string text = move.Text.ToString().TrimEnd(ControlChar.ParagraphBreak);
+            changes[move.Change] = changes[move.Change] with { OldText = text, NewText = text };
+        }
+
         if (limitReached)
         {
             warnings.Add(new DocumentCompareWarning(
@@ -155,6 +183,8 @@ internal sealed partial class BlockComparer
         {
             InsertedWords = insertedWords,
             DeletedWords = deletedWords,
+            MovedWords = movedWords,
+            FormattingChanges = formattingChanges,
             ParagraphsTouched = paragraphsTouched,
         };
         return new DocumentComparison(result, list, statistics, warnings);
@@ -200,6 +230,7 @@ internal sealed partial class BlockComparer
         ulong[] keysA = [.. a.Select(Key)], keysB = [.. b.Select(Key)];
         List<DiffStep> script = SequenceDiff.Diff<ulong>(keysA, keysB, out bool limit);
         limitReached |= limit;
+        (int[] MovesA, int[] MovesB)? found = options.Moves ? FindMoves(a, b, keysA, keysB, script) : null;
         int i = 0, j = 0;
         for (int s = 0; s < script.Count; s++)
         {
@@ -208,7 +239,11 @@ internal sealed partial class BlockComparer
             {
                 for (int k = 0; k < step.Count; k++)
                 {
-                    CompareFormatting(a[i + k], b[j + k]);
+                    if (formatting)
+                    {
+                        CompareFormatting(a[i + k], b[j + k]);
+                    }
+
                     emit(baseIsRevised ? b[j + k] : a[i + k], true);
                 }
 
@@ -231,9 +266,142 @@ internal sealed partial class BlockComparer
                 inserted = step.Count;
             }
 
-            CompareStretch([.. a.Skip(i).Take(deleted)], [.. b.Skip(j).Take(inserted)], emit);
+            if (found is var (movesA, movesB))
+            {
+                CompareStretch(a, i, deleted, movesA, b, j, inserted, movesB, emit);
+            }
+            else
+            {
+                CompareStretch([.. a.Skip(i).Take(deleted)], [.. b.Skip(j).Take(inserted)], emit);
+            }
+
             i += deleted;
             j += inserted;
+        }
+    }
+
+    /// <summary>
+    /// Finds moved paragraphs: runs of deleted paragraphs that come back, in the same order, among the inserted ones. Returns,
+    /// for each block of each side, the number of its move (counting from 1) or 0; null when there is none.
+    /// </summary>
+    private (int[] MovesA, int[] MovesB)? FindMoves(IReadOnlyList<Block> a, IReadOnlyList<Block> b, ulong[] keysA, ulong[] keysB, List<DiffStep> script)
+    {
+        bool[] deleted = new bool[a.Count], inserted = new bool[b.Count];
+        int i = 0, j = 0;
+        foreach (DiffStep step in script)
+        {
+            switch (step.Operation)
+            {
+                case DiffOperation.Equal:
+                    i += step.Count;
+                    j += step.Count;
+                    break;
+                case DiffOperation.Delete:
+                    deleted.AsSpan(i, step.Count).Fill(true);
+                    i += step.Count;
+                    break;
+                default:
+                    inserted.AsSpan(j, step.Count).Fill(true);
+                    j += step.Count;
+                    break;
+            }
+        }
+
+        Dictionary<ulong, List<int>> where = [];
+        for (int y = 0; y < b.Count; y++)
+        {
+            if (inserted[y] && b[y] is Paragraph)
+            {
+                if (!where.TryGetValue(keysB[y], out List<int>? list))
+                {
+                    where[keysB[y]] = list = [];
+                }
+
+                list.Add(y);
+            }
+        }
+
+        if (where.Count == 0)
+        {
+            return null;
+        }
+
+        int[] movesA = new int[a.Count], movesB = new int[b.Count];
+        bool any = false;
+        for (int x = 0; x < a.Count; x++)
+        {
+            if (!deleted[x] || movesA[x] != 0 || a[x] is not Paragraph || !where.TryGetValue(keysA[x], out List<int>? candidates))
+            {
+                continue;
+            }
+
+            int best = 0, bestAt = -1;
+            foreach (int y in candidates)
+            {
+                int n = 0;
+                while (x + n < a.Count && y + n < b.Count && deleted[x + n] && inserted[y + n] && movesA[x + n] == 0 && movesB[y + n] == 0
+                    && a[x + n] is Paragraph && keysA[x + n] == keysB[y + n])
+                {
+                    n++;
+                }
+
+                if (n > best)
+                {
+                    (best, bestAt) = (n, y);
+                }
+            }
+
+            if (best == 0 || Enumerable.Range(x, best).Sum(k => CountWords((Paragraph)a[k])) < MoveWords)
+            {
+                continue;
+            }
+
+            string name = "move" + (moves.Count + 1).ToString(System.Globalization.CultureInfo.InvariantCulture);
+            moves.Add(new Move(
+                new Revision(RevisionKind.MoveFrom, author, date) { MoveName = name },
+                new Revision(RevisionKind.MoveTo, author, date) { MoveName = name }));
+            for (int k = 0; k < best; k++)
+            {
+                movesA[x + k] = movesB[bestAt + k] = moves.Count;
+            }
+
+            any = true;
+            x += best - 1;
+        }
+
+        return any ? (movesA, movesB) : null;
+    }
+
+    /// <summary>
+    /// A changed stretch with moved paragraphs in it: the moved ones are marked as moved where they stand, the rest compared
+    /// in the pieces between them, so each document's blocks keep their order.
+    /// </summary>
+    private void CompareStretch(IReadOnlyList<Block> a, int i, int deleted, int[] movesA, IReadOnlyList<Block> b, int j, int inserted, int[] movesB, Action<Block, bool> emit)
+    {
+        int x = i, y = j, endA = i + deleted, endB = j + inserted;
+        while (x < endA || y < endB)
+        {
+            List<Block> pieceA = [], pieceB = [];
+            for (; x < endA && movesA[x] == 0; x++)
+            {
+                pieceA.Add(a[x]);
+            }
+
+            for (; y < endB && movesB[y] == 0; y++)
+            {
+                pieceB.Add(b[y]);
+            }
+
+            CompareStretch(pieceA, pieceB, emit);
+            for (; x < endA && movesA[x] != 0; x++)
+            {
+                Whole(a[x], fromA: true, emit, moves[movesA[x] - 1]);
+            }
+
+            for (; y < endB && movesB[y] != 0; y++)
+            {
+                Whole(b[y], fromA: false, emit, moves[movesB[y] - 1]);
+            }
         }
     }
 
@@ -334,11 +502,14 @@ internal sealed partial class BlockComparer
         };
     }
 
-    /// <summary>A block that is only in one document: marked deleted (from A) or inserted (from B) as a whole.</summary>
-    private void Whole(Block block, bool fromA, Action<Block, bool> emit)
+    /// <summary>
+    /// A block that is only in one document: marked deleted (from A) or inserted (from B) as a whole, or as the source or
+    /// destination of <paramref name="move"/>.
+    /// </summary>
+    private void Whole(Block block, bool fromA, Action<Block, bool> emit, Move? move = null)
     {
         bool isBase = fromA != baseIsRevised;
-        Revision revision = fromA ? deletion : insertion;
+        Revision revision = move is null ? (fromA ? deletion : insertion) : (fromA ? move.From : move.To);
         if (block is not (Paragraph or Table))
         {
             // A container or kept island has no tracked form of its own; the base's stays, the other's is left out.
@@ -399,6 +570,27 @@ internal sealed partial class BlockComparer
         });
 
         string text = node is Paragraph para ? para.GetText() : node.GetText().TrimEnd(ControlChar.ParagraphBreak);
+        if (move is not null)
+        {
+            // One change for the whole move, both sides; its text is the source's.
+            if (move.Change < 0)
+            {
+                move.Change = changes.Count;
+                changes.Add(new PendingChange(CompareChangeKind.Moved, "", "", node, move.Tracked));
+            }
+
+            move.Tracked.AddRange(tracked);
+            if (fromA)
+            {
+                move.Text.Append(text);
+                movedWords += words;
+            }
+
+            paragraphsTouched += paragraphs;
+            emit(node, isBase);
+            return;
+        }
+
         changes.Add(new PendingChange(fromA ? CompareChangeKind.Deleted : CompareChangeKind.Inserted, fromA ? text : "", fromA ? "" : text, node, tracked));
         if (fromA)
         {
@@ -771,7 +963,7 @@ internal sealed partial class BlockComparer
         {
             int before = output.Count;
             emitter.Emit(start, end, null, output, null);
-            if (runA is not null && runB is not null && !SameFormatting(runA, runB))
+            if (formatting && runA is not null && runB is not null && !SameFormatting(runA, runB))
             {
                 MarkFormat(output.GetRange(before, output.Count - before).OfType<Run>().ToList(), runA, runB, (baseIsRevised ? b : a).Paragraph);
                 changed = true;
@@ -969,6 +1161,7 @@ internal sealed partial class BlockComparer
 
         string text = string.Concat(runs.Select(r => r.Text));
         changes.Add(new PendingChange(CompareChangeKind.Formatted, text, text, paragraph, tracked));
+        formattingChanges++;
     }
 
     /// <summary>
@@ -977,7 +1170,7 @@ internal sealed partial class BlockComparer
     /// </summary>
     private bool CompareParagraphFormat(Paragraph a, Paragraph b)
     {
-        if (a.Style?.Id == b.Style?.Id && (SameDirect(a.Format, b.Format) || SameLook(a.GetEffectiveFormat(), b.GetEffectiveFormat())))
+        if (!formatting || a.Style?.Id == b.Style?.Id && (SameDirect(a.Format, b.Format) || SameLook(a.GetEffectiveFormat(), b.GetEffectiveFormat())))
         {
             return false;
         }
@@ -1008,6 +1201,7 @@ internal sealed partial class BlockComparer
 
         string text = node.GetText().TrimEnd(ControlChar.ParagraphBreak);
         changes.Add(new PendingChange(CompareChangeKind.Formatted, text, text, node, [new TrackedChange(node, TrackedChangeTarget.Format)]));
+        formattingChanges++;
         return true;
     }
 

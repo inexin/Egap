@@ -67,6 +67,17 @@ follows with the rest of Egap. Install it with `dotnet tool install -g Egap.Cli 
   revised document's comments, matched by the text they anchor: one only in the original is removed and one only in the
   revised document is added at the same text, never as a tracked change. `DocumentCompareOptions` turns each off with
   `HeadersFooters`, `Notes`, `Comments`, `TextBoxes` and `Fields`.
+- Document compare finds moved paragraphs: a run of deleted paragraphs with at least six words that is inserted again
+  elsewhere becomes a move (`CompareChangeKind.Moved`, one change for both ends). Its source and destination revisions
+  share the new `Revision.MoveName`; `DocumentCompareOptions.Moves` turns it off.
+- DOCX writes a move inside named move ranges (`w:moveFromRangeStart` and `w:moveToRangeStart`), so Word pairs its two
+  ends, and reads the range names back into `Revision.MoveName`; before, moves were written without ranges and the names
+  read were dropped.
+- `Document.SourceFormat` says which format `Document.Load` read a document from. When the two inputs of a comparison
+  come from different formats, formatting is not compared and the warning `FormattingNotCompared` says so;
+  `DocumentCompareOptions.Formatting` turns formatting comparison on or off whatever the formats.
+- `DocumentCompareStatistics` counts moved words (`MovedWords`) and format changes (`FormattingChanges`).
+- New guide: [Comparing documents](docs/articles/guides/comparing-documents.md).
 - `FormatRevision` has `StyleChanged` and `OldStyle`, so a format change can also change a run's character style or a
   paragraph's style, and rejecting it puts the old style back. DOCX files keep the old style in `w:rPrChange` and
   `w:pPrChange`, read and written; before, the reader dropped it and the writer wrote none.

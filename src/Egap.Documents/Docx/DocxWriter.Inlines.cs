@@ -23,6 +23,15 @@ internal sealed partial class DocxWriter
             {
                 open = inline.Revision;
                 target = parent;
+                if (open is { MoveName: { } name } && moveEnds.ContainsKey(open) && !moveRanges.ContainsKey(open))
+                {
+                    // A named move's text sits in a move range of that name, which pairs its source and destination.
+                    int id = nextRevisionId++;
+                    moveRanges[open] = id;
+                    parent.Add(new XElement(Ns.W + (open.Kind == RevisionKind.MoveFrom ? "moveFromRangeStart" : "moveToRangeStart"),
+                        new XAttribute(Ns.W + "id", id), new XAttribute(Ns.W + "name", name), RevisionAttributes(open.Author, open.Date)));
+                }
+
                 if (open is not null && RevisionElement(open, mark: false) is { } wrapper)
                 {
                     parent.Add(wrapper);
@@ -31,6 +40,12 @@ internal sealed partial class DocxWriter
             }
 
             fieldCode = WriteInline(inline, target, fieldCode);
+            if (open is not null && moveEnds.TryGetValue(open, out Inline? last) && ReferenceEquals(last, inline) && moveRanges.TryGetValue(open, out int rangeId))
+            {
+                parent.Add(new XElement(Ns.W + (open.Kind == RevisionKind.MoveFrom ? "moveFromRangeEnd" : "moveToRangeEnd"), new XAttribute(Ns.W + "id", rangeId)));
+                open = null;
+                target = parent;
+            }
         }
 
         return fieldCode;

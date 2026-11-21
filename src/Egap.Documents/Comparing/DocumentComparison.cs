@@ -14,6 +14,12 @@ public enum CompareChangeKind
 
     /// <summary>The same text with other formatting, or a paragraph with other formatting or another style.</summary>
     Formatted,
+
+    /// <summary>
+    /// Paragraphs moved: their tracked changes are the source (<see cref="RevisionKind.MoveFrom"/>) and the destination
+    /// (<see cref="RevisionKind.MoveTo"/>), which share a <see cref="Revision.MoveName"/>. The old and the new text are the same.
+    /// </summary>
+    Moved,
 }
 
 /// <summary>
@@ -71,6 +77,8 @@ public sealed class DocumentChange
         {
             CompareChangeKind.Inserted => $"Inserted \"{NewText}\"",
             CompareChangeKind.Deleted => $"Deleted \"{OldText}\"",
+            CompareChangeKind.Moved => $"Moved \"{NewText}\"",
+            CompareChangeKind.Formatted => $"Formatted \"{NewText}\"",
             _ => $"Replaced \"{OldText}\" with \"{NewText}\"",
         };
     }
@@ -94,7 +102,13 @@ public sealed record DocumentCompareStatistics
     /// <summary>Words only in the original document.</summary>
     public int DeletedWords { get; init; }
 
-    /// <summary>Paragraphs of the result that hold a change, whole inserted and deleted ones included.</summary>
+    /// <summary>Words in moved paragraphs, counted once (not in <see cref="InsertedWords"/> or <see cref="DeletedWords"/>).</summary>
+    public int MovedWords { get; init; }
+
+    /// <summary>Format changes: of runs and of paragraphs.</summary>
+    public int FormattingChanges { get; init; }
+
+    /// <summary>Paragraphs of the result that hold a change, whole inserted, deleted and moved ones included.</summary>
     public int ParagraphsTouched { get; init; }
 }
 
@@ -118,6 +132,12 @@ public enum DocumentCompareWarningKind
     /// could not be matched) was kept as it is in the base document.
     /// </summary>
     ContentNotTracked,
+
+    /// <summary>
+    /// The inputs were read from different formats, so formatting was not compared (see
+    /// <see cref="DocumentCompareOptions.Formatting"/>).
+    /// </summary>
+    FormattingNotCompared,
 }
 
 /// <summary>Something a comparison could not show exactly, with how many times it happened.</summary>
@@ -159,7 +179,7 @@ public sealed class DocumentComparison
     /// <summary>Whether the documents differ in what was compared.</summary>
     public bool HasChanges => Changes.Count > 0;
 
-    /// <summary>Counts of inserted and deleted words and touched paragraphs.</summary>
+    /// <summary>Counts of inserted, deleted and moved words, format changes and touched paragraphs.</summary>
     public DocumentCompareStatistics Statistics { get; }
 
     /// <summary>What the comparison could not show exactly.</summary>

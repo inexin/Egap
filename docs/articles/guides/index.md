@@ -25,6 +25,8 @@ Reading, editing, rendering and saving PDF files.
 
 One document model for DOCX, DOC, RTF, OpenDocument Text, HTML, Markdown and plain text, its page layout, and conversions to and from PDF.
 
+- [Comparing documents](comparing-documents.md): two versions compared into tracked changes, with moves, formatting,
+  headers and footers, notes and comments; the list of changes and a printed redline.
 - [Flow documents](flow-documents.md): the document model, editing, text options, barcodes, mail merge and page layout.
 - [Moving to Egap.Documents 2.0](migrating-to-2.0.md): the new packages and namespaces, and what else changed.
 - [PDF export and conversion](pdf-export-and-conversion.md): documents to PDF, one-line conversions, and PDF back to

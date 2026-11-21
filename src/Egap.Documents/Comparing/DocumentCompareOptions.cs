@@ -39,6 +39,21 @@ public sealed record DocumentCompareOptions
     /// <summary>Whether changed text is marked by whole words (the default) or by characters.</summary>
     public CompareGranularity Granularity { get; init; } = CompareGranularity.Word;
 
+    /// <summary>
+    /// Whether formatting is compared: the same text in another look, or a paragraph with another style or paragraph
+    /// formatting, becomes a format change. Null (the default) compares formatting unless the two inputs were read from
+    /// different formats (<see cref="Document.SourceFormat"/>), as a DOCX file and an HTML page of the same text differ in
+    /// nearly every run's formatting; the comparison then warns. True or false always or never compares it.
+    /// </summary>
+    public bool? Formatting { get; init; }
+
+    /// <summary>
+    /// Whether moved paragraphs are found (the default): a run of deleted paragraphs that is inserted again elsewhere, with
+    /// at least six words, becomes a move whose source and destination share a name. As in Word, moves inside a paragraph
+    /// are not looked for. When false they are a deletion and an insertion.
+    /// </summary>
+    public bool Moves { get; init; } = true;
+
     /// <summary>Whether a change of case only (such as "word" to "Word") counts as a change. Default true.</summary>
     public bool CaseChanges { get; init; } = true;
 
