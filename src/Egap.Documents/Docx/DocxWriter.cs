@@ -702,7 +702,7 @@ internal sealed partial class DocxWriter
         if (paragraph.FormatRevision is { OldFormat: ParagraphFormat old } revision)
         {
             change = new XElement(Ns.W + "pPrChange", new XAttribute(Ns.W + "id", nextRevisionId++), RevisionAttributes(revision.Author, revision.Date),
-                DocxPropertyWriter.Paragraph(old, null, null) ?? new XElement(Ns.W + "pPr"));
+                DocxPropertyWriter.Paragraph(old, revision.StyleChanged ? (ParagraphStyle?)revision.OldStyle : paragraph.Style, null) ?? new XElement(Ns.W + "pPr"));
         }
 
         if (DocxPropertyWriter.Paragraph(paragraph.Format, paragraph.Style, kept?.UnknownProperties?.GetValueOrDefault("pPr"), markProperties, change) is { } pPr)

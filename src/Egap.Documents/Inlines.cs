@@ -58,9 +58,9 @@ public sealed class Run : Inline
         get => formatRevision;
         set
         {
-            if (value is not null && value.OldFormat is not RunFormat)
+            if (value is not null && (value.OldFormat is not RunFormat || value.OldStyle is not (null or CharacterStyle)))
             {
-                throw new ArgumentException("A run's format revision holds a RunFormat.", nameof(value));
+                throw new ArgumentException("A run's format revision holds a RunFormat and, if any, a CharacterStyle.", nameof(value));
             }
 
             SetProperty(ref formatRevision, value);
@@ -117,7 +117,7 @@ public sealed class Run : Inline
 
     private protected override Node CloneShallow(CloneContext context)
     {
-        Run copy = CopyInline(new Run(context.Target, text) { style = context.Map(style), formatRevision = formatRevision });
+        Run copy = CopyInline(new Run(context.Target, text) { style = context.Map(style), formatRevision = formatRevision?.CopyFor(context) });
         copy.Format.CopyRaw(Format);
         return copy;
     }

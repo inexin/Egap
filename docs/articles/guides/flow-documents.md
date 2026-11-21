@@ -151,11 +151,12 @@ Document statements = template.MailMergeAll(customers, new MailMergeOptions { On
 ## Comparing documents
 
 `DocumentCompare.Run` compares two versions of a document and gives a copy of the later one with the differences as
-tracked changes, as Word's *Compare* does: words inserted and deleted within paragraphs, and paragraphs and table rows
-added and removed. Accepting every change gives the revised document and rejecting every change gives the original.
-`Changes` lists each difference with its old and new text and can accept or reject it on its own. The options choose word
-or character granularity, whether case and spacing count, and the author and date of the changes; tables that differ are
-replaced whole for now.
+tracked changes, as Word's *Compare* does: words inserted and deleted within paragraphs, paragraphs and table rows added
+and removed, table cells compared word by word, and formatting changes (the same text in bold, another size or another
+style) as format changes that keep the old formatting. Accepting every change gives the revised document and rejecting
+every change gives the original. `Changes` lists each difference with its old and new text and can accept or reject it on
+its own. The options choose word or character granularity, whether case and spacing count, and the author and date of
+the changes.
 
 ```csharp
 using Egap.Documents;

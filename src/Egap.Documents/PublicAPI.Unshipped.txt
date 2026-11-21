@@ -554,6 +554,11 @@ Egap.Documents.Charts.ChartView3D.RotationY.set -> void
 Egap.Documents.Comparing.CompareBase
 Egap.Documents.Comparing.CompareBase.Original = 1 -> Egap.Documents.Comparing.CompareBase
 Egap.Documents.Comparing.CompareBase.Revised = 0 -> Egap.Documents.Comparing.CompareBase
+Egap.Documents.Comparing.CompareChangeKind
+Egap.Documents.Comparing.CompareChangeKind.Deleted = 1 -> Egap.Documents.Comparing.CompareChangeKind
+Egap.Documents.Comparing.CompareChangeKind.Formatted = 3 -> Egap.Documents.Comparing.CompareChangeKind
+Egap.Documents.Comparing.CompareChangeKind.Inserted = 0 -> Egap.Documents.Comparing.CompareChangeKind
+Egap.Documents.Comparing.CompareChangeKind.Replaced = 2 -> Egap.Documents.Comparing.CompareChangeKind
 Egap.Documents.Comparing.CompareGranularity
 Egap.Documents.Comparing.CompareGranularity.Character = 1 -> Egap.Documents.Comparing.CompareGranularity
 Egap.Documents.Comparing.CompareGranularity.Word = 0 -> Egap.Documents.Comparing.CompareGranularity
@@ -565,10 +570,6 @@ Egap.Documents.Comparing.DocumentChange.OldText.get -> string!
 Egap.Documents.Comparing.DocumentChange.Reject() -> void
 Egap.Documents.Comparing.DocumentChange.Story.get -> Egap.Documents.Story!
 Egap.Documents.Comparing.DocumentChange.TrackedChanges.get -> System.Collections.Generic.IReadOnlyList<Egap.Documents.TrackedChange!>!
-Egap.Documents.Comparing.CompareChangeKind
-Egap.Documents.Comparing.CompareChangeKind.Deleted = 1 -> Egap.Documents.Comparing.CompareChangeKind
-Egap.Documents.Comparing.CompareChangeKind.Inserted = 0 -> Egap.Documents.Comparing.CompareChangeKind
-Egap.Documents.Comparing.CompareChangeKind.Replaced = 2 -> Egap.Documents.Comparing.CompareChangeKind
 Egap.Documents.Comparing.DocumentCompare
 Egap.Documents.Comparing.DocumentCompareOptions
 Egap.Documents.Comparing.DocumentCompareOptions.<Clone>$() -> Egap.Documents.Comparing.DocumentCompareOptions!
@@ -694,6 +695,10 @@ Egap.Documents.EditorGroup.Editors = 4 -> Egap.Documents.EditorGroup
 Egap.Documents.EditorGroup.Everyone = 1 -> Egap.Documents.EditorGroup
 Egap.Documents.EditorGroup.None = 0 -> Egap.Documents.EditorGroup
 Egap.Documents.EditorGroup.Owners = 5 -> Egap.Documents.EditorGroup
+Egap.Documents.FormatRevision.OldStyle.get -> Egap.Documents.Style?
+Egap.Documents.FormatRevision.OldStyle.init -> void
+Egap.Documents.FormatRevision.StyleChanged.get -> bool
+Egap.Documents.FormatRevision.StyleChanged.init -> void
 Egap.Documents.Island.Chart.get -> Egap.Documents.Charts.Chart?
 Egap.Documents.Island.Island(Egap.Documents.Document! document, Egap.Documents.Charts.Chart! chart, double width, double height) -> void
 Egap.Documents.Layout.DocumentLayout.Warnings.get -> System.Collections.Generic.IReadOnlyList<Egap.Documents.Layout.LayoutWarning!>!

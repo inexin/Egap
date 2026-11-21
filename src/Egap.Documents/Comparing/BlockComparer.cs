@@ -19,6 +19,9 @@ internal sealed class BlockComparer
     private readonly TokenTable table;
     private readonly Revision insertion;
     private readonly Revision deletion;
+    private readonly string author;
+    private readonly DateTimeOffset? date;
+    private readonly Dictionary<ParagraphTokens, Run?[]> runsAt = [];
     private readonly Dictionary<Paragraph, ParagraphTokens> tokens = [];
     private readonly Dictionary<Paragraph, int[]> wordSets = [];
     private readonly List<PendingChange> changes = [];
@@ -37,6 +40,8 @@ internal sealed class BlockComparer
         table = new TokenTable(options.Granularity == CompareGranularity.Character, !options.CaseChanges, !options.Whitespace);
         insertion = new Revision(RevisionKind.Insertion, options.Author, options.Date);
         deletion = new Revision(RevisionKind.Deletion, options.Author, options.Date);
+        author = options.Author;
+        date = options.Date;
     }
 
     /// <summary>A change found, kept until the result's tree is final so its story can be named.</summary>
@@ -195,6 +200,7 @@ internal sealed class BlockComparer
             {
                 for (int k = 0; k < step.Count; k++)
                 {
+                    CompareFormatting(a[i + k], b[j + k]);
                     emit(baseIsRevised ? b[j + k] : a[i + k], true);
                 }
 
@@ -255,6 +261,12 @@ internal sealed class BlockComparer
     /// </summary>
     private List<(int A, int B)> Pair(List<Block> a, List<Block> b)
     {
+        return Pair(a, b, Score);
+    }
+
+    /// <summary>Pairs items of two changed stretches whose score reaches the threshold, best pairs first, keeping their order.</summary>
+    private static List<(int A, int B)> Pair<T>(List<T> a, List<T> b, Func<T, T, double> score)
+    {
         List<(double Score, int A, int B)> candidates = [];
         bool band = (long)a.Count * b.Count > (long)PairBand * PairBand * 4;
         for (int i = 0; i < a.Count; i++)
@@ -269,10 +281,10 @@ internal sealed class BlockComparer
 
             for (int j = from; j < to; j++)
             {
-                double score = Score(a[i], b[j]);
-                if (score >= PairThreshold)
+                double value = score(a[i], b[j]);
+                if (value >= PairThreshold)
                 {
-                    candidates.Add((score, i, j));
+                    candidates.Add((value, i, j));
                 }
             }
         }
@@ -306,6 +318,7 @@ internal sealed class BlockComparer
         return (a, b) switch
         {
             (Paragraph pa, Paragraph pb) => Dice(WordSet(pa), WordSet(pb)),
+            (Table ta, Table tb) => 0.5 + (0.5 * Dice(WordSet(ta), WordSet(tb))),
             (ContentControl ca, ContentControl cb) => 0.5 + (0.5 * Dice(WordSet(ca), WordSet(cb))),
             (FlexContainer fa, FlexContainer fb) when fa.Items.Count == fb.Items.Count => 0.5 + (0.5 * Dice(WordSet(fa), WordSet(fb))),
             (GridContainer ga, GridContainer gb) when ga.Items.Count == gb.Items.Count => 0.5 + (0.5 * Dice(WordSet(ga), WordSet(gb))),
@@ -398,6 +411,11 @@ internal sealed class BlockComparer
         Block node = baseIsRevised ? b : a;
         switch (a, b)
         {
+            case (Table ta, Table tb) when !CompareTable(ta, tb, (Table)node):
+                // No row in common: the original table goes and the revised one comes, whole.
+                Whole(a, fromA: true, emit);
+                Whole(b, fromA: false, emit);
+                return;
             case (Paragraph pa, Paragraph pb):
                 MergeParagraph(Tokens(pa), Tokens(pb));
                 break;
@@ -421,6 +439,164 @@ internal sealed class BlockComparer
         }
 
         emit(node, true);
+    }
+
+    /// <summary>
+    /// Compares two tables row by row into <paramref name="target"/> (the base's): rows with the same content stay, rows that
+    /// changed are paired (same number of cells) and compared cell by cell as stories, nested tables in turn, and the rest
+    /// are marked inserted or deleted. Returns false, changing nothing, when no row stays or pairs.
+    /// </summary>
+    private bool CompareTable(Table a, Table b, Table target)
+    {
+        List<Row> rowsA = [.. a.Rows], rowsB = [.. b.Rows];
+        ulong[] keysA = [.. rowsA.Select(Key)], keysB = [.. rowsB.Select(Key)];
+        List<DiffStep> script = SequenceDiff.Diff<ulong>(keysA, keysB, out bool limit);
+
+        // Plan first, so a table with nothing in common is left to the caller untouched.
+        List<(Row? A, Row? B)> plan = [];
+        int i = 0, j = 0, kept = 0;
+        for (int s = 0; s < script.Count; s++)
+        {
+            DiffStep step = script[s];
+            if (step.Operation == DiffOperation.Equal)
+            {
+                for (int k = 0; k < step.Count; k++)
+                {
+                    plan.Add((rowsA[i + k], rowsB[j + k]));
+                }
+
+                kept += step.Count;
+                i += step.Count;
+                j += step.Count;
+                continue;
+            }
+
+            int deleted = 0, inserted = 0;
+            if (step.Operation == DiffOperation.Delete)
+            {
+                deleted = step.Count;
+                if (s + 1 < script.Count && script[s + 1].Operation == DiffOperation.Insert)
+                {
+                    inserted = script[++s].Count;
+                }
+            }
+            else
+            {
+                inserted = step.Count;
+            }
+
+            List<Row> stretchA = rowsA.GetRange(i, deleted), stretchB = rowsB.GetRange(j, inserted);
+            List<(int A, int B)> pairs;
+            if (deleted == inserted && stretchA.Zip(stretchB).All(p => p.First.Cells.Count == p.Second.Cells.Count))
+            {
+                // As many rows on both sides, cell for cell alike in shape: each row was edited where it stands.
+                pairs = [.. Enumerable.Range(0, deleted).Select(k => (k, k))];
+            }
+            else
+            {
+                pairs = Pair(stretchA, stretchB, (x, y) => x.Cells.Count == y.Cells.Count ? Dice(WordSet(x), WordSet(y)) : 0);
+            }
+
+            int pi = 0, pj = 0;
+            foreach ((int pa, int pb) in pairs.Append((deleted, inserted)))
+            {
+                for (; pi < pa; pi++)
+                {
+                    plan.Add((stretchA[pi], null));
+                }
+
+                for (; pj < pb; pj++)
+                {
+                    plan.Add((null, stretchB[pj]));
+                }
+
+                if (pa < deleted)
+                {
+                    plan.Add((stretchA[pa], stretchB[pb]));
+                    kept++;
+                    pi = pa + 1;
+                    pj = pb + 1;
+                }
+            }
+
+            i += deleted;
+            j += inserted;
+        }
+
+        if (kept == 0)
+        {
+            return false;
+        }
+
+        limitReached |= limit;
+        List<Row> output = [];
+        foreach ((Row? rowA, Row? rowB) in plan)
+        {
+            if (rowA is not null && rowB is not null)
+            {
+                Row node = baseIsRevised ? rowB : rowA;
+                for (int k = 0; k < node.Cells.Count; k++)
+                {
+                    CompareContainer(rowA.Cells[k].Blocks, rowB.Cells[k].Blocks, node.Cells[k].Blocks);
+                }
+
+                output.Add(node);
+            }
+            else
+            {
+                output.Add(WholeRow(rowA ?? rowB!, fromA: rowA is not null));
+            }
+        }
+
+        Replace(target.Rows, output);
+        return true;
+    }
+
+    /// <summary>A row only in one document: marked deleted (from A) or inserted (from B), with its text.</summary>
+    private Row WholeRow(Row row, bool fromA)
+    {
+        bool isBase = fromA != baseIsRevised;
+        Revision revision = fromA ? deletion : insertion;
+        Row node = isBase ? row : Import(row);
+        List<TrackedChange> tracked = [new TrackedChange(node, TrackedChangeTarget.Row)];
+        int words = 0;
+        foreach (Paragraph paragraph in node.Descendants<Paragraph>())
+        {
+            words += CountWords(paragraph);
+            paragraphsTouched++;
+            foreach (Inline inline in paragraph.Inlines)
+            {
+                tracked.Add(new TrackedChange(inline, TrackedChangeTarget.Node));
+            }
+        }
+
+        marks.Add(() =>
+        {
+            foreach (TrackedChange change in tracked)
+            {
+                if (change.Node is Row r)
+                {
+                    r.Revision = revision;
+                }
+                else
+                {
+                    ((Inline)change.Node).Revision = revision;
+                }
+            }
+        });
+
+        string text = string.Join("\t", node.Cells.Select(c => c.GetText().TrimEnd(ControlChar.ParagraphBreak)));
+        changes.Add(new PendingChange(fromA ? CompareChangeKind.Deleted : CompareChangeKind.Inserted, fromA ? text : "", fromA ? "" : text, node, tracked));
+        if (fromA)
+        {
+            deletedWords += words;
+        }
+        else
+        {
+            insertedWords += words;
+        }
+
+        return node;
     }
 
     private void CompareContainer(NodeCollection<Block> a, NodeCollection<Block> b, NodeCollection<Block> target)
@@ -462,24 +638,19 @@ internal sealed class BlockComparer
         Emitter fromA = new(this, a, isBase: !baseIsRevised), fromB = new(this, b, isBase: baseIsRevised);
         List<Inline> output = [];
         int i = 0, j = 0;
+        bool touched = false;
         for (int s = 0; s < script.Count; s++)
         {
             DiffStep step = script[s];
             if (step.Operation == DiffOperation.Equal)
             {
-                if (baseIsRevised)
-                {
-                    fromB.Emit(b.Starts[j], b.Starts[j + step.Count], null, output, null);
-                }
-                else
-                {
-                    fromA.Emit(a.Starts[i], a.Starts[i + step.Count], null, output, null);
-                }
-
+                touched |= EmitEqual(a, b, i, j, step.Count, baseIsRevised ? fromB : fromA, output);
                 i += step.Count;
                 j += step.Count;
                 continue;
             }
+
+            touched = true;
 
             int deleted = 0, inserted = 0;
             if (step.Operation == DiffOperation.Delete)
@@ -507,8 +678,249 @@ internal sealed class BlockComparer
         }
 
         (baseIsRevised ? fromB : fromA).Emit(baseTokens.Text.Length, baseTokens.Text.Length, null, output, null);
-        paragraphsTouched++;
+        touched |= CompareParagraphFormat(a.Paragraph, b.Paragraph);
+        if (touched)
+        {
+            paragraphsTouched++;
+        }
+
         Replace(baseTokens.Paragraph.Inlines, output);
+    }
+
+    // ---- Formatting ----
+
+    /// <summary>
+    /// Compares the formatting of blocks whose text is the same: paragraph by paragraph, in tables and containers too.
+    /// </summary>
+    private void CompareFormatting(Block a, Block b)
+    {
+        if (a is Paragraph pa && b is Paragraph pb)
+        {
+            MergeParagraph(Tokens(pa), Tokens(pb));
+            return;
+        }
+
+        if (a is Table or ContentControl or FlexContainer or GridContainer && a.GetType() == b.GetType())
+        {
+            List<Paragraph> paragraphsA = [.. a.Descendants<Paragraph>()], paragraphsB = [.. b.Descendants<Paragraph>()];
+            if (paragraphsA.Count == paragraphsB.Count)
+            {
+                for (int k = 0; k < paragraphsA.Count; k++)
+                {
+                    MergeParagraph(Tokens(paragraphsA[k]), Tokens(paragraphsB[k]));
+                }
+            }
+        }
+    }
+
+    /// <summary>
+    /// Emits tokens that are equal in both paragraphs from the base, cut where either side's run changes, and marks the
+    /// pieces whose formatting differs as format changes. Returns whether any did.
+    /// </summary>
+    private bool EmitEqual(ParagraphTokens a, ParagraphTokens b, int i, int j, int count, Emitter emitter, List<Inline> output)
+    {
+        Run?[] runsA = RunsAt(a), runsB = RunsAt(b);
+        List<(int Start, int End, Run? A, Run? B)> pieces = [];
+        for (int k = 0; k < count; k++)
+        {
+            int startA = a.Starts[i + k], endA = a.Starts[i + k + 1], startB = b.Starts[j + k], endB = b.Starts[j + k + 1];
+            int start = baseIsRevised ? startB : startA, length = baseIsRevised ? endB - startB : endA - startA;
+            if (endA - startA == endB - startB)
+            {
+                for (int o = 0; o < length; o++)
+                {
+                    Add(start + o, start + o + 1, runsA[startA + o], runsB[startB + o]);
+                }
+            }
+            else
+            {
+                // Folded white space or case of another length: the token goes by the runs it starts in.
+                Add(start, start + length, length == 0 ? null : runsA[startA], length == 0 ? null : runsB[startB]);
+            }
+        }
+
+        bool changed = false;
+        foreach ((int start, int end, Run? runA, Run? runB) in pieces)
+        {
+            int before = output.Count;
+            emitter.Emit(start, end, null, output, null);
+            if (runA is not null && runB is not null && !SameFormatting(runA, runB))
+            {
+                MarkFormat(output.GetRange(before, output.Count - before).OfType<Run>().ToList(), runA, runB, (baseIsRevised ? b : a).Paragraph);
+                changed = true;
+            }
+        }
+
+        return changed;
+
+        void Add(int start, int end, Run? runA, Run? runB)
+        {
+            if (pieces.Count > 0 && pieces[^1] is var last && last.End == start && last.A == runA && last.B == runB)
+            {
+                pieces[^1] = last with { End = end };
+            }
+            else
+            {
+                pieces.Add((start, end, runA, runB));
+            }
+        }
+    }
+
+    /// <summary>The run each character of a paragraph's compared text is in; null for atoms and marks.</summary>
+    private Run?[] RunsAt(ParagraphTokens paragraph)
+    {
+        if (!runsAt.TryGetValue(paragraph, out Run?[]? runs))
+        {
+            runs = new Run?[paragraph.Text.Length];
+            foreach (ParagraphPiece piece in paragraph.Pieces)
+            {
+                if (piece.Kind == PieceKind.Text)
+                {
+                    Array.Fill(runs, (Run)piece.First, piece.Start, piece.Length);
+                }
+            }
+
+            runsAt[paragraph] = runs;
+        }
+
+        return runs;
+    }
+
+    /// <summary>
+    /// Whether two runs are formatted alike: they look alike, or they set the same direct formatting and character style
+    /// (so a look that differs only through the paragraph's style is the paragraph's change).
+    /// </summary>
+    private static bool SameFormatting(Run a, Run b)
+    {
+        return a.Style?.Id == b.Style?.Id && SameDirect(a.Format, b.Format) || SameLook(a.GetEffectiveFormat(), b.GetEffectiveFormat());
+    }
+
+    /// <summary>Whether two runs' formatting resolves to the same look (language and proofing left out).</summary>
+    private static bool SameLook(ResolvedRunFormat a, ResolvedRunFormat b)
+    {
+        return (a.Bold, a.Italic, a.Underline, a.UnderlineColor, a.Strikethrough, a.DoubleStrikethrough, a.AllCaps, a.SmallCaps, a.Hidden, a.Overline)
+                == (b.Bold, b.Italic, b.Underline, b.UnderlineColor, b.Strikethrough, b.DoubleStrikethrough, b.AllCaps, b.SmallCaps, b.Hidden, b.Overline)
+            && (a.Size, a.Color, a.Highlight, a.VerticalPosition, a.Position, a.Spacing, a.Scale, a.FontAscii, a.FontEastAsia, a.FontComplexScript)
+                == (b.Size, b.Color, b.Highlight, b.VerticalPosition, b.Position, b.Spacing, b.Scale, b.FontAscii, b.FontEastAsia, b.FontComplexScript)
+            && Equals(a.Shading, b.Shading) && Equals(a.Border, b.Border) && Equals(a.Emboss, b.Emboss) && Equals(a.Imprint, b.Imprint)
+            && Equals(a.Outline, b.Outline) && Equals(a.Shadow, b.Shadow);
+    }
+
+    /// <summary>Whether two formats set the same properties to the same values (lists only as being set or not).</summary>
+    private static bool SameDirect(FormatBase a, FormatBase b)
+    {
+        for (int id = 0; id < a.PropertyCount; id++)
+        {
+            object? x = a.GetRaw(id), y = b.GetRaw(id);
+            bool same = (x, y) switch
+            {
+                (null, null) => true,
+                (null, _) or (_, null) => false,
+                (List, List) => true,
+                (Array ax, Array ay) => System.Collections.StructuralComparisons.StructuralEqualityComparer.Equals(ax, ay),
+                _ => x.Equals(y),
+            };
+            if (!same)
+            {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    /// <summary>Whether two paragraphs' formatting resolves to the same look, their lists only as being in one or not.</summary>
+    private static bool SameLook(ResolvedParagraphFormat a, ResolvedParagraphFormat b)
+    {
+        return (a.Alignment, a.LeftIndent, a.RightIndent, a.FirstLineIndent, a.SpaceBefore, a.SpaceAfter, a.LineSpacing, a.LineSpacingRule, a.OutlineLevel)
+                == (b.Alignment, b.LeftIndent, b.RightIndent, b.FirstLineIndent, b.SpaceBefore, b.SpaceAfter, b.LineSpacing, b.LineSpacingRule, b.OutlineLevel)
+            && (a.KeepWithNext, a.KeepTogether, a.PageBreakBefore, a.ContextualSpacing, a.Bidi, a.List is null, a.ListLevel)
+                == (b.KeepWithNext, b.KeepTogether, b.PageBreakBefore, b.ContextualSpacing, b.Bidi, b.List is null, b.ListLevel)
+            && a.TabStops.SequenceEqual(b.TabStops) && Equals(a.Shading, b.Shading) && Equals(a.BorderTop, b.BorderTop)
+            && Equals(a.BorderBottom, b.BorderBottom) && Equals(a.BorderLeft, b.BorderLeft) && Equals(a.BorderRight, b.BorderRight);
+    }
+
+    /// <summary>
+    /// Marks base runs whose text is equal but whose formatting differs: the result's run takes the revised document's
+    /// formatting and style, and its format revision holds the original's.
+    /// </summary>
+    private void MarkFormat(List<Run> runs, Run runA, Run runB, Paragraph paragraph)
+    {
+        if (runs.Count == 0)
+        {
+            return;
+        }
+
+        // The other document's run, copied into the result so its style is the result's.
+        Run other = result.Import(baseIsRevised ? runA : runB, deep: false);
+        List<TrackedChange> tracked = [.. runs.Select(r => new TrackedChange(r, TrackedChangeTarget.Format))];
+        marks.Add(() =>
+        {
+            foreach (Run run in runs)
+            {
+                RunFormat old = new();
+                CharacterStyle? oldStyle;
+                if (baseIsRevised)
+                {
+                    old.Apply(other.Format);
+                    oldStyle = other.Style;
+                }
+                else
+                {
+                    old.Apply(run.Format);
+                    oldStyle = run.Style;
+                    run.Format.ClearFormatting();
+                    run.Format.Apply(other.Format);
+                    run.Style = other.Style;
+                }
+
+                bool styleChanged = oldStyle != run.Style;
+                run.FormatRevision = new FormatRevision(author, date, old) { StyleChanged = styleChanged, OldStyle = styleChanged ? oldStyle : null };
+            }
+        });
+
+        string text = string.Concat(runs.Select(r => r.Text));
+        changes.Add(new PendingChange(CompareChangeKind.Formatted, text, text, paragraph, tracked));
+    }
+
+    /// <summary>
+    /// Compares a pair's paragraph formatting and style; where they differ the result's paragraph takes the revised
+    /// document's and its format revision holds the original's. Returns whether they differ.
+    /// </summary>
+    private bool CompareParagraphFormat(Paragraph a, Paragraph b)
+    {
+        if (a.Style?.Id == b.Style?.Id && (SameDirect(a.Format, b.Format) || SameLook(a.GetEffectiveFormat(), b.GetEffectiveFormat())))
+        {
+            return false;
+        }
+
+        Paragraph node = baseIsRevised ? b : a;
+        Paragraph other = result.Import(baseIsRevised ? a : b, deep: false);
+        marks.Add(() =>
+        {
+            ParagraphFormat old = new();
+            ParagraphStyle? oldStyle;
+            if (baseIsRevised)
+            {
+                old.Apply(other.Format);
+                oldStyle = other.Style;
+            }
+            else
+            {
+                old.Apply(node.Format);
+                oldStyle = node.Style;
+                node.Format.ClearFormatting();
+                node.Format.Apply(other.Format);
+                node.Style = other.Style;
+            }
+
+            bool styleChanged = oldStyle != node.Style;
+            node.FormatRevision = new FormatRevision(author, date, old) { StyleChanged = styleChanged, OldStyle = styleChanged ? oldStyle : null };
+        });
+
+        string text = node.GetText().TrimEnd(ControlChar.ParagraphBreak);
+        changes.Add(new PendingChange(CompareChangeKind.Formatted, text, text, node, [new TrackedChange(node, TrackedChangeTarget.Format)]));
+        return true;
     }
 
     private static int CountWords(ParagraphTokens paragraph, int start, int end)
@@ -543,7 +955,7 @@ internal sealed class BlockComparer
     }
 
     /// <summary>The sorted ids of a block's words, for the Dice coefficient.</summary>
-    private int[] WordSet(Block block)
+    private int[] WordSet(Node block)
     {
         if (block is Paragraph paragraph)
         {
@@ -601,17 +1013,7 @@ internal sealed class BlockComparer
             case Paragraph paragraph:
                 return Mix(1, Tokens(paragraph).Key);
             case Table t:
-                ulong key = Mix(2, (ulong)t.Rows.Count);
-                foreach (Row row in t.Rows)
-                {
-                    key = Mix(key, (ulong)row.Cells.Count);
-                    foreach (Cell cell in row.Cells)
-                    {
-                        key = Mix(key, Key(cell.Blocks));
-                    }
-                }
-
-                return key;
+                return t.Rows.Aggregate(Mix(2, (ulong)t.Rows.Count), (k, row) => Mix(k, Key(row)));
             case ContentControl control:
                 return Mix(3, Key(control.Blocks));
             case FlexContainer flex:
@@ -623,6 +1025,18 @@ internal sealed class BlockComparer
             default:
                 return Mix(7, (ulong)StringComparer.Ordinal.GetHashCode(block.GetText()));
         }
+    }
+
+    /// <summary>A row's fingerprint: its cells' contents in order.</summary>
+    private ulong Key(Row row)
+    {
+        ulong key = Mix(9, (ulong)row.Cells.Count);
+        foreach (Cell cell in row.Cells)
+        {
+            key = Mix(key, Key(cell.Blocks));
+        }
+
+        return key;
     }
 
     private ulong Key(NodeCollection<Block> blocks)

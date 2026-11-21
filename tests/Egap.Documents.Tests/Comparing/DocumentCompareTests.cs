@@ -82,24 +82,6 @@ public sealed class DocumentCompareTests
     }
 
     [Fact]
-    public void ChangedTablesAreReplacedWhole()
-    {
-        Document a = Make("Before.");
-        Table ta = a.Sections[0].Body.AddTable(2, 2);
-        ta.Rows[0].Cells[0].Paragraphs.First().AddRun("old");
-        a.Sections[0].Body.AddParagraph("After.");
-        Document b = Make("Before.");
-        Table tb = b.Sections[0].Body.AddTable(2, 2);
-        tb.Rows[0].Cells[0].Paragraphs.First().AddRun("new");
-        b.Sections[0].Body.AddParagraph("After.");
-
-        DocumentComparison comparison = RoundTrip.Check(a, b);
-
-        Assert.Equal(2, comparison.Document.Sections[0].Body.Tables.Count());
-        Assert.Equal([CompareChangeKind.Deleted, CompareChangeKind.Inserted], comparison.Changes.Select(c => c.Kind));
-    }
-
-    [Fact]
     public void FormattingAndStructureOfEqualTextIsKept()
     {
         Document a = Make("Plain words here.");
