@@ -1007,6 +1007,174 @@
     },
     {
       "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Documents.Comparing.CompareBase.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Documents.Comparing.CompareBase.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Documents.Comparing.CompareBase",
+      "Summary": "<p sourcefile=\"api/Egap.Documents.Comparing.CompareBase.yml\" sourcestartlinenumber=\"1\">Which input the comparison's result document is built on.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Documents.Comparing.CompareChangeKind.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Documents.Comparing.CompareChangeKind.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Documents.Comparing.CompareChangeKind",
+      "Summary": "<p sourcefile=\"api/Egap.Documents.Comparing.CompareChangeKind.yml\" sourcestartlinenumber=\"1\">What a <xref href=\"Egap.Documents.Comparing.DocumentChange\" data-throw-if-not-resolved=\"false\"></xref> did to the text.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Documents.Comparing.CompareGranularity.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Documents.Comparing.CompareGranularity.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Documents.Comparing.CompareGranularity",
+      "Summary": "<p sourcefile=\"api/Egap.Documents.Comparing.CompareGranularity.yml\" sourcestartlinenumber=\"1\">How finely <xref href=\"Egap.Documents.Comparing.DocumentCompare\" data-throw-if-not-resolved=\"false\"></xref> marks changed text.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Documents.Comparing.DocumentChange.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Documents.Comparing.DocumentChange.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Documents.Comparing.DocumentChange",
+      "Summary": "<p sourcefile=\"api/Egap.Documents.Comparing.DocumentChange.yml\" sourcestartlinenumber=\"1\">One difference between the two documents, in the result document's order: what changed, the text before and after, and\nthe tracked changes in <xref href=\"Egap.Documents.Comparing.DocumentComparison.Document\" data-throw-if-not-resolved=\"false\"></xref> that hold it, to accept or reject on their own.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Documents.Comparing.DocumentCompare.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Documents.Comparing.DocumentCompare.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Documents.Comparing.DocumentCompare",
+      "Summary": "<p sourcefile=\"api/Egap.Documents.Comparing.DocumentCompare.yml\" sourcestartlinenumber=\"1\">Compares two documents and returns a third that holds every difference as a tracked change, like Word's Compare. The\ndocuments may come from any format Egap reads, also from two different formats, as every reader fills the same model.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Documents.Comparing.DocumentCompareOptions.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Documents.Comparing.DocumentCompareOptions.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Documents.Comparing.DocumentCompareOptions",
+      "Summary": "<p sourcefile=\"api/Egap.Documents.Comparing.DocumentCompareOptions.yml\" sourcestartlinenumber=\"1\">Settings for <xref href=\"Egap.Documents.Comparing.DocumentCompare.Run(Egap.Documents.Document%2cEgap.Documents.Document%2cEgap.Documents.Comparing.DocumentCompareOptions)\" data-throw-if-not-resolved=\"false\"></xref>; the defaults match Word's Compare.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Documents.Comparing.DocumentCompareStatistics.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Documents.Comparing.DocumentCompareStatistics.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Documents.Comparing.DocumentCompareStatistics",
+      "Summary": "<p sourcefile=\"api/Egap.Documents.Comparing.DocumentCompareStatistics.yml\" sourcestartlinenumber=\"1\">Counts of what a comparison found.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Documents.Comparing.DocumentCompareWarning.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Documents.Comparing.DocumentCompareWarning.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Documents.Comparing.DocumentCompareWarning",
+      "Summary": "<p sourcefile=\"api/Egap.Documents.Comparing.DocumentCompareWarning.yml\" sourcestartlinenumber=\"1\">Something a comparison could not show exactly, with how many times it happened.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Documents.Comparing.DocumentCompareWarningKind.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Documents.Comparing.DocumentCompareWarningKind.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Documents.Comparing.DocumentCompareWarningKind",
+      "Summary": "<p sourcefile=\"api/Egap.Documents.Comparing.DocumentCompareWarningKind.yml\" sourcestartlinenumber=\"1\">What a <xref href=\"Egap.Documents.Comparing.DocumentCompareWarning\" data-throw-if-not-resolved=\"false\"></xref> is about.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Documents.Comparing.DocumentComparison.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Documents.Comparing.DocumentComparison.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Documents.Comparing.DocumentComparison",
+      "Summary": "<p sourcefile=\"api/Egap.Documents.Comparing.DocumentComparison.yml\" sourcestartlinenumber=\"1\">The result of <xref href=\"Egap.Documents.Comparing.DocumentCompare.Run(Egap.Documents.Document%2cEgap.Documents.Document%2cEgap.Documents.Comparing.DocumentCompareOptions)\" data-throw-if-not-resolved=\"false\"></xref>: a new document holding every difference as a tracked change, and the\nlist of those differences.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Documents.Comparing.ExistingRevisionHandling.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Documents.Comparing.ExistingRevisionHandling.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Documents.Comparing.ExistingRevisionHandling",
+      "Summary": "<p sourcefile=\"api/Egap.Documents.Comparing.ExistingRevisionHandling.yml\" sourcestartlinenumber=\"1\">What <xref href=\"Egap.Documents.Comparing.DocumentCompare\" data-throw-if-not-resolved=\"false\"></xref> does with inputs that already hold tracked changes.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Documents.Comparing.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Documents.Comparing.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Documents.Comparing",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
       "source_relative_path": "api/Egap.Documents.CompositeInline.yml",
       "output": {
         ".html": {
@@ -9969,11 +10137,11 @@
       "type": "Toc",
       "source_relative_path": "api/toc.yml",
       "output": {
-        ".json": {
-          "relative_path": "api/toc.json"
-        },
         ".html": {
           "relative_path": "api/toc.html"
+        },
+        ".json": {
+          "relative_path": "api/toc.json"
         }
       },
       "version": ""
@@ -10312,11 +10480,11 @@
       "type": "Toc",
       "source_relative_path": "articles/toc.yml",
       "output": {
-        ".json": {
-          "relative_path": "articles/toc.json"
-        },
         ".html": {
           "relative_path": "articles/toc.html"
+        },
+        ".json": {
+          "relative_path": "articles/toc.json"
         }
       },
       "version": ""
@@ -10355,11 +10523,11 @@
       "type": "Toc",
       "source_relative_path": "toc.yml",
       "output": {
-        ".json": {
-          "relative_path": "toc.json"
-        },
         ".html": {
           "relative_path": "toc.html"
+        },
+        ".json": {
+          "relative_path": "toc.json"
         }
       },
       "version": ""
