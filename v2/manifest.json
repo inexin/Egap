@@ -2715,6 +2715,20 @@
     },
     {
       "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Documents.Layout.RevisionView.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Documents.Layout.RevisionView.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Documents.Layout.RevisionView",
+      "Summary": "<p sourcefile=\"api/Egap.Documents.Layout.RevisionView.yml\" sourcestartlinenumber=\"1\">How tracked changes show on pages, in images and in PDFs.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
       "source_relative_path": "api/Egap.Documents.Layout.RowBox.yml",
       "output": {
         ".html": {

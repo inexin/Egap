@@ -133,6 +133,22 @@ the comment's first character to its balloon. Balloons that do not fit on
 their page go to a Comments list at the end of the document, each with its page number. Links and bookmarks follow the
 smaller page; form fields cannot be written with this mode. In tagged output each balloon is a <code>Note</code> beside the
 paragraph its comment is in. Tracked changes are not printed in the margin.</p>
+<h3 id="tracked-changes">Tracked changes</h3>
+<p>A document's tracked changes print as if accepted unless <code>RevisionView</code> says otherwise; the layout then warns
+<code>ChangesAccepted</code> once. <code>RevisionView.Markup</code> prints a redline: inserted text underlined and deleted text struck through,
+each in its author's colour (the first author red, then blue, green and five more), text whose formatting changed in its new
+look with a dotted underline, and a bar in the outside margin beside each changed line. Deleted paragraphs and rows keep
+their space. <code>RevisionView.Original</code> prints the document as if every change were rejected. The same views are on
+<code>LayoutOptions</code>, for pages, images and previews. In tagged output the marked-up text keeps its reading order and the
+change bars are artifacts.</p>
+<pre><code class="lang-csharp">using Egap.Documents;
+using Egap.Documents.Layout;
+using Egap.Documents.Pdf;
+
+Document contract = Document.Load(&quot;contract-redline.docx&quot;);
+contract.SaveAsPdf(&quot;contract-markup.pdf&quot;, new PdfExportOptions { RevisionView = RevisionView.Markup, Tagged = true });
+contract.SaveAsPdf(&quot;contract-before.pdf&quot;, new PdfExportOptions { RevisionView = RevisionView.Original });
+</code></pre>
 <h2 id="one-line-conversions">One-line conversions</h2>
 <p><code>PdfConvert</code> turns HTML, Markdown, DOCX and images into PDF in one call. A page size and margins in the options replace the
 input's own. Converting a file reads its images from the file's own folder; HTML or Markdown given as text reads them only

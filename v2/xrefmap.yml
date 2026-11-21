@@ -16279,6 +16279,19 @@ references:
   isSpec: "True"
   fullName: Egap.Documents.Layout.LayoutOptions.OnWarning
   nameWithType: LayoutOptions.OnWarning
+- uid: Egap.Documents.Layout.LayoutOptions.RevisionView
+  name: RevisionView
+  href: api/Egap.Documents.Layout.LayoutOptions.html#Egap_Documents_Layout_LayoutOptions_RevisionView
+  commentId: P:Egap.Documents.Layout.LayoutOptions.RevisionView
+  fullName: Egap.Documents.Layout.LayoutOptions.RevisionView
+  nameWithType: LayoutOptions.RevisionView
+- uid: Egap.Documents.Layout.LayoutOptions.RevisionView*
+  name: RevisionView
+  href: api/Egap.Documents.Layout.LayoutOptions.html#Egap_Documents_Layout_LayoutOptions_RevisionView_
+  commentId: Overload:Egap.Documents.Layout.LayoutOptions.RevisionView
+  isSpec: "True"
+  fullName: Egap.Documents.Layout.LayoutOptions.RevisionView
+  nameWithType: LayoutOptions.RevisionView
 - uid: Egap.Documents.Layout.LayoutOptions.Strict
   name: Strict
   href: api/Egap.Documents.Layout.LayoutOptions.html#Egap_Documents_Layout_LayoutOptions_Strict
@@ -16537,6 +16550,12 @@ references:
   commentId: T:Egap.Documents.Layout.LayoutWarningKind
   fullName: Egap.Documents.Layout.LayoutWarningKind
   nameWithType: LayoutWarningKind
+- uid: Egap.Documents.Layout.LayoutWarningKind.ChangesAccepted
+  name: ChangesAccepted
+  href: api/Egap.Documents.Layout.LayoutWarningKind.html#Egap_Documents_Layout_LayoutWarningKind_ChangesAccepted
+  commentId: F:Egap.Documents.Layout.LayoutWarningKind.ChangesAccepted
+  fullName: Egap.Documents.Layout.LayoutWarningKind.ChangesAccepted
+  nameWithType: LayoutWarningKind.ChangesAccepted
 - uid: Egap.Documents.Layout.LayoutWarningKind.FloatLaidOutInline
   name: FloatLaidOutInline
   href: api/Egap.Documents.Layout.LayoutWarningKind.html#Egap_Documents_Layout_LayoutWarningKind_FloatLaidOutInline
@@ -16893,6 +16912,30 @@ references:
   isSpec: "True"
   fullName: Egap.Documents.Layout.ParagraphBox.Paragraph
   nameWithType: ParagraphBox.Paragraph
+- uid: Egap.Documents.Layout.RevisionView
+  name: RevisionView
+  href: api/Egap.Documents.Layout.RevisionView.html
+  commentId: T:Egap.Documents.Layout.RevisionView
+  fullName: Egap.Documents.Layout.RevisionView
+  nameWithType: RevisionView
+- uid: Egap.Documents.Layout.RevisionView.Final
+  name: Final
+  href: api/Egap.Documents.Layout.RevisionView.html#Egap_Documents_Layout_RevisionView_Final
+  commentId: F:Egap.Documents.Layout.RevisionView.Final
+  fullName: Egap.Documents.Layout.RevisionView.Final
+  nameWithType: RevisionView.Final
+- uid: Egap.Documents.Layout.RevisionView.Markup
+  name: Markup
+  href: api/Egap.Documents.Layout.RevisionView.html#Egap_Documents_Layout_RevisionView_Markup
+  commentId: F:Egap.Documents.Layout.RevisionView.Markup
+  fullName: Egap.Documents.Layout.RevisionView.Markup
+  nameWithType: RevisionView.Markup
+- uid: Egap.Documents.Layout.RevisionView.Original
+  name: Original
+  href: api/Egap.Documents.Layout.RevisionView.html#Egap_Documents_Layout_RevisionView_Original
+  commentId: F:Egap.Documents.Layout.RevisionView.Original
+  fullName: Egap.Documents.Layout.RevisionView.Original
+  nameWithType: RevisionView.Original
 - uid: Egap.Documents.Layout.RowBox
   name: RowBox
   href: api/Egap.Documents.Layout.RowBox.html
@@ -22487,6 +22530,19 @@ references:
   isSpec: "True"
   fullName: Egap.Documents.Pdf.PdfExportOptions.Outline
   nameWithType: PdfExportOptions.Outline
+- uid: Egap.Documents.Pdf.PdfExportOptions.RevisionView
+  name: RevisionView
+  href: api/Egap.Documents.Pdf.PdfExportOptions.html#Egap_Documents_Pdf_PdfExportOptions_RevisionView
+  commentId: P:Egap.Documents.Pdf.PdfExportOptions.RevisionView
+  fullName: Egap.Documents.Pdf.PdfExportOptions.RevisionView
+  nameWithType: PdfExportOptions.RevisionView
+- uid: Egap.Documents.Pdf.PdfExportOptions.RevisionView*
+  name: RevisionView
+  href: api/Egap.Documents.Pdf.PdfExportOptions.html#Egap_Documents_Pdf_PdfExportOptions_RevisionView_
+  commentId: Overload:Egap.Documents.Pdf.PdfExportOptions.RevisionView
+  isSpec: "True"
+  fullName: Egap.Documents.Pdf.PdfExportOptions.RevisionView
+  nameWithType: PdfExportOptions.RevisionView
 - uid: Egap.Documents.Pdf.PdfExportOptions.Save
   name: Save
   href: api/Egap.Documents.Pdf.PdfExportOptions.html#Egap_Documents_Pdf_PdfExportOptions_Save
