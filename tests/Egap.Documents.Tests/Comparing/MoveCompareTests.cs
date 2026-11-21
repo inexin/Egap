@@ -79,6 +79,16 @@ public sealed class MoveCompareTests
         Assert.Equal(CompareChangeKind.Moved, change.Kind);
         Assert.Equal(4, change.TrackedChanges.Count(c => c.Target == TrackedChangeTarget.ParagraphMark));
         Assert.Equal(7, comparison.Statistics.MovedWords);
+
+        // Through DOCX, one range over both paragraphs, and every mark and run keeps the move's name.
+        using MemoryStream stream = new();
+        DocxFormat.Save(comparison.Document, stream);
+        stream.Position = 0;
+        Document back = DocxFormat.Load(stream);
+        Assert.Equal(4, back.Descendants<Paragraph>().Count(p => p.MarkRevision is { MoveName: "move1" }));
+        Assert.Equal(4, back.Descendants<Run>().Count(r => r.Revision is { MoveName: "move1" }));
+        Assert.DoesNotContain(back.Descendants<Run>(), r => r.Revision is { MoveName: null });
+        RoundTrip.Check(a, b, back);
     }
 
     [Fact]

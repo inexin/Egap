@@ -23,13 +23,9 @@ internal sealed partial class DocxWriter
             {
                 open = inline.Revision;
                 target = parent;
-                if (open is { MoveName: { } name } && moveEnds.ContainsKey(open) && !moveRanges.ContainsKey(open))
+                if (open is { MoveName: not null })
                 {
-                    // A named move's text sits in a move range of that name, which pairs its source and destination.
-                    int id = nextRevisionId++;
-                    moveRanges[open] = id;
-                    parent.Add(new XElement(Ns.W + (open.Kind == RevisionKind.MoveFrom ? "moveFromRangeStart" : "moveToRangeStart"),
-                        new XAttribute(Ns.W + "id", id), new XAttribute(Ns.W + "name", name), RevisionAttributes(open.Author, open.Date)));
+                    StartMoveRange(open, parent);
                 }
 
                 if (open is not null && RevisionElement(open, mark: false) is { } wrapper)
@@ -40,15 +36,65 @@ internal sealed partial class DocxWriter
             }
 
             fieldCode = WriteInline(inline, target, fieldCode);
-            if (open is not null && moveEnds.TryGetValue(open, out Inline? last) && ReferenceEquals(last, inline) && moveRanges.TryGetValue(open, out int rangeId))
+            if (moveRanges is not null && open is not null && EndMoveRange(open, inline, parent))
             {
-                parent.Add(new XElement(Ns.W + (open.Kind == RevisionKind.MoveFrom ? "moveFromRangeEnd" : "moveToRangeEnd"), new XAttribute(Ns.W + "id", rangeId)));
                 open = null;
                 target = parent;
             }
         }
 
         return fieldCode;
+    }
+
+    /// <summary>
+    /// Starts the range of a named move before its first inline: the range's name pairs the move's source and destination.
+    /// Out of line, so the loop that writes every paragraph's inlines stays as small as it was.
+    /// </summary>
+    [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.NoInlining)]
+    private void StartMoveRange(Revision move, XElement parent)
+    {
+        if (move.Kind is not (RevisionKind.MoveFrom or RevisionKind.MoveTo) || MoveRanges().ContainsKey(move))
+        {
+            return;
+        }
+
+        int id = nextRevisionId++;
+        MoveRanges()[move] = id;
+        parent.Add(new XElement(Ns.W + (move.Kind == RevisionKind.MoveFrom ? "moveFromRangeStart" : "moveToRangeStart"),
+            new XAttribute(Ns.W + "id", id), new XAttribute(Ns.W + "name", move.MoveName!), RevisionAttributes(move.Author, move.Date)));
+    }
+
+    /// <summary>Ends a move's range after its last inline; returns whether it did.</summary>
+    [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.NoInlining)]
+    private bool EndMoveRange(Revision move, Inline inline, XElement parent)
+    {
+        if (!moveRanges!.TryGetValue(move, out int id) || !ReferenceEquals(moveEnds![move], inline))
+        {
+            return false;
+        }
+
+        parent.Add(new XElement(Ns.W + (move.Kind == RevisionKind.MoveFrom ? "moveFromRangeEnd" : "moveToRangeEnd"), new XAttribute(Ns.W + "id", id)));
+        return true;
+    }
+
+    /// <summary>The move ranges started, found with the last inline of each named move the first time one is written.</summary>
+    private Dictionary<Revision, int> MoveRanges()
+    {
+        if (moveRanges is null)
+        {
+            moveEnds = new(ReferenceEqualityComparer.Instance);
+            foreach (Inline inline in document.Descendants<Inline>())
+            {
+                if (inline.Revision is { Kind: RevisionKind.MoveFrom or RevisionKind.MoveTo, MoveName: not null } move)
+                {
+                    moveEnds[move] = inline;
+                }
+            }
+
+            moveRanges = new(ReferenceEqualityComparer.Instance);
+        }
+
+        return moveRanges;
     }
 
     private bool WriteInline(Inline inline, XElement target, bool fieldCode)

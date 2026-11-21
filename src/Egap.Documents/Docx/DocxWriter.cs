@@ -31,9 +31,9 @@ internal sealed partial class DocxWriter
     private int nextDrawingId = 1;
 
     // Each named move (its MoveFrom or its MoveTo revision) and the last inline it marks, where its range ends; and the
-    // moves whose range has started, with the range's id.
-    private readonly Dictionary<Revision, Inline> moveEnds = new(ReferenceEqualityComparer.Instance);
-    private readonly Dictionary<Revision, int> moveRanges = new(ReferenceEqualityComparer.Instance);
+    // moves whose range has started, with the range's id. Found when the first named move is written.
+    private Dictionary<Revision, Inline>? moveEnds;
+    private Dictionary<Revision, int>? moveRanges;
     private int nextParaId = 0x10000000;
 
     // The part being written, whose relationships new hyperlinks and images go into.
@@ -175,13 +175,6 @@ internal sealed partial class DocxWriter
 
         nextDrawingId = maxDrawingId + 1;
         nextRevisionId = (data?.MaxMarkupId ?? 0) + 1;
-        foreach (Inline inline in document.Descendants<Inline>())
-        {
-            if (inline.Revision is { Kind: RevisionKind.MoveFrom or RevisionKind.MoveTo, MoveName: not null } move)
-            {
-                moveEnds[move] = inline;
-            }
-        }
 
         foreach (BookmarkStart start in document.Descendants<BookmarkStart>())
         {

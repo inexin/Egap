@@ -38,7 +38,7 @@ internal sealed partial class DocxReader
     private readonly List<XElement> pendingRaw = [];
 
     // The move ranges open where the reader is (ECMA-376 17.13.5.22-25): their ids and the names moves inside them take.
-    private readonly Dictionary<string, string> moveRangeIds = new(StringComparer.Ordinal);
+    private Dictionary<string, string>? moveRangeIds;
     private string? moveFromName;
     private string? moveToName;
     private string? lastMoveFromName;
@@ -332,14 +332,15 @@ internal sealed partial class DocxReader
 
                 pendingRaw.Add(element);
                 break;
-            case "moveFromRangeStart" or "moveFromRangeEnd" or "moveToRangeStart" or "moveToRangeEnd":
-                // The moves inside take the range's name; the writer writes the range again from it.
-                ReadMoveRange(element);
-                break;
-            case "proofErr"
+            case "proofErr" or "moveFromRangeStart" or "moveFromRangeEnd" or "moveToRangeStart" or "moveToRangeEnd"
                 or "customXmlInsRangeStart" or "customXmlInsRangeEnd" or "customXmlDelRangeStart" or "customXmlDelRangeEnd"
                 or "customXmlMoveFromRangeStart" or "customXmlMoveFromRangeEnd" or "customXmlMoveToRangeStart" or "customXmlMoveToRangeEnd":
-                pendingRaw.Add(element);
+                // A move range names the moves inside it; the writer writes it again from that name.
+                if (!ReadMoveRange(element))
+                {
+                    pendingRaw.Add(element);
+                }
+
                 break;
             case "sectPr" or "tblGrid" or "tblPr" or "trPr" or "tcPr" or "sdtPr" or "sdtEndPr":
                 break;
@@ -389,6 +390,7 @@ internal sealed partial class DocxReader
         paragraphInlines = paragraph.Inlines;
         paragraphExtension = extension;
         int startsBefore = moveRangeStarts;
+        string? fromBefore = moveFromName, toBefore = moveToName;
         try
         {
             ReadInlines(element, paragraph.Inlines, new InlineState());
@@ -399,11 +401,9 @@ internal sealed partial class DocxReader
             paragraphExtension = outerExtension;
         }
 
-        // A paragraph mark's move is read before the range that starts in the paragraph: it takes the range's name.
-        if (moveRangeStarts != startsBefore && paragraph.MarkRevision is { Kind: RevisionKind.MoveFrom or RevisionKind.MoveTo, MoveName: null } moveMark
-            && (moveMark.Kind == RevisionKind.MoveFrom ? lastMoveFromName : lastMoveToName) is { } markName)
+        if (paragraph.MarkRevision is { Kind: RevisionKind.MoveFrom or RevisionKind.MoveTo, MoveName: null })
         {
-            paragraph.MarkRevision = moveMark with { MoveName = markName };
+            NameMarkMove(paragraph, moveRangeStarts != startsBefore ? (lastMoveFromName, lastMoveToName) : (fromBefore, toBefore));
         }
 
         lastParagraph = paragraph;
@@ -785,7 +785,7 @@ internal sealed partial class DocxReader
                 }
 
             case "ins" or "del" or "moveFrom" or "moveTo":
-                ReadInlines(element, inlines, state with { Revision = RevisionOf(element) });
+                ReadInlines(element, inlines, state with { Revision = RevisionOf(element, moveFromName, moveToName) });
                 break;
             case "smartTag" or "customXml" or "dir" or "bdo":
                 foreach (XElement child in element.Elements())
@@ -806,13 +806,16 @@ internal sealed partial class DocxReader
                 break;
             case "pPr" or "tbl":
                 break;
-            case "moveFromRangeStart" or "moveFromRangeEnd" or "moveToRangeStart" or "moveToRangeEnd":
-                ReadMoveRange(element);
-                break;
-            case "proofErr"
+            case "proofErr" or "moveFromRangeStart" or "moveFromRangeEnd" or "moveToRangeStart" or "moveToRangeEnd"
                 or "customXmlInsRangeStart" or "customXmlInsRangeEnd" or "customXmlDelRangeStart" or "customXmlDelRangeEnd"
                 or "customXmlMoveFromRangeStart" or "customXmlMoveFromRangeEnd" or "customXmlMoveToRangeStart" or "customXmlMoveToRangeEnd":
-                // Range markup directly in the paragraph is kept with its place, for a paragraph written from the model.
+                // A move range names the moves inside it, and the writer writes it again from that name. Other range markup
+                // directly in the paragraph is kept with its place, for a paragraph written from the model.
+                if (ReadMoveRange(element))
+                {
+                    break;
+                }
+
                 if (inlines == paragraphInlines && paragraphExtension is not null)
                 {
                     (paragraphExtension.Children ??= []).Add((inlines.Count, element));
@@ -1337,7 +1340,11 @@ internal sealed partial class DocxReader
         }
     }
 
-    private Revision RevisionOf(XElement element)
+    /// <summary>
+    /// The revision <paramref name="element"/> (w:ins, w:del, w:moveFrom or w:moveTo) holds; a move takes the name of the move
+    /// range it is in. Static, so the property readers' callbacks that call it capture nothing more.
+    /// </summary>
+    private static Revision RevisionOf(XElement element, string? moveFromName = null, string? moveToName = null)
     {
         RevisionKind kind = element.Name.LocalName switch
         {
@@ -1357,15 +1364,38 @@ internal sealed partial class DocxReader
         };
     }
 
-    /// <summary>Opens or closes a move range: the moves read inside it take its name.</summary>
-    private void ReadMoveRange(XElement element)
+    /// <summary>
+    /// Names the move of a paragraph's mark, which is read before the paragraph's runs: the name of the range that started
+    /// in the paragraph, else of the one open where it starts (<paramref name="names"/>). Out of line, so reading a
+    /// paragraph stays as small as it was.
+    /// </summary>
+    [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.NoInlining)]
+    private static void NameMarkMove(Paragraph paragraph, (string? From, string? To) names)
     {
+        if (paragraph.MarkRevision is { } mark && (mark.Kind == RevisionKind.MoveFrom ? names.From : names.To) is { } name)
+        {
+            paragraph.MarkRevision = mark with { MoveName = name };
+        }
+    }
+
+    /// <summary>
+    /// Opens or closes a move range, when <paramref name="element"/> is one: the moves read inside it take its name. Returns
+    /// whether it was one.
+    /// </summary>
+    [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.NoInlining)]
+    private bool ReadMoveRange(XElement element)
+    {
+        if (element.Name.LocalName is not ("moveFromRangeStart" or "moveFromRangeEnd" or "moveToRangeStart" or "moveToRangeEnd"))
+        {
+            return false;
+        }
+
         string id = element.W("id") ?? "";
         bool from = element.Name.LocalName.StartsWith("moveFrom", StringComparison.Ordinal);
         if (element.Name.LocalName.EndsWith("Start", StringComparison.Ordinal))
         {
             string? name = element.W("name");
-            moveRangeIds[id] = name ?? "";
+            (moveRangeIds ??= new(StringComparer.Ordinal))[id] = name ?? "";
             moveRangeStarts++;
             if (from)
             {
@@ -1376,7 +1406,7 @@ internal sealed partial class DocxReader
                 moveToName = lastMoveToName = name;
             }
         }
-        else if (moveRangeIds.Remove(id, out string? name))
+        else if (moveRangeIds?.Remove(id, out string? name) == true)
         {
             if (from && moveFromName == name)
             {
@@ -1387,6 +1417,8 @@ internal sealed partial class DocxReader
                 moveToName = null;
             }
         }
+
+        return true;
     }
 
     private static DateTimeOffset? DateOf(XElement element)
