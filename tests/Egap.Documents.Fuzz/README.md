@@ -21,5 +21,7 @@ reports hangs.
 | `epub` | Any bytes read as an EPUB book; written as EPUB that must read again; may throw only `DocumentException` | `tests/fuzz-seeds/epub/*` |
 | `math` | Any bytes as an equation, OMML when they name its namespace and MathML otherwise; laid out on a narrow page so it breaks, drawn, written as UnicodeMath, as HTML (MathML) that must read again, and as a tagged PDF with formula tags | `tests/fuzz-seeds/math/*` |
 | `chart` | Any bytes read as a chart part: every property read, an edit made, saved and read again; may throw only `DocumentException` | `tests/fuzz-seeds/chart/*` |
+| `compare` | Any bytes as two Markdown documents split at the first form feed (or one document and edits chosen from the bytes), compared with three sets of options; the result must accept to the revised document and reject to the original, also after a trip through DOCX, and nothing may throw | `tests/fuzz-seeds/compare/*` |
 
-Daytime runs are 10 minutes per target: `python tools/fuzz-afl.py 0.17 markdown`.
+Daytime runs are 10 minutes per target: `python tools/fuzz-afl.py 0.17 markdown`. Without AFL++, the in-process mutator
+runs a target the same way: `dotnet run --project tests/Egap.Documents.Fuzz -c Release -- mutate compare 600 tests/fuzz-seeds/compare findings`.

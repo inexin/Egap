@@ -4,6 +4,18 @@ What each Egap package adds, newest first. From 2.1.0 all Egap packages share on
 may go out ahead of the others on its own tag, as Egap.Documents, Egap.Spreadsheets and Egap.Cli 2.3.0-preview.1 did. Nothing before the first release below was published; those versions were
 internal milestones whose public API was frozen and reviewed, and they are listed so the version numbers make sense.
 
+## Egap.Cli 2.3.0 (unreleased)
+
+- `compare` compares documents: two files of any format egap reads, also of two different formats, become one document
+  with the differences as tracked changes. `--output` writes it as DOCX, RTF or ODT, and `--redline` writes it with the
+  changes marked as PDF, HTML, EPUB or Markdown. The library's options are flags: `--granularity`, `--base`, `--author`
+  and `--no-formatting`, `--no-case`, `--no-whitespace`, `--no-moves`, `--no-headers`, `--no-notes`, `--no-textboxes`,
+  `--no-fields`, `--no-comments`. `--json` writes the changes, their counts and the warnings with the new schema
+  `docs/schemas/egap-document-compare-1.json`. Two PDFs are still compared page by page unless `--as-documents` is given;
+  a PDF beside another format is read as a document. The MCP tool `compare` takes the same arguments.
+- `convert --revisions final|markup|original` writes a document's tracked changes accepted, marked or rejected: PDF, HTML
+  and Markdown show the markup coloured, and DOCX, RTF and ODT keep the changes for markup.
+
 ## Egap.Cli 2.3.0-preview.1 (2026-11-13)
 
 A preview with the workbook commands, built on Egap.Spreadsheets and Egap.Documents 2.3.0-preview.1; the stable 2.3.0

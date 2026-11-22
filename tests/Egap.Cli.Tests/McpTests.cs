@@ -157,6 +157,22 @@ public sealed class McpTests : IAsyncDisposable
         Assert.Equal(1, result.StructuredContent!.Value.GetProperty("exitCode").GetInt32());
     }
 
+    [Fact]
+    public async Task CompareTurnsTwoDocumentsIntoTrackedChanges()
+    {
+        _tool.Write("v1.md", "Alpha bravo charlie.\n"u8.ToArray());
+        _tool.Write("v2.md", "Alpha delta charlie.\n"u8.ToArray());
+        McpClient client = await Connect();
+        CallToolResult result = await client.CallToolAsync(
+            "compare",
+            new Dictionary<string, object?> { ["old"] = "v1.md", ["new"] = "v2.md", ["output"] = "redline.docx" },
+            cancellationToken: Token);
+        Assert.True(result.IsError != true, result.StructuredContent?.ToString());
+        Assert.Equal(1, result.StructuredContent!.Value.GetProperty("exitCode").GetInt32());
+        Assert.True(File.Exists(_tool.PathOf("redline.docx")));
+        Assert.NotEmpty(Egap.Documents.Document.Load(_tool.PathOf("redline.docx")).Revisions);
+    }
+
     /// <summary>Starts egap mcp in this process on a pair of pipes and connects the SDK's client to it.</summary>
     private async Task<McpClient> Connect(params string[] options)
     {

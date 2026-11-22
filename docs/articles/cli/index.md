@@ -120,6 +120,35 @@ egap convert old.rtf -o clean.rtf --set unknown-groups=false
 egap convert report.docx -o report.odt --set version=1.2
 ```
 
+`--revisions` says how a document's tracked changes are written: accepted (`final`), marked (`markup`) or rejected
+(`original`). PDF, HTML and Markdown show markup coloured, with change bars in a PDF; DOCX, RTF and ODT keep the tracked
+changes for markup and get the document with them settled for the other two.
+
+```sh
+egap convert reviewed.docx --revisions markup -o redline.pdf
+egap convert reviewed.docx --revisions final -o clean.docx
+```
+
+## Comparing documents
+
+`compare` takes two documents of any format egap reads, also of two different formats, and writes the differences as
+tracked changes (`--output`, DOCX, RTF or ODT) or as a redline (`--redline`, PDF, HTML, EPUB or Markdown). It lists the
+changes, or writes them as JSON with `--json`, and exits with 1 when the documents differ. Two PDFs are compared page by
+page as before (see [Signing and checking](#signing-and-checking)); `--as-documents` reads them through layout analysis
+and compares them as documents. A PDF beside any other format is always read as a document.
+
+```sh
+egap compare v1.docx v2.docx --output redline.docx --author Legal
+egap compare v1.docx v2.odt --redline redline.pdf
+egap compare v1.md v2.md --granularity character --no-formatting --json
+egap compare a.pdf b.pdf --as-documents --output changes.docx
+```
+
+The switches match the library's options (see [Comparing documents](../guides/comparing-documents.md)): `--granularity
+word|character`, `--base original|revised`, `--author`, and `--no-formatting`, `--no-case`, `--no-whitespace`,
+`--no-moves`, `--no-headers`, `--no-notes`, `--no-textboxes`, `--no-fields` and `--no-comments` to leave a part out.
+RTF and ODT have no tracked moves, so a move is written to them as a deletion and an insertion, with a warning.
+
 ## Pages
 
 ```sh
@@ -257,7 +286,7 @@ egap preview letter.docx
 | `text --json` | [egap-text-1.json](https://raw.githubusercontent.com/inexin/Egap/main/docs/schemas/egap-text-1.json) |
 | `metadata show --json` | [egap-metadata-1.json](https://raw.githubusercontent.com/inexin/Egap/main/docs/schemas/egap-metadata-1.json) |
 | `form list --json` | [egap-form-1.json](https://raw.githubusercontent.com/inexin/Egap/main/docs/schemas/egap-form-1.json) |
-| `compare --json` | [egap-compare-1.json](https://raw.githubusercontent.com/inexin/Egap/main/docs/schemas/egap-compare-1.json) |
+| `compare --json` | [egap-compare-1.json](https://raw.githubusercontent.com/inexin/Egap/main/docs/schemas/egap-compare-1.json) (PDFs), [egap-document-compare-1.json](https://raw.githubusercontent.com/inexin/Egap/main/docs/schemas/egap-document-compare-1.json) (documents) |
 | `verify --json` | [egap-verify-1.json](https://raw.githubusercontent.com/inexin/Egap/main/docs/schemas/egap-verify-1.json) |
 | `pdfa check --json`, `pdfx check --json` | [egap-pdfa-1.json](https://raw.githubusercontent.com/inexin/Egap/main/docs/schemas/egap-pdfa-1.json) |
 | `preflight --json` | [egap-preflight-1.json](https://raw.githubusercontent.com/inexin/Egap/main/docs/schemas/egap-preflight-1.json) |

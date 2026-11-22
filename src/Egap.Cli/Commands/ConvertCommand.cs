@@ -55,12 +55,13 @@ internal static class ConvertCommand
         Option<string?> comments = new("--comments") { Description = "To PDF: the document's comments left out (none, the default), written as annotations a PDF viewer shows, or printed in a pane beside each page (margin).", HelpName = "none|annotations|margin" };
         Option<bool> embedSource = new("--embed-source") { Description = "To PDF: embed a DOCX of the document as the PDF's source (a hybrid PDF that converts back to the document); not with PDF/A-1 or 2." };
         Option<double> dpi = new("--dpi") { Description = "A workbook to images: dots per inch; 150 by default.", HelpName = "dpi", DefaultValueFactory = _ => 150 };
+        Option<string?> revisions = new("--revisions") { Description = "Documents with tracked changes: write them accepted (final), with the changes marked (markup) or rejected (original). PDF, HTML and Markdown show markup coloured; DOCX, RTF and ODT keep the tracked changes.", HelpName = "final|markup|original" };
         Option<bool> ignoreSource = new("--ignore-embedded-source") { Description = "From PDF: analyse the pages even when the PDF carries an embedded source document Egap can use." };
         Command command = new("convert", "Convert between formats by the output's extension: HTML, Markdown, DOCX, DOC, RTF, text and images to PDF; PDF to DOCX, RTF, HTML, Markdown or text; and the flow formats to each other.");
         inputs.AddTo(command);
         output.AddTo(command);
         command.Options.Add(to);
-        foreach (Option option in (Option[])[dpi, pageSize, landscape, margins, header, footer, headerHtml, footerHtml, toc, pdfa, tagged, set, baseDir, allowPath, allowNetwork, mode, embedSource, ignoreSource, comments])
+        foreach (Option option in (Option[])[dpi, pageSize, landscape, margins, header, footer, headerHtml, footerHtml, toc, pdfa, tagged, set, baseDir, allowPath, allowNetwork, mode, embedSource, ignoreSource, comments, revisions])
         {
             command.Options.Add(option);
         }
@@ -113,6 +114,24 @@ internal static class ConvertCommand
             if (options.EmbedSource && (options.Conformance != PdfAConformance.None ? options.Conformance : options.Export?.Conformance) is PdfAConformance.PdfA1b or PdfAConformance.PdfA2a or PdfAConformance.PdfA2b or PdfAConformance.PdfA2u)
             {
                 throw new UsageException("--embed-source needs PDF/A-3, PDF/A-4f or no PDF/A: PDF/A-1 and 2 do not allow embedded files.");
+            }
+
+            RevisionView? view = result.GetValue(revisions) switch
+            {
+                null => null,
+                "final" => RevisionView.Final,
+                "markup" => RevisionView.Markup,
+                "original" => RevisionView.Original,
+                string other => throw new UsageException($"--revisions '{other}' is not final, markup or original."),
+            };
+            if (view == RevisionView.Markup && target == "txt")
+            {
+                throw new UsageException("--revisions markup needs a format that shows changes; text has none, so give final or original.");
+            }
+
+            if (view is { } shown)
+            {
+                options = options with { Export = (options.Export ?? PdfExportOptions.Default) with { RevisionView = shown } };
             }
 
             EmbeddedSourceMode embedded = result.GetValue(ignoreSource) ? EmbeddedSourceMode.Ignore : EmbeddedSourceMode.Prefer;
@@ -188,7 +207,7 @@ internal static class ConvertCommand
                 Document document = isPdf ? FromPdf(session, file, secret, fromPdf, embedded) : Document.Load(file.Path, out IReadOnlyList<ConversionWarning> warnings, new DocumentLoadOptions { Password = secret });
                 SaveOptions.WriteFile(session, path, target, temporary =>
                 {
-                    foreach (ConversionWarning warning in Write(document, temporary, path, target, settings, saveSecret))
+                    foreach (ConversionWarning warning in Write(document, temporary, path, target, settings, saveSecret, view))
                     {
                         session.Warn($"{file.Display}: {warning.Message}");
                     }
@@ -231,7 +250,7 @@ internal static class ConvertCommand
     }
 
     /// <summary>A PDF read through layout analysis; an encrypted one is opened with its password and decrypted first.</summary>
-    private static Document FromPdf(EgapSession session, InputFile file, string? password, PdfToDocumentMode mode, EmbeddedSourceMode embedded)
+    internal static Document FromPdf(EgapSession session, InputFile file, string? password, PdfToDocumentMode mode, EmbeddedSourceMode embedded)
     {
         PdfToDocumentOptions options = new()
         {
@@ -559,8 +578,21 @@ internal static class ConvertCommand
     /// the file lands, so a Markdown file's images folder is named after it and not after the temporary file. A DOCX is
     /// encrypted with <paramref name="savePassword"/> when one is given.
     /// </summary>
-    private static IReadOnlyList<ConversionWarning> Write(Document document, string temporary, string path, string target, Dictionary<string, string> settings, string? savePassword)
+    private static IReadOnlyList<ConversionWarning> Write(Document document, string temporary, string path, string target, Dictionary<string, string> settings, string? savePassword, RevisionView? view)
     {
+        if (view is RevisionView.Final or RevisionView.Original && target is not ("html" or "md"))
+        {
+            // Formats that keep tracked changes (or, as text, show them accepted) get the document with them settled.
+            if (view == RevisionView.Final)
+            {
+                document.Revisions.AcceptAll();
+            }
+            else
+            {
+                document.Revisions.RejectAll();
+            }
+        }
+
         switch (target)
         {
             case "html":
@@ -568,6 +600,7 @@ internal static class ConvertCommand
                 {
                     EmbedImages = Flag(settings, "embed-images", true),
                     WritePageSetup = Flag(settings, "page-setup", true),
+                    RevisionView = view ?? new HtmlSaveOptions().RevisionView,
                 });
             case "md":
                 MarkdownSaveOptions defaults = new();
@@ -589,6 +622,7 @@ internal static class ConvertCommand
                     KeepBackgroundImages = Flag(settings, "background-images", defaults.KeepBackgroundImages),
                     CaptionsAsFigures = Flag(settings, "html-figures", defaults.CaptionsAsFigures),
                     WriteFrontMatter = Flag(settings, "front-matter", defaults.WriteFrontMatter),
+                    RevisionView = view ?? defaults.RevisionView,
                 });
             case "rtf":
                 return RtfFormat.Save(document, temporary, new RtfSaveOptions { KeepUnknownGroups = Flag(settings, "unknown-groups", true) });
