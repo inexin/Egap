@@ -87,6 +87,25 @@ public sealed class TextMoveCompareTests
     [Theory]
     [InlineData(CompareBase.Revised)]
     [InlineData(CompareBase.Original)]
+    public void AnEditedParagraphStillPairsAcrossAParagraphMovedBeforeIt(CompareBase baseDocument)
+    {
+        const string Service = "The service runs many parks across the country and its staff of rangers keeps them open all year.";
+        const string Objects = "More than one hundred million objects in collections.";
+        Document original = DocumentCompareTests.Make("Alpha stays.", Service, "Bravo stays.", "Charlie stays.", Objects, "Delta stays.");
+        Document revised = DocumentCompareTests.Make("Alpha stays.", Objects, Service.Replace("rangers", "wardens", StringComparison.Ordinal), "Bravo stays.", "Charlie stays.", "Delta stays.");
+
+        DocumentComparison comparison = RoundTrip.Check(original, revised, new DocumentCompareOptions { Base = baseDocument });
+
+        // As Word marks it: the moved paragraph is a move, and the edited one keeps its place with one word replaced.
+        DocumentChange move = Assert.Single(comparison.Changes, c => c.Kind == CompareChangeKind.Moved);
+        Assert.Equal(Objects, move.OldText.TrimEnd('\r'));
+        DocumentChange edit = Assert.Single(comparison.Changes, c => c.Kind != CompareChangeKind.Moved);
+        Assert.Equal((CompareChangeKind.Replaced, "rangers", "wardens"), (edit.Kind, edit.OldText, edit.NewText));
+    }
+
+    [Theory]
+    [InlineData(CompareBase.Revised)]
+    [InlineData(CompareBase.Original)]
     public void TheRestOfARunCutForAMoveStaysInItsChange(CompareBase baseDocument)
     {
         Document original = DocumentCompareTests.Make(
