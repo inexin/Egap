@@ -203,7 +203,7 @@ internal sealed partial class BlockComparer
         {
             Move move = made[match];
             List<TrackedChange> side = [];
-            foreach (Run run in Isolate(stretch, start, end, changeOf))
+            foreach (Run run in Isolate(stretch, start, end, changeOf, changes))
             {
                 if (changeOf.Remove(run, out int change))
                 {
@@ -298,7 +298,7 @@ internal sealed partial class BlockComparer
     /// Cuts the stretch's runs so that characters <paramref name="start"/> to <paramref name="end"/> of its text are whole runs,
     /// and returns those. A run cut in two keeps its change for both parts.
     /// </summary>
-    private static List<Run> Isolate(Stretch stretch, int start, int end, Dictionary<Run, int> changeOf)
+    private static List<Run> Isolate(Stretch stretch, int start, int end, Dictionary<Run, int> changeOf, List<PendingChange> changes)
     {
         List<Run> inside = [];
         int at = 0;
@@ -341,7 +341,11 @@ internal sealed partial class BlockComparer
             inlines.Insert(inlines.IndexOf(run) + 1, tail);
             if (changeOf.TryGetValue(run, out int change))
             {
+                // The tail stays in the run's change, right after it, until a move takes it out.
                 changeOf[tail] = change;
+                List<TrackedChange> tracked = changes[change].Tracked;
+                int at = tracked.FindIndex(t => t.Node == run);
+                tracked.Insert(at >= 0 ? at + 1 : tracked.Count, new TrackedChange(tail, TrackedChangeTarget.Node));
             }
 
             return tail;

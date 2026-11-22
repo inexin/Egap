@@ -87,6 +87,77 @@ public sealed class TextMoveCompareTests
     [Theory]
     [InlineData(CompareBase.Revised)]
     [InlineData(CompareBase.Original)]
+    public void TheRestOfARunCutForAMoveStaysInItsChange(CompareBase baseDocument)
+    {
+        Document original = DocumentCompareTests.Make(
+            "An opening paragraph that stays as it is.",
+            "The quick brown fox jumps over the lazy dog. Extra words that go away.",
+            "A middle paragraph that stays as well, long enough to hold its own.",
+            "The closing paragraph.");
+        Document revised = DocumentCompareTests.Make(
+            "An opening paragraph that stays as it is.",
+            "A middle paragraph that stays as well, long enough to hold its own.",
+            "The closing paragraph. The quick brown fox jumps over the lazy dog.");
+        DocumentCompareOptions options = new() { Base = baseDocument };
+
+        DocumentComparison comparison = RoundTrip.Check(original, revised, options);
+
+        Assert.Single(comparison.Changes, c => c.Kind == CompareChangeKind.Moved);
+        Assert.Contains(comparison.Changes, c => c.OldText.Contains("Extra words that go away", StringComparison.Ordinal));
+        EveryChangeIsListed(original, revised, options);
+    }
+
+    [Theory]
+    [InlineData(CompareBase.Revised)]
+    [InlineData(CompareBase.Original)]
+    public void TwoMovesOutOfOneRunLeaveTheMiddleInItsChange(CompareBase baseDocument)
+    {
+        Document original = DocumentCompareTests.Make(
+            "An opening paragraph that stays as it is.",
+            "Alpha sentence of six words here. A middle bit that goes. Beta sentence is also six words long.",
+            "A middle paragraph that stays as well, long enough to hold its own.",
+            "The closing paragraph.");
+        Document revised = DocumentCompareTests.Make(
+            "An opening paragraph that stays as it is. Beta sentence is also six words long.",
+            "A middle paragraph that stays as well, long enough to hold its own.",
+            "The closing paragraph. Alpha sentence of six words here.");
+        DocumentCompareOptions options = new() { Base = baseDocument };
+
+        DocumentComparison comparison = RoundTrip.Check(original, revised, options);
+
+        Assert.Equal(2, comparison.Changes.Count(c => c.Kind == CompareChangeKind.Moved));
+        Assert.Contains(comparison.Changes, c => c.OldText.Contains("A middle bit that goes", StringComparison.Ordinal));
+        EveryChangeIsListed(original, revised, options);
+    }
+
+    // Each tracked run is in a listed change, and accepting or rejecting the listed changes one by one gives each document.
+    private static void EveryChangeIsListed(Document original, Document revised, DocumentCompareOptions options)
+    {
+        DocumentComparison comparison = DocumentCompare.Run(original, revised, options);
+        HashSet<Node> listed = [.. comparison.Changes.SelectMany(c => c.TrackedChanges).Select(t => t.Node)];
+        Assert.All(comparison.Document.Descendants<Run>().Where(r => r.Revision is not null), r => Assert.Contains(r, listed));
+        foreach (bool accept in (bool[])[true, false])
+        {
+            DocumentComparison settled = DocumentCompare.Run(original, revised, options);
+            foreach (TrackedChange tracked in settled.Changes.SelectMany(c => c.TrackedChanges).ToList())
+            {
+                if (accept)
+                {
+                    tracked.Accept();
+                }
+                else
+                {
+                    tracked.Reject();
+                }
+            }
+
+            Assert.Equal(RoundTrip.Blocks(accept ? revised : original), RoundTrip.Blocks(settled.Document));
+        }
+    }
+
+    [Theory]
+    [InlineData(CompareBase.Revised)]
+    [InlineData(CompareBase.Original)]
     public void ANoteInADeletedParagraphHasItsTextDeletedToo(CompareBase baseDocument)
     {
         Document original = DocumentCompareTests.Make("A paragraph that stays.");
