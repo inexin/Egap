@@ -1,5 +1,5 @@
 using System.Globalization;
-using System.Text.RegularExpressions;
+using System.Runtime.InteropServices;
 
 namespace Egap.Documents.Comparing;
 
@@ -16,7 +16,9 @@ internal sealed partial class BlockComparer
     /// </summary>
     private void FindTextMoves()
     {
-        List<Stretch> deleted = [], inserted = [];
+        // A first pass counts the changed words and notes the stretches long enough to hold a move, so a comparison with too
+        // many changed words, or none to move, allocates next to nothing here.
+        List<(Paragraph Paragraph, int First, int End, RevisionKind Kind, int Order)> candidates = [];
         int deletedCount = 0, insertedCount = 0, order = 0;
         foreach (Paragraph paragraph in result.Sections.SelectMany(s => s.Body.Descendants<Paragraph>()))
         {
@@ -25,47 +27,100 @@ internal sealed partial class BlockComparer
                 continue;
             }
 
-            Stretch? open = null;
-            foreach (Inline inline in paragraph.Inlines)
+            NodeCollection<Inline> inlines = paragraph.Inlines;
+            RevisionKind? open = null;
+            int openFirst = 0, count = 0;
+            bool inWord = false;
+            for (int i = 0; i <= inlines.Count; i++)
             {
-                RevisionKind? kind = inline is Run { Text.Length: > 0, Revision.Kind: RevisionKind.Deletion or RevisionKind.Insertion } run ? run.Revision!.Kind : null;
-                if (kind is null || open is null || open.Kind != kind)
+                Run? run = i < inlines.Count && inlines[i] is Run { Text.Length: > 0, Revision.Kind: RevisionKind.Deletion or RevisionKind.Insertion } r ? r : null;
+                RevisionKind? kind = run?.Revision!.Kind;
+                if (open is { } done && kind != done)
                 {
-                    if (open is not null)
+                    if (count >= MoveWords)
                     {
-                        Close(open);
+                        candidates.Add((paragraph, openFirst, i, done, order++));
                     }
 
-                    open = kind is { } k ? new Stretch(k, order++) : null;
+                    if (done == RevisionKind.Deletion)
+                    {
+                        deletedCount += count;
+                    }
+                    else
+                    {
+                        insertedCount += count;
+                    }
+
+                    if (deletedCount > MostMoveWords || insertedCount > MostMoveWords)
+                    {
+                        return;
+                    }
+
+                    open = null;
                 }
 
-                open?.Runs.Add((Run)inline);
-            }
+                if (run is null)
+                {
+                    continue;
+                }
 
-            if (open is not null)
-            {
-                Close(open);
+                if (open is null)
+                {
+                    (open, openFirst, count, inWord) = (kind, i, 0, false);
+                }
+
+                foreach (char c in run.Text)
+                {
+                    bool word = IsWordChar(c);
+                    count += word && !inWord ? 1 : 0;
+                    inWord = word;
+                }
             }
         }
 
-        if (deletedCount < MoveWords || insertedCount < MoveWords || deletedCount > MostMoveWords || insertedCount > MostMoveWords)
+        if (deletedCount < MoveWords || insertedCount < MoveWords)
         {
             return;
         }
 
-        // Each run of MoveWords inserted words, by the hash of its words, where it starts.
-        Dictionary<ulong, List<(Stretch Stretch, int Word)>> starts = [];
+        List<Stretch> deleted = [], inserted = [];
+        foreach ((Paragraph paragraph, int firstRun, int endRun, RevisionKind kind, int place) in candidates)
+        {
+            Stretch stretch = new(kind, place);
+            for (int i = firstRun; i < endRun; i++)
+            {
+                stretch.Runs.Add((Run)paragraph.Inlines[i]);
+            }
+
+            stretch.TakeWords();
+            (kind == RevisionKind.Deletion ? deleted : inserted).Add(stretch);
+        }
+
+        if (deleted.Count == 0 || inserted.Count == 0)
+        {
+            return;
+        }
+
+        // Each run of MoveWords inserted words, by the hash of its words, where it starts: the first entry of each hash in a
+        // dictionary, and the others chained through arrays, so the index takes a few allocations whatever its size.
+        int entries = 0;
         foreach (Stretch stretch in inserted)
         {
-            for (int w = 0; w + MoveWords <= stretch.Words.Count; w++)
-            {
-                ulong key = Shingle(stretch, w);
-                if (!starts.TryGetValue(key, out List<(Stretch, int)>? list))
-                {
-                    starts[key] = list = [];
-                }
+            entries += stretch.Words.Count - MoveWords + 1;
+        }
 
-                list.Add((stretch, w));
+        Dictionary<ulong, int> first = new(entries);
+        int[] next = new int[entries];
+        (Stretch Stretch, int Word)[] at = new (Stretch, int)[entries];
+        int e = 0;
+        foreach (Stretch stretch in inserted)
+        {
+            for (int w = 0; w + MoveWords <= stretch.Words.Count; w++, e++)
+            {
+                at[e] = (stretch, w);
+                ref int head = ref CollectionsMarshal.GetValueRefOrAddDefault(first, Shingle(stretch, w), out bool exists);
+                next[e] = exists ? head : -1;
+                head = e;
             }
         }
 
@@ -75,13 +130,14 @@ internal sealed partial class BlockComparer
             for (int w = 0; w + MoveWords <= from.Words.Count;)
             {
                 (Stretch? To, int ToWord, int Count) best = (null, 0, 0);
-                if (!from.Used[w] && starts.TryGetValue(Shingle(from, w), out List<(Stretch Stretch, int Word)>? candidates))
+                if (!from.Used[w] && first.TryGetValue(Shingle(from, w), out int candidate))
                 {
-                    foreach ((Stretch to, int start) in candidates)
+                    for (; candidate >= 0; candidate = next[candidate])
                     {
+                        (Stretch to, int start) = at[candidate];
                         int n = 0;
                         while (w + n < from.Words.Count && start + n < to.Words.Count && !from.Used[w + n] && !to.Used[start + n]
-                            && from.Words[w + n].Text == to.Words[start + n].Text)
+                            && SameWord(from, w + n, to, start + n))
                         {
                             n++;
                         }
@@ -200,30 +256,6 @@ internal sealed partial class BlockComparer
         }
 
         sortChanges = true;
-
-        void Close(Stretch stretch)
-        {
-            stretch.Text = string.Concat(stretch.Runs.Select(r => r.Text));
-            foreach (Match word in WordPattern().Matches(stretch.Text))
-            {
-                stretch.Words.Add((word.Value, word.Index, word.Index + word.Length));
-            }
-
-            stretch.Used = new bool[stretch.Words.Count];
-            if (stretch.Words.Count >= MoveWords)
-            {
-                (stretch.Kind == RevisionKind.Deletion ? deleted : inserted).Add(stretch);
-            }
-
-            if (stretch.Kind == RevisionKind.Deletion)
-            {
-                deletedCount += stretch.Words.Count;
-            }
-            else
-            {
-                insertedCount += stretch.Words.Count;
-            }
-        }
     }
 
     // Changes that moved text emptied, left out of the result's list, and whether the list needs sorting into document order.
@@ -236,16 +268,23 @@ internal sealed partial class BlockComparer
         ulong hash = 14695981039346656037UL;
         for (int k = start; k < start + MoveWords; k++)
         {
-            foreach (char c in stretch.Words[k].Text)
-            {
-                hash = (hash ^ c) * 1099511628211UL;
-            }
-
-            hash = (hash ^ ' ') * 1099511628211UL;
+            hash = (hash ^ stretch.Words[k].Hash) * 1099511628211UL;
         }
 
         return hash;
     }
+
+    /// <summary>Whether the two words are the same text.</summary>
+    private static bool SameWord(Stretch a, int wordA, Stretch b, int wordB)
+    {
+        (ulong hashA, int startA, int endA) = a.Words[wordA];
+        (ulong hashB, int startB, int endB) = b.Words[wordB];
+        return hashA == hashB && a.Text.AsSpan(startA, endA - startA).SequenceEqual(b.Text.AsSpan(startB, endB - startB));
+    }
+
+    /// <summary>A letter or a number, the characters of a word for moved text.</summary>
+    private static bool IsWordChar(char c) => char.GetUnicodeCategory(c) is <= UnicodeCategory.OtherLetter
+        or UnicodeCategory.DecimalDigitNumber or UnicodeCategory.LetterNumber or UnicodeCategory.OtherNumber;
 
     /// <summary>Whether the text of the two runs of words, spaces and punctuation between them included, is the same.</summary>
     private static bool SameSpan(Stretch a, int wordA, Stretch b, int wordB, int count)
@@ -309,9 +348,6 @@ internal sealed partial class BlockComparer
         }
     }
 
-    [GeneratedRegex(@"[\p{L}\p{N}]+")]
-    private static partial Regex WordPattern();
-
     /// <summary>A stretch of runs of one paragraph that are all deleted or all inserted, with its text and words.</summary>
     private sealed class Stretch(RevisionKind kind, int order)
     {
@@ -324,7 +360,33 @@ internal sealed partial class BlockComparer
 
         public string Text { get; set; } = "";
 
-        public List<(string Text, int Start, int End)> Words { get; } = [];
+        /// <summary>Sets <see cref="Text"/> from the runs and finds its words.</summary>
+        public void TakeWords()
+        {
+            Text = Runs.Count == 1 ? Runs[0].Text : string.Concat(Runs.Select(r => r.Text));
+            for (int i = 0; i < Text.Length;)
+            {
+                if (!IsWordChar(Text[i]))
+                {
+                    i++;
+                    continue;
+                }
+
+                int start = i;
+                ulong hash = 14695981039346656037UL;
+                for (; i < Text.Length && IsWordChar(Text[i]); i++)
+                {
+                    hash = (hash ^ Text[i]) * 1099511628211UL;
+                }
+
+                Words.Add((hash, start, i));
+            }
+
+            Used = new bool[Words.Count];
+        }
+
+        /// <summary>The words: the hash of each one's text, and where it starts and ends in <see cref="Text"/>.</summary>
+        public List<(ulong Hash, int Start, int End)> Words { get; private set; } = [];
 
         public bool[] Used { get; set; } = [];
     }
