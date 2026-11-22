@@ -82,6 +82,10 @@ follows with the rest of Egap. Install it with `dotnet tool install -g Egap.Cli 
 - Document compare finds moved paragraphs: a run of deleted paragraphs with at least six words that is inserted again
   elsewhere becomes a move (`CompareChangeKind.Moved`, one change for both ends). Its source and destination revisions
   share the new `Revision.MoveName`; `DocumentCompareOptions.Moves` turns it off.
+- Document compare marks a paragraph split in two or more, or paragraphs joined into one, as Word does: the words are
+  compared as one text and only the paragraph marks between the pieces change (inserted for a split, deleted for a
+  join), up to four pieces, with the word changes kept inside. Before, one piece was compared with the paragraph and the
+  others were inserted or deleted whole. Pieces on either side of a table are not taken as one.
 - DOCX writes a move inside named move ranges (`w:moveFromRangeStart` and `w:moveToRangeStart`), so Word pairs its two
   ends, and reads the range names back into `Revision.MoveName`; before, moves were written without ranges and the names
   read were dropped.
@@ -95,6 +99,9 @@ follows with the rest of Egap. Install it with `dotnet tool install -g Egap.Cli 
   `w:pPrChange`, read and written; before, the reader dropped it and the writer wrote none.
 - Accepting or rejecting all changes now removes a deleted paragraph that is the last in its story, and a table whose
   last row is removed; before, an empty paragraph or an empty table was left behind.
+- A copy of a whole document (`Document.Clone`) keeps the list of a paragraph format change's old formatting in the
+  copy, so rejecting the change there puts the paragraph back in its list; before, the old formatting pointed at a list
+  of the original document.
 - A copy of a whole document (`Document.Clone`) keeps the edit counts of the original, so saving to DOCX after editing
   the copy writes those edits; before, the copy could write some edited paragraphs as they were read.
 - Tracked changes can print as a redline: `RevisionView` on `LayoutOptions` and `PdfExportOptions` lays a document out

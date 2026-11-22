@@ -23,7 +23,9 @@ Neither input is changed. The result is a copy of the revised document (or of th
 ## What is compared
 
 - **Text.** Paragraphs are lined up first. A paragraph that is only in one document is inserted or deleted whole.
-  Paragraphs that share at least half their words are compared word by word. Word boundaries follow Unicode UAX #29.
+  Paragraphs that share at least half their words are compared word by word. A paragraph split into two to four
+  paragraphs, or paragraphs joined into one, is compared as one text: only the paragraph marks between the pieces are
+  inserted or deleted, as Word marks them. Word boundaries follow Unicode UAX #29.
   With `Granularity = CompareGranularity.Character`, only the letters that changed are marked. `CaseChanges = false`
   ignores changes of case only, and `Whitespace = false` ignores changes of spacing only.
 - **Tables.** Rows are matched by their content. A row that is only in one document is a tracked row insertion or
@@ -151,6 +153,8 @@ egap compare contract-v1.docx contract-v2.docx --redline contract-redline.pdf --
 ## Limits
 
 - Moves inside a paragraph are not found; a moved word is a deletion and an insertion.
+- A paragraph split into more than four pieces, or with a table between its pieces, is not taken as a split: one piece
+  is compared with it and the others are inserted whole (and the same for a join).
 - Cells inserted into or deleted from a row are not tracked changes, as the model tracks whole rows only. A table with no
   row in common is replaced whole.
 - A resized picture is deleted and inserted, as Word does not track picture resizing.

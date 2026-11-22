@@ -405,45 +405,47 @@ internal sealed partial class BlockComparer
         }
     }
 
-    /// <summary>A changed stretch: blocks only in A and blocks only in B, paired where they are alike.</summary>
+    /// <summary>
+    /// A changed stretch: blocks only in A and blocks only in B, paired where they are alike, and a paragraph with the adjacent
+    /// paragraphs it was split into or joined from.
+    /// </summary>
     private void CompareStretch(List<Block> a, List<Block> b, Action<Block, bool> emit)
     {
-        List<(int A, int B)> pairs = Pair(a, b);
+        List<Group> groups = Groups(a, b);
         int i = 0, j = 0;
-        foreach ((int pa, int pb) in pairs.Append((a.Count, b.Count)))
+        foreach (Group group in groups.Append(new Group(a.Count, 0, b.Count, 0)))
         {
-            for (; i < pa; i++)
+            for (; i < group.A; i++)
             {
                 Whole(a[i], fromA: true, emit);
             }
 
-            for (; j < pb; j++)
+            for (; j < group.B; j++)
             {
                 Whole(b[j], fromA: false, emit);
             }
 
-            if (pa < a.Count)
+            if (group.A < a.Count)
             {
-                Paired(a[pa], b[pb], emit);
-                i = pa + 1;
-                j = pb + 1;
+                if (group.CountA == 1 && group.CountB == 1)
+                {
+                    Paired(a[group.A], b[group.B], emit);
+                }
+                else
+                {
+                    SplitOrJoin([.. a.GetRange(group.A, group.CountA).Cast<Paragraph>()], [.. b.GetRange(group.B, group.CountB).Cast<Paragraph>()], emit);
+                }
+
+                i = group.A + group.CountA;
+                j = group.B + group.CountB;
             }
         }
-    }
-
-    /// <summary>
-    /// Pairs blocks of a changed stretch: paragraphs whose words overlap enough, and containers of the same kind, best pairs
-    /// first, keeping their order.
-    /// </summary>
-    private List<(int A, int B)> Pair(List<Block> a, List<Block> b)
-    {
-        return Pair(a, b, Score);
     }
 
     /// <summary>Pairs items of two changed stretches whose score reaches the threshold, best pairs first, keeping their order.</summary>
     private static List<(int A, int B)> Pair<T>(List<T> a, List<T> b, Func<T, T, double> score)
     {
-        List<(double Score, int A, int B)> candidates = [];
+        List<(double Score, Group Group)> candidates = [];
         bool band = (long)a.Count * b.Count > (long)PairBand * PairBand * 4;
         for (int i = 0; i < a.Count; i++)
         {
@@ -460,33 +462,12 @@ internal sealed partial class BlockComparer
                 double value = score(a[i], b[j]);
                 if (value >= PairThreshold)
                 {
-                    candidates.Add((value, i, j));
+                    candidates.Add((value, new Group(i, 1, j, 1)));
                 }
             }
         }
 
-        candidates.Sort((x, y) => x.Score != y.Score ? y.Score.CompareTo(x.Score) : x.A != y.A ? x.A.CompareTo(y.A) : x.B.CompareTo(y.B));
-        List<(int A, int B)> pairs = [];
-        bool[] usedB = new bool[b.Count];
-        foreach ((_, int ca, int cb) in candidates)
-        {
-            int at = pairs.BinarySearch((ca, -1), Comparer<(int A, int B)>.Create((x, y) => x.A.CompareTo(y.A)));
-            if (at >= 0 || usedB[cb])
-            {
-                continue;
-            }
-
-            at = ~at;
-            if ((at > 0 && pairs[at - 1].B >= cb) || (at < pairs.Count && pairs[at].B <= cb))
-            {
-                continue;
-            }
-
-            pairs.Insert(at, (ca, cb));
-            usedB[cb] = true;
-        }
-
-        return pairs;
+        return [.. Pick(candidates, a.Count, b.Count).Select(g => (g.A, g.B))];
     }
 
     private double Score(Block a, Block b)
