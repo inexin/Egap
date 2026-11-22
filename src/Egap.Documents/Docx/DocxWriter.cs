@@ -26,6 +26,9 @@ internal sealed partial class DocxWriter
     private readonly HashSet<string> writtenParts = new(StringComparer.OrdinalIgnoreCase);
     private readonly Dictionary<ImageData, string> media = [];
     private readonly Dictionary<string, string> rebased = new(StringComparer.OrdinalIgnoreCase);
+
+    // Parts of other packages copied into this one, for markup imported from another DOCX.
+    private Dictionary<OpcPart, string>? foreignParts;
     private int nextBookmarkId;
     private int nextRevisionId = 1;
     private int nextDrawingId = 1;
@@ -34,6 +37,9 @@ internal sealed partial class DocxWriter
     // moves whose range has started, with the range's id. Found when the first named move is written.
     private Dictionary<Revision, Inline>? moveEnds;
     private Dictionary<Revision, int>? moveRanges;
+
+    // The tracked change of the hyperlink or content control being written, for its inlines that have none of their own.
+    private Revision? containerRevision;
     private int nextParaId = 0x10000000;
 
     // The part being written, whose relationships new hyperlinks and images go into.
@@ -907,6 +913,71 @@ internal sealed partial class DocxWriter
         }
 
         return result;
+    }
+
+    /// <summary>
+    /// Gives markup read from another DOCX (an island that <see cref="Document.Import(Node, bool)"/> or a document compare
+    /// brought over) its own relationships: the parts it points at, such as a VML group's images, are copied into this
+    /// package with what they point at, and a relationship that cannot be found is dropped. Left as it was, its ids name
+    /// this file's styles or settings, and Word calls the file corrupt.
+    /// </summary>
+    private XElement RebaseForeign(XElement markup, DocxPackageData foreign, string? sourcePart)
+    {
+        OpcPart? source = sourcePart is null ? null : foreign.Package.GetPart(sourcePart);
+        foreach (XAttribute attribute in markup.DescendantsAndSelf().SelectMany(e => e.Attributes()).Where(a => a.Name.Namespace == Ns.R).ToList())
+        {
+            OpcRelationship? relationship = source?.GetRelationship(attribute.Value);
+            OpcPart? part = relationship is { External: false } ? foreign.Package.GetPart(relationship.TargetName) : null;
+            if (relationship is null || (!relationship.External && part is null))
+            {
+                attribute.Remove();
+                continue;
+            }
+
+            string target = part is null ? relationship.Target : RelationshipTarget(currentPart, CopyForeignPart(foreign.Package, part));
+            string key = currentPart + "|" + relationship.Type + "|" + target;
+            if (!rebased.TryGetValue(key, out string? id))
+            {
+                id = package.NextRelationshipId(currentPart);
+                package.AddRelationship(currentPart, id, relationship.Type, target, relationship.External);
+                rebased[key] = id;
+            }
+
+            attribute.Value = id;
+        }
+
+        return markup;
+    }
+
+    /// <summary>The name in this package of a copy of another package's part, and of the parts it points at.</summary>
+    private string CopyForeignPart(OpcPackage from, OpcPart part)
+    {
+        foreignParts ??= new(ReferenceEqualityComparer.Instance);
+        if (foreignParts.TryGetValue(part, out string? name))
+        {
+            return name;
+        }
+
+        string stem = part.Name;
+        int dot = stem.LastIndexOf('.');
+        string extension = dot > stem.LastIndexOf('/') ? stem[dot..] : "";
+        stem = stem[..^extension.Length].TrimEnd('0', '1', '2', '3', '4', '5', '6', '7', '8', '9');
+        name = UniquePartName(stem, extension);
+        foreignParts[part] = name;
+        package.AddPart(name, part.ContentType, part.Data);
+        foreach (OpcRelationship related in part.Relationships)
+        {
+            if (related.External || from.GetPart(related.TargetName) is not { } next)
+            {
+                package.AddRelationship(name, related.Id, related.Type, related.Target, related.External);
+            }
+            else
+            {
+                package.AddRelationship(name, related.Id, related.Type, RelationshipTarget(name, CopyForeignPart(from, next)), external: false);
+            }
+        }
+
+        return name;
     }
 
     private static List<double> GuessGrid(Table table)

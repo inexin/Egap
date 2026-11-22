@@ -130,6 +130,14 @@ follows with the rest of Egap. Install it with `dotnet tool install -g Egap.Cli 
     OpenDocument index holds no changes.
 - Rejecting an inserted last paragraph that holds only bookmarks or range ends besides its text now removes it, and
   moves the bookmarks to the paragraph before; before, the paragraph stayed.
+- DOCX fixes found by the document compare Word gate, where Word called 9 of 114 compare results corrupt:
+  - A tracked hyperlink or inline content control is written with the change inside it (`w:hyperlink` holding
+    `w:del` or `w:ins` round its runs), as Word does, and a deleted note's own mark as `w:delText`. Before, the change
+    was written round the hyperlink, with `w:t` inside. The reader gives a hyperlink or content control wholly inside
+    one change that change, so accepting or rejecting it removes the hyperlink, not only its text.
+  - Kept markup from another DOCX, such as a VML group a compare or `Document.Import` brought over, gets copies of the
+    parts it points at, such as its images. Before, it kept the other file's relationship ids, which named other parts
+    of the file it was saved to.
 
 ## Egap.Documents 2.3.0-preview.1 (2026-11-13)
 
