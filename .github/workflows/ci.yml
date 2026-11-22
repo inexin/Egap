@@ -31,7 +31,8 @@ jobs:
         with:
           global-json-file: global.json
       - run: dotnet build Egap.slnx -c Release
-      - run: dotnet test Egap.slnx -c Release --no-build
+      # xUnit's own runner, not dotnet test: see tools/run-tests.py for why.
+      - run: python3 tools/run-tests.py
 
   build-test:
     name: Build and test (${{ matrix.name }})
@@ -41,7 +42,7 @@ jobs:
       matrix:
         include:
           - { name: linux-arm64, os: ubuntu-24.04-arm }
-          - { name: windows-x64, os: windows-latest }
+          - { name: windows-x64, os: windows-latest, python: python }
           - { name: macos-arm64, os: macos-latest }
     runs-on: ${{ matrix.os }}
     steps:
@@ -50,7 +51,7 @@ jobs:
         with:
           global-json-file: global.json
       - run: dotnet build Egap.slnx -c Release
-      - run: dotnet test Egap.slnx -c Release --no-build
+      - run: ${{ matrix.python || 'python3' }} tools/run-tests.py
 
   aot-smoke:
     name: Native AOT smoke apps (format add-ons)

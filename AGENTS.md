@@ -24,8 +24,8 @@ add-ons Egap.Documents.Html and Egap.Documents.Markdown. It draws, decodes image
 ## Build, test and check
 
 ```sh
-dotnet build Egap.slnx
-dotnet test Egap.slnx
+dotnet build Egap.slnx -c Release
+python tools/run-tests.py                         # every test project with xUnit's own runner, as CI runs them
 dotnet format Egap.slnx --verify-no-changes      # must pass before anything lands
 python tools/update-public-api.py                 # adds new public API to PublicAPI.Unshipped.txt
 python tools/check-doc-snippets.py                # every C# block in docs/ builds
@@ -35,7 +35,8 @@ docfx docs/docfx.json                             # the docs site, into docs/_si
 - Warnings are errors, and the public API baseline (`PublicAPI.Shipped.txt`, `PublicAPI.Unshipped.txt` in each package) is
   checked by the build. Every new public member needs XML docs and an entry in `PublicAPI.Unshipped.txt`.
 - Run only the tests for the area you change while working (`dotnet test --filter FullyQualifiedName~Redaction`), then the
-  whole solution before landing.
+  whole solution before landing with `python tools/run-tests.py`: `dotnet test` can drop failures whose message holds
+  control characters (CONTRIBUTING.md says which), and CI uses this script.
 - Hot code (parsing, filters, rendering, layout) must not get slower or allocate more than `main`; run the benchmarks in
   `benchmarks/Egap.Pdf.Benchmarks` (`benchmarks/Egap.Documents.Benchmarks` for document loading) and include the before and after numbers.
 - **Fuzzing:** runs are 10 minutes (`tools/fuzz-afl.py`, see `tests/Egap.Pdf.Fuzz/README.md`). Longer runs only when the

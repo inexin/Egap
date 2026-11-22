@@ -25,9 +25,15 @@ Egap draws, decodes images and reads fonts through [Egami](https://github.com/in
 whose packages come from nuget.org.
 
 ```
-dotnet build
-dotnet test
+dotnet build -c Release
+python tools/run-tests.py
 ```
+
+`tools/run-tests.py` runs every test project with xUnit v3's own runner (`dotnet exec` on each built test assembly), as CI
+does; `-p <project>` runs one project, and runner filters go after `--`. CI does not use `dotnet test`: its VSTest adapter
+(xunit.runner.visualstudio 4.0.1) silently drops a failed test whose message holds U+0000-U+0008, U+000B, U+000E-U+001F,
+a lone surrogate or U+FFFE (Word field characters, for example), and exits 0 when those are the only failures. `dotnet test`
+is fine while you work, but use `tools/run-tests.py` when you need exact results.
 
 To try an unreleased Egami commit, `python tools/pack-egami.py --update` packs an Egami checkout next to this one into
 `../egami-feed` and points `Directory.Packages.props` at it; then build with
