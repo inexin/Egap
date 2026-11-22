@@ -213,7 +213,14 @@ public sealed partial class Document
 
     private static Document Load(byte[] bytes, string? extension, out IReadOnlyList<ConversionWarning> warnings, DocumentLoadOptions? options)
     {
-        DocumentFormatKind kind = Identify(bytes.AsSpan(0, Math.Min(bytes.Length, HeadLength)), extension);
+        Document document = Read(bytes, extension, out warnings, options, out DocumentFormatKind kind);
+        document.SourceFormat = kind;
+        return document;
+    }
+
+    private static Document Read(byte[] bytes, string? extension, out IReadOnlyList<ConversionWarning> warnings, DocumentLoadOptions? options, out DocumentFormatKind kind)
+    {
+        kind = Identify(bytes.AsSpan(0, Math.Min(bytes.Length, HeadLength)), extension);
         if (kind == DocumentFormatKind.Unknown)
         {
             throw new DocumentException("The file is not one Egap can read.");
@@ -225,6 +232,7 @@ public sealed partial class Document
             CompoundKind(new MemoryStream(bytes, writable: false), out bool binaryWord);
             if (binaryWord)
             {
+                kind = DocumentFormatKind.Doc;
                 options ??= new DocumentLoadOptions();
                 return Doc.DocReader.Read(bytes, options.Limits, options.Password, options.PasswordCallback, out warnings);
             }

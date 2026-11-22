@@ -26,6 +26,8 @@
       href: guides/text-images-drawing.md
 - name: Egap.Documents
   items:
+    - name: Comparing documents
+      href: guides/comparing-documents.md
     - name: Flow documents
       href: guides/flow-documents.md
     - name: Moving to Egap.Documents 2.0

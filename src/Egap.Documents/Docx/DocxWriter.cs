@@ -29,6 +29,11 @@ internal sealed partial class DocxWriter
     private int nextBookmarkId;
     private int nextRevisionId = 1;
     private int nextDrawingId = 1;
+
+    // Each named move (its MoveFrom or its MoveTo revision) and the last inline it marks, where its range ends; and the
+    // moves whose range has started, with the range's id. Found when the first named move is written.
+    private Dictionary<Revision, Inline>? moveEnds;
+    private Dictionary<Revision, int>? moveRanges;
     private int nextParaId = 0x10000000;
 
     // The part being written, whose relationships new hyperlinks and images go into.

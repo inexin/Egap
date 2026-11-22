@@ -14,6 +14,9 @@ back into documents. Fully managed and MIT-licensed.
   options): styles, lists, tables, page styles, notes, fields, comments, tracked changes and pictures. Files encrypted with
   a password open with it and save with one; ODT to ODT keeps what the model does not name.
 - Styles, lists numbered as Word numbers them, tables, fields, comments, tracked changes; find, replace and a builder.
+- Document compare with `DocumentCompare.Run`: two versions, from any formats Egap reads, become one document with the
+  differences as tracked changes (words, paragraphs, table rows, formatting, moves, headers and footers, notes), and a
+  list of the changes to accept or reject one by one.
 - Page layout with floats, columns, headers and footers, footnotes, and flex and grid containers, rendered to images, SVG
   or PDF.
 - Charts read, edited, made and drawn on any Egami canvas with `Chart.Draw`: one model for Word documents and workbooks.

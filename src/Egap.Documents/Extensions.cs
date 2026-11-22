@@ -123,6 +123,13 @@ public sealed record Revision(RevisionKind Kind, string Author, DateTimeOffset? 
 {
     /// <summary>Whether the change removes the content (a deletion or the source of a move).</summary>
     public bool Removes => Kind is RevisionKind.Deletion or RevisionKind.MoveFrom;
+
+    /// <summary>
+    /// For a move, the name its source (<see cref="RevisionKind.MoveFrom"/>) and destination (<see cref="RevisionKind.MoveTo"/>)
+    /// share, so a word processor shows them as one move; null when unknown. DOCX keeps it in the move's range markup
+    /// (<c>w:moveFromRangeStart</c> and <c>w:moveToRangeStart</c>).
+    /// </summary>
+    public string? MoveName { get; init; }
 }
 
 /// <summary>A tracked formatting change: who changed the formatting, when, and what it was before.</summary>
