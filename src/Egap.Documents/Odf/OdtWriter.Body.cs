@@ -1,4 +1,5 @@
 using System.Globalization;
+using System.Runtime.CompilerServices;
 using System.Xml.Linq;
 
 using static Egap.Documents.Odf.OdfNames;
@@ -366,6 +367,17 @@ internal sealed partial class OdtWriter
     private void WriteBlocks(IEnumerable<Block> blocks, BlockTarget target)
     {
         List<Block> flat = Flatten(blocks);
+        if (allowChanges)
+        {
+            for (int i = 0; i < flat.Count; i++)
+            {
+                if (flat[i] is Paragraph { MarkRevision: { } mark } paragraph && (i + 1 == flat.Count || flat[i + 1] is not Paragraph))
+                {
+                    ShiftEndMark(flat, i, paragraph, mark);
+                }
+            }
+        }
+
         for (int i = 0; i < flat.Count; i++)
         {
             Block block = flat[i];
@@ -381,7 +393,13 @@ internal sealed partial class OdtWriter
             switch (block)
             {
                 case Paragraph paragraph:
-                    if (TocEnd(paragraph, flat, i) is int end)
+                    if (blockDeletions is not null && blockDeletions.Contains(paragraph))
+                    {
+                        WriteBlockDeletion(paragraph, target);
+                        break;
+                    }
+
+                    if (TocEnd(paragraph, flat, i) is int end && !TocTracked(flat, i, end))
                     {
                         CloseLists(target);
                         WriteToc(paragraph, flat, i, end, target);
@@ -391,7 +409,7 @@ internal sealed partial class OdtWriter
 
                     // A deleted paragraph mark joins the paragraph to the next one, with the break inside a deletion.
                     int last = i;
-                    while (last + 1 < flat.Count && flat[last] is Paragraph { MarkRevision.Removes: true } && flat[last + 1] is Paragraph && allowChanges)
+                    while (last + 1 < flat.Count && flat[last] is Paragraph mark && (MarkOf(mark) is { Removes: true } || joinedMarks?.Contains(mark) == true) && flat[last + 1] is Paragraph && allowChanges)
                     {
                         last++;
                     }
@@ -518,14 +536,19 @@ internal sealed partial class OdtWriter
         }
 
         ParagraphWriter writer = new(this, Make(null, withMaster: true), Make) { Skip = trailing };
+        if (paragraph.FormatRevision is not null)
+        {
+            FormatChangeDropped();
+        }
+
         for (int g = 0; g < group.Count; g++)
         {
             writer.Paragraph = group[g];
             WriteInlines(group[g], writer);
-            if (g + 1 < group.Count)
+            if (g + 1 < group.Count && MarkOf(group[g]) is { } deleted)
             {
                 // The deleted paragraph mark: two paragraphs in the deletion are the break between them (ODF 1.3 Part 3, 5.5.4).
-                writer.DeleteMark(group[g].MarkRevision!);
+                writer.DeleteMark(deleted);
             }
         }
 
@@ -536,7 +559,83 @@ internal sealed partial class OdtWriter
         }
 
         Paragraph lastParagraph = group[^1];
-        writer.EndParagraph(lastParagraph.MarkRevision);
+        writer.EndParagraph(MarkOf(lastParagraph));
+    }
+
+    /// <summary>
+    /// The paragraph mark's revision as written: the one moved there by <see cref="ShiftEndMark"/>, else the model's, else
+    /// the tracked row's the paragraph is in.
+    /// </summary>
+    private Revision? MarkOf(Paragraph paragraph)
+    {
+        return shiftedMarks is not null && shiftedMarks.TryGetValue(paragraph, out Revision? shifted) ? shifted : paragraph.MarkRevision ?? rowRevision;
+    }
+
+    /// <summary>
+    /// A paragraph mark with no paragraph after it (the story's last, or one before a table) cannot hold a change in ODF,
+    /// which tracks the break between two paragraphs. Removing such a mark removes the paragraph when it is left empty, and
+    /// does nothing otherwise. So when the change empties the paragraph, it is the same as a change of the break before the
+    /// paragraph, and moves back to the nearest paragraph mark that is not changed the same way; otherwise it is dropped.
+    /// When that mark is changed the other way (paragraphs deleted and the last ones inserted, or the reverse), accepting or
+    /// rejecting keeps one side either way, so neither mark is written and the two paragraphs are written as one.
+    /// </summary>
+    [MethodImpl(MethodImplOptions.NoInlining)]
+    private void ShiftEndMark(List<Block> flat, int index, Paragraph paragraph, Revision mark)
+    {
+        shiftedMarks ??= new(ReferenceEqualityComparer.Instance);
+        shiftedMarks[paragraph] = null;
+        foreach (Inline inline in paragraph.Inlines)
+        {
+            if (inline is not (BookmarkStart or BookmarkEnd or CommentRangeStart or CommentRangeEnd or EditableRangeStart or EditableRangeEnd)
+                && (inline.Revision is null || inline.Revision.Removes != mark.Removes))
+            {
+                return;
+            }
+        }
+
+        for (int k = index - 1; k >= 0 && flat[k] is Paragraph previous; k--)
+        {
+            if (previous.MarkRevision is null)
+            {
+                shiftedMarks[previous] = mark;
+                return;
+            }
+
+            if (previous.MarkRevision.Removes != mark.Removes)
+            {
+                shiftedMarks[previous] = null;
+                joinedMarks ??= new(ReferenceEqualityComparer.Instance);
+                joinedMarks.Add(previous);
+                return;
+            }
+        }
+
+        if (mark.Removes && (index == 0 || flat[index - 1] is not Paragraph))
+        {
+            // A deleted paragraph with no paragraph before it to join: the whole paragraph is the deletion, between blocks.
+            blockDeletions ??= new(ReferenceEqualityComparer.Instance);
+            blockDeletions.Add(paragraph);
+        }
+    }
+
+    /// <summary>A deleted paragraph written whole in a deletion, marked by a <c>text:change</c> between blocks (ODF 1.3 Part 3, 5.5.7).</summary>
+    [MethodImpl(MethodImplOptions.NoInlining)]
+    private void WriteBlockDeletion(Paragraph paragraph, BlockTarget target)
+    {
+        CloseLists(target);
+        XElement change = NewRegion(paragraph.MarkRevision!);
+        target.Container.Add(new XElement(TextNs + "change", new XAttribute(TextNs + "change-id", change.Parent!.Attribute(TextNs + "id")!.Value)));
+        BlockTarget inner = new(change, main: false);
+        inBlockDeletion = true;
+        try
+        {
+            WriteParagraph([paragraph], inner);
+            CloseLists(inner);
+        }
+        finally
+        {
+            inBlockDeletion = false;
+        }
     }
 
     /// <summary>The list a paragraph is in, by its own formatting or its style's, and its level; null for none.</summary>
@@ -706,6 +805,31 @@ internal sealed partial class OdtWriter
         }
 
         return null;
+    }
+
+    /// <summary>
+    /// True when the table of contents holds tracked changes: an ODF index holds none, so its paragraphs are written as
+    /// text with their changes, and the field is left out.
+    /// </summary>
+    [MethodImpl(MethodImplOptions.NoInlining)]
+    private bool TocTracked(List<Block> flat, int start, int end)
+    {
+        if (!allowChanges)
+        {
+            return false;
+        }
+
+        for (int i = start; i <= end; i++)
+        {
+            Paragraph paragraph = (Paragraph)flat[i];
+            if ((i < end && paragraph.MarkRevision is not null) || paragraph.Descendants<Inline>().Any(inline => inline.Revision is not null))
+            {
+                warnings.Add(ConversionWarningKind.FieldsFlattened, "A table of contents with tracked changes was written as its text: an OpenDocument index holds no changes.");
+                return true;
+            }
+        }
+
+        return false;
     }
 
     private static bool IsToc(string code)

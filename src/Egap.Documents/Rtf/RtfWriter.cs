@@ -270,9 +270,22 @@ internal sealed partial class RtfWriter
         ParagraphStyle? style = paragraph.Style;
         RunWords(Effective(given.Run(style, null, mark: true), paragraph.MarkFormat), null);
         bool marked = paragraph.MarkRevision is not null;
-        if (paragraph.MarkRevision is { } revision)
+        if (paragraph.MarkRevision is { } revision && end is "par" or "cell" or "nestcell")
         {
+            // The mark and its change in a group, as Word writes it: readers that keep a change's state past the mark
+            // (LibreOffice does) would take the next paragraphs as changed too.
+            Open();
             RevisionWords(revision);
+            Word(end);
+            Close();
+            output.AppendLine();
+            current = null;
+            return;
+        }
+
+        if (paragraph.MarkRevision is { } markRevision)
+        {
+            RevisionWords(markRevision);
         }
 
         if (end is not null)

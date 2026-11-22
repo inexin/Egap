@@ -140,14 +140,31 @@ public sealed class TrackedChange
     /// <summary>
     /// Removes a paragraph's mark: its inlines move to the start of the next paragraph, which keeps its own formatting, as when
     /// a paragraph mark is deleted in Word. A paragraph with no next paragraph in its container (the last one, or one before a
-    /// table) stays, unless it is empty and not alone in its container: then it goes.
+    /// table) stays, unless it is empty and not alone in its container: then it goes. Bookmarks and range ends do not count
+    /// as content; they move to the end of the paragraph before, or the paragraph stays for them when there is none.
     /// </summary>
     private static void JoinWithNext(Paragraph paragraph)
     {
         if (paragraph.NextSibling is not Paragraph next)
         {
-            if (paragraph.Inlines.Count == 0 && (paragraph.NextSibling is not null || paragraph.PreviousSibling is not null))
+            if (paragraph.NextSibling is null && paragraph.PreviousSibling is null)
             {
+                return;
+            }
+
+            if (paragraph.Inlines.Count == 0)
+            {
+                paragraph.Remove();
+            }
+            else if (paragraph.PreviousSibling is Paragraph previous && paragraph.Inlines.All(IsMarker))
+            {
+                List<Inline> markers = [.. paragraph.Inlines];
+                paragraph.Inlines.Clear();
+                foreach (Inline marker in markers)
+                {
+                    previous.Inlines.Add(marker);
+                }
+
                 paragraph.Remove();
             }
 
@@ -162,6 +179,11 @@ public sealed class TrackedChange
         }
 
         paragraph.Remove();
+    }
+
+    private static bool IsMarker(Inline inline)
+    {
+        return inline is BookmarkStart or BookmarkEnd or CommentRangeStart or CommentRangeEnd or EditableRangeStart or EditableRangeEnd;
     }
 }
 

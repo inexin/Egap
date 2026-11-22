@@ -154,7 +154,8 @@ Writing:
   cell's width is written.
 - Shapes in the text become floating shapes anchored to their line; a picture's source address and an SVG picture's
   original are not written (the SVG is drawn as a PNG).
-- Move revisions are written as insertions and deletions, and revisions of field characters are not written.
+- Move revisions are written as insertions and deletions, with a `MovesSplit` warning. A tracked field, hyperlink or
+  shape keeps its revision, and an inserted or deleted table row is marked at its end, as Word does.
 - Not written: a paragraph's "no list" override, a row's footer and hidden flags, a table style's band sizes, overline,
   word spacing, OpenType features and a comment's Done flag.
 

@@ -11,6 +11,9 @@ internal sealed partial class OdtReader
     private readonly List<(string Id, Revision Revision)> insertions = [];
     private Revision? deletion;
 
+    /// <summary>The first tracked change met in the table row being read, for an empty tracked row.</summary>
+    private Revision? rowChange;
+
     // Fields shown as their value: ODF has them, Word's fields have nothing like them.
     private static readonly HashSet<string> ValueFields = new(StringComparer.Ordinal)
     {
@@ -64,6 +67,8 @@ internal sealed partial class OdtReader
             return true;
         }
 
+        rowChange ??= change.Revision;
+
         switch (element.Name.LocalName)
         {
             case "change-start":
@@ -116,6 +121,12 @@ internal sealed partial class OdtReader
                     context.Blocks.Blocks.AddTrusted(next);
                     context.Paragraph = next;
                     context.Inlines = next.Inlines;
+                    string? kind = Inherited(Find("paragraph", content.Attr(TextNs, "style-name")), "paragraph", "paragraph-properties", FoNs, "break-before");
+                    if (kind is "page" or "even-page" or "odd-page" or "column")
+                    {
+                        // A deleted page or column break, written as the start of a paragraph in the deletion.
+                        next.Inlines.AddTrusted(new Break(document, kind == "column" ? BreakKind.Column : BreakKind.Page) { Revision = revision });
+                    }
                 }
 
                 first = false;

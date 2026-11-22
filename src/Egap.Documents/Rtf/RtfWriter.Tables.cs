@@ -38,17 +38,32 @@ internal sealed partial class RtfWriter
 
             if (level == 1)
             {
+                RowRevision(row);
                 Word("row");
+                if (row.Revision is { } revision)
+                {
+                    Word(revision.Removes ? "deleted" : "revised", 0);
+                }
             }
             else
             {
                 Destination("nesttableprops");
                 RowDefinition(table, row, r, cells, left, edges);
+                RowRevision(row);
                 Word("nestrow");
                 Close();
             }
 
             output.AppendLine();
+        }
+    }
+
+    /// <summary>A tracked row: the row's end mark is inserted or deleted, as a paragraph mark is.</summary>
+    private void RowRevision(Row row)
+    {
+        if (row.Revision is { } revision)
+        {
+            RevisionWords(revision);
         }
     }
 

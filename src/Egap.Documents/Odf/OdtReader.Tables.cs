@@ -1,3 +1,4 @@
+using System.Runtime.CompilerServices;
 using System.Xml.Linq;
 
 using static Egap.Documents.Odf.OdfNames;
@@ -121,13 +122,17 @@ internal sealed partial class OdtReader
     private void ReadRow(Table table, XElement element, bool header, ref int[] spanRows, ref int[] spanWidth)
     {
         Row row = table.Rows.AddTrusted(new Row(document));
+        Revision? outerChange = rowChange;
+        rowChange = null;
         if (header)
         {
             row.Format.IsHeader = true;
         }
 
+        bool tracked = false;
         if (Find("table-row", element.Attr(TableNs, "style-name"))?.Properties("table-row-properties") is { } props)
         {
+            tracked = props.Attr(LoExtNs, "text-changes-only") == "false";
             if (OdfUnits.Length(props.Attr(StyleNs, "row-height")) is > 0 and var exactly)
             {
                 row.Format.Height = exactly;
@@ -215,6 +220,53 @@ internal sealed partial class OdtReader
                 column++;
             }
         }
+
+        if (tracked)
+        {
+            row.Revision = TrackedRow(row, rowChange);
+        }
+
+        rowChange = outerChange;
+    }
+
+    /// <summary>
+    /// The change of a row LibreOffice marks as tracked (<c>loext:text-changes-only="false"</c>): ODF tracks no table rows,
+    /// so the row's text changes stand for it. The row is inserted or deleted when every inline in its cells is changed the
+    /// same way, and so is every paragraph mark but each cell's last. A row with no content takes the change marked in it,
+    /// <paramref name="marked"/>. Null when the row has no change or untracked content.
+    /// </summary>
+    [MethodImpl(MethodImplOptions.NoInlining)]
+    private static Revision? TrackedRow(Row row, Revision? marked)
+    {
+        Revision? found = null;
+        foreach (Cell cell in row.Cells)
+        {
+            foreach (Paragraph paragraph in cell.Descendants<Paragraph>())
+            {
+                foreach (Inline inline in paragraph.Inlines)
+                {
+                    if (inline is BookmarkStart or BookmarkEnd or CommentRangeStart or CommentRangeEnd)
+                    {
+                        continue;
+                    }
+
+                    if (inline.Revision is not { Kind: RevisionKind.Insertion or RevisionKind.Deletion } revision || (found is not null && found.Removes != revision.Removes))
+                    {
+                        return null;
+                    }
+
+                    found ??= revision;
+                }
+
+                bool lastInCell = paragraph.Parent is Cell owner && owner.Blocks.Count > 0 && owner.Blocks[^1] == paragraph;
+                if (!lastInCell && (paragraph.MarkRevision is null || (found is not null && found.Removes != paragraph.MarkRevision.Removes)))
+                {
+                    return null;
+                }
+            }
+        }
+
+        return found ?? marked;
     }
 
     private static void Grow(ref int[] spanRows, ref int[] spanWidth, int length)

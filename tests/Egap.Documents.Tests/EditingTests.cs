@@ -161,6 +161,25 @@ public class EditingTests
     }
 
     [Fact]
+    public void ARejectedLastParagraphWithOnlyBookmarksGoesAndTheyMoveBack()
+    {
+        Document doc = new();
+        Body body = doc.AddSection().Body;
+        body.AddParagraph("Stays.");
+        Paragraph last = body.AddParagraph();
+        last.Inlines.Add(new BookmarkStart(doc, "mark"));
+        last.AddRun("Inserted.").Revision = new Revision(RevisionKind.Insertion, "Ada");
+        last.Inlines.Add(new BookmarkEnd(doc, "mark"));
+        last.MarkRevision = new Revision(RevisionKind.Insertion, "Ada");
+
+        doc.Revisions.RejectAll();
+
+        Paragraph only = Assert.Single(body.Paragraphs);
+        Assert.Equal("Stays.", only.GetText());
+        Assert.Equal(2, only.Inlines.Count(i => i is BookmarkStart or BookmarkEnd));
+    }
+
+    [Fact]
     public void ReplaceAcrossRunsKeepsTheFirstRunsFormatting()
     {
         Document doc = new();

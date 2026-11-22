@@ -23,9 +23,12 @@ internal sealed partial class RtfWriter
     private bool noteMarkPending;
 
     /// <summary>A field being written: the paragraph it opened in and whether its result has begun.</summary>
-    private sealed class OpenField(int paragraph)
+    private sealed class OpenField(int paragraph, bool tracked)
     {
         public int Paragraph { get; } = paragraph;
+
+        /// <summary>The field is in a group of its own that holds its tracked change.</summary>
+        public bool Tracked { get; } = tracked;
 
         public bool Separated { get; set; }
     }
@@ -59,10 +62,14 @@ internal sealed partial class RtfWriter
                 WriteRun(run);
                 break;
             case Tab:
-                Marked(inline, () => Word("tab"));
+                bool tab = OpenMarked(inline);
+                Word("tab");
+                CloseMarked(tab);
                 break;
             case Break @break:
-                Marked(inline, () => Word(@break.Kind switch { BreakKind.Page => "page", BreakKind.Column => "column", _ => "line" }));
+                bool breakGroup = OpenMarked(inline);
+                Word(@break.Kind switch { BreakKind.Page => "page", BreakKind.Column => "column", _ => "line" });
+                CloseMarked(breakGroup);
                 break;
             case FieldStart start:
                 StartField(start);
@@ -90,10 +97,14 @@ internal sealed partial class RtfWriter
 
                 break;
             case BookmarkStart start:
-                Marked(inline, () => TextDestination("bkmkstart", start.Name));
+                bool startGroup = OpenMarked(inline);
+                TextDestination("bkmkstart", start.Name);
+                CloseMarked(startGroup);
                 break;
             case BookmarkEnd end:
-                Marked(inline, () => TextDestination("bkmkend", end.Name));
+                bool endGroup = OpenMarked(inline);
+                TextDestination("bkmkend", end.Name);
+                CloseMarked(endGroup);
                 break;
             case CommentRangeStart start:
                 TextDestination("atrfstart", start.CommentId.ToString(CultureInfo.InvariantCulture));
@@ -111,28 +122,59 @@ internal sealed partial class RtfWriter
                 WriteComment(comment);
                 break;
             case Footnote note:
-                Marked(inline, () => WriteNote(note));
+                bool noteGroup = OpenMarked(inline);
+                WriteNote(note);
+                CloseMarked(noteGroup);
                 break;
             case Hyperlink link:
+                bool linkGroup = OpenMarked(inline);
                 WriteHyperlink(link);
+                CloseMarked(linkGroup);
                 break;
             case InlineContentControl control:
                 warnings.Add(ConversionWarningKind.ContentControlsDropped, "RTF has no content controls; their content was kept.");
+                bool controlGroup = OpenMarked(inline);
                 foreach (Inline child in control.Inlines)
                 {
                     WriteInline(child);
                 }
 
+                CloseMarked(controlGroup);
                 break;
             case Picture picture:
-                Marked(inline, () => WritePicture(picture));
+                bool pictureGroup = OpenMarked(inline);
+                WritePicture(picture);
+                CloseMarked(pictureGroup);
                 break;
             case Shape shape:
                 WriteShape(shape);
                 break;
             case Island island:
+                bool islandGroup = OpenMarked(inline);
                 WriteIsland(island);
+                CloseMarked(islandGroup);
                 break;
+        }
+    }
+
+    /// <summary>Opens a group with the inline's tracked change when it has one; true when it opened one.</summary>
+    private bool OpenMarked(Inline inline)
+    {
+        if (inline.Revision is not { } revision)
+        {
+            return false;
+        }
+
+        Open();
+        RevisionWords(revision);
+        return true;
+    }
+
+    private void CloseMarked(bool open)
+    {
+        if (open)
+        {
+            Close();
         }
     }
 
@@ -195,6 +237,11 @@ internal sealed partial class RtfWriter
     /// <summary>A tracked insertion or deletion; a move is written as the insertion or deletion it is in RTF.</summary>
     private void RevisionWords(Revision revision)
     {
+        if (revision.Kind is RevisionKind.MoveFrom or RevisionKind.MoveTo)
+        {
+            warnings.Add(ConversionWarningKind.MovesSplit, "RTF has no tracked moves; moved text was written as a deletion and an insertion.");
+        }
+
         int author = Author(revision.Author);
         int? date = Dttm(revision.Date);
         if (revision.Removes)
@@ -230,6 +277,13 @@ internal sealed partial class RtfWriter
 
     private void StartField(FieldStart start)
     {
+        if (start.Revision is { } revision)
+        {
+            // The field in a group with its change, so its start, code, result and end all take it.
+            Open();
+            RevisionWords(revision);
+        }
+
         Open();
         Word("field");
         if (start.IsLocked)
@@ -243,7 +297,7 @@ internal sealed partial class RtfWriter
         }
 
         Destination("fldinst");
-        openFields.Add(new OpenField(paragraphSerial));
+        openFields.Add(new OpenField(paragraphSerial, start.Revision is not null));
     }
 
     /// <summary>
@@ -256,6 +310,10 @@ internal sealed partial class RtfWriter
         openFields.RemoveAt(openFields.Count - 1);
         Close();
         Close();
+        if (field.Tracked)
+        {
+            Close();
+        }
         if (field.Paragraph != paragraphSerial && current is not null)
         {
             ParagraphProperties(current, currentLevel);

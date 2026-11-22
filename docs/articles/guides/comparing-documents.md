@@ -119,11 +119,31 @@ DocumentComparison comparison = DocumentCompare.Run(Document.Load("v1.docx"), Do
 comparison.Document.SaveAsPdf("redline.pdf", new PdfExportOptions { RevisionView = RevisionView.Markup });
 ```
 
+RTF and ODT hold the result's tracked changes too, and Egap reads them back the same, so accepting all gives the
+revised document and rejecting all the original. Neither format has moves: a move is written as a deletion and an
+insertion, with the warning `MovesSplit`. Inserted and deleted table rows are kept: RTF marks the row's end as Word does,
+and ODT marks the row as LibreOffice does, which shows it as an inserted or deleted row. ODT records no old formatting,
+so format changes are written with their new formatting only, with a `ChangesAccepted` warning.
+
+```csharp
+using Egap.Documents;
+using Egap.Documents.Comparing;
+using Egap.Documents.Odf;
+
+DocumentComparison comparison = DocumentCompare.Run(Document.Load("v1.docx"), Document.Load("v2.docx"));
+using FileStream file = File.Create("redline.odt");
+foreach (ConversionWarning warning in OdtFormat.Save(comparison.Document, file))
+{
+    Console.WriteLine(warning);                                      // what ODT could not hold, such as moves
+}
+```
+
 ## Limits
 
 - Moves inside a paragraph are not found; a moved word is a deletion and an insertion.
 - Cells inserted into or deleted from a row are not tracked changes, as the model tracks whole rows only. A table with no
   row in common is replaced whole.
 - A resized picture is deleted and inserted, as Word does not track picture resizing.
+- In ODT, a table of contents with changes is written as its text, as an OpenDocument index holds no changes.
 - Content that cannot be a tracked change, such as a content control that could not be matched, is kept as in the base
   document; the warning `ContentNotTracked` counts these.

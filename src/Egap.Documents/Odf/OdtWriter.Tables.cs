@@ -1,3 +1,4 @@
+using System.Runtime.CompilerServices;
 using System.Xml.Linq;
 
 using static Egap.Documents.Odf.OdfNames;
@@ -93,6 +94,12 @@ internal sealed partial class OdtWriter
                 rowProps.Add(new XAttribute(FoNs + "keep-together", "always"));
             }
 
+            if (row.Revision is not null && allowChanges)
+            {
+                // LibreOffice's mark of a tracked row: its cells' tracked text changes insert or delete the whole row.
+                rowProps.Add(new XAttribute(LoExtNs + "text-changes-only", "false"));
+            }
+
             if (rowProps.HasAttributes)
             {
                 rowElement.Add(new XAttribute(TableNs + "style-name", Auto("table-row", null, null, rowProps)));
@@ -136,7 +143,16 @@ internal sealed partial class OdtWriter
                     cellElement.Add(new XAttribute(TableNs + "number-columns-spanned", Int(span)));
                 }
 
+                // ODF tracks no rows: a tracked row's cells are written as inserted or deleted text, which the reader takes
+                // back as the row's change.
+                Revision? outerRow = rowRevision;
+                rowRevision = row.Revision ?? outerRow;
                 WriteStory(cell.Blocks, cellElement);
+                rowRevision = outerRow;
+                if (row.Revision is { } tracked && allowChanges)
+                {
+                    MarkEmptyCell(cellElement, tracked);
+                }
                 rowElement.Add(cellElement);
                 for (int i = 1; i < span; i++)
                 {
@@ -173,6 +189,29 @@ internal sealed partial class OdtWriter
         }
 
         target.Container.Add(element);
+    }
+
+    /// <summary>An empty cell of a tracked row gets an empty change, so a reader still finds the row's change.</summary>
+    [MethodImpl(MethodImplOptions.NoInlining)]
+    private void MarkEmptyCell(XElement cell, Revision revision)
+    {
+        if (cell.Descendants().Any(e => e.Name.Namespace == TextNs && e.Name.LocalName is "change" or "change-start")
+            || cell.Element(TextNs + "p") is not { } paragraph)
+        {
+            return;
+        }
+
+        XElement change = NewRegion(revision);
+        string id = change.Parent!.Attribute(TextNs + "id")!.Value;
+        if (revision.Removes)
+        {
+            change.Add(new XElement(TextNs + "p"));
+            paragraph.AddFirst(new XElement(TextNs + "change", new XAttribute(TextNs + "change-id", id)));
+        }
+        else
+        {
+            paragraph.AddFirst(new XElement(TextNs + "change-start", new XAttribute(TextNs + "change-id", id)), new XElement(TextNs + "change-end", new XAttribute(TextNs + "change-id", id)));
+        }
     }
 
     /// <summary>A row's cells with the grid column each starts at and the columns it spans.</summary>
