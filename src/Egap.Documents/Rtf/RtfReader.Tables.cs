@@ -112,6 +112,11 @@ internal sealed partial class RtfReader
         }
 
         AddRow(table);
+        if (RevisionOf(state) is { } revision)
+        {
+            // The row's end mark inserted or deleted: a tracked row, as Word writes it.
+            table.Table.Rows[^1].Revision = revision;
+        }
     }
 
     /// <summary>Makes a row from the cells read and the row definition, merging cells across where the definition says so.</summary>

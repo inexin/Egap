@@ -39,8 +39,8 @@ The reader follows the OpenDocument 1.3 specification and what LibreOffice write
 - Fields as Word's fields: page numbers and counts, dates and times, document information, file names, chapters,
   sequences, references to bookmarks, sequences and notes, custom properties and mail merge columns. A table of contents
   or other index is a `TOC` field holding its entries. Fields Word has nothing like, such as variables, keep their text.
-- Tracked insertions and deletions with their authors and dates, a deletion that spans paragraphs too. Tracked
-  formatting changes are read as accepted, with a warning.
+- Tracked insertions and deletions with their authors and dates, a deletion that spans paragraphs too, and inserted and
+  deleted table rows as LibreOffice marks them. Tracked formatting changes are read as accepted, with a warning.
 - Hyphenation: ODF turns it on per style (`fo:hyphenate`), so a style that hyphenates turns
   `DocumentSettings.AutoHyphenation` on, with that style's line limit (`fo:hyphenation-ladder-count`), zone and capitals
   switch (LibreOffice's `loext:hyphenation-zone` and `loext:hyphenation-no-caps`). Paragraphs whose style does not
@@ -87,7 +87,9 @@ specification and writes what the reader reads:
   with columns is a `text:section`.
 - Tables with their columns, header rows and spans (as covered cells), nested tables, borders, shading and padding.
 - Footnotes and endnotes, comments with their ranges, bookmarks, links, and tracked insertions and deletions, a deletion
-  across paragraphs too.
+  across paragraphs too. Inserted and deleted table rows are marked as LibreOffice marks them. Moves are written as a
+  deletion and an insertion, with a `MovesSplit` warning, and tracked format changes as accepted, with a
+  `ChangesAccepted` warning.
 - Fields as OpenDocument's own where there is one: page numbers and counts, dates and times, document information,
   references to bookmarks and notes, sequences and the table of contents. Other fields keep their last result, with a
   warning.

@@ -1,3 +1,4 @@
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Xml.Linq;
 
@@ -15,6 +16,11 @@ internal sealed partial class OdtWriter
     private readonly HashSet<int> annotationsWritten = [];
     private readonly Dictionary<int, string> editableNames = [];
     private Dictionary<Footnote, string>? noteNames;
+    private Dictionary<Paragraph, Revision?>? shiftedMarks;
+    private HashSet<Paragraph>? joinedMarks;
+    private Revision? rowRevision;
+    private HashSet<Paragraph>? blockDeletions;
+    private bool inBlockDeletion;
     private HashSet<string>? noteNameSet;
     private int changeCount;
     private int noteCount;
@@ -218,8 +224,13 @@ internal sealed partial class OdtWriter
         /// <summary>A page or column break: the paragraph ends here and the rest starts a new one with the break before it.</summary>
         public void Break(string kind)
         {
-            if (deletion is not null)
+            if (deletion is { } deleted)
             {
+                // A deleted break: the deletion holds a paragraph end, and the paragraph after it starts with the break.
+                XElement paragraph = new(TextNs + "p", new XAttribute(TextNs + "style-name", owner.ParagraphAuto(Paragraph, null, null, kind, null, false)));
+                deleted.Change.Add(paragraph);
+                deletion = (deleted.Revision, deleted.Change, paragraph);
+                lastSpan = null;
                 return;
             }
 
@@ -323,9 +334,21 @@ internal sealed partial class OdtWriter
         }
     }
 
+    /// <summary>A tracked format change, written with its new formatting only (design Q7).</summary>
+    [MethodImpl(MethodImplOptions.NoInlining)]
+    private void FormatChangeDropped()
+    {
+        warnings.Add(ConversionWarningKind.ChangesAccepted, "Tracked format changes were written as accepted: OpenDocument records no old formatting to restore.");
+    }
+
     /// <summary>A changed region for a revision, listed in <c>text:tracked-changes</c>; returns its insertion or deletion element.</summary>
     private XElement NewRegion(Revision revision)
     {
+        if (revision.Kind is RevisionKind.MoveFrom or RevisionKind.MoveTo)
+        {
+            warnings.Add(ConversionWarningKind.MovesSplit, "OpenDocument has no tracked moves; moved text was written as a deletion and an insertion.");
+        }
+
         string id = "ct" + Int(++changeCount);
         XElement change = new(TextNs + (revision.Removes ? "deletion" : "insertion"),
             new XElement(OfficeNs + "change-info", new XElement(DcNs + "creator", Clean(revision.Author)),
@@ -412,7 +435,7 @@ internal sealed partial class OdtWriter
             return;
         }
 
-        Revision? revision = inline.Revision ?? inherited;
+        Revision? revision = inline.Revision ?? inherited ?? rowRevision;
         if (inline is not CompositeInline && !Track(revision, writer))
         {
             return;
@@ -421,6 +444,11 @@ internal sealed partial class OdtWriter
         switch (inline)
         {
             case Run run:
+                if (run.FormatRevision is not null)
+                {
+                    FormatChangeDropped();
+                }
+
                 writer.Text(run.Text, RunStyle(run));
                 break;
             case Tab:
@@ -520,6 +548,12 @@ internal sealed partial class OdtWriter
     /// <summary>Opens or closes tracked changes for an inline with <paramref name="revision"/>; false when it is left out.</summary>
     private bool Track(Revision? revision, ParagraphWriter writer)
     {
+        if (inBlockDeletion)
+        {
+            // The paragraph is in a deletion already.
+            return true;
+        }
+
         if (!allowChanges)
         {
             if (revision is not null)
@@ -564,6 +598,13 @@ internal sealed partial class OdtWriter
         string? href = link.Address is { Length: > 0 } address
             ? address + (link.Anchor is { Length: > 0 } a ? "#" + a : "")
             : link.Anchor is { Length: > 0 } anchor ? "#" + anchor : null;
+        if (revision is { Removes: false } || (revision is null && (story.Insertion is not null || writer.InDeletion)))
+        {
+            // The link starts inside or outside an insertion as the link itself is: a reader gives the link the change open
+            // where it starts.
+            Track(revision, writer);
+        }
+
         if (href is null || writer.InLink || writer.InDeletion)
         {
             foreach (Inline child in link.Inlines)

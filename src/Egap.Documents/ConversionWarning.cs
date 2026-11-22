@@ -44,6 +44,9 @@ public enum ConversionWarningKind
 
     /// <summary>Audio, video, media overlays and scripts, which a document holds none of.</summary>
     MediaDropped,
+
+    /// <summary>Tracked moves, written as a deletion at the source and an insertion at the destination.</summary>
+    MovesSplit,
 }
 
 /// <summary>One kind of thing a writer left out, with how many times it happened.</summary>

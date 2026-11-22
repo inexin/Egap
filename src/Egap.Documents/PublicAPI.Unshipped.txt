@@ -644,6 +644,7 @@ Egap.Documents.Comparing.DocumentComparison.Warnings.get -> System.Collections.G
 Egap.Documents.Comparing.ExistingRevisionHandling
 Egap.Documents.Comparing.ExistingRevisionHandling.Accept = 0 -> Egap.Documents.Comparing.ExistingRevisionHandling
 Egap.Documents.Comparing.ExistingRevisionHandling.Throw = 1 -> Egap.Documents.Comparing.ExistingRevisionHandling
+Egap.Documents.ConversionWarningKind.MovesSplit = 14 -> Egap.Documents.ConversionWarningKind
 Egap.Documents.Document.Protection.get -> Egap.Documents.DocumentProtection!
 Egap.Documents.Document.SourceFormat.get -> Egap.Documents.DocumentFormatKind
 Egap.Documents.DocumentBuilder.EndEditableRange(Egap.Documents.EditableRangeStart! start) -> Egap.Documents.EditableRangeEnd!

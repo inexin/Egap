@@ -93,6 +93,24 @@ follows with the rest of Egap. Install it with `dotnet tool install -g Egap.Cli 
 - Text that differs from the text before it in the line only in colour, underline, strike-through or shading is drawn in
   its own style; before, it took the style of the text it shared a shaped run with, so a red word in a black line printed
   black.
+- A comparison result saves to RTF and ODT with its tracked changes, and reads back to the same changes: accepting all
+  of them gives the revised document and rejecting all gives the original, as with DOCX.
+  - Neither format has tracked moves, so RTF and ODT write a move as a deletion and an insertion, with the new warning
+    `ConversionWarningKind.MovesSplit`.
+  - ODT writes tracked format changes with their new formatting only, as before, and now says so with a
+    `ChangesAccepted` warning: OpenDocument records no old formatting to restore.
+  - Inserted and deleted table rows: RTF marks the row's end, as Word does; ODT marks the row as LibreOffice does
+    (`loext:text-changes-only="false"`) and tracks its cells' text. Both readers take these back as row changes.
+    LibreOffice shows such an ODT row as an inserted or deleted row.
+  - ODT now holds a change to the last paragraph mark of a story, a deleted paragraph before a table, and a deleted page
+    or column break; before, these were left out, so rejecting or accepting left an extra or missing paragraph.
+  - RTF writes the change of a field, hyperlink, shape or text box around the whole of it, and a tracked paragraph
+    mark's change in a group with the mark. Before, a deleted hyperlink stayed when its text was rejected, and
+    LibreOffice took the paragraphs after a deleted paragraph mark as deleted too.
+  - ODT writes a table of contents that has tracked changes as its text, with a `FieldsFlattened` warning, as an
+    OpenDocument index holds no changes.
+- Rejecting an inserted last paragraph that holds only bookmarks or range ends besides its text now removes it, and
+  moves the bookmarks to the paragraph before; before, the paragraph stayed.
 
 ## Egap.Documents 2.3.0-preview.1 (2026-11-13)
 
