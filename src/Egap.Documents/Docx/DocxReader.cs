@@ -779,6 +779,7 @@ internal sealed partial class DocxReader
                     if (element.Element(Ns.W + "sdtContent") is { } content)
                     {
                         ReadInlines(content, control.Inlines, state);
+                        LiftRevision(control);
                     }
 
                     break;
@@ -873,6 +874,34 @@ internal sealed partial class DocxReader
         link.Tooltip = element.W("tooltip");
         link.Target = element.W("tgtFrame");
         ReadInlines(element, link.Inlines, state with { InHyperlink = true });
+        LiftRevision(link);
+    }
+
+    /// <summary>
+    /// A hyperlink or content control whose whole content is in one tracked change (<c>w:hyperlink</c> holding <c>w:del</c>,
+    /// as Word and Egap write a deleted hyperlink, since a tracked change holds runs only) gets that change itself, so
+    /// accepting or rejecting it removes the hyperlink, not only its text.
+    /// </summary>
+    private static void LiftRevision(CompositeInline composite)
+    {
+        if (composite.Revision is not null || composite.Inlines.Count == 0 || composite.Inlines[0].Revision is not { } revision)
+        {
+            return;
+        }
+
+        foreach (Inline inline in composite.Inlines)
+        {
+            if (!ReferenceEquals(inline.Revision, revision))
+            {
+                return;
+            }
+        }
+
+        composite.Revision = revision;
+        foreach (Inline inline in composite.Inlines)
+        {
+            inline.Revision = null;
+        }
     }
 
     private void ReadSimpleField(XElement element, NodeCollection<Inline> inlines, InlineState state)

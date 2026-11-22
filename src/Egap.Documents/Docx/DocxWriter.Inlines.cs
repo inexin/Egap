@@ -13,21 +13,29 @@ internal sealed partial class DocxWriter
     /// Writes <paramref name="inlines"/> into <paramref name="parent"/>, wrapping runs of inlines that share a tracked change
     /// in one w:ins or w:del. Field code runs (between a field start and its separator) are written as instrText.
     /// </summary>
+    /// <remarks>
+    /// A tracked change can only hold runs (ECMA-376 Part 1, 17.13.5.14 and 17.13.5.18), so a hyperlink or content control
+    /// with one is written outside it, and its tracked change goes on the inlines inside: <c>w:hyperlink</c> holding
+    /// <c>w:del</c> holding runs of <c>w:delText</c>, as Word writes it. A deletion wrapped round the hyperlink, with
+    /// <c>w:t</c> inside, makes Word call the file corrupt.
+    /// </remarks>
     private bool WriteInlines(IEnumerable<Inline> inlines, XElement parent, bool fieldCode)
     {
         Revision? open = null;
         XElement target = parent;
         foreach (Inline inline in inlines)
         {
-            if (!ReferenceEquals(inline.Revision, open))
+            Revision? revision = inline.Revision ?? containerRevision;
+            Revision? wrap = inline is CompositeInline ? null : revision;
+            if (revision is { MoveName: not null })
             {
-                open = inline.Revision;
-                target = parent;
-                if (open is { MoveName: not null })
-                {
-                    StartMoveRange(open, parent);
-                }
+                StartMoveRange(revision, parent);
+            }
 
+            if (!ReferenceEquals(wrap, open))
+            {
+                open = wrap;
+                target = parent;
                 if (open is not null && RevisionElement(open, mark: false) is { } wrapper)
                 {
                     parent.Add(wrapper);
@@ -35,8 +43,19 @@ internal sealed partial class DocxWriter
                 }
             }
 
-            fieldCode = WriteInline(inline, target, fieldCode);
-            if (moveRanges is not null && open is not null && EndMoveRange(open, inline, parent))
+            if (inline is CompositeInline && revision is not null)
+            {
+                Revision? outer = containerRevision;
+                containerRevision = revision;
+                fieldCode = WriteInline(inline, target, fieldCode);
+                containerRevision = outer;
+            }
+            else
+            {
+                fieldCode = WriteInline(inline, target, fieldCode);
+            }
+
+            if (moveRanges is not null && revision is not null && EndMoveRange(revision, inline, parent))
             {
                 open = null;
                 target = parent;
@@ -112,7 +131,7 @@ internal sealed partial class DocxWriter
         }
 
         // Moved-from text stays w:t inside w:moveFrom; only a deletion uses w:delText.
-        bool deleted = inline.Revision?.Kind == RevisionKind.Deletion;
+        bool deleted = (inline.Revision ?? containerRevision)?.Kind == RevisionKind.Deletion;
         switch (inline)
         {
             case Run run:
@@ -193,7 +212,7 @@ internal sealed partial class DocxWriter
                 }
 
             case Footnote note:
-                WriteNoteReference(note, kept, target);
+                WriteNoteReference(note, kept, target, deleted);
                 break;
             case Comment comment:
                 target.Add(RunWith(kept, new XElement(Ns.W + "commentReference", new XAttribute(Ns.W + "id", comment.Id))));
@@ -205,7 +224,7 @@ internal sealed partial class DocxWriter
                 target.Add(RunWith(kept, WriteShape(shape, kept)));
                 break;
             case Island island:
-                WriteIsland(island, kept, target);
+                WriteIsland(island, kept, target, deleted);
                 break;
         }
 
@@ -454,7 +473,7 @@ internal sealed partial class DocxWriter
         return new XElement(Ns.W + "sdtPr", children);
     }
 
-    private void WriteNoteReference(Footnote note, DocxExtension? kept, XElement target)
+    private void WriteNoteReference(Footnote note, DocxExtension? kept, XElement target, bool deleted)
     {
         bool endnote = note.Kind == NoteKind.Endnote;
         XElement reference = new(Ns.W + (endnote ? "endnoteReference" : "footnoteReference"), new XAttribute(Ns.W + "id", noteIds[note]));
@@ -466,13 +485,14 @@ internal sealed partial class DocxWriter
         if (note.CustomMark is { } mark)
         {
             reference.SetAttributeValue(Ns.W + "customMarkFollows", "1");
-            run.Add(new XElement(Ns.W + "t", mark));
+            // Deleted text is w:delText, also a note's own mark (ECMA-376 Part 1, 17.3.3.7).
+            run.Add(new XElement(Ns.W + (deleted ? "delText" : "t"), mark));
         }
 
         target.Add(run);
     }
 
-    private void WriteIsland(Island island, DocxExtension? kept, XElement target)
+    private void WriteIsland(Island island, DocxExtension? kept, XElement target, bool deleted)
     {
         // A copy can share its part only while nobody changed it, and only with an island of this file.
         if (island.NewChart
@@ -486,7 +506,7 @@ internal sealed partial class DocxWriter
         {
             if (island.Text.Length > 0)
             {
-                target.Add(new XElement(Ns.W + "r", new XElement(Ns.W + "t", Text(island.Text))));
+                target.Add(new XElement(Ns.W + "r", new XElement(Ns.W + (deleted ? "delText" : "t"), Text(island.Text))));
             }
 
             return;
@@ -496,7 +516,9 @@ internal sealed partial class DocxWriter
 
         // An island read from a markup compatibility choice goes back with every branch.
         XElement content = kept?.Original is { } original && MarkupCompatibility.IsAlternateContent(original) ? new XElement(original) : markup;
-        content = Rebase(content, kept?.PartName, copy: false);
+        content = kept is null && island.Extensions.Get<DocxExtension>(DocxExtension.Format) is { Source: { } foreign } extension && foreign != data
+            ? RebaseForeign(content, foreign, extension.PartName)
+            : Rebase(content, kept?.PartName, copy: false);
         target.Add(runLevel ? RunWith(kept, content) : content);
     }
 
