@@ -791,6 +791,18 @@ internal sealed partial class OdtWriter
             }
 
             writer.Add(style is null ? element : new XElement(TextNs + "span", new XAttribute(TextNs + "style-name", style), element), content: true);
+            if (allowChanges && start.Revision is { } change && field.ResultNodes.Any() && field.ResultNodes.All(n => n is Inline { Revision: null }))
+            {
+                // Only the field's frame is tracked, around a result that is not (a field that became plain text, or text
+                // that became a field): ODF tracks no frame, so the field goes with the change and its result is written
+                // again as plain text with the opposite change.
+                Revision opposite = new(change.Removes ? RevisionKind.Insertion : RevisionKind.Deletion, change.Author, change.Date);
+                foreach (Inline result in field.ResultNodes.Cast<Inline>())
+                {
+                    WriteInline(result, writer, opposite);
+                }
+            }
+
             story.SkipUntil = field.End;
             return;
         }

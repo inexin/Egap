@@ -141,10 +141,25 @@ public sealed class TrackedChange
     /// Removes a paragraph's mark: its inlines move to the start of the next paragraph, which keeps its own formatting, as when
     /// a paragraph mark is deleted in Word. A paragraph with no next paragraph in its container (the last one, or one before a
     /// table) stays, unless it is empty and not alone in its container: then it goes. Bookmarks and range ends do not count
-    /// as content; they move to the end of the paragraph before, or the paragraph stays for them when there is none.
+    /// as content; they move to the end of the paragraph before, or the paragraph stays for them when there is none. A mark
+    /// that ends a section takes the section break with it: the section's content joins the next section.
     /// </summary>
     private static void JoinWithNext(Paragraph paragraph)
     {
+        if (paragraph.NextSibling is null && paragraph.Parent is Body { Section: { NextSibling: Section following } section } body)
+        {
+            // The mark ends a section: its break goes with it, and the section's content joins the next section, which keeps
+            // its own page setup and headers, as when a section break is deleted in Word.
+            List<Block> blocks = [.. body.Blocks];
+            body.Blocks.Clear();
+            for (int i = 0; i < blocks.Count; i++)
+            {
+                following.Body.Blocks.Insert(i, blocks[i]);
+            }
+
+            section.Remove();
+        }
+
         if (paragraph.NextSibling is not Paragraph next)
         {
             if (paragraph.NextSibling is null && paragraph.PreviousSibling is null)

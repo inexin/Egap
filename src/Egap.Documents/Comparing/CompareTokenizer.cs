@@ -151,8 +151,20 @@ internal sealed class ParagraphTokens
             if (atomAt[start] >= 0)
             {
                 starts.Add(start);
-                ids.Add(table.Atom(AtomKey(pieces[atomAt[start]], table.FieldCodes)));
-                words.Add(false);
+                ParagraphPiece atom = pieces[atomAt[start]];
+                if (table.AcrossFormats && ShownText(atom) is string shown && IsSingleWord(shown))
+                {
+                    // Across formats a field that shows one word, such as a page number in a table of contents, is that
+                    // word, as another format may keep it as plain text.
+                    ids.Add(table.Text(shown));
+                    words.Add(true);
+                }
+                else
+                {
+                    ids.Add(table.Atom(AtomKey(atom, table.FieldCodes)));
+                    words.Add(false);
+                }
+
                 start++;
                 continue;
             }
@@ -176,7 +188,7 @@ internal sealed class ParagraphTokens
             {
                 foreach (TextSegment segment in TextSegmenter.Words(stretch))
                 {
-                    AddText(stretch.Slice(segment.Start, segment.Length), start + segment.Start);
+                    AddWord(stretch.Slice(segment.Start, segment.Length), start + segment.Start);
                 }
             }
 
@@ -186,6 +198,24 @@ internal sealed class ParagraphTokens
         starts.Add(all.Length);
         int[] idArray = [.. ids];
         return new ParagraphTokens(paragraph, all, [.. pieces], idArray, [.. starts], [.. words], Hash(idArray));
+
+        // UAX #29 keeps a full stop between letters inside a word ("one.This", where a space is missing); Word reads two
+        // words and the stop, so the word is cut there.
+        void AddWord(ReadOnlySpan<char> token, int at)
+        {
+            int from = 0;
+            for (int k = 1; k + 1 < token.Length; k++)
+            {
+                if (token[k] == '.' && char.IsLetter(token[k - 1]) && char.IsLetter(token[k + 1]))
+                {
+                    AddText(token[from..k], at + from);
+                    AddText(token.Slice(k, 1), at + k);
+                    from = k + 1;
+                }
+            }
+
+            AddText(token[from..], at + from);
+        }
 
         void AddText(ReadOnlySpan<char> token, int at)
         {
@@ -240,6 +270,58 @@ internal sealed class ParagraphTokens
             {
                 return true;
             }
+        }
+
+        return false;
+    }
+
+    /// <summary>The text a whole field shows (its result, nested fields' codes left out); null for other atoms.</summary>
+    public static string? ShownText(ParagraphPiece atom)
+    {
+        if (atom.First is not FieldStart || atom.Count < 2 || InlinesOf(atom).Last() is not FieldEnd)
+        {
+            return null;
+        }
+
+        StringBuilder text = new();
+        List<bool> inResult = [];
+        foreach (Inline inline in InlinesOf(atom))
+        {
+            switch (inline)
+            {
+                case FieldStart:
+                    inResult.Add(false);
+                    break;
+                case FieldSeparator when inResult.Count > 0:
+                    inResult[^1] = true;
+                    break;
+                case FieldEnd when inResult.Count > 0:
+                    inResult.RemoveAt(inResult.Count - 1);
+                    break;
+                default:
+                    if (!inResult.Contains(false))
+                    {
+                        text.Append(inline.GetText());
+                    }
+
+                    break;
+            }
+        }
+
+        return text.ToString();
+    }
+
+    /// <summary>Whether <paramref name="text"/> is one word, as the tokenizer would cut it.</summary>
+    private static bool IsSingleWord(string text)
+    {
+        if (text.Length == 0 || !IsWord(text) || text.Contains('.', StringComparison.Ordinal))
+        {
+            return false;
+        }
+
+        foreach (TextSegment segment in TextSegmenter.Words(text))
+        {
+            return segment.Start == 0 && segment.Length == text.Length;
         }
 
         return false;
@@ -351,7 +433,7 @@ internal sealed class ParagraphTokens
 /// Token ids shared by the two documents of a comparison: equal text (after the comparison's case and white-space
 /// folding) or equal atoms get equal ids.
 /// </summary>
-internal sealed class TokenTable(bool characters, bool ignoreCase, bool ignoreWhitespace, bool fieldCodes = true)
+internal sealed class TokenTable(bool characters, bool ignoreCase, bool ignoreWhitespace, bool fieldCodes = true, bool acrossFormats = false)
 {
     private readonly Dictionary<string, int> ids = new(StringComparer.Ordinal);
 
@@ -360,6 +442,12 @@ internal sealed class TokenTable(bool characters, bool ignoreCase, bool ignoreWh
 
     /// <summary>Whether a field is compared by its code as well as its result.</summary>
     public bool FieldCodes => fieldCodes;
+
+    /// <summary>
+    /// Whether the documents come from different formats: a field that shows one word then equals that word as plain text, as
+    /// one format keeps as a field (a page number in a table of contents) what another keeps as text.
+    /// </summary>
+    public bool AcrossFormats => acrossFormats;
 
     /// <summary>The id of a text token.</summary>
     public int Text(ReadOnlySpan<char> token)
