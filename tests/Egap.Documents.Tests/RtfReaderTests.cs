@@ -345,10 +345,11 @@ public class RtfReaderTests
     {
         Document document = Read(@"{\*\bkmkstart here}Go {\field{\*\fldinst {HYPERLINK ""https://example.com/""}}{\fldrslt {\ul\cf2 there}}}{\*\bkmkend here} {\field\fldlock{\*\fldinst DATE}{\fldrslt today}}\par");
         Paragraph paragraph = Paragraphs(document)[0];
-        Field field = paragraph.Inlines.OfType<FieldStart>().First().GetField()!;
-        Assert.Contains("HYPERLINK", field.Code);
-        Assert.Equal("there", field.Result);
-        Assert.True(paragraph.Inlines.OfType<FieldStart>().Last().IsLocked);
+        // A HYPERLINK field is read as the hyperlink it stands for.
+        Hyperlink link = paragraph.Inlines.OfType<Hyperlink>().Single();
+        Assert.Equal("https://example.com/", link.Address);
+        Assert.Equal("there", link.GetText());
+        Assert.True(paragraph.Inlines.OfType<FieldStart>().Single().IsLocked);
         Assert.Equal("here", paragraph.Inlines.OfType<BookmarkStart>().Single().Name);
         Assert.Single(paragraph.Inlines.OfType<BookmarkEnd>());
     }

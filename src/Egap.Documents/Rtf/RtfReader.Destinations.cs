@@ -328,7 +328,73 @@ internal sealed partial class RtfReader
             fields.Pop();
         }
 
-        AddInline(new FieldEnd(document));
+        FieldEnd end = AddInline(new FieldEnd(document));
+        LinkOfField(start, end);
+    }
+
+    /// <summary>
+    /// Makes a <c>HYPERLINK</c> field a <see cref="Hyperlink"/>, as RTF has no hyperlink of its own and writes them as these
+    /// fields: so a hyperlink saved to RTF reads back as one, and compares equal to a DOCX, ODT or HTML hyperlink. Only a
+    /// field within one paragraph with no change of its own and a result of plain text is turned.
+    /// </summary>
+    private static void LinkOfField(FieldStart start, FieldEnd end)
+    {
+        if (start.Paragraph is not Paragraph paragraph || end.Paragraph != paragraph || start.Revision is not null || end.Revision is not null)
+        {
+            return;
+        }
+
+        NodeCollection<Inline> inlines = paragraph.Inlines;
+        int first = inlines.IndexOf(start), last = inlines.IndexOf(end), separator = -1;
+        System.Text.StringBuilder code = new();
+        for (int k = first + 1; k < last; k++)
+        {
+            Inline inline = inlines[k];
+            if (inline is FieldSeparator)
+            {
+                separator = k;
+                break;
+            }
+
+            if (inline is not Run { Revision: null } run)
+            {
+                return;
+            }
+
+            code.Append(run.Text);
+        }
+
+        if (separator < 0 || Enumerable.Range(separator + 1, last - separator - 1).Any(k => inlines[k] is not (Documents.Run or Tab or Break or BookmarkStart or BookmarkEnd)))
+        {
+            return;
+        }
+
+        FieldCode parsed = FieldCode.Parse(code.ToString());
+        string? address = parsed.Arguments.FirstOrDefault(), anchor = parsed.Switch("\\L");
+        if (parsed.Instruction != "HYPERLINK" || (string.IsNullOrEmpty(address) && string.IsNullOrEmpty(anchor)))
+        {
+            return;
+        }
+
+        Hyperlink link = new(paragraph.Document)
+        {
+            Address = string.IsNullOrEmpty(address) ? null : address,
+            Anchor = string.IsNullOrEmpty(anchor) ? null : anchor,
+            Tooltip = parsed.Switch("\\O") is { Length: > 0 } tooltip ? tooltip : null,
+            Target = parsed.Switch("\\T") is { Length: > 0 } target ? target : null,
+        };
+        List<Inline> result = [.. Enumerable.Range(separator + 1, last - separator - 1).Select(k => inlines[k])];
+        for (int k = last; k >= first; k--)
+        {
+            inlines.RemoveAt(k);
+        }
+
+        foreach (Inline inline in result)
+        {
+            link.Inlines.Add(inline);
+        }
+
+        inlines.Insert(first, link);
     }
 
     // ---- Notes, headers and footers, comments ----

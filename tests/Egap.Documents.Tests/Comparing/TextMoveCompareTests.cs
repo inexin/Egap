@@ -262,6 +262,28 @@ public sealed class TextMoveCompareTests
         }
     }
 
+    [Theory]
+    [InlineData(CompareBase.Revised)]
+    [InlineData(CompareBase.Original)]
+    public void AHyperlinkEqualsTheSameLinkReadFromRtf(CompareBase baseDocument)
+    {
+        Document withLink = DocumentCompareTests.Make("Write to ");
+        withLink.Sections[0].Body.Paragraphs.First().AddHyperlink("our office", "mailto:office@example.com");
+        Document withField = DocumentCompareTests.Make("Write to ");
+        withField.Sections[0].Body.Paragraphs.First().AddField("HYPERLINK \"mailto:office@example.com\" \\o \"Mail us\"", "our office");
+        Document original = Loaded(withLink, "docx");
+        Document revised = Loaded(withField, "rtf");
+
+        DocumentComparison comparison = RoundTrip.Check(original, revised, new DocumentCompareOptions { Base = baseDocument });
+
+        // RTF keeps links as HYPERLINK fields, which read back as hyperlinks: the same link, so nothing changes.
+        Assert.Empty(comparison.Changes);
+        foreach (string format in (string[])["docx", "rtf", "odt"])
+        {
+            WriterRoundTripTests.Check(original, revised, comparison.Document, format);
+        }
+    }
+
     [Fact]
     public void InTheSameFormatAFieldStillDiffersFromItsText()
     {

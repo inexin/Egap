@@ -329,8 +329,10 @@ public class RtfWriterTests
         List<Paragraph> paragraphs = [.. first.Sections[0].Body.Blocks.OfType<Paragraph>()];
         Field[] fields = [.. paragraphs[0].Inlines.OfType<FieldStart>().Select(s => s.GetField()!)];
         Assert.Equal(FieldKind.Page, fields[0].Kind);
-        Assert.Equal(" HYPERLINK \"https://example.com/a?b=\\\"c\\\"\" ", fields[1].Code);
-        Assert.Equal("the site", fields[1].Result);
+        // RTF writes a hyperlink as a HYPERLINK field and reads the field back as a hyperlink.
+        Hyperlink link = paragraphs[0].Inlines.OfType<Hyperlink>().Single();
+        Assert.Equal("https://example.com/a?b=\"c\"", link.Address);
+        Assert.Equal("the site", link.GetText());
         Footnote[] notes = [.. paragraphs[0].Inlines.OfType<Footnote>()];
         Assert.Equal([NoteKind.Footnote, NoteKind.Endnote, NoteKind.Footnote], notes.Select(n => n.Kind));
         Assert.Equal("*", notes[2].CustomMark);
