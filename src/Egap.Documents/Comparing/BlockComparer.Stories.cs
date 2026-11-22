@@ -10,23 +10,24 @@ internal sealed partial class BlockComparer
     private List<CommentRead>? commentsB;
 
     /// <summary>
-    /// Compares the headers and footers of the sections at the same place, each with the one of the same kind; one only in
-    /// one document is marked inserted or deleted whole.
+    /// Compares the headers and footers of the sections at the same place (or whose breaks pair, when the documents have
+    /// different sections), each with the one of the same kind; one only in one document is marked inserted or deleted whole.
     /// </summary>
     public void CompareHeadersFooters(Document a, Document b)
     {
-        int sections = Math.Min(a.Sections.Count, b.Sections.Count);
-        for (int k = 0; k < sections; k++)
+        List<(Section A, Section B, Section Target)> pairs = sectionPairs
+            ?? [.. Enumerable.Range(0, Math.Min(a.Sections.Count, b.Sections.Count)).Select(k => (a.Sections[k], b.Sections[k], result.Sections[k]))];
+        foreach ((Section sectionA, Section sectionB, Section sectionTarget) in pairs)
         {
             foreach (HeaderFooterKind kind in Enum.GetValues<HeaderFooterKind>())
             {
-                HeaderFooter? storyA = a.Sections[k].HeadersFooters[kind], storyB = b.Sections[k].HeadersFooters[kind];
+                HeaderFooter? storyA = sectionA.HeadersFooters[kind], storyB = sectionB.HeadersFooters[kind];
                 if (storyA is null && storyB is null)
                 {
                     continue;
                 }
 
-                HeaderFooter target = result.Sections[k].HeadersFooters.GetOrAdd(kind);
+                HeaderFooter target = sectionTarget.HeadersFooters.GetOrAdd(kind);
                 CompareContainer(storyA?.Blocks ?? (IEnumerable<Block>)[], storyB?.Blocks ?? (IEnumerable<Block>)[], target.Blocks);
             }
         }

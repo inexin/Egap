@@ -276,6 +276,19 @@ internal sealed partial class RtfWriter
             // (LibreOffice does) would take the next paragraphs as changed too.
             Open();
             RevisionWords(revision);
+            EndInheritedChange(revision);
+            Word(end);
+            Close();
+            output.AppendLine();
+            current = null;
+            return;
+        }
+
+        if (!marked && end is "par" or "cell" or "nestcell" && InheritsChange(null))
+        {
+            // A mark inside a tracked field whose result is not tracked: in a group that turns the field's change off.
+            Open();
+            EndInheritedChange(null);
             Word(end);
             Close();
             output.AppendLine();

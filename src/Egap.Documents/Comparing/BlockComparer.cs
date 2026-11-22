@@ -43,13 +43,13 @@ internal sealed partial class BlockComparer
     private bool limitReached;
     private int notTracked;
 
-    public BlockComparer(Document result, bool baseIsRevised, DocumentCompareOptions options, bool formatting, List<DocumentCompareWarning> warnings)
+    public BlockComparer(Document result, bool baseIsRevised, DocumentCompareOptions options, bool formatting, bool acrossFormats, List<DocumentCompareWarning> warnings)
     {
         this.formatting = formatting;
         this.result = result;
         this.baseIsRevised = baseIsRevised;
         this.warnings = warnings;
-        table = new TokenTable(options.Granularity == CompareGranularity.Character, !options.CaseChanges, !options.Whitespace, options.Fields);
+        table = new TokenTable(options.Granularity == CompareGranularity.Character, !options.CaseChanges, !options.Whitespace, options.Fields, acrossFormats);
         this.options = options;
         placed = options.Comments && !baseIsRevised ? [] : null;
         insertion = new Revision(RevisionKind.Insertion, options.Author, options.Date);
@@ -92,56 +92,8 @@ internal sealed partial class BlockComparer
         }
 
         warnings.Add(new DocumentCompareWarning(
-            DocumentCompareWarningKind.SectionsDiffer, $"The original has {a.Sections.Count} sections and the revised document {b.Sections.Count}; the result keeps the base document's."));
-        List<(Block Block, Body Body)> blocksA = Flatten(a), blocksB = Flatten(b);
-
-        List<(Block Block, Body Body)> baseBlocks = baseIsRevised ? blocksB : blocksA;
-        Dictionary<Block, Body> bodyOf = [];
-        foreach ((Block block, Body body) in baseBlocks)
-        {
-            bodyOf[block] = body;
-        }
-
-        Dictionary<Body, List<Block>> lists = [];
-        foreach (Section section in result.Sections)
-        {
-            lists[section.Body] = [];
-        }
-
-        // Blocks only in the other document go with the next base block, so a stretch replaced at the start of a section stays
-        // in that section; blocks after the last base block go with it.
-        Body? current = null;
-        List<Block> waiting = [];
-        CompareBlocks([.. blocksA.Select(x => x.Block)], [.. blocksB.Select(x => x.Block)], (block, isBase) =>
-        {
-            if (!isBase)
-            {
-                waiting.Add(block);
-                return;
-            }
-
-            current = bodyOf[block];
-            lists[current].AddRange(waiting);
-            waiting.Clear();
-            lists[current].Add(block);
-        });
-
-        if (waiting.Count > 0)
-        {
-            if (current is null && result.Sections.Count == 0)
-            {
-                current = result.AddSection().Body;
-                lists[current] = [];
-            }
-
-            current ??= result.Sections[^1].Body;
-            lists[current].AddRange(waiting);
-        }
-
-        foreach ((Body body, List<Block> list) in lists)
-        {
-            Replace(body.Blocks, list);
-        }
+            DocumentCompareWarningKind.SectionsDiffer, $"The original has {a.Sections.Count} sections and the revised document {b.Sections.Count}; the result keeps the base document's, and tracks the other's breaks that end text only there."));
+        CompareSectionsDiffer(a, b);
     }
 
     /// <summary>The comparison's result.</summary>
@@ -150,6 +102,12 @@ internal sealed partial class BlockComparer
         foreach (Action mark in marks)
         {
             mark();
+        }
+
+        KeepSectionBreaks();
+        if (options.Moves)
+        {
+            FindTextMoves();
         }
 
         PlaceComments();
@@ -173,7 +131,7 @@ internal sealed partial class BlockComparer
         }
 
         List<DocumentChange> list = [];
-        foreach (PendingChange change in changes)
+        foreach (PendingChange change in InDocumentOrder())
         {
             Story story = change.Anchor as Story ?? change.Anchor.GetAncestor<Story>() ?? result.Sections[0].Body;
             list.Add(new DocumentChange(change.Kind, change.OldText, change.NewText, story, change.Tracked));
@@ -188,6 +146,41 @@ internal sealed partial class BlockComparer
             ParagraphsTouched = paragraphsTouched,
         };
         return new DocumentComparison(result, list, statistics, warnings);
+    }
+
+    /// <summary>
+    /// The changes to list: those moved text left empty go, and when moved text added changes at the end, all are put in
+    /// document order by their first tracked change's paragraph.
+    /// </summary>
+    private IEnumerable<PendingChange> InDocumentOrder()
+    {
+        IEnumerable<PendingChange> kept = changes.Where((_, i) => !removedChanges.Contains(i));
+        if (!sortChanges)
+        {
+            return kept;
+        }
+
+        Dictionary<Paragraph, int> order = [];
+        foreach (Paragraph paragraph in result.Descendants<Paragraph>())
+        {
+            order[paragraph] = order.Count;
+        }
+
+        List<(PendingChange Change, int Key)> keyed = [];
+        int last = -1;
+        foreach (PendingChange change in kept)
+        {
+            Node? node = change.Tracked.Count > 0 ? change.Tracked[0].Node : change.Anchor;
+            Paragraph? paragraph = node as Paragraph ?? node.GetAncestor<Paragraph>();
+            if (paragraph is not null && order.TryGetValue(paragraph, out int key))
+            {
+                last = key;
+            }
+
+            keyed.Add((change, last));
+        }
+
+        return keyed.OrderBy(x => x.Key).Select(x => x.Change);
     }
 
     private static List<(Block, Body)> Flatten(Document document)
@@ -239,11 +232,13 @@ internal sealed partial class BlockComparer
             {
                 for (int k = 0; k < step.Count; k++)
                 {
-                    if (formatting)
+                    if (formatting || table.AcrossFormats)
                     {
+                        // Across formats too: a field on one side may equal plain text on the other, and its frame is tracked.
                         CompareFormatting(a[i + k], b[j + k]);
                     }
 
+                    Placed(baseIsRevised ? a[i + k] : b[j + k], baseIsRevised ? b[j + k] : a[i + k]);
                     emit(baseIsRevised ? b[j + k] : a[i + k], true);
                 }
 
@@ -525,6 +520,13 @@ internal sealed partial class BlockComparer
         }
 
         Block node = isBase ? block : Import(block);
+        if (!isBase)
+        {
+            Placed(block, node);
+        }
+
+        wholes?.Add(node);
+
         List<TrackedChange> tracked = [];
         int words = 0, paragraphs = 0;
         if (node is Table tableNode)
@@ -542,6 +544,10 @@ internal sealed partial class BlockComparer
             foreach (Inline inline in paragraph.Inlines)
             {
                 tracked.Add(new TrackedChange(inline, TrackedChangeTarget.Node));
+                if (node is Paragraph && inline is Footnote note && options.Notes)
+                {
+                    tracked.AddRange(NoteInlines(note).Select(x => new TrackedChange(x, TrackedChangeTarget.Node)));
+                }
             }
 
             if (node is Paragraph)
@@ -611,6 +617,7 @@ internal sealed partial class BlockComparer
     private void Paired(Block a, Block b, Action<Block, bool> emit)
     {
         Block node = baseIsRevised ? b : a;
+        Placed(baseIsRevised ? a : b, node);
         switch (a, b)
         {
             case (Table ta, Table tb) when !CompareTable(ta, tb, (Table)node):
@@ -862,7 +869,29 @@ internal sealed partial class BlockComparer
             DiffStep step = script[s];
             if (step.Operation == DiffOperation.Equal)
             {
-                touched |= EmitEqual(a, b, i, j, step.Count, baseIsRevised ? fromB : fromA, output);
+                int run = 0;
+                for (int k = 0; k <= step.Count; k++)
+                {
+                    bool? fieldInA = k < step.Count ? FieldAgainstText(a, i + k, b, j + k) : null;
+                    if (k < step.Count && fieldInA is null)
+                    {
+                        continue;
+                    }
+
+                    if (k > run)
+                    {
+                        touched |= EmitEqual(a, b, i + run, j + run, k - run, baseIsRevised ? fromB : fromA, output);
+                    }
+
+                    if (fieldInA is bool inA)
+                    {
+                        EmitFieldFrame(a, i + k, b, j + k, inA, baseIsRevised ? fromB : fromA, output);
+                        touched = true;
+                    }
+
+                    run = k + 1;
+                }
+
                 i += step.Count;
                 j += step.Count;
                 continue;
@@ -903,6 +932,100 @@ internal sealed partial class BlockComparer
         }
 
         Replace(baseTokens.Paragraph.Inlines, output);
+    }
+
+    /// <summary>
+    /// Whether token <paramref name="i"/> of <paramref name="a"/> and <paramref name="j"/> of <paramref name="b"/>, equal, are
+    /// a field on one side and plain text on the other (across formats): true when the field is the original's, false when it
+    /// is the revised document's, null otherwise.
+    /// </summary>
+    private bool? FieldAgainstText(ParagraphTokens a, int i, ParagraphTokens b, int j)
+    {
+        if (!table.AcrossFormats)
+        {
+            return null;
+        }
+
+        bool fieldA = FieldAt(a, i) is not null, fieldB = FieldAt(b, j) is not null;
+        return fieldA == fieldB ? null : fieldA;
+    }
+
+    /// <summary>The whole field that token <paramref name="token"/> stands for, if it is one.</summary>
+    private static ParagraphPiece? FieldAt(ParagraphTokens tokens, int token)
+    {
+        int at = tokens.Starts[token];
+        if (tokens.Text[at] != ParagraphTokens.AtomChar)
+        {
+            return null;
+        }
+
+        foreach (ParagraphPiece piece in tokens.Pieces)
+        {
+            if (piece.Kind == PieceKind.Atom && piece.Start == at)
+            {
+                return piece.First is FieldStart ? piece : null;
+            }
+        }
+
+        return null;
+    }
+
+    /// <summary>
+    /// A field on one side whose shown word is plain text on the other: the shown word stays, and the field's frame (its
+    /// start, code, separator and end) is tracked as deleted (the original's field) or inserted (the revised document's), so
+    /// rejecting or accepting brings the field back as it was.
+    /// </summary>
+    private void EmitFieldFrame(ParagraphTokens a, int i, ParagraphTokens b, int j, bool fieldInA, Emitter emitter, List<Inline> output)
+    {
+        Revision revision = fieldInA ? deletion : insertion;
+        bool fieldInBase = fieldInA != baseIsRevised;
+        ParagraphTokens fieldSide = fieldInA ? a : b, baseSide = baseIsRevised ? b : a;
+        int fieldToken = fieldInA ? i : j, baseToken = baseIsRevised ? j : i;
+        ParagraphPiece field = FieldAt(fieldSide, fieldToken)!.Value;
+        List<TrackedChange> tracked = [];
+        List<Inline> inlines = [.. ParagraphTokens.InlinesOf(field)];
+        int resultStart = 0;
+        for (int depth = 0; resultStart < inlines.Count; resultStart++)
+        {
+            depth += inlines[resultStart] switch { FieldStart => 1, FieldEnd => -1, _ => 0 };
+            if (inlines[resultStart] is FieldSeparator && depth == 1)
+            {
+                resultStart++;
+                break;
+            }
+        }
+
+        if (fieldInBase)
+        {
+            emitter.Emit(baseSide.Starts[baseToken], baseSide.Starts[baseToken + 1], null, output, null);
+            for (int k = 0; k < inlines.Count; k++)
+            {
+                if (k < resultStart || k == inlines.Count - 1)
+                {
+                    inlines[k].Revision = revision;
+                    tracked.Add(new TrackedChange(inlines[k], TrackedChangeTarget.Node));
+                }
+            }
+        }
+        else
+        {
+            AddFrame(inlines.Take(resultStart));
+            emitter.Emit(baseSide.Starts[baseToken], baseSide.Starts[baseToken + 1], null, output, null);
+            AddFrame([inlines[^1]]);
+        }
+
+        changes.Add(new PendingChange(CompareChangeKind.Replaced, a.TextOf(i, i + 1), b.TextOf(j, j + 1), baseSide.Paragraph, tracked));
+
+        void AddFrame(IEnumerable<Inline> frame)
+        {
+            foreach (Inline inline in frame.Where(x => !IsMarker(x)))
+            {
+                Inline copy = Import(inline);
+                copy.Revision = revision;
+                tracked.Add(new TrackedChange(copy, TrackedChangeTarget.Node));
+                output.Add(copy);
+            }
+        }
     }
 
     // ---- Formatting ----
@@ -1020,6 +1143,15 @@ internal sealed partial class BlockComparer
         }
 
         return changes.Count > before;
+    }
+
+    /// <summary>
+    /// The text of a note inserted or deleted with its reference: the inlines of its paragraphs, tracked with the reference
+    /// as Word tracks them, so the note's words count as changed and rejecting or accepting the reference settles them too.
+    /// </summary>
+    private static List<Inline> NoteInlines(Footnote note)
+    {
+        return [.. note.Story.Descendants<Paragraph>().SelectMany(p => p.Inlines).Where(i => i.Revision is null && !IsMarker(i))];
     }
 
     /// <summary>The single inline of the atom at <paramref name="start"/> in a paragraph's text, if it is one inline.</summary>
@@ -1426,12 +1558,20 @@ internal sealed partial class BlockComparer
             }
         }
 
-        private static void Add(Inline inline, Revision? revision, List<Inline> output, List<TrackedChange>? tracked)
+        private void Add(Inline inline, Revision? revision, List<Inline> output, List<TrackedChange>? tracked)
         {
             if (revision is not null)
             {
                 inline.Revision = revision;
                 tracked?.Add(new TrackedChange(inline, TrackedChangeTarget.Node));
+                if (inline is Footnote note && owner.options.Notes)
+                {
+                    foreach (Inline inner in NoteInlines(note))
+                    {
+                        inner.Revision = revision;
+                        tracked?.Add(new TrackedChange(inner, TrackedChangeTarget.Node));
+                    }
+                }
             }
 
             output.Add(inline);

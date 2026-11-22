@@ -18,30 +18,42 @@ comparison.Document.Save("contract-redline.docx");                   // open it 
 ```
 
 Neither input is changed. The result is a copy of the revised document (or of the original, with
-`Base = CompareBase.Original`), so it keeps that document's styles, sections and settings.
+`Base = CompareBase.Original`), so it keeps that document's styles, sections and settings. When the two documents have
+different sections, the warning `SectionsDiffer` says so, and the other document's section breaks are tracked too (see
+below).
 
 ## What is compared
 
 - **Text.** Paragraphs are lined up first. A paragraph that is only in one document is inserted or deleted whole.
   Paragraphs that share at least half their words are compared word by word. A paragraph split into two to four
   paragraphs, or paragraphs joined into one, is compared as one text: only the paragraph marks between the pieces are
-  inserted or deleted, as Word marks them. Word boundaries follow Unicode UAX #29.
+  inserted or deleted, as Word marks them. Word boundaries follow Unicode UAX #29, except that a full stop between
+  two letters with no space after it ends a word (`one.This` is two words and the stop), as Word reads it.
   With `Granularity = CompareGranularity.Character`, only the letters that changed are marked. `CaseChanges = false`
   ignores changes of case only, and `Whitespace = false` ignores changes of spacing only.
 - **Tables.** Rows are matched by their content. A row that is only in one document is a tracked row insertion or
   deletion. Matched rows have their cells compared word by word, and nested tables in turn.
 - **Formatting.** The same text in another look (bold, size, font or colour), or a paragraph with another style or
   alignment, becomes a format change. A format change keeps the old formatting, so rejecting it puts the old look back.
-- **Moves.** A run of paragraphs deleted in one place and inserted again elsewhere becomes a move. The run needs at least
-  six words, so a short line that repeats is not taken for a move. The source and the destination share a name
-  (`Revision.MoveName`), and Word shows them as one move. As in Word, moves inside a paragraph are not looked for.
+- **Moves.** A run of paragraphs deleted in one place and inserted again elsewhere becomes a move, and so does a
+  sentence or other run of words deleted and inserted again, the same, inside a paragraph or in another one. The run
+  needs at least six words, so a short line that repeats is not taken for a move. The source and the destination share a
+  name (`Revision.MoveName`), and Word shows them as one move.
+- **Section breaks.** When both documents have as many sections, each section is compared with the one at the same
+  place. Otherwise the text is compared as one run, and a break only in one document is tracked as a paragraph mark, as
+  Word does: rejecting or accepting it joins its section to the next one, which keeps its own page setup and headers. A
+  break that follows a paragraph in both documents goes on an empty paragraph after it, and the two marks are tracked so
+  that either way the paragraph is as it was.
 - **Headers and footers.** Each one is compared with the one of the same kind (first, even or default) in the section at
   the same place.
 - **Notes and text boxes.** A footnote or endnote reference, and a shape, is one token in its paragraph. When both
-  documents have it, the note's or text box's text is compared as a story of its own. A shape whose kind or size
-  changed is deleted and inserted.
+  documents have it, the note's or text box's text is compared as a story of its own. A note inserted or deleted with
+  its reference has its text marked inserted or deleted too, as Word marks it. A shape whose kind or size changed is
+  deleted and inserted.
 - **Fields and pictures.** Each is one token. A field is compared by its code and result, or by its result only with
-  `Fields = false`. A picture is compared by its image and size, so a resized picture is deleted and inserted.
+  `Fields = false`. A picture is compared by its image and size, so a resized picture is deleted and inserted. When the
+  inputs come from different formats, a field that shows one word, such as a page number in a table of contents, equals
+  that word as plain text: the word stays, and only the field's start, code and end are tracked.
 - **Comments.** Comments are never tracked changes: the result has the revised document's comments, at the same text.
 
 Each of these has a switch on `DocumentCompareOptions`: `Formatting`, `Moves`, `HeadersFooters`, `Notes`, `TextBoxes`,
@@ -152,12 +164,15 @@ egap compare contract-v1.docx contract-v2.docx --redline contract-redline.pdf --
 
 ## Limits
 
-- Moves inside a paragraph are not found; a moved word is a deletion and an insertion.
+- A moved run of fewer than six words is a deletion and an insertion. Moved words that also changed are not a move.
 - A paragraph split into more than four pieces, or with a table between its pieces, is not taken as a split: one piece
   is compared with it and the others are inserted whole (and the same for a join).
 - Cells inserted into or deleted from a row are not tracked changes, as the model tracks whole rows only. A table with no
   row in common is replaced whole.
 - A resized picture is deleted and inserted, as Word does not track picture resizing.
 - In ODT, a table of contents with changes is written as its text, as an OpenDocument index holds no changes.
+- ODT has no tracked section breaks: a section break only in one document is kept in both views of an ODT file.
+- A section break only in one document after a table, or after a paragraph whose mark is already a change, is tracked
+  on an empty paragraph of its own, which stays when the break is rejected.
 - Content that cannot be a tracked change, such as a content control that could not be matched, is kept as in the base
   document; the warning `ContentNotTracked` counts these.

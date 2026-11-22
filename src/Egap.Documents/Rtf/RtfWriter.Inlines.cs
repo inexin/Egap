@@ -23,12 +23,15 @@ internal sealed partial class RtfWriter
     private bool noteMarkPending;
 
     /// <summary>A field being written: the paragraph it opened in and whether its result has begun.</summary>
-    private sealed class OpenField(int paragraph, bool tracked)
+    private sealed class OpenField(int paragraph, Revision? revision)
     {
         public int Paragraph { get; } = paragraph;
 
+        /// <summary>The field's tracked change, which a group of its own holds; null when it has none.</summary>
+        public Revision? Revision { get; } = revision;
+
         /// <summary>The field is in a group of its own that holds its tracked change.</summary>
-        public bool Tracked { get; } = tracked;
+        public bool Tracked => Revision is not null;
 
         public bool Separated { get; set; }
     }
@@ -162,12 +165,75 @@ internal sealed partial class RtfWriter
     {
         if (inline.Revision is not { } revision)
         {
-            return false;
+            if (!InheritsChange(Effective(inline)))
+            {
+                return false;
+            }
+
+            Open();
+            EndInheritedChange(Effective(inline));
+            return true;
         }
 
         Open();
         RevisionWords(revision);
+        EndInheritedChange(revision);
         return true;
+    }
+
+    /// <summary>An inline's tracked change: its own, or that of the link or other inline it is in.</summary>
+    private static Revision? Effective(Inline inline)
+    {
+        for (Node? node = inline; node is Inline current; node = node.Parent)
+        {
+            if (current.Revision is { } revision)
+            {
+                return revision;
+            }
+        }
+
+        return null;
+    }
+
+    /// <summary>
+    /// Whether an inline with <paramref name="revision"/> sits in a tracked field whose group holds another change: a field
+    /// whose start, code, separator and end are tracked around a result that is not (a field that became plain text).
+    /// </summary>
+    private bool InheritsChange(Revision? revision)
+    {
+        for (int k = fieldFloor; k < openFields.Count; k++)
+        {
+            if (openFields[k].Revision is { } outer && (revision is null || revision.Removes != outer.Removes))
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /// <summary>Turns off, for this group, the tracked changes of the fields around it that <paramref name="revision"/> is not.</summary>
+    private void EndInheritedChange(Revision? revision)
+    {
+        bool deleted = false, inserted = false;
+        for (int k = fieldFloor; k < openFields.Count; k++)
+        {
+            if (openFields[k].Revision is { } outer && (revision is null || revision.Removes != outer.Removes))
+            {
+                deleted |= outer.Removes;
+                inserted |= !outer.Removes;
+            }
+        }
+
+        if (deleted)
+        {
+            Word("deleted", 0);
+        }
+
+        if (inserted)
+        {
+            Word("revised", 0);
+        }
     }
 
     private void CloseMarked(bool open)
@@ -207,6 +273,8 @@ internal sealed partial class RtfWriter
         {
             RevisionWords(revision);
         }
+
+        EndInheritedChange(Effective(run));
 
         if (run.FormatRevision is { OldFormat: RunFormat old } change)
         {
@@ -297,7 +365,7 @@ internal sealed partial class RtfWriter
         }
 
         Destination("fldinst");
-        openFields.Add(new OpenField(paragraphSerial, start.Revision is not null));
+        openFields.Add(new OpenField(paragraphSerial, start.Revision));
     }
 
     /// <summary>

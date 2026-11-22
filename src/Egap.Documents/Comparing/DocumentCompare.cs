@@ -34,8 +34,9 @@ public static class DocumentCompare
         Document a = Prepare(original, "original", copy: !baseIsRevised, options, warnings);
         Document b = Prepare(revised, "revised", copy: baseIsRevised, options, warnings);
         bool formatting = options.Formatting ?? true;
-        if (options.Formatting is null && original.SourceFormat != DocumentFormatKind.Unknown && revised.SourceFormat != DocumentFormatKind.Unknown
-            && original.SourceFormat != revised.SourceFormat)
+        bool acrossFormats = original.SourceFormat != DocumentFormatKind.Unknown && revised.SourceFormat != DocumentFormatKind.Unknown
+            && original.SourceFormat != revised.SourceFormat;
+        if (options.Formatting is null && acrossFormats)
         {
             formatting = false;
             warnings.Add(new DocumentCompareWarning(
@@ -43,7 +44,7 @@ public static class DocumentCompare
                 $"The original was read from {original.SourceFormat} and the revised document from {revised.SourceFormat}, so formatting was not compared."));
         }
 
-        BlockComparer comparer = new(baseIsRevised ? b : a, baseIsRevised, options, formatting, warnings);
+        BlockComparer comparer = new(baseIsRevised ? b : a, baseIsRevised, options, formatting, acrossFormats && !formatting, warnings);
         comparer.ReadComments(a, b);
         comparer.CompareBodies(a, b);
         if (options.HeadersFooters)
