@@ -89,7 +89,7 @@
 
 
   <h1 id="Egap_Documents_Comparing_DocumentCompareStatistics" data-uid="Egap.Documents.Comparing.DocumentCompareStatistics" class="text-break">
-Class DocumentCompareStatistics  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Comparing/DocumentComparison.cs/#L89"><i class="bi bi-code-slash"></i></a>
+Class DocumentCompareStatistics  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Comparing/DocumentComparison.cs/#L97"><i class="bi bi-code-slash"></i></a>
   </h1>
 
   <div class="facts text-secondary">
@@ -160,7 +160,7 @@ Class DocumentCompareStatistics  <a class="header-action link-secondary" title="
 
   <h3 id="Egap_Documents_Comparing_DocumentCompareStatistics_DeletedWords" data-uid="Egap.Documents.Comparing.DocumentCompareStatistics.DeletedWords">
   DeletedWords
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Comparing/DocumentComparison.cs/#L95"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Comparing/DocumentComparison.cs/#L103"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Words only in the original document.</p>
@@ -188,11 +188,43 @@ Class DocumentCompareStatistics  <a class="header-action link-secondary" title="
 
 
 
+  <a id="Egap_Documents_Comparing_DocumentCompareStatistics_FormattingChanges_" data-uid="Egap.Documents.Comparing.DocumentCompareStatistics.FormattingChanges*"></a>
+
+  <h3 id="Egap_Documents_Comparing_DocumentCompareStatistics_FormattingChanges" data-uid="Egap.Documents.Comparing.DocumentCompareStatistics.FormattingChanges">
+  FormattingChanges
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Comparing/DocumentComparison.cs/#L109"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Format changes: of runs and of paragraphs.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public int FormattingChanges { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
   <a id="Egap_Documents_Comparing_DocumentCompareStatistics_InsertedWords_" data-uid="Egap.Documents.Comparing.DocumentCompareStatistics.InsertedWords*"></a>
 
   <h3 id="Egap_Documents_Comparing_DocumentCompareStatistics_InsertedWords" data-uid="Egap.Documents.Comparing.DocumentCompareStatistics.InsertedWords">
   InsertedWords
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Comparing/DocumentComparison.cs/#L92"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Comparing/DocumentComparison.cs/#L100"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Words only in the revised document.</p>
@@ -220,14 +252,46 @@ Class DocumentCompareStatistics  <a class="header-action link-secondary" title="
 
 
 
+  <a id="Egap_Documents_Comparing_DocumentCompareStatistics_MovedWords_" data-uid="Egap.Documents.Comparing.DocumentCompareStatistics.MovedWords*"></a>
+
+  <h3 id="Egap_Documents_Comparing_DocumentCompareStatistics_MovedWords" data-uid="Egap.Documents.Comparing.DocumentCompareStatistics.MovedWords">
+  MovedWords
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Comparing/DocumentComparison.cs/#L106"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Words in moved paragraphs, counted once (not in <a class="xref" href="Egap.Documents.Comparing.DocumentCompareStatistics.html#Egap_Documents_Comparing_DocumentCompareStatistics_InsertedWords">InsertedWords</a> or <a class="xref" href="Egap.Documents.Comparing.DocumentCompareStatistics.html#Egap_Documents_Comparing_DocumentCompareStatistics_DeletedWords">DeletedWords</a>).</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public int MovedWords { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
   <a id="Egap_Documents_Comparing_DocumentCompareStatistics_ParagraphsTouched_" data-uid="Egap.Documents.Comparing.DocumentCompareStatistics.ParagraphsTouched*"></a>
 
   <h3 id="Egap_Documents_Comparing_DocumentCompareStatistics_ParagraphsTouched" data-uid="Egap.Documents.Comparing.DocumentCompareStatistics.ParagraphsTouched">
   ParagraphsTouched
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Comparing/DocumentComparison.cs/#L98"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Comparing/DocumentComparison.cs/#L112"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Paragraphs of the result that hold a change, whole inserted and deleted ones included.</p>
+  <div class="markdown level1 summary"><p>Paragraphs of the result that hold a change, whole inserted, deleted and moved ones included.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -256,7 +320,7 @@ Class DocumentCompareStatistics  <a class="header-action link-secondary" title="
 </article>
 
         <div class="contribution d-print-none">
-          <a href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Comparing/DocumentComparison.cs/#L89" class="edit-link">Edit this page</a>
+          <a href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Comparing/DocumentComparison.cs/#L97" class="edit-link">Edit this page</a>
         </div>
 
 

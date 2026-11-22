@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Comparing documents | Egap </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Comparing documents | Egap ">
+      
+      
+      <link rel="icon" href="../../images/favicon.ico">
+      <link rel="stylesheet" href="../../public/docfx.min.css">
+      <link rel="stylesheet" href="../../public/main.css">
+      <meta name="docfx:navrel" content="../../toc.html">
+      <meta name="docfx:tocrel" content="../toc.html">
+      
+      <meta name="docfx:rel" content="../../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/inexin/Egap/blob/main/docs/articles/guides/comparing-documents.md/#L1">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../../index.html">
+            <img id="logo" class="svg" src="../../images/logo.svg" alt="Egap">
+            Egap
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="">
+<h1 id="comparing-documents">Comparing documents</h1>
+
+<p><code>DocumentCompare.Run</code> compares two versions of a document, as Word's <em>Compare</em> does. It returns a new document that holds
+every difference as a tracked change, and a list of those differences. Accepting every change in the result gives the
+revised document, and rejecting every change gives the original. The two inputs may come from any format Egap reads, also
+from two different ones: a DOCX contract can be compared with the RTF or HTML version someone sent back.</p>
+<pre><code class="lang-csharp">using Egap.Documents;
+using Egap.Documents.Comparing;
+
+Document original = Document.Load(&quot;contract-v1.docx&quot;);
+Document revised = Document.Load(&quot;contract-v2.docx&quot;);
+
+DocumentComparison comparison = DocumentCompare.Run(original, revised, new DocumentCompareOptions { Author = &quot;Legal&quot; });
+Console.WriteLine(comparison);                                       // &quot;12 changes: 40 words inserted, 25 deleted&quot;
+comparison.Document.Save(&quot;contract-redline.docx&quot;);                   // open it in Word to review the changes
+</code></pre>
+<p>Neither input is changed. The result is a copy of the revised document (or of the original, with
+<code>Base = CompareBase.Original</code>), so it keeps that document's styles, sections and settings.</p>
+<h2 id="what-is-compared">What is compared</h2>
+<ul>
+<li><strong>Text.</strong> Paragraphs are lined up first. A paragraph that is only in one document is inserted or deleted whole.
+Paragraphs that share at least half their words are compared word by word. Word boundaries follow Unicode UAX #29.
+With <code>Granularity = CompareGranularity.Character</code>, only the letters that changed are marked. <code>CaseChanges = false</code>
+ignores changes of case only, and <code>Whitespace = false</code> ignores changes of spacing only.</li>
+<li><strong>Tables.</strong> Rows are matched by their content. A row that is only in one document is a tracked row insertion or
+deletion. Matched rows have their cells compared word by word, and nested tables in turn.</li>
+<li><strong>Formatting.</strong> The same text in another look (bold, size, font or colour), or a paragraph with another style or
+alignment, becomes a format change. A format change keeps the old formatting, so rejecting it puts the old look back.</li>
+<li><strong>Moves.</strong> A run of paragraphs deleted in one place and inserted again elsewhere becomes a move. The run needs at least
+six words, so a short line that repeats is not taken for a move. The source and the destination share a name
+(<code>Revision.MoveName</code>), and Word shows them as one move. As in Word, moves inside a paragraph are not looked for.</li>
+<li><strong>Headers and footers.</strong> Each one is compared with the one of the same kind (first, even or default) in the section at
+the same place.</li>
+<li><strong>Notes and text boxes.</strong> A footnote or endnote reference, and a shape, is one token in its paragraph. When both
+documents have it, the note's or text box's text is compared as a story of its own. A shape whose kind or size
+changed is deleted and inserted.</li>
+<li><strong>Fields and pictures.</strong> Each is one token. A field is compared by its code and result, or by its result only with
+<code>Fields = false</code>. A picture is compared by its image and size, so a resized picture is deleted and inserted.</li>
+<li><strong>Comments.</strong> Comments are never tracked changes: the result has the revised document's comments, at the same text.</li>
+</ul>
+<p>Each of these has a switch on <code>DocumentCompareOptions</code>: <code>Formatting</code>, <code>Moves</code>, <code>HeadersFooters</code>, <code>Notes</code>, <code>TextBoxes</code>,
+<code>Fields</code> and <code>Comments</code>. All are on by default. A switch that is off keeps the base document's version of that part.</p>
+<h2 id="the-list-of-changes">The list of changes</h2>
+<p><code>Changes</code> lists the differences in document order. Each change has a kind (<code>Inserted</code>, <code>Deleted</code>, <code>Replaced</code>,
+<code>Formatted</code> or <code>Moved</code>), its old and new text, the story it is in (the body, a header, a note, a text box), and the
+tracked changes in the result that make it up. One change can be accepted or rejected on its own. A move is one change:
+accepting it removes the source and keeps the destination.</p>
+<pre><code class="lang-csharp">using Egap.Documents;
+using Egap.Documents.Comparing;
+
+DocumentComparison comparison = DocumentCompare.Run(Document.Load(&quot;draft.docx&quot;), Document.Load(&quot;final.docx&quot;));
+foreach (DocumentChange change in comparison.Changes)
+{
+    if (change.Kind == CompareChangeKind.Formatted)
+    {
+        change.Accept();                                                 // take the new look without asking
+    }
+}
+
+DocumentCompareStatistics counts = comparison.Statistics;
+Console.WriteLine($&quot;{counts.InsertedWords} inserted, {counts.DeletedWords} deleted, {counts.MovedWords} moved, &quot;
+    + $&quot;{counts.FormattingChanges} format changes in {counts.ParagraphsTouched} paragraphs&quot;);
+foreach (DocumentCompareWarning warning in comparison.Warnings)
+{
+    Console.WriteLine(warning);
+}
+</code></pre>
+<p><code>Statistics</code> counts inserted, deleted and moved words, format changes and the paragraphs touched. <code>Warnings</code> says what
+the comparison could not show exactly, with how many times it happened.</p>
+<h2 id="inputs-with-tracked-changes-or-from-different-formats">Inputs with tracked changes or from different formats</h2>
+<p>An input that already holds tracked changes is compared as if they were accepted. Egap accepts them on a copy, and the
+warning <code>ExistingRevisionsAccepted</code> says how many there were. With <code>ExistingRevisions = ExistingRevisionHandling.Throw</code>,
+<code>Run</code> throws an <code>InvalidOperationException</code> instead.</p>
+<p><code>Document.Load</code> records the format it read in <code>Document.SourceFormat</code>. When the two inputs come from different formats,
+formatting is not compared and the warning <code>FormattingNotCompared</code> says so: a DOCX file and an HTML page of the same text
+differ in nearly every run's formatting. Set <code>Formatting</code> to <code>true</code> to compare it anyway, or to <code>false</code> to never compare
+it.</p>
+<pre><code class="lang-csharp">using Egap.Documents;
+using Egap.Documents.Comparing;
+
+Document sent = Document.Load(&quot;offer.docx&quot;);
+Document returned = Document.Load(&quot;offer-returned.html&quot;);            // needs Egap.Documents.Html and HtmlFormat.Register()
+
+DocumentComparison comparison = DocumentCompare.Run(sent, returned, new DocumentCompareOptions
+{
+    Base = CompareBase.Original,                                     // keep the DOCX styles and page setup
+    ExistingRevisions = ExistingRevisionHandling.Throw,              // refuse inputs that are still being reviewed
+});
+</code></pre>
+<h2 id="showing-the-result">Showing the result</h2>
+<p>Save the result to DOCX to review it in Word or LibreOffice. Moves are written with named move ranges, so Word pairs
+their source and destination. To print a redline without a word processor, lay the result out with
+<code>RevisionView.Markup</code>: inserted text is underlined and deleted text struck through, in a colour per author, with change
+bars. The HTML, EPUB and Markdown writers take the same views.</p>
+<pre><code class="lang-csharp">using Egap.Documents;
+using Egap.Documents.Comparing;
+using Egap.Documents.Layout;
+using Egap.Documents.Pdf;
+
+DocumentComparison comparison = DocumentCompare.Run(Document.Load(&quot;v1.docx&quot;), Document.Load(&quot;v2.docx&quot;));
+comparison.Document.SaveAsPdf(&quot;redline.pdf&quot;, new PdfExportOptions { RevisionView = RevisionView.Markup });
+</code></pre>
+<h2 id="limits">Limits</h2>
+<ul>
+<li>Moves inside a paragraph are not found; a moved word is a deletion and an insertion.</li>
+<li>Cells inserted into or deleted from a row are not tracked changes, as the model tracks whole rows only. A table with no
+row in common is replaced whole.</li>
+<li>A resized picture is deleted and inserted, as Word does not track picture resizing.</li>
+<li>Content that cannot be a tracked change, such as a content control that could not be matched, is kept as in the base
+document; the warning <code>ContentNotTracked</code> counts these.</li>
+</ul>
+
+</article>
+
+        <div class="contribution d-print-none">
+          <a href="https://github.com/inexin/Egap/blob/main/docs/articles/guides/comparing-documents.md/#L1" class="edit-link">Edit this page</a>
+        </div>
+
+        <div class="next-article d-print-none border-top" id="nextArticle"></div>
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>Made with <a href="https://dotnet.github.io/docfx">docfx</a></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

@@ -10326,6 +10326,16 @@
     },
     {
       "type": "Conceptual",
+      "source_relative_path": "articles/guides/comparing-documents.md",
+      "output": {
+        ".html": {
+          "relative_path": "articles/guides/comparing-documents.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
       "source_relative_path": "articles/guides/editing.md",
       "output": {
         ".html": {

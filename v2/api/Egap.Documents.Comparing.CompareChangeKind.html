@@ -129,6 +129,11 @@ Enum CompareChangeKind  <a class="header-action link-secondary" title="View sour
   
   <dd><p>Content only in the revised document: added.</p>
 </dd>
+    <dt id="Egap_Documents_Comparing_CompareChangeKind_Moved"><code>Moved = 4</code></dt>
+  
+  <dd><p>Paragraphs moved: their tracked changes are the source (<a class="xref" href="Egap.Documents.RevisionKind.html#Egap_Documents_RevisionKind_MoveFrom">MoveFrom</a>) and the destination
+(<a class="xref" href="Egap.Documents.RevisionKind.html#Egap_Documents_RevisionKind_MoveTo">MoveTo</a>), which share a <a class="xref" href="Egap.Documents.Revision.html#Egap_Documents_Revision_MoveName">MoveName</a>. The old and the new text are the same.</p>
+</dd>
     <dt id="Egap_Documents_Comparing_CompareChangeKind_Replaced"><code>Replaced = 2</code></dt>
   
   <dd><p>Content of the original replaced by other content in the revised document.</p>

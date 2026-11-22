@@ -207,28 +207,12 @@ foreach (Document invoice in template.MailMerge(customers))
 Document statements = template.MailMergeAll(customers, new MailMergeOptions { OnWarning = w =&gt; Console.WriteLine(w) });
 </code></pre>
 <h2 id="comparing-documents">Comparing documents</h2>
-<p><code>DocumentCompare.Run</code> compares two versions of a document and gives a copy of the later one with the differences as
-tracked changes, as Word's <em>Compare</em> does: words inserted and deleted within paragraphs, paragraphs and table rows added
-and removed, table cells compared word by word, and formatting changes (the same text in bold, another size or another
-style) as format changes that keep the old formatting. Accepting every change gives the revised document and rejecting
-every change gives the original. <code>Changes</code> lists each difference with its old and new text and can accept or reject it on
-its own. The options choose word or character granularity, whether case and spacing count, and the author and date of
-the changes.</p>
-<p>Headers and footers are compared with the one of the same kind in the same section, and the text of notes and text
-boxes as stories of their own. A field is one token, compared by its code and result (or its result only, with
-<code>Fields = false</code>); a picture goes by its image and size, and a shape by its kind and size, so a changed one is deleted
-and inserted. Comments are not tracked changes: the result simply has the revised document's comments, at the same
-text. <code>HeadersFooters</code>, <code>Notes</code>, <code>Comments</code> and <code>TextBoxes</code> turn each of these off, keeping the base document's.</p>
+<p><code>DocumentCompare.Run</code> compares two versions of a document and returns a new one with the differences as tracked changes,
+as Word's <em>Compare</em> does, and the list of those changes. <a href="comparing-documents.html">Comparing documents</a> has the details.</p>
 <pre><code class="lang-csharp">using Egap.Documents;
 using Egap.Documents.Comparing;
 
-DocumentComparison comparison = DocumentCompare.Run(Document.Load(&quot;contract-v1.docx&quot;), Document.Load(&quot;contract-v2.docx&quot;),
-    new DocumentCompareOptions { Author = &quot;Legal&quot; });
-foreach (DocumentChange change in comparison.Changes)
-{
-    Console.WriteLine($&quot;{change.Kind}: '{change.OldText}' -&gt; '{change.NewText}'&quot;);
-}
-
+DocumentComparison comparison = DocumentCompare.Run(Document.Load(&quot;contract-v1.docx&quot;), Document.Load(&quot;contract-v2.docx&quot;));
 comparison.Document.Save(&quot;contract-redline.docx&quot;);
 </code></pre>
 <h2 id="page-layout">Page layout</h2>

@@ -6448,6 +6448,12 @@ references:
   commentId: F:Egap.Documents.Comparing.CompareChangeKind.Inserted
   fullName: Egap.Documents.Comparing.CompareChangeKind.Inserted
   nameWithType: CompareChangeKind.Inserted
+- uid: Egap.Documents.Comparing.CompareChangeKind.Moved
+  name: Moved
+  href: api/Egap.Documents.Comparing.CompareChangeKind.html#Egap_Documents_Comparing_CompareChangeKind_Moved
+  commentId: F:Egap.Documents.Comparing.CompareChangeKind.Moved
+  fullName: Egap.Documents.Comparing.CompareChangeKind.Moved
+  nameWithType: CompareChangeKind.Moved
 - uid: Egap.Documents.Comparing.CompareChangeKind.Replaced
   name: Replaced
   href: api/Egap.Documents.Comparing.CompareChangeKind.html#Egap_Documents_Comparing_CompareChangeKind_Replaced
@@ -6714,6 +6720,19 @@ references:
   isSpec: "True"
   fullName: Egap.Documents.Comparing.DocumentCompareOptions.Fields
   nameWithType: DocumentCompareOptions.Fields
+- uid: Egap.Documents.Comparing.DocumentCompareOptions.Formatting
+  name: Formatting
+  href: api/Egap.Documents.Comparing.DocumentCompareOptions.html#Egap_Documents_Comparing_DocumentCompareOptions_Formatting
+  commentId: P:Egap.Documents.Comparing.DocumentCompareOptions.Formatting
+  fullName: Egap.Documents.Comparing.DocumentCompareOptions.Formatting
+  nameWithType: DocumentCompareOptions.Formatting
+- uid: Egap.Documents.Comparing.DocumentCompareOptions.Formatting*
+  name: Formatting
+  href: api/Egap.Documents.Comparing.DocumentCompareOptions.html#Egap_Documents_Comparing_DocumentCompareOptions_Formatting_
+  commentId: Overload:Egap.Documents.Comparing.DocumentCompareOptions.Formatting
+  isSpec: "True"
+  fullName: Egap.Documents.Comparing.DocumentCompareOptions.Formatting
+  nameWithType: DocumentCompareOptions.Formatting
 - uid: Egap.Documents.Comparing.DocumentCompareOptions.Granularity
   name: Granularity
   href: api/Egap.Documents.Comparing.DocumentCompareOptions.html#Egap_Documents_Comparing_DocumentCompareOptions_Granularity
@@ -6740,6 +6759,19 @@ references:
   isSpec: "True"
   fullName: Egap.Documents.Comparing.DocumentCompareOptions.HeadersFooters
   nameWithType: DocumentCompareOptions.HeadersFooters
+- uid: Egap.Documents.Comparing.DocumentCompareOptions.Moves
+  name: Moves
+  href: api/Egap.Documents.Comparing.DocumentCompareOptions.html#Egap_Documents_Comparing_DocumentCompareOptions_Moves
+  commentId: P:Egap.Documents.Comparing.DocumentCompareOptions.Moves
+  fullName: Egap.Documents.Comparing.DocumentCompareOptions.Moves
+  nameWithType: DocumentCompareOptions.Moves
+- uid: Egap.Documents.Comparing.DocumentCompareOptions.Moves*
+  name: Moves
+  href: api/Egap.Documents.Comparing.DocumentCompareOptions.html#Egap_Documents_Comparing_DocumentCompareOptions_Moves_
+  commentId: Overload:Egap.Documents.Comparing.DocumentCompareOptions.Moves
+  isSpec: "True"
+  fullName: Egap.Documents.Comparing.DocumentCompareOptions.Moves
+  nameWithType: DocumentCompareOptions.Moves
 - uid: Egap.Documents.Comparing.DocumentCompareOptions.Notes
   name: Notes
   href: api/Egap.Documents.Comparing.DocumentCompareOptions.html#Egap_Documents_Comparing_DocumentCompareOptions_Notes
@@ -6798,6 +6830,19 @@ references:
   isSpec: "True"
   fullName: Egap.Documents.Comparing.DocumentCompareStatistics.DeletedWords
   nameWithType: DocumentCompareStatistics.DeletedWords
+- uid: Egap.Documents.Comparing.DocumentCompareStatistics.FormattingChanges
+  name: FormattingChanges
+  href: api/Egap.Documents.Comparing.DocumentCompareStatistics.html#Egap_Documents_Comparing_DocumentCompareStatistics_FormattingChanges
+  commentId: P:Egap.Documents.Comparing.DocumentCompareStatistics.FormattingChanges
+  fullName: Egap.Documents.Comparing.DocumentCompareStatistics.FormattingChanges
+  nameWithType: DocumentCompareStatistics.FormattingChanges
+- uid: Egap.Documents.Comparing.DocumentCompareStatistics.FormattingChanges*
+  name: FormattingChanges
+  href: api/Egap.Documents.Comparing.DocumentCompareStatistics.html#Egap_Documents_Comparing_DocumentCompareStatistics_FormattingChanges_
+  commentId: Overload:Egap.Documents.Comparing.DocumentCompareStatistics.FormattingChanges
+  isSpec: "True"
+  fullName: Egap.Documents.Comparing.DocumentCompareStatistics.FormattingChanges
+  nameWithType: DocumentCompareStatistics.FormattingChanges
 - uid: Egap.Documents.Comparing.DocumentCompareStatistics.InsertedWords
   name: InsertedWords
   href: api/Egap.Documents.Comparing.DocumentCompareStatistics.html#Egap_Documents_Comparing_DocumentCompareStatistics_InsertedWords
@@ -6811,6 +6856,19 @@ references:
   isSpec: "True"
   fullName: Egap.Documents.Comparing.DocumentCompareStatistics.InsertedWords
   nameWithType: DocumentCompareStatistics.InsertedWords
+- uid: Egap.Documents.Comparing.DocumentCompareStatistics.MovedWords
+  name: MovedWords
+  href: api/Egap.Documents.Comparing.DocumentCompareStatistics.html#Egap_Documents_Comparing_DocumentCompareStatistics_MovedWords
+  commentId: P:Egap.Documents.Comparing.DocumentCompareStatistics.MovedWords
+  fullName: Egap.Documents.Comparing.DocumentCompareStatistics.MovedWords
+  nameWithType: DocumentCompareStatistics.MovedWords
+- uid: Egap.Documents.Comparing.DocumentCompareStatistics.MovedWords*
+  name: MovedWords
+  href: api/Egap.Documents.Comparing.DocumentCompareStatistics.html#Egap_Documents_Comparing_DocumentCompareStatistics_MovedWords_
+  commentId: Overload:Egap.Documents.Comparing.DocumentCompareStatistics.MovedWords
+  isSpec: "True"
+  fullName: Egap.Documents.Comparing.DocumentCompareStatistics.MovedWords
+  nameWithType: DocumentCompareStatistics.MovedWords
 - uid: Egap.Documents.Comparing.DocumentCompareStatistics.ParagraphsTouched
   name: ParagraphsTouched
   href: api/Egap.Documents.Comparing.DocumentCompareStatistics.html#Egap_Documents_Comparing_DocumentCompareStatistics_ParagraphsTouched
@@ -6925,6 +6983,12 @@ references:
   commentId: F:Egap.Documents.Comparing.DocumentCompareWarningKind.ExistingRevisionsAccepted
   fullName: Egap.Documents.Comparing.DocumentCompareWarningKind.ExistingRevisionsAccepted
   nameWithType: DocumentCompareWarningKind.ExistingRevisionsAccepted
+- uid: Egap.Documents.Comparing.DocumentCompareWarningKind.FormattingNotCompared
+  name: FormattingNotCompared
+  href: api/Egap.Documents.Comparing.DocumentCompareWarningKind.html#Egap_Documents_Comparing_DocumentCompareWarningKind_FormattingNotCompared
+  commentId: F:Egap.Documents.Comparing.DocumentCompareWarningKind.FormattingNotCompared
+  fullName: Egap.Documents.Comparing.DocumentCompareWarningKind.FormattingNotCompared
+  nameWithType: DocumentCompareWarningKind.FormattingNotCompared
 - uid: Egap.Documents.Comparing.DocumentCompareWarningKind.SectionsDiffer
   name: SectionsDiffer
   href: api/Egap.Documents.Comparing.DocumentCompareWarningKind.html#Egap_Documents_Comparing_DocumentCompareWarningKind_SectionsDiffer
@@ -8395,6 +8459,19 @@ references:
   isSpec: "True"
   fullName: Egap.Documents.Document.Settings
   nameWithType: Document.Settings
+- uid: Egap.Documents.Document.SourceFormat
+  name: SourceFormat
+  href: api/Egap.Documents.Document.html#Egap_Documents_Document_SourceFormat
+  commentId: P:Egap.Documents.Document.SourceFormat
+  fullName: Egap.Documents.Document.SourceFormat
+  nameWithType: Document.SourceFormat
+- uid: Egap.Documents.Document.SourceFormat*
+  name: SourceFormat
+  href: api/Egap.Documents.Document.html#Egap_Documents_Document_SourceFormat_
+  commentId: Overload:Egap.Documents.Document.SourceFormat
+  isSpec: "True"
+  fullName: Egap.Documents.Document.SourceFormat
+  nameWithType: Document.SourceFormat
 - uid: Egap.Documents.Document.Styles
   name: Styles
   href: api/Egap.Documents.Document.html#Egap_Documents_Document_Styles
@@ -26658,6 +26735,19 @@ references:
   isSpec: "True"
   fullName: Egap.Documents.Revision.Kind
   nameWithType: Revision.Kind
+- uid: Egap.Documents.Revision.MoveName
+  name: MoveName
+  href: api/Egap.Documents.Revision.html#Egap_Documents_Revision_MoveName
+  commentId: P:Egap.Documents.Revision.MoveName
+  fullName: Egap.Documents.Revision.MoveName
+  nameWithType: Revision.MoveName
+- uid: Egap.Documents.Revision.MoveName*
+  name: MoveName
+  href: api/Egap.Documents.Revision.html#Egap_Documents_Revision_MoveName_
+  commentId: Overload:Egap.Documents.Revision.MoveName
+  isSpec: "True"
+  fullName: Egap.Documents.Revision.MoveName
+  nameWithType: Revision.MoveName
 - uid: Egap.Documents.Revision.Removes
   name: Removes
   href: api/Egap.Documents.Revision.html#Egap_Documents_Revision_Removes
