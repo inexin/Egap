@@ -445,7 +445,7 @@ internal sealed partial class BlockComparer
     /// <summary>Pairs items of two changed stretches whose score reaches the threshold, best pairs first, keeping their order.</summary>
     private static List<(int A, int B)> Pair<T>(List<T> a, List<T> b, Func<T, T, double> score)
     {
-        List<(double Score, Group Group)> candidates = [];
+        List<(double Score, int A, int B)> candidates = [];
         bool band = (long)a.Count * b.Count > (long)PairBand * PairBand * 4;
         for (int i = 0; i < a.Count; i++)
         {
@@ -462,12 +462,33 @@ internal sealed partial class BlockComparer
                 double value = score(a[i], b[j]);
                 if (value >= PairThreshold)
                 {
-                    candidates.Add((value, new Group(i, 1, j, 1)));
+                    candidates.Add((value, i, j));
                 }
             }
         }
 
-        return [.. Pick(candidates, a.Count, b.Count).Select(g => (g.A, g.B))];
+        candidates.Sort((x, y) => x.Score != y.Score ? y.Score.CompareTo(x.Score) : x.A != y.A ? x.A.CompareTo(y.A) : x.B.CompareTo(y.B));
+        List<(int A, int B)> pairs = [];
+        bool[] usedB = new bool[b.Count];
+        foreach ((_, int ca, int cb) in candidates)
+        {
+            int at = pairs.BinarySearch((ca, -1), Comparer<(int A, int B)>.Create((x, y) => x.A.CompareTo(y.A)));
+            if (at >= 0 || usedB[cb])
+            {
+                continue;
+            }
+
+            at = ~at;
+            if ((at > 0 && pairs[at - 1].B >= cb) || (at < pairs.Count && pairs[at].B <= cb))
+            {
+                continue;
+            }
+
+            pairs.Insert(at, (ca, cb));
+            usedB[cb] = true;
+        }
+
+        return pairs;
     }
 
     private double Score(Block a, Block b)

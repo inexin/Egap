@@ -12,6 +12,18 @@ internal sealed partial class BlockComparer
     /// <summary>The most paragraphs one paragraph is taken to be split into, or joined from.</summary>
     private const int MostParts = 4;
 
+    /// <summary>
+    /// The smallest share of common words (Dice coefficient) for a paragraph and its pieces taken together: higher than for
+    /// two paragraphs, since more pieces give more chances of common words by accident.
+    /// </summary>
+    private const double GroupThreshold = 0.75;
+
+    /// <summary>How much the pieces' words together may differ in number from the one paragraph's, as a share of the larger.</summary>
+    private const double GroupSizeSlack = 0.25;
+
+    // The pieces' word sets while DiceOfPieces counts them.
+    private readonly int[][] pieceWords = new int[MostParts][];
+
     /// <summary>Blocks of a changed stretch compared as one: a block against a block, or a paragraph against adjacent paragraphs.</summary>
     private readonly record struct Group(int A, int CountA, int B, int CountB);
 
@@ -21,126 +33,223 @@ internal sealed partial class BlockComparer
     /// </summary>
     private List<Group> Groups(List<Block> a, List<Block> b)
     {
-        // Every pair's score first (in the band when the stretch is long), so a group's pieces reuse their own.
-        bool band = (long)a.Count * b.Count > (long)PairBand * PairBand * 4;
-        int[] from = new int[a.Count];
-        double[][] scores = new double[a.Count][];
+        List<(double Score, int A, int B)> singles = [];
+        List<(double Score, Group Group)> groups = [];
+        int[] sizesA = Sizes(a), sizesB = Sizes(b);
+        RowScores scores = new(this, a, b);
         for (int i = 0; i < a.Count; i++)
         {
-            int to = b.Count;
-            if (band)
+            (int from, int to) = scores.Fill(i);
+            for (int j = from; j < to; j++)
             {
-                int center = (int)((long)i * b.Count / Math.Max(1, a.Count));
-                from[i] = Math.Max(0, center - PairBand);
-                to = Math.Min(b.Count, center + PairBand + 1);
-            }
-
-            scores[i] = new double[to - from[i]];
-            for (int j = from[i]; j < to; j++)
-            {
-                scores[i][j - from[i]] = Score(a[i], b[j]);
-            }
-        }
-
-        List<(double Score, Group Group)> candidates = [];
-        Scores pairs = new(this, a, b, from, scores);
-        for (int i = 0; i < a.Count; i++)
-        {
-            for (int k = 0; k < scores[i].Length; k++)
-            {
-                double value = scores[i][k];
-                int j = from[i] + k;
+                double value = scores[i, j];
                 if (value >= PairThreshold)
                 {
-                    candidates.Add((value, new Group(i, 1, j, 1)));
+                    singles.Add((value, i, j));
                 }
 
-                if (value > 0 && a[i] is Paragraph pa && b[j] is Paragraph pb)
+                if (value > 0 && sizesA[i] > 0 && sizesB[j] > 0)
                 {
-                    AddParts(WordSet(pa), b, pairs, i, j, value, split: true, candidates);
-                    AddParts(WordSet(pb), a, pairs, i, j, value, split: false, candidates);
+                    AddParts(scores, a, b, sizesA, sizesB, i, j, value, split: true, groups);
+                    AddParts(scores, a, b, sizesA, sizesB, i, j, value, split: false, groups);
                 }
             }
         }
 
-        return Pick(candidates, a.Count, b.Count);
-    }
-
-    /// <summary>The scores of a stretch's pairs: kept where they were worked out, else worked out.</summary>
-    private sealed class Scores(BlockComparer owner, List<Block> a, List<Block> b, int[] from, double[][] scores)
-    {
-        public double this[int i, int j] => j >= from[i] && j - from[i] < scores[i].Length ? scores[i][j - from[i]] : owner.Score(a[i], b[j]);
+        return Pick(singles, groups, a.Count, b.Count);
     }
 
     /// <summary>
-    /// Adds the runs of two to <see cref="MostParts"/> paragraphs of <paramref name="many"/> from (<paramref name="i"/>,
-    /// <paramref name="j"/>) on whose words together match <paramref name="one"/>'s better than each alone, as split (one in
-    /// A, pieces in B from j) or joined (one in B, pieces in A from i) candidates. Every piece shares words with the one
-    /// paragraph, so an unrelated paragraph next to it is not taken in; a run whose words cannot match well enough, by the
-    /// words each piece shares, is not merged to find out.
+    /// The scores of a stretch's pairs, row by row (each paragraph of A against B, in the band when the stretch is long), kept
+    /// for the row at hand and the rows after it that a join's pieces reach, so a piece's score is worked out once.
     /// </summary>
-    private void AddParts(int[] one, List<Block> many, Scores pairs, int i, int j, double first, bool split, List<(double Score, Group Group)> candidates)
+    private sealed class RowScores
     {
-        int start = split ? j : i;
-        int size = WordSet(many[start]).Length, merged = 0;
-        double common = first * (one.Length + size) / 2, best = first;
-        int[] union = [];
-        for (int count = 2; count <= MostParts && start + count <= many.Count && many[start + count - 1] is Paragraph part; count++)
+        private readonly BlockComparer owner;
+        private readonly List<Block> a;
+        private readonly List<Block> b;
+        private readonly bool band;
+        private readonly double[][] rows = new double[MostParts][];
+        private readonly int[] rowOf = [-1, -1, -1, -1];
+        private readonly int[] from = new int[MostParts];
+        private readonly int[] to = new int[MostParts];
+
+        public RowScores(BlockComparer owner, List<Block> a, List<Block> b)
         {
-            double alone = split ? pairs[i, start + count - 1] : pairs[start + count - 1, j];
-            if (alone == 0)
+            this.owner = owner;
+            this.a = a;
+            this.b = b;
+            band = (long)a.Count * b.Count > (long)PairBand * PairBand * 4;
+        }
+
+        /// <summary>Works out row <paramref name="i"/> and the rows after it up to a join's reach; returns row i's range in B.</summary>
+        public (int From, int To) Fill(int i)
+        {
+            for (int r = i; r < Math.Min(a.Count, i + MostParts); r++)
             {
+                int slot = r % MostParts;
+                if (rowOf[slot] == r)
+                {
+                    continue;
+                }
+
+                int start = 0, end = b.Count;
+                if (band)
+                {
+                    int center = (int)((long)r * b.Count / Math.Max(1, a.Count));
+                    start = Math.Max(0, center - PairBand);
+                    end = Math.Min(b.Count, center + PairBand + 1);
+                }
+
+                double[] row = rows[slot] ??= new double[band ? (2 * PairBand) + 1 : b.Count];
+                for (int j = start; j < end; j++)
+                {
+                    row[j - start] = owner.Score(a[r], b[j]);
+                }
+
+                (rowOf[slot], from[slot], to[slot]) = (r, start, end);
+            }
+
+            int at = i % MostParts;
+            return (from[at], to[at]);
+        }
+
+        /// <summary>The score of a[i] against b[j]: kept when its row has it, else worked out.</summary>
+        public double this[int i, int j]
+        {
+            get
+            {
+                int slot = i % MostParts;
+                return rowOf[slot] == i && j >= from[slot] && j < to[slot] ? rows[slot][j - from[slot]] : owner.Score(a[i], b[j]);
+            }
+        }
+    }
+
+    /// <summary>The number of words of each paragraph of a stretch; -1 for a block that is not a paragraph.</summary>
+    private int[] Sizes(List<Block> blocks)
+    {
+        int[] sizes = new int[blocks.Count];
+        for (int k = 0; k < blocks.Count; k++)
+        {
+            sizes[k] = blocks[k] is Paragraph paragraph ? WordSet(paragraph).Length : -1;
+        }
+
+        return sizes;
+    }
+
+    /// <summary>
+    /// Adds the runs of two to <see cref="MostParts"/> adjacent paragraphs, from b[j] (a split of a[i]) or from a[i] (a join
+    /// into b[j]), whose words together match the one paragraph's better than each piece alone, as candidates. The pieces
+    /// must have about as many words as the one paragraph and each share words with it, so an unrelated paragraph next to
+    /// it is not taken in. Bounds from the word counts and from each piece's own score rule most runs out before their
+    /// words are counted.
+    /// </summary>
+    private void AddParts(RowScores scores, List<Block> a, List<Block> b, int[] sizesA, int[] sizesB, int i, int j, double first, bool split, List<(double Score, Group Group)> groups)
+    {
+        List<Block> many = split ? b : a;
+        int[] sizes = split ? sizesB : sizesA;
+        int start = split ? j : i, one = split ? sizesA[i] : sizesB[j];
+        double firstCommon = first * (one + sizes[start]) / 2;
+        int size = sizes[start], rest = 0, scored = 1;
+        double common = firstCommon, best = first;
+        for (int count = 2; count <= MostParts && start + count <= many.Count && sizes[start + count - 1] > 0; count++)
+        {
+            size += sizes[start + count - 1];
+            rest += sizes[start + count - 1];
+            if (size * (1 - GroupSizeSlack) > one)
+            {
+                // The pieces have far more words than the paragraph, and more pieces only add to them.
                 return;
             }
 
-            int[] words = WordSet(part);
-            common += alone * (one.Length + words.Length) / 2;
-            size += words.Length;
-            best = Math.Max(best, alone);
-            double bound = (2 * common / (one.Length + size)) + 1e-9;
-            if (bound < PairThreshold || bound <= best)
+            // At best every word of the later pieces is common.
+            if (one * (1 - GroupSizeSlack) > size || 2 * (firstCommon + rest) / (one + size) < GroupThreshold)
             {
                 continue;
             }
 
-            for (; merged < count; merged++)
+            for (; scored < count; scored++)
             {
-                union = MergeSorted(union, WordSet(many[start + merged]));
+                int k = start + scored;
+                double alone = split ? scores[i, k] : scores[k, j];
+                if (alone == 0)
+                {
+                    return;
+                }
+
+                common += alone * (one + sizes[k]) / 2;
+                best = Math.Max(best, alone);
             }
 
-            double score = Dice(one, union);
-            if (score >= PairThreshold && score > best)
+            double bound = (2 * common / (one + size)) + 1e-9;
+            if (bound < GroupThreshold || bound <= best)
             {
-                candidates.Add((score, split ? new Group(i, 1, start, count) : new Group(start, count, j, 1)));
+                continue;
+            }
+
+            double score = DiceOfPieces(WordSet(split ? a[i] : b[j]), many, start, count, size);
+            if (score >= GroupThreshold && score > best)
+            {
+                groups.Add((score, split ? new Group(i, 1, start, count) : new Group(start, count, j, 1)));
             }
         }
     }
 
-    private static int[] MergeSorted(int[] a, int[] b)
+    /// <summary>
+    /// The Dice coefficient of a paragraph's words and the words of <paramref name="count"/> pieces from
+    /// <paramref name="start"/> taken together (<paramref name="size"/> words), counting repeats, without merging the
+    /// pieces' words.
+    /// </summary>
+    private double DiceOfPieces(int[] one, List<Block> many, int start, int count, int size)
     {
-        int[] merged = new int[a.Length + b.Length];
-        int i = 0, j = 0, k = 0;
-        while (i < a.Length && j < b.Length)
+        Span<int> at = stackalloc int[MostParts];
+        at.Clear();
+        for (int k = 0; k < count; k++)
         {
-            merged[k++] = a[i] <= b[j] ? a[i++] : b[j++];
+            pieceWords[k] = WordSet(many[start + k]);
         }
 
-        while (i < a.Length)
+        int common = 0;
+        for (int i = 0; i < one.Length;)
         {
-            merged[k++] = a[i++];
+            int word = one[i], times = 0;
+            for (; i < one.Length && one[i] == word; i++)
+            {
+                times++;
+            }
+
+            int found = 0;
+            for (int k = 0; k < count && found < times; k++)
+            {
+                int[] words = pieceWords[k];
+                int p = at[k];
+                while (p < words.Length && words[p] < word)
+                {
+                    p++;
+                }
+
+                while (p < words.Length && words[p] == word && found < times)
+                {
+                    p++;
+                    found++;
+                }
+
+                at[k] = p;
+            }
+
+            common += found;
         }
 
-        while (j < b.Length)
-        {
-            merged[k++] = b[j++];
-        }
-
-        return merged;
+        return one.Length + size == 0 ? 1 : 2.0 * common / (one.Length + size);
     }
 
-    /// <summary>Takes candidate groups best first, each only when its blocks are free and it keeps both documents' order.</summary>
-    private static List<Group> Pick(List<(double Score, Group Group)> candidates, int countA, int countB)
+    /// <summary>
+    /// Takes candidates best first (a pair before a group of the same score), each only when its blocks are free and it
+    /// keeps both documents' order.
+    /// </summary>
+    private static List<Group> Pick(List<(double Score, int A, int B)> singles, List<(double Score, Group Group)> candidates, int countA, int countB)
     {
+        singles.Sort((x, y) => x.Score != y.Score ? y.Score.CompareTo(x.Score) : x.A != y.A ? x.A.CompareTo(y.A) : x.B.CompareTo(y.B));
         candidates.Sort((x, y) =>
             x.Score != y.Score ? y.Score.CompareTo(x.Score)
             : x.Group.A != y.Group.A ? x.Group.A.CompareTo(y.Group.A)
@@ -148,8 +257,21 @@ internal sealed partial class BlockComparer
             : (x.Group.CountA + x.Group.CountB).CompareTo(y.Group.CountA + y.Group.CountB));
         List<Group> groups = [];
         bool[] usedA = new bool[countA], usedB = new bool[countB];
-        foreach ((_, Group group) in candidates)
+        int s = 0, c = 0;
+        while (s < singles.Count || c < candidates.Count)
         {
+            Group group;
+            if (c == candidates.Count || (s < singles.Count && singles[s].Score >= candidates[c].Score))
+            {
+                group = new Group(singles[s].A, 1, singles[s].B, 1);
+                s++;
+            }
+            else
+            {
+                group = candidates[c].Group;
+                c++;
+            }
+
             if (Used(usedA, group.A, group.CountA) || Used(usedB, group.B, group.CountB))
             {
                 continue;
@@ -183,7 +305,7 @@ internal sealed partial class BlockComparer
 
         static bool Used(bool[] used, int start, int count)
         {
-            return Array.IndexOf(used, true, start, count) >= 0;
+            return count == 1 ? used[start] : Array.IndexOf(used, true, start, count) >= 0;
         }
     }
 
