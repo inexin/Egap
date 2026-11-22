@@ -203,6 +203,11 @@ foreach (ConversionWarning warning in OdtFormat.Save(comparison.Document, file))
     Console.WriteLine(warning);                                      // what ODT could not hold, such as moves
 }
 </code></pre>
+<h2 id="from-the-command-line">From the command line</h2>
+<p><code>egap compare</code> runs the same comparison on two files and writes the result with tracked changes or as a redline; <code>egap mcp</code> offers it to AI assistants as the <code>compare</code> tool. See <a href="../cli/index.html#comparing-documents">the egap command</a>.</p>
+<pre><code class="lang-sh">egap compare contract-v1.docx contract-v2.docx --output contract-redline.docx --author Legal
+egap compare contract-v1.docx contract-v2.docx --redline contract-redline.pdf --json
+</code></pre>
 <h2 id="limits">Limits</h2>
 <ul>
 <li>Moves inside a paragraph are not found; a moved word is a deletion and an insertion.</li>

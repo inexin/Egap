@@ -188,6 +188,26 @@ egap convert notes.md -o notes.html --set page-setup=false
 egap convert old.rtf -o clean.rtf --set unknown-groups=false
 egap convert report.docx -o report.odt --set version=1.2
 </code></pre>
+<p><code>--revisions</code> says how a document's tracked changes are written: accepted (<code>final</code>), marked (<code>markup</code>) or rejected
+(<code>original</code>). PDF, HTML and Markdown show markup coloured, with change bars in a PDF; DOCX, RTF and ODT keep the tracked
+changes for markup and get the document with them settled for the other two.</p>
+<pre><code class="lang-sh">egap convert reviewed.docx --revisions markup -o redline.pdf
+egap convert reviewed.docx --revisions final -o clean.docx
+</code></pre>
+<h2 id="comparing-documents">Comparing documents</h2>
+<p><code>compare</code> takes two documents of any format egap reads, also of two different formats, and writes the differences as
+tracked changes (<code>--output</code>, DOCX, RTF or ODT) or as a redline (<code>--redline</code>, PDF, HTML, EPUB or Markdown). It lists the
+changes, or writes them as JSON with <code>--json</code>, and exits with 1 when the documents differ. Two PDFs are compared page by
+page as before (see <a href="#signing-and-checking">Signing and checking</a>); <code>--as-documents</code> reads them through layout analysis
+and compares them as documents. A PDF beside any other format is always read as a document.</p>
+<pre><code class="lang-sh">egap compare v1.docx v2.docx --output redline.docx --author Legal
+egap compare v1.docx v2.odt --redline redline.pdf
+egap compare v1.md v2.md --granularity character --no-formatting --json
+egap compare a.pdf b.pdf --as-documents --output changes.docx
+</code></pre>
+<p>The switches match the library's options (see <a href="../guides/comparing-documents.html">Comparing documents</a>): <code>--granularity word|character</code>, <code>--base original|revised</code>, <code>--author</code>, and <code>--no-formatting</code>, <code>--no-case</code>, <code>--no-whitespace</code>,
+<code>--no-moves</code>, <code>--no-headers</code>, <code>--no-notes</code>, <code>--no-textboxes</code>, <code>--no-fields</code> and <code>--no-comments</code> to leave a part out.
+RTF and ODT have no tracked moves, so a move is written to them as a deletion and an insertion, with a warning.</p>
 <h2 id="pages">Pages</h2>
 <pre><code class="lang-sh">egap merge a.pdf b.pdf#2-z c.pdf#1,3 -o all.pdf
 egap split book.pdf -o chapters/ --range 1-12 --range 13-40 --range 41-z
@@ -311,7 +331,7 @@ with <code>Egap.Cli --yes -- mcp</code>.</p>
 </tr>
 <tr>
 <td><code>compare --json</code></td>
-<td><a href="https://raw.githubusercontent.com/inexin/Egap/main/docs/schemas/egap-compare-1.json">egap-compare-1.json</a></td>
+<td><a href="https://raw.githubusercontent.com/inexin/Egap/main/docs/schemas/egap-compare-1.json">egap-compare-1.json</a> (PDFs), <a href="https://raw.githubusercontent.com/inexin/Egap/main/docs/schemas/egap-document-compare-1.json">egap-document-compare-1.json</a> (documents)</td>
 </tr>
 <tr>
 <td><code>verify --json</code></td>

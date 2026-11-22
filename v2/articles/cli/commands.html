@@ -251,6 +251,10 @@ share. Options every command takes: <code>--help</code>, <code>--verbose</code>,
 <td>To PDF: the document's comments left out (none, the default), written as annotations a PDF viewer shows, or printed in a pane beside each page (margin).</td>
 </tr>
 <tr>
+<td><code>--revisions &lt;final|markup|original&gt;</code></td>
+<td>Documents with tracked changes: write them accepted (final), with the changes marked (markup) or rejected (original). PDF, HTML and Markdown show markup coloured; DOCX, RTF and ODT keep the tracked changes.</td>
+</tr>
+<tr>
 <td><code>--linearize</code></td>
 <td>Lay the file out for fast web view; writes the whole file.</td>
 </tr>
@@ -1507,7 +1511,7 @@ share. Options every command takes: <code>--help</code>, <code>--verbose</code>,
 </table>
 <h2 id="egap-compare">egap compare</h2>
 <p><code>egap compare &lt;old&gt; &lt;new&gt; [options]</code></p>
-<p>Show what changed between two PDFs, in text and in how pages look; exit code 1 when they differ.</p>
+<p>Show what changed between two PDFs, in text and in how pages look, or between two documents of any format egap reads, as tracked changes; exit code 1 when they differ.</p>
 <table>
 <thead>
 <tr>
@@ -1518,43 +1522,103 @@ share. Options every command takes: <code>--help</code>, <code>--verbose</code>,
 <tbody>
 <tr>
 <td><code>&lt;old&gt;</code></td>
-<td>The earlier PDF.</td>
+<td>The earlier PDF or document.</td>
 </tr>
 <tr>
 <td><code>&lt;new&gt;</code></td>
-<td>The later PDF.</td>
+<td>The later PDF or document.</td>
 </tr>
 <tr>
 <td><code>--text-only</code></td>
-<td>Compare the text only.</td>
+<td>PDFs: compare the text only.</td>
 </tr>
 <tr>
 <td><code>--visual-only</code></td>
-<td>Compare how the pages look only.</td>
+<td>PDFs: compare how the pages look only.</td>
 </tr>
 <tr>
 <td><code>--dpi &lt;dpi&gt;</code></td>
-<td>The resolution pages are compared at; 72 by default.</td>
+<td>PDFs: the resolution pages are compared at; 72 by default.</td>
 </tr>
 <tr>
 <td><code>--tolerance &lt;level&gt;</code></td>
-<td>How much a pixel's channels may differ and still count as the same, 0 to 255.</td>
+<td>PDFs: how much a pixel's channels may differ and still count as the same, 0 to 255.</td>
 </tr>
 <tr>
 <td><code>--min-changed-pixels &lt;count&gt;</code></td>
-<td>The fewest changed pixels that make a page differ.</td>
+<td>PDFs: the fewest changed pixels that make a page differ.</td>
 </tr>
 <tr>
 <td><code>--markup &lt;file&gt;</code></td>
-<td>Write the new PDF with the changes marked to this file.</td>
+<td>PDFs: write the new PDF with the changes marked to this file.</td>
 </tr>
 <tr>
 <td><code>--diff-images &lt;folder&gt;</code></td>
-<td>Write a difference image per changed page into this folder.</td>
+<td>PDFs: write a difference image per changed page into this folder.</td>
 </tr>
 <tr>
 <td><code>--json</code></td>
-<td>Write the changes as JSON (schema 1, docs/schemas/egap-compare-1.json).</td>
+<td>Write the changes as JSON: for PDFs schema 1 (docs/schemas/egap-compare-1.json), for documents schema 1 (docs/schemas/egap-document-compare-1.json).</td>
+</tr>
+<tr>
+<td><code>--as-documents</code></td>
+<td>Compare two PDFs as documents, read through layout analysis, instead of by page.</td>
+</tr>
+<tr>
+<td><code>--output &lt;file&gt;</code></td>
+<td>Documents: write the result with tracked changes to this file, DOCX, RTF or ODT.</td>
+</tr>
+<tr>
+<td><code>--redline &lt;file&gt;</code></td>
+<td>Documents: write the result with the changes marked to this file, PDF, HTML, EPUB or Markdown.</td>
+</tr>
+<tr>
+<td><code>--granularity &lt;word|character&gt;</code></td>
+<td>Documents: mark whole words that changed (word, the default) or only the letters (character).</td>
+</tr>
+<tr>
+<td><code>--base &lt;original|revised&gt;</code></td>
+<td>Documents: the document the result is a copy of, with its styles and page setup: revised (the default) or original.</td>
+</tr>
+<tr>
+<td><code>--author &lt;name&gt;</code></td>
+<td>Documents: the author of the tracked changes; Egap by default.</td>
+</tr>
+<tr>
+<td><code>--no-formatting</code></td>
+<td>Documents: leave formatting changes out (they are left out anyway when the two come from different formats).</td>
+</tr>
+<tr>
+<td><code>--no-case</code></td>
+<td>Documents: ignore changes of case only.</td>
+</tr>
+<tr>
+<td><code>--no-whitespace</code></td>
+<td>Documents: ignore changes of spacing only.</td>
+</tr>
+<tr>
+<td><code>--no-moves</code></td>
+<td>Documents: show moved paragraphs as deleted and inserted.</td>
+</tr>
+<tr>
+<td><code>--no-headers</code></td>
+<td>Documents: leave headers and footers out.</td>
+</tr>
+<tr>
+<td><code>--no-notes</code></td>
+<td>Documents: leave the text of footnotes and endnotes out.</td>
+</tr>
+<tr>
+<td><code>--no-textboxes</code></td>
+<td>Documents: leave the text of text boxes out.</td>
+</tr>
+<tr>
+<td><code>--no-fields</code></td>
+<td>Documents: compare fields by their results only, not their codes.</td>
+</tr>
+<tr>
+<td><code>--no-comments</code></td>
+<td>Documents: keep the base document's comments instead of the revised one's.</td>
 </tr>
 <tr>
 <td><code>--password &lt;text&gt;</code></td>
