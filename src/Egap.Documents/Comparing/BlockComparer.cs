@@ -105,6 +105,10 @@ internal sealed partial class BlockComparer
         }
 
         KeepSectionBreaks();
+        if (options.Moves)
+        {
+            FindTextMoves();
+        }
 
         PlaceComments();
 
@@ -127,7 +131,7 @@ internal sealed partial class BlockComparer
         }
 
         List<DocumentChange> list = [];
-        foreach (PendingChange change in changes)
+        foreach (PendingChange change in InDocumentOrder())
         {
             Story story = change.Anchor as Story ?? change.Anchor.GetAncestor<Story>() ?? result.Sections[0].Body;
             list.Add(new DocumentChange(change.Kind, change.OldText, change.NewText, story, change.Tracked));
@@ -142,6 +146,41 @@ internal sealed partial class BlockComparer
             ParagraphsTouched = paragraphsTouched,
         };
         return new DocumentComparison(result, list, statistics, warnings);
+    }
+
+    /// <summary>
+    /// The changes to list: those moved text left empty go, and when moved text added changes at the end, all are put in
+    /// document order by their first tracked change's paragraph.
+    /// </summary>
+    private IEnumerable<PendingChange> InDocumentOrder()
+    {
+        IEnumerable<PendingChange> kept = changes.Where((_, i) => !removedChanges.Contains(i));
+        if (!sortChanges)
+        {
+            return kept;
+        }
+
+        Dictionary<Paragraph, int> order = [];
+        foreach (Paragraph paragraph in result.Descendants<Paragraph>())
+        {
+            order[paragraph] = order.Count;
+        }
+
+        List<(PendingChange Change, int Key)> keyed = [];
+        int last = -1;
+        foreach (PendingChange change in kept)
+        {
+            Node? node = change.Tracked.Count > 0 ? change.Tracked[0].Node : change.Anchor;
+            Paragraph? paragraph = node as Paragraph ?? node.GetAncestor<Paragraph>();
+            if (paragraph is not null && order.TryGetValue(paragraph, out int key))
+            {
+                last = key;
+            }
+
+            keyed.Add((change, last));
+        }
+
+        return keyed.OrderBy(x => x.Key).Select(x => x.Change);
     }
 
     private static List<(Block, Body)> Flatten(Document document)
@@ -505,6 +544,10 @@ internal sealed partial class BlockComparer
             foreach (Inline inline in paragraph.Inlines)
             {
                 tracked.Add(new TrackedChange(inline, TrackedChangeTarget.Node));
+                if (node is Paragraph && inline is Footnote note && options.Notes)
+                {
+                    tracked.AddRange(NoteInlines(note).Select(x => new TrackedChange(x, TrackedChangeTarget.Node)));
+                }
             }
 
             if (node is Paragraph)
@@ -1102,6 +1145,15 @@ internal sealed partial class BlockComparer
         return changes.Count > before;
     }
 
+    /// <summary>
+    /// The text of a note inserted or deleted with its reference: the inlines of its paragraphs, tracked with the reference
+    /// as Word tracks them, so the note's words count as changed and rejecting or accepting the reference settles them too.
+    /// </summary>
+    private static List<Inline> NoteInlines(Footnote note)
+    {
+        return [.. note.Story.Descendants<Paragraph>().SelectMany(p => p.Inlines).Where(i => i.Revision is null && !IsMarker(i))];
+    }
+
     /// <summary>The single inline of the atom at <paramref name="start"/> in a paragraph's text, if it is one inline.</summary>
     private static Inline? AtomAt(ParagraphTokens paragraph, int start)
     {
@@ -1506,12 +1558,20 @@ internal sealed partial class BlockComparer
             }
         }
 
-        private static void Add(Inline inline, Revision? revision, List<Inline> output, List<TrackedChange>? tracked)
+        private void Add(Inline inline, Revision? revision, List<Inline> output, List<TrackedChange>? tracked)
         {
             if (revision is not null)
             {
                 inline.Revision = revision;
                 tracked?.Add(new TrackedChange(inline, TrackedChangeTarget.Node));
+                if (inline is Footnote note && owner.options.Notes)
+                {
+                    foreach (Inline inner in NoteInlines(note))
+                    {
+                        inner.Revision = revision;
+                        tracked?.Add(new TrackedChange(inner, TrackedChangeTarget.Node));
+                    }
+                }
             }
 
             output.Add(inline);

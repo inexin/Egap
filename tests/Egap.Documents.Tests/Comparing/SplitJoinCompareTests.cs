@@ -153,10 +153,13 @@ public sealed class SplitJoinCompareTests
 
         DocumentComparison comparison = RoundTrip.Check(a, b, Options(baseDocument));
 
-        // The first piece pairs with the paragraph; the table and the second piece are inserted whole.
+        // The first piece pairs with the paragraph; the table and the second piece are inserted whole, the second piece's
+        // words as moved from the paragraph's end.
         List<Paragraph> result = [.. comparison.Document.Sections[0].Body.Paragraphs];
         Assert.Equal(RevisionKind.Insertion, result[^1].MarkRevision?.Kind);
-        Assert.Equal("for the coming year after a long debate.", Text(result[^1], RevisionKind.Insertion));
+        Assert.Equal("for the coming year after a long debate", Text(result[^1], RevisionKind.MoveTo));
+        Assert.Equal("for the coming year after a long debate", Text(result[0], RevisionKind.MoveFrom));
+        Assert.Contains(comparison.Changes, c => c.Kind == CompareChangeKind.Moved);
         Assert.Equal(RevisionKind.Insertion, comparison.Document.Sections[0].Body.Tables.Single().Rows[0].Revision?.Kind);
     }
 
