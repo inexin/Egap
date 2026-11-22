@@ -326,6 +326,24 @@ public class EditingTests
         Assert.False(builder.MoveToBookmark("Missing"));
     }
 
+    [Fact]
+    public void ACopiedFormatChangeKeepsItsOldListInTheCopy()
+    {
+        Document doc = new();
+        List list = doc.Lists.AddNumbered();
+        Paragraph p = doc.AddSection().Body.AddParagraph("item");
+        ParagraphFormat old = new();
+        old.List = list;
+        p.FormatRevision = new FormatRevision("Ada", null, old);
+
+        Document copy = doc.Clone();
+        copy.Revisions.RejectAll();
+
+        Paragraph rejected = copy.Sections[0].Body.Paragraphs.Single();
+        Assert.Same(copy, rejected.Format.List!.Document);
+        Assert.NotNull(rejected.ListLabel);
+    }
+
     private static (Document Doc, Paragraph Paragraph) ChangedDocument()
     {
         Document doc = new();

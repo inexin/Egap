@@ -150,10 +150,19 @@ public sealed record FormatRevision(string Author, DateTimeOffset? Date, FormatB
     /// </summary>
     public Style? OldStyle { get; init; }
 
-    /// <summary>This revision with its old style in <paramref name="context"/>'s document, for a copy of its node.</summary>
+    /// <summary>This revision with its old style and list in <paramref name="context"/>'s document, for a copy of its node.</summary>
     internal FormatRevision CopyFor(CloneContext context)
     {
-        return OldStyle is null || OldStyle.Document == context.Target ? this : this with { OldStyle = context.Map(OldStyle) };
+        FormatRevision copy = OldStyle is null || OldStyle.Document == context.Target ? this : this with { OldStyle = context.Map(OldStyle) };
+        if (OldFormat is ParagraphFormat format && format.GetRaw(ParagraphFormat.ListId) is List list && list != List.None && list.Document != context.Target)
+        {
+            ParagraphFormat old = new();
+            old.CopyRaw(format);
+            context.FixLists(old);
+            copy = copy with { OldFormat = old };
+        }
+
+        return copy;
     }
 }
 
