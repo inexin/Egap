@@ -145,6 +145,7 @@ internal sealed class ParagraphTokens
         List<int> ids = [];
         List<int> starts = [];
         List<bool> words = [];
+        int spaceEnd = -1;
         int start = 0;
         while (start < all.Length)
         {
@@ -161,7 +162,7 @@ internal sealed class ParagraphTokens
                 }
                 else
                 {
-                    ids.Add(table.Atom(AtomKey(atom, table.FieldCodes)));
+                    ids.Add(table.Atom(AtomKey(atom, table.FieldCodes, table.AcrossFormats)));
                     words.Add(false);
                 }
 
@@ -219,6 +220,23 @@ internal sealed class ParagraphTokens
 
         void AddText(ReadOnlySpan<char> token, int at)
         {
+            if (table.AcrossFormats && token.Length > 0 && token.Trim().IsEmpty)
+            {
+                // Across formats a stretch of white space is one, whatever it is made of: HTML keeps runs of spaces and tabs
+                // as no-break spaces, so only that there is space counts.
+                if (spaceEnd == at && starts.Count > 0)
+                {
+                    spaceEnd = at + token.Length;
+                    return;
+                }
+
+                starts.Add(at);
+                ids.Add(table.Text(" "));
+                words.Add(false);
+                spaceEnd = at + token.Length;
+                return;
+            }
+
             starts.Add(at);
             ids.Add(table.Text(token));
             words.Add(IsWord(token));
@@ -356,7 +374,7 @@ internal sealed class ParagraphTokens
     /// shape by its kind and size, as their text is compared as a story of its own; a picture by its image and size; a field
     /// by its code and result, or by its result only.
     /// </summary>
-    private static string AtomKey(ParagraphPiece atom, bool fieldCodes)
+    private static string AtomKey(ParagraphPiece atom, bool fieldCodes, bool acrossFormats)
     {
         StringBuilder key = new();
         bool skipping = !fieldCodes && atom.First is FieldStart;
@@ -401,6 +419,12 @@ internal sealed class ParagraphTokens
                     break;
                 case Hyperlink link:
                     key.Append(link.Address).Append('#').Append(link.Anchor).Append(':').Append(link.GetText());
+                    break;
+                case Island island when acrossFormats:
+                    // Each format keeps its own markup for what it cannot read, so across formats an island is known only
+                    // by its kind, and a drawing (a VML shape, a shape group, an embedded object) as one, as one format
+                    // keeps as a VML shape what another keeps as a group or an object.
+                    key.Append(island.Kind is IslandKind.Math or IslandKind.Chart or IslandKind.SmartArt or IslandKind.Ink ? island.Kind : IslandKind.Other);
                     break;
                 case Island island:
                     key.Append(island.Kind).Append(':').Append(island.Format).Append(':')

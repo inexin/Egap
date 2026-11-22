@@ -128,4 +128,26 @@ public class HtmlReaderTests
         Assert.True(layout.Pages.Count >= 1);
         Assert.Contains(layout.Pages.SelectMany(p => p.BodyLines), l => l.Text.Contains("nested", StringComparison.Ordinal));
     }
+
+    [Fact]
+    public void TextHiddenInALineIsHiddenText()
+    {
+        // Word writes hidden text as spans with display: none, and reads them back as hidden text.
+        Document document = HtmlFormat.Parse("<p><span style='display:none'>&lt;@33&gt;</span><i>Depth class:</i><span style='display:none'>&lt;p&gt;</span> Very deep</p><div style='display:none'><p>Gone</p></div>");
+
+        Paragraph paragraph = document.Sections[0].Body.Paragraphs.Single();
+        Assert.Equal("<@33>Depth class:<p> Very deep", paragraph.GetText().TrimEnd('\r'));
+        Assert.Equal(["<@33>", "<p>"], paragraph.Runs.Where(r => r.Format.Hidden == true).Select(r => r.Text));
+    }
+
+    [Fact]
+    public void AParagraphOfOneNoBreakSpaceIsEmpty()
+    {
+        Document document = HtmlFormat.Parse("<p>One</p><p style='font-size:14pt'>&nbsp;</p><p>&nbsp;x</p>");
+
+        List<Paragraph> paragraphs = [.. document.Sections[0].Body.Paragraphs];
+        Assert.Empty(paragraphs[1].Inlines);
+        Assert.Equal(14, paragraphs[1].MarkFormat.Size);
+        Assert.Equal("\u00A0x", paragraphs[2].GetText().TrimEnd('\r'));
+    }
 }

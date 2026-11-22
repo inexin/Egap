@@ -468,8 +468,28 @@ public class RtfReaderTests
         Assert.NotNull(islands[0].Fallback);
         Assert.Equal(IslandKind.OleObject, islands[1].Kind);
         Assert.Equal(100, islands[1].Width);
-        Assert.Equal("Excel.Sheet.12", islands[1].Text);
+        Assert.Equal("", islands[1].Text); // the object's class is not text that shows, as for a DOCX object
         Assert.Contains(warnings, w => w.Kind == ConversionWarningKind.DrawingDropped);
+    }
+
+    [Fact]
+    public void ASymbolFieldIsItsCharacter()
+    {
+        // As Word writes a w:sym and reads it back: the character in the font's private-use place, in that font.
+        Document document = Read(@"100 {\field{\*\fldinst SYMBOL 109 \\f ""Symbol"" \\s 14}{\fldrslt}}m and {\field{\*\fldinst SYMBOL 169}{\fldrslt}}\par");
+
+        Assert.Empty(document.Descendants<FieldStart>());
+        Assert.Equal("100 \uF06Dm and \u00A9", Paragraphs(document)[0].GetText());
+        Assert.Equal("Symbol", Runs(document).Single(r => r.Text == "\uF06D").Format.FontAscii);
+    }
+
+    [Fact]
+    public void TextInASymbolFontIsAtItsPrivateUsePlace()
+    {
+        // As Word reads it, and keeps it in DOCX: a symbol font's bytes at U+F000 and above.
+        Document document = Read(@"100 {\f4 \'6d}m {\f4 ab}\par");
+
+        Assert.Equal("100 \uF06Dm \uF061\uF062", Paragraphs(document)[0].GetText());
     }
 
     [Fact]

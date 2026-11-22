@@ -284,6 +284,48 @@ public sealed class TextMoveCompareTests
         }
     }
 
+    [Theory]
+    [InlineData("rtf")]
+    [InlineData("odt")]
+    [InlineData("docx")]
+    public void ChangedHyperlinksRoundTrip(string format)
+    {
+        Document original = DocumentCompareTests.Make("Write to ", "Old line.", "Kept line.");
+        original.Sections[0].Body.Paragraphs.First().AddHyperlink("our main office", "mailto:office@example.com");
+        original.Sections[0].Body.Paragraphs.ElementAt(1).AddHyperlink("the old site", "https://old.example.com/");
+        Document revised = DocumentCompareTests.Make("Write to ", "Old line.", "Kept line.");
+        revised.Sections[0].Body.Paragraphs.First().AddHyperlink("our new office", "mailto:office@example.com");
+        revised.Sections[0].Body.Paragraphs.ElementAt(2).AddHyperlink("the new site", "https://new.example.com/");
+
+        // A link whose text changed, a link deleted whole and a link inserted whole: each keeps its changes through the
+        // format, a link RTF writes as a field reading back as a link.
+        DocumentComparison comparison = DocumentCompare.Run(original, revised);
+
+        WriterRoundTripTests.Check(original, revised, comparison.Document, format);
+        Document back = WriterRoundTripTests.Through(comparison.Document, format);
+        Assert.Empty(back.Descendants<FieldStart>());
+        Assert.Equal(comparison.Document.Descendants<Hyperlink>().Count(), back.Descendants<Hyperlink>().Count());
+    }
+
+    [Theory]
+    [InlineData(IslandKind.ShapeGroup, true)]
+    [InlineData(IslandKind.OleObject, true)]
+    [InlineData(IslandKind.Math, false)]
+    public void AcrossFormatsAKeptDrawingEqualsTheOtherFormatsDrawing(IslandKind kind, bool same)
+    {
+        // DOCX keeps a shape group as a VML island where RTF keeps a group of its own, each in its own markup.
+        Document original = DocumentCompareTests.Make("Figure ");
+        original.Sections[0].Body.Paragraphs.First().Inlines.Add(new Island(original, IslandKind.Vml, "docx", "<v:group />"));
+        original.SourceFormat = DocumentFormatKind.Docx;
+        Document revised = DocumentCompareTests.Make("Figure ");
+        revised.Sections[0].Body.Paragraphs.First().Inlines.Add(new Island(revised, kind, "rtf", @"{\shp}") { Text = "Group 334" });
+        revised.SourceFormat = DocumentFormatKind.Rtf;
+
+        DocumentComparison comparison = DocumentCompare.Run(original, revised);
+
+        Assert.Equal(same, comparison.Changes.Count == 0);
+    }
+
     [Fact]
     public void InTheSameFormatAFieldStillDiffersFromItsText()
     {

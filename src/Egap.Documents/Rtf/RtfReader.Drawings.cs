@@ -405,7 +405,6 @@ internal sealed partial class RtfReader
         double height = Bounded(Math.Abs((long)info.Bottom - info.Top) / 20.0);
         FloatingPlacement placement = WordShapes.Placement(new WordShapeAnchor(info.Left, info.Top, info.Right, info.Bottom, info.HorizontalAnchor, info.VerticalAnchor, info.Wrap, info.WrapSide, info.Behind, info.ZOrder), info.Properties);
         int shapeType = int.TryParse(info.Properties.GetValueOrDefault("shapeType"), NumberStyles.Integer, CultureInfo.InvariantCulture, out int t) ? t : 0;
-        string? name = info.Properties.GetValueOrDefault("wzName");
         string? description = info.Properties.GetValueOrDefault("wzDescription");
         if (!isGroup && info.Picture is { } picture && info.TextBoxShape is null && shapeType is 75 or 0 or 1)
         {
@@ -442,7 +441,6 @@ internal sealed partial class RtfReader
             Width = width > 0 ? width : info.Result?.Width ?? 0,
             Height = height > 0 ? height : info.Result?.Height ?? 0,
             Floating = placement,
-            Text = name ?? "",
         };
         AddInline(island);
 
@@ -654,7 +652,6 @@ internal sealed partial class RtfReader
         int start = state.GroupStart;
         int groupDepth = depth;
         Picture? result = null;
-        string? objectClass = null;
         int width = 0;
         int height = 0;
         while (true)
@@ -677,10 +674,6 @@ internal sealed partial class RtfReader
                 if (first == RtfTokenKind.ControlWord && tokens.Word == "result")
                 {
                     result ??= FindPicture();
-                }
-                else if (first == RtfTokenKind.ControlWord && tokens.Word == "objclass")
-                {
-                    objectClass = ReadText();
                 }
                 else
                 {
@@ -725,7 +718,6 @@ internal sealed partial class RtfReader
             Fallback = result?.Image,
             Width = result?.Width ?? Bounded(WordProperties.Twips(Math.Max(0, width))),
             Height = result?.Height ?? Bounded(WordProperties.Twips(Math.Max(0, height))),
-            Text = objectClass ?? "",
         });
     }
 

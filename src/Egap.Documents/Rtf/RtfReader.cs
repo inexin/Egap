@@ -422,7 +422,7 @@ internal sealed partial class RtfReader
         {
             int tab = value.IndexOf((byte)'\t');
             ReadOnlySpan<byte> part = tab < 0 ? value : value[..tab];
-            if (byteCount == 0 && !part.ContainsAnyExceptInRange((byte)0x20, (byte)0x7E))
+            if (byteCount == 0 && !part.ContainsAnyExceptInRange((byte)0x20, (byte)0x7E) && !IsSymbolCharset(state.Font))
             {
                 foreach (byte b in part)
                 {
@@ -471,7 +471,20 @@ internal sealed partial class RtfReader
             return;
         }
 
-        text.Append(EncodingOf(state.Font).GetString(bytes, 0, byteCount));
+        if (IsSymbolCharset(state.Font))
+        {
+            // A symbol font's text, as Word reads it: each byte at its private-use place, U+F000 above it, as a w:sym
+            // keeps it.
+            for (int i = 0; i < byteCount; i++)
+            {
+                text.Append(bytes[i] >= 0x20 ? (char)(0xF000 + bytes[i]) : (char)bytes[i]);
+            }
+        }
+        else
+        {
+            text.Append(EncodingOf(state.Font).GetString(bytes, 0, byteCount));
+        }
+
         byteCount = 0;
     }
 
