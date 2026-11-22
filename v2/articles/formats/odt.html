@@ -121,8 +121,8 @@ footers, and a different first page or left page. Sections with columns become c
 <li>Fields as Word's fields: page numbers and counts, dates and times, document information, file names, chapters,
 sequences, references to bookmarks, sequences and notes, custom properties and mail merge columns. A table of contents
 or other index is a <code>TOC</code> field holding its entries. Fields Word has nothing like, such as variables, keep their text.</li>
-<li>Tracked insertions and deletions with their authors and dates, a deletion that spans paragraphs too. Tracked
-formatting changes are read as accepted, with a warning.</li>
+<li>Tracked insertions and deletions with their authors and dates, a deletion that spans paragraphs too, and inserted and
+deleted table rows as LibreOffice marks them. Tracked formatting changes are read as accepted, with a warning.</li>
 <li>Hyphenation: ODF turns it on per style (<code>fo:hyphenate</code>), so a style that hyphenates turns
 <code>DocumentSettings.AutoHyphenation</code> on, with that style's line limit (<code>fo:hyphenation-ladder-count</code>), zone and capitals
 switch (LibreOffice's <code>loext:hyphenation-zone</code> and <code>loext:hyphenation-no-caps</code>). Paragraphs whose style does not
@@ -164,7 +164,9 @@ it, or as a first master page for ODF 1.2) and different left pages, page number
 with columns is a <code>text:section</code>.</li>
 <li>Tables with their columns, header rows and spans (as covered cells), nested tables, borders, shading and padding.</li>
 <li>Footnotes and endnotes, comments with their ranges, bookmarks, links, and tracked insertions and deletions, a deletion
-across paragraphs too.</li>
+across paragraphs too. Inserted and deleted table rows are marked as LibreOffice marks them. Moves are written as a
+deletion and an insertion, with a <code>MovesSplit</code> warning, and tracked format changes as accepted, with a
+<code>ChangesAccepted</code> warning.</li>
 <li>Fields as OpenDocument's own where there is one: page numbers and counts, dates and times, document information,
 references to bookmarks and notes, sequences and the table of contents. Other fields keep their last result, with a
 warning.</li>

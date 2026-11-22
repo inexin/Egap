@@ -7676,6 +7676,12 @@ references:
   commentId: F:Egap.Documents.ConversionWarningKind.MergedCellsSplit
   fullName: Egap.Documents.ConversionWarningKind.MergedCellsSplit
   nameWithType: ConversionWarningKind.MergedCellsSplit
+- uid: Egap.Documents.ConversionWarningKind.MovesSplit
+  name: MovesSplit
+  href: api/Egap.Documents.ConversionWarningKind.html#Egap_Documents_ConversionWarningKind_MovesSplit
+  commentId: F:Egap.Documents.ConversionWarningKind.MovesSplit
+  fullName: Egap.Documents.ConversionWarningKind.MovesSplit
+  nameWithType: ConversionWarningKind.MovesSplit
 - uid: Egap.Documents.ConversionWarningKind.PageLayoutDropped
   name: PageLayoutDropped
   href: api/Egap.Documents.ConversionWarningKind.html#Egap_Documents_ConversionWarningKind_PageLayoutDropped
