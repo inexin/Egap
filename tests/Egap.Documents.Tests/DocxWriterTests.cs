@@ -174,6 +174,122 @@ public class DocxWriterTests
         Assert.Same(comments[0], comments[1].ParentComment);
     }
 
+    [Theory]
+    [InlineData(RevisionKind.Deletion, "del", "delText", "delInstrText")]
+    [InlineData(RevisionKind.Insertion, "ins", "t", "instrText")]
+    public void ATrackedHyperlinkHoldsItsTrackedChange(RevisionKind kind, string change, string text, string code)
+    {
+        // A tracked change holds runs only, so Word calls a w:del round a w:hyperlink (with w:t inside) corrupt.
+        Document document = new();
+        Paragraph paragraph = document.AddSection().Body.AddParagraph();
+        paragraph.AddRun("See ");
+        Hyperlink link = new(document) { Address = "https://example.com/" };
+        link.Inlines.Add(new Run(document, "the site"));
+        link.Inlines.Add(new FieldStart(document));
+        link.Inlines.Add(new Run(document, " PAGEREF x "));
+        link.Inlines.Add(new FieldSeparator(document));
+        link.Inlines.Add(new Run(document, "2"));
+        link.Inlines.Add(new FieldEnd(document));
+        link.Revision = new Revision(kind, "Ann");
+        paragraph.Inlines.Add(link);
+
+        byte[] saved = Save(document);
+
+        XElement hyperlink = Part(saved, "word/document.xml").Descendants(W + "hyperlink").Single();
+        Assert.Equal(W + "p", hyperlink.Parent!.Name);
+        XElement wrapper = Assert.Single(hyperlink.Elements());
+        Assert.Equal(W + change, wrapper.Name);
+        Assert.Equal(["the site", "2"], wrapper.Descendants(W + text).Select(t => t.Value));
+        Assert.Equal(" PAGEREF x ", wrapper.Descendants(W + code).Single().Value);
+
+        Document read = DocxFormat.Load(new MemoryStream(saved));
+        Assert.Equal(kind, read.Descendants<Hyperlink>().Single().Revision?.Kind);
+        Assert.All(read.Descendants<Run>(), r => Assert.Null(r.Revision));
+        read.Revisions.AcceptAll();
+        Assert.Equal(kind == RevisionKind.Insertion, read.Sections[0].Body.Paragraphs.Single().GetText().Contains("the site", StringComparison.Ordinal));
+        Assert.Equal(kind == RevisionKind.Insertion, read.Descendants<Hyperlink>().Any());
+    }
+
+    [Fact]
+    public void ADeletedNoteKeepsItsMarkAsDeletedText()
+    {
+        Document document = new();
+        Paragraph paragraph = document.AddSection().Body.AddParagraph("Text");
+        Footnote note = paragraph.AddFootnote("A note.");
+        note.CustomMark = "*";
+        note.Revision = new Revision(RevisionKind.Deletion, "Ann");
+
+        byte[] saved = Save(document);
+
+        XElement deletion = Part(saved, "word/document.xml").Descendants(W + "del").Single();
+        Assert.Equal("*", deletion.Descendants(W + "delText").Single().Value);
+        Assert.Empty(deletion.Descendants(W + "t"));
+        Footnote read = DocxFormat.Load(new MemoryStream(saved)).Descendants<Footnote>().Single();
+        Assert.Equal(("*", RevisionKind.Deletion), (read.CustomMark, read.Revision?.Kind));
+    }
+
+    [Fact]
+    public void AMovedHyperlinkKeepsItsMoveRange()
+    {
+        Document document = new();
+        Body body = document.AddSection().Body;
+        Revision from = new(RevisionKind.MoveFrom, "Ann") { MoveName = "move1" };
+        Revision to = new(RevisionKind.MoveTo, "Ann") { MoveName = "move1" };
+        foreach (Revision revision in (Revision[])[from, to])
+        {
+            Hyperlink link = new(document) { Address = "https://example.com/" };
+            link.Inlines.Add(new Run(document, "the site"));
+            link.Revision = revision;
+            body.AddParagraph().Inlines.Add(link);
+        }
+
+        XElement xml = Part(Save(document), "word/document.xml");
+
+        foreach (string side in (string[])["moveFrom", "moveTo"])
+        {
+            XElement start = xml.Descendants(W + side + "RangeStart").Single();
+            Assert.Equal(W + "hyperlink", start.ElementsAfterSelf().First().Name);
+            Assert.Equal(W + side, start.ElementsAfterSelf().First().Elements().Single().Name);
+            Assert.Equal(W + side + "RangeEnd", start.ElementsAfterSelf().ElementAt(1).Name);
+        }
+    }
+
+    [Fact]
+    public void AnIslandFromAnotherFileBringsItsParts()
+    {
+        // A VML group keeps its markup, which names its image by relationship id; in another file that id would name
+        // something else, such as the styles, and Word calls the file corrupt.
+        const string ns = "xmlns:w=\"http://schemas.openxmlformats.org/wordprocessingml/2006/main\" xmlns:v=\"urn:schemas-microsoft-com:vml\""
+            + " xmlns:r=\"http://schemas.openxmlformats.org/officeDocument/2006/relationships\"";
+        OpcPackageWriter writer = new();
+        writer.AddXmlPart("/word/document.xml", "application/vnd.openxmlformats-officedocument.wordprocessingml.document.main+xml", XDocument.Parse(
+            "<w:document " + ns + "><w:body><w:p><w:r><w:pict><v:group style=\"width:10pt;height:10pt\"><v:shape style=\"width:10pt;height:10pt\"><v:imagedata r:id=\"rId1\"/></v:shape></v:group></w:pict></w:r>"
+            + "<w:r><w:pict><v:group style=\"width:10pt;height:10pt\"><v:shape style=\"width:10pt;height:10pt\"><v:imagedata r:id=\"rId9\"/></v:shape></v:group></w:pict></w:r></w:p></w:body></w:document>"));
+        writer.AddPart("/word/media/image1.png", "image/png", [1, 2, 3]);
+        writer.AddRelationship("/", "rId1", OpcRelationshipTypes.OfficeDocument, "word/document.xml");
+        writer.AddRelationship("/word/document.xml", "rId1", OpcRelationshipTypes.Image, "media/image1.png");
+        using MemoryStream stream = new();
+        writer.Save(stream);
+        Document source = DocxFormat.Load(new MemoryStream(stream.ToArray()));
+        Document other = new();
+        other.AddSection().Body.AddParagraph("Text");
+        Document document = RoundTrip(other);
+        document.Sections[0].Body.Blocks.Add(document.Import(source.Sections[0].Body.Paragraphs.First()));
+
+        byte[] saved = Save(document);
+
+        XNamespace r = "http://schemas.openxmlformats.org/officeDocument/2006/relationships";
+        XNamespace v = "urn:schemas-microsoft-com:vml";
+        XNamespace rels = "http://schemas.openxmlformats.org/package/2006/relationships";
+        XElement[] images = [.. Part(saved, "word/document.xml").Descendants(v + "imagedata")];
+        XElement relationship = Part(saved, "word/_rels/document.xml.rels").Elements(rels + "Relationship")
+            .Single(e => (string?)e.Attribute("Id") == (string?)images[0].Attribute(r + "id"));
+        Assert.Equal(OpcRelationshipTypes.Image, (string?)relationship.Attribute("Type"));
+        using ZipArchive zip = new(new MemoryStream(saved));
+        Assert.Equal([1, 2, 3], ReadEntry(zip.GetEntry("word/" + (string)relationship.Attribute("Target")!)!));
+        Assert.Null(images[1].Attribute(r + "id"));
+    }
+
     [Fact]
     public void MacrosAreKeptOrDroppedByKind()
     {
