@@ -86,6 +86,17 @@ follows with the rest of Egap. Install it with `dotnet tool install -g Egap.Cli 
   compared as one text and only the paragraph marks between the pieces change (inserted for a split, deleted for a
   join), up to four pieces, with the word changes kept inside. Before, one piece was compared with the paragraph and the
   others were inserted or deleted whole. Pieces on either side of a table are not taken as one.
+- Document compare finds moved sentences too: a run of at least six words deleted and inserted again, the same, inside
+  a paragraph or in another one, becomes a move with shared move names, as moved paragraphs do.
+- Document compare tracks the text of a footnote or endnote inserted or deleted with its reference, as Word does, so
+  rejecting or accepting the reference takes the note's text with it.
+- Document compare reads a full stop between two letters with no space after it (`one.This`) as the end of a word, as
+  Word does; numbers such as `3.5` keep their stop.
+- When the inputs of a comparison come from different formats, a field that shows one word, such as a table of
+  contents page number that the other format kept as text, equals that word: only the field's frame is tracked.
+- When the two documents have different sections, document compare tracks a section break only in one of them as a
+  paragraph mark, as Word does, so accepting or rejecting all changes gives each document's sections back. Accepting a
+  deleted paragraph mark that ends a section now joins the section to the next one.
 - DOCX writes a move inside named move ranges (`w:moveFromRangeStart` and `w:moveToRangeStart`), so Word pairs its two
   ends, and reads the range names back into `Revision.MoveName`; before, moves were written without ranges and the names
   read were dropped.
@@ -125,7 +136,10 @@ follows with the rest of Egap. Install it with `dotnet tool install -g Egap.Cli 
     or column break; before, these were left out, so rejecting or accepting left an extra or missing paragraph.
   - RTF writes the change of a field, hyperlink, shape or text box around the whole of it, and a tracked paragraph
     mark's change in a group with the mark. Before, a deleted hyperlink stayed when its text was rejected, and
-    LibreOffice took the paragraphs after a deleted paragraph mark as deleted too.
+    LibreOffice took the paragraphs after a deleted paragraph mark as deleted too. Text inside a tracked field or
+    hyperlink that is not itself changed is written with `\deleted0` or `\revised0`, so it no longer takes
+    the field's change.
+  - ODT writes a field whose start and end alone are tracked with its result kept in both views.
   - ODT writes a table of contents that has tracked changes as its text, with a `FieldsFlattened` warning, as an
     OpenDocument index holds no changes.
 - Rejecting an inserted last paragraph that holds only bookmarks or range ends besides its text now removes it, and
