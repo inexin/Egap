@@ -102,29 +102,41 @@ Console.WriteLine(comparison);                                       // &quot;12
 comparison.Document.Save(&quot;contract-redline.docx&quot;);                   // open it in Word to review the changes
 </code></pre>
 <p>Neither input is changed. The result is a copy of the revised document (or of the original, with
-<code>Base = CompareBase.Original</code>), so it keeps that document's styles, sections and settings.</p>
+<code>Base = CompareBase.Original</code>), so it keeps that document's styles, sections and settings. When the two documents have
+different sections, the warning <code>SectionsDiffer</code> says so, and the other document's section breaks are tracked too (see
+below).</p>
 <h2 id="what-is-compared">What is compared</h2>
 <ul>
 <li><strong>Text.</strong> Paragraphs are lined up first. A paragraph that is only in one document is inserted or deleted whole.
 Paragraphs that share at least half their words are compared word by word. A paragraph split into two to four
 paragraphs, or paragraphs joined into one, is compared as one text: only the paragraph marks between the pieces are
-inserted or deleted, as Word marks them. Word boundaries follow Unicode UAX #29.
+inserted or deleted, as Word marks them. Word boundaries follow Unicode UAX #29, except that a full stop between
+two letters with no space after it ends a word (<code>one.This</code> is two words and the stop), as Word reads it.
 With <code>Granularity = CompareGranularity.Character</code>, only the letters that changed are marked. <code>CaseChanges = false</code>
 ignores changes of case only, and <code>Whitespace = false</code> ignores changes of spacing only.</li>
 <li><strong>Tables.</strong> Rows are matched by their content. A row that is only in one document is a tracked row insertion or
 deletion. Matched rows have their cells compared word by word, and nested tables in turn.</li>
 <li><strong>Formatting.</strong> The same text in another look (bold, size, font or colour), or a paragraph with another style or
 alignment, becomes a format change. A format change keeps the old formatting, so rejecting it puts the old look back.</li>
-<li><strong>Moves.</strong> A run of paragraphs deleted in one place and inserted again elsewhere becomes a move. The run needs at least
-six words, so a short line that repeats is not taken for a move. The source and the destination share a name
-(<code>Revision.MoveName</code>), and Word shows them as one move. As in Word, moves inside a paragraph are not looked for.</li>
+<li><strong>Moves.</strong> A run of paragraphs deleted in one place and inserted again elsewhere becomes a move, and so does a
+sentence or other run of words deleted and inserted again, the same, inside a paragraph or in another one. The run
+needs at least six words, so a short line that repeats is not taken for a move. The source and the destination share a
+name (<code>Revision.MoveName</code>), and Word shows them as one move.</li>
+<li><strong>Section breaks.</strong> When both documents have as many sections, each section is compared with the one at the same
+place. Otherwise the text is compared as one run, and a break only in one document is tracked as a paragraph mark, as
+Word does: rejecting or accepting it joins its section to the next one, which keeps its own page setup and headers. A
+break that follows a paragraph in both documents goes on an empty paragraph after it, and the two marks are tracked so
+that either way the paragraph is as it was.</li>
 <li><strong>Headers and footers.</strong> Each one is compared with the one of the same kind (first, even or default) in the section at
 the same place.</li>
 <li><strong>Notes and text boxes.</strong> A footnote or endnote reference, and a shape, is one token in its paragraph. When both
-documents have it, the note's or text box's text is compared as a story of its own. A shape whose kind or size
-changed is deleted and inserted.</li>
+documents have it, the note's or text box's text is compared as a story of its own. A note inserted or deleted with
+its reference has its text marked inserted or deleted too, as Word marks it. A shape whose kind or size changed is
+deleted and inserted.</li>
 <li><strong>Fields and pictures.</strong> Each is one token. A field is compared by its code and result, or by its result only with
-<code>Fields = false</code>. A picture is compared by its image and size, so a resized picture is deleted and inserted.</li>
+<code>Fields = false</code>. A picture is compared by its image and size, so a resized picture is deleted and inserted. When the
+inputs come from different formats, a field that shows one word, such as a page number in a table of contents, equals
+that word as plain text: the word stays, and only the field's start, code and end are tracked.</li>
 <li><strong>Comments.</strong> Comments are never tracked changes: the result has the revised document's comments, at the same text.</li>
 </ul>
 <p>Each of these has a switch on <code>DocumentCompareOptions</code>: <code>Formatting</code>, <code>Moves</code>, <code>HeadersFooters</code>, <code>Notes</code>, <code>TextBoxes</code>,
@@ -212,13 +224,16 @@ egap compare contract-v1.docx contract-v2.docx --redline contract-redline.pdf --
 </code></pre>
 <h2 id="limits">Limits</h2>
 <ul>
-<li>Moves inside a paragraph are not found; a moved word is a deletion and an insertion.</li>
+<li>A moved run of fewer than six words is a deletion and an insertion. Moved words that also changed are not a move.</li>
 <li>A paragraph split into more than four pieces, or with a table between its pieces, is not taken as a split: one piece
 is compared with it and the others are inserted whole (and the same for a join).</li>
 <li>Cells inserted into or deleted from a row are not tracked changes, as the model tracks whole rows only. A table with no
 row in common is replaced whole.</li>
 <li>A resized picture is deleted and inserted, as Word does not track picture resizing.</li>
 <li>In ODT, a table of contents with changes is written as its text, as an OpenDocument index holds no changes.</li>
+<li>ODT has no tracked section breaks: a section break only in one document is kept in both views of an ODT file.</li>
+<li>A section break only in one document after a table, or after a paragraph whose mark is already a change, is tracked
+on an empty paragraph of its own, which stays when the break is rejected.</li>
 <li>Content that cannot be a tracked change, such as a content control that could not be matched, is kept as in the base
 document; the warning <code>ContentNotTracked</code> counts these.</li>
 </ul>
