@@ -1,0 +1,58 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/inexin/Egap/main/docs/schemas/egap-document-compare-1.json",
+  "title": "egap compare (documents)",
+  "description": "What 'egap compare --json' writes when it compares two documents (any format egap reads, or two PDFs with --as-documents): the changes in document order, their counts and what the comparison could not show exactly.",
+  "type": "object",
+  "required": [ "schema", "kind", "old", "new", "identical", "changes", "statistics", "warnings" ],
+  "additionalProperties": false,
+  "properties": {
+    "schema": { "description": "The schema's version.", "const": 1 },
+    "kind": { "description": "Always documents; the PDF compare's JSON (egap-compare-1.json) has no kind.", "const": "documents" },
+    "old": { "type": "string" },
+    "new": { "type": "string" },
+    "identical": { "description": "Whether nothing changed; the exit code is 0 when true and 1 when false.", "type": "boolean" },
+    "changes": {
+      "description": "The differences in document order. A move is one change.",
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [ "kind", "story", "oldText", "newText", "trackedChanges" ],
+        "additionalProperties": false,
+        "properties": {
+          "kind": { "enum": [ "inserted", "deleted", "replaced", "formatted", "moved" ] },
+          "story": { "description": "Where the change is.", "enum": [ "body", "header", "footer", "footnote", "endnote", "textbox", "comment" ] },
+          "oldText": { "description": "The text before; empty for an insertion.", "type": "string" },
+          "newText": { "description": "The text after; empty for a deletion.", "type": "string" },
+          "trackedChanges": { "description": "How many tracked changes in the result make up the change.", "type": "integer", "minimum": 0 }
+        }
+      }
+    },
+    "statistics": {
+      "type": "object",
+      "required": [ "insertedWords", "deletedWords", "movedWords", "formattingChanges", "paragraphsTouched" ],
+      "additionalProperties": false,
+      "properties": {
+        "insertedWords": { "type": "integer", "minimum": 0 },
+        "deletedWords": { "type": "integer", "minimum": 0 },
+        "movedWords": { "type": "integer", "minimum": 0 },
+        "formattingChanges": { "type": "integer", "minimum": 0 },
+        "paragraphsTouched": { "type": "integer", "minimum": 0 }
+      }
+    },
+    "warnings": {
+      "description": "What the comparison could not show exactly, with how many times it happened.",
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [ "kind", "message", "count" ],
+        "additionalProperties": false,
+        "properties": {
+          "kind": { "enum": [ "existing-revisions-accepted", "edit-limit-reached", "sections-differ", "content-not-tracked", "formatting-not-compared" ] },
+          "message": { "type": "string" },
+          "count": { "type": "integer", "minimum": 1 }
+        }
+      }
+    }
+  }
+}

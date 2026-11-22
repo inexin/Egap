@@ -55,6 +55,7 @@ Convert between formats by the output's extension: HTML, Markdown, DOCX, DOC, RT
 | `--embed-source` | To PDF: embed a DOCX of the document as the PDF's source (a hybrid PDF that converts back to the document); not with PDF/A-1 or 2. |
 | `--ignore-embedded-source` | From PDF: analyse the pages even when the PDF carries an embedded source document Egap can use. |
 | `--comments <none|annotations|margin>` | To PDF: the document's comments left out (none, the default), written as annotations a PDF viewer shows, or printed in a pane beside each page (margin). |
+| `--revisions <final|markup|original>` | Documents with tracked changes: write them accepted (final), with the changes marked (markup) or rejected (original). PDF, HTML and Markdown show markup coloured; DOCX, RTF and ODT keep the tracked changes. |
 | `--linearize` | Lay the file out for fast web view; writes the whole file. |
 | `--compress` | Pack objects into compressed object streams; writes the whole file. |
 | `--deterministic` | Derive the file ID from the content, so the same input always gives the same bytes. |
@@ -463,20 +464,35 @@ Stamp pages with text, page numbers, a watermark, an image, a barcode or Bates n
 
 `egap compare <old> <new> [options]`
 
-Show what changed between two PDFs, in text and in how pages look; exit code 1 when they differ.
+Show what changed between two PDFs, in text and in how pages look, or between two documents of any format egap reads, as tracked changes; exit code 1 when they differ.
 
 | Argument or option | What it does |
 | --- | --- |
-| `<old>` | The earlier PDF. |
-| `<new>` | The later PDF. |
-| `--text-only` | Compare the text only. |
-| `--visual-only` | Compare how the pages look only. |
-| `--dpi <dpi>` | The resolution pages are compared at; 72 by default. |
-| `--tolerance <level>` | How much a pixel's channels may differ and still count as the same, 0 to 255. |
-| `--min-changed-pixels <count>` | The fewest changed pixels that make a page differ. |
-| `--markup <file>` | Write the new PDF with the changes marked to this file. |
-| `--diff-images <folder>` | Write a difference image per changed page into this folder. |
-| `--json` | Write the changes as JSON (schema 1, docs/schemas/egap-compare-1.json). |
+| `<old>` | The earlier PDF or document. |
+| `<new>` | The later PDF or document. |
+| `--text-only` | PDFs: compare the text only. |
+| `--visual-only` | PDFs: compare how the pages look only. |
+| `--dpi <dpi>` | PDFs: the resolution pages are compared at; 72 by default. |
+| `--tolerance <level>` | PDFs: how much a pixel's channels may differ and still count as the same, 0 to 255. |
+| `--min-changed-pixels <count>` | PDFs: the fewest changed pixels that make a page differ. |
+| `--markup <file>` | PDFs: write the new PDF with the changes marked to this file. |
+| `--diff-images <folder>` | PDFs: write a difference image per changed page into this folder. |
+| `--json` | Write the changes as JSON: for PDFs schema 1 (docs/schemas/egap-compare-1.json), for documents schema 1 (docs/schemas/egap-document-compare-1.json). |
+| `--as-documents` | Compare two PDFs as documents, read through layout analysis, instead of by page. |
+| `--output <file>` | Documents: write the result with tracked changes to this file, DOCX, RTF or ODT. |
+| `--redline <file>` | Documents: write the result with the changes marked to this file, PDF, HTML, EPUB or Markdown. |
+| `--granularity <word|character>` | Documents: mark whole words that changed (word, the default) or only the letters (character). |
+| `--base <original|revised>` | Documents: the document the result is a copy of, with its styles and page setup: revised (the default) or original. |
+| `--author <name>` | Documents: the author of the tracked changes; Egap by default. |
+| `--no-formatting` | Documents: leave formatting changes out (they are left out anyway when the two come from different formats). |
+| `--no-case` | Documents: ignore changes of case only. |
+| `--no-whitespace` | Documents: ignore changes of spacing only. |
+| `--no-moves` | Documents: show moved paragraphs as deleted and inserted. |
+| `--no-headers` | Documents: leave headers and footers out. |
+| `--no-notes` | Documents: leave the text of footnotes and endnotes out. |
+| `--no-textboxes` | Documents: leave the text of text boxes out. |
+| `--no-fields` | Documents: compare fields by their results only, not their codes. |
+| `--no-comments` | Documents: keep the base document's comments instead of the revised one's. |
 | `--password <text>` | The password that opens the old file (and the new one, unless --new-password is given). Prefer --password-env or --password-file: a value here lands in shell history. |
 | `--password-env <NAME>` | Read the password that opens the old file (and the new one, unless --new-password is given) from this environment variable. |
 | `--password-file <path>` | Read the password that opens the old file (and the new one, unless --new-password is given) from the first line of this file. |

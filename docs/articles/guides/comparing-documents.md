@@ -138,6 +138,16 @@ foreach (ConversionWarning warning in OdtFormat.Save(comparison.Document, file))
 }
 ```
 
+## From the command line
+
+`egap compare` runs the same comparison on two files and writes the result with tracked changes or as a redline; `egap
+mcp` offers it to AI assistants as the `compare` tool. See [the egap command](../cli/index.md#comparing-documents).
+
+```sh
+egap compare contract-v1.docx contract-v2.docx --output contract-redline.docx --author Legal
+egap compare contract-v1.docx contract-v2.docx --redline contract-redline.pdf --json
+```
+
 ## Limits
 
 - Moves inside a paragraph are not found; a moved word is a deletion and an insertion.

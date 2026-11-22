@@ -30,6 +30,7 @@ internal static class Targets
         ["chart"] = ChartPart,
         ["chartstyle"] = ChartStylePart,
         ["math"] = MathTarget,
+        ["compare"] = CompareTarget.Run,
     };
 
     public static IEnumerable<string> Names => All.Keys;
