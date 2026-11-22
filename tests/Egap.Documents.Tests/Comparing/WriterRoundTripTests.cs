@@ -111,6 +111,7 @@ public sealed class WriterRoundTripTests
     [InlineData(CompareBase.Original, "Introduction|Methods|Results", "Introduction|Method and scope|Results")]
     [InlineData(CompareBase.Revised, "Introduction|Methods|Results", "Introduction|Methods|Results|Appendix")]
     [InlineData(CompareBase.Original, "Introduction|Methods|Results|Appendix", "Introduction|Methods|Results")]
+    [InlineData(CompareBase.Revised, "Introduction|Methods~2|Results|Appendix", "Introduction|Methods~pending|Results")]
     public void ATableOfContentsWithChangedEntriesKeepsItsCodeThroughOdt(CompareBase baseDocument, string before, string after)
     {
         Document original = Toc(before.Split('|'));
@@ -139,7 +140,15 @@ public sealed class WriterRoundTripTests
                     entry.Inlines.Add(new FieldSeparator(document));
                 }
 
-                entry.AddRun(headings[i] + "\t" + (i + 1).ToString(System.Globalization.CultureInfo.InvariantCulture));
+                // Entries as Word writes them: links to their headings.
+                string page = (i + 1).ToString(System.Globalization.CultureInfo.InvariantCulture);
+                string[] parts = headings[i].Split('~');
+                entry.AddHyperlink(parts[0] + "\t" + page, "").Anchor = "_Toc" + page;
+                if (parts.Length > 1)
+                {
+                    entry.AddRun(parts[1]);
+                }
+
                 if (i == headings.Length - 1)
                 {
                     entry.Inlines.Add(new FieldEnd(document));
