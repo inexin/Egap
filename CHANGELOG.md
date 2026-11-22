@@ -140,8 +140,23 @@ follows with the rest of Egap. Install it with `dotnet tool install -g Egap.Cli 
     hyperlink that is not itself changed is written with `\deleted0` or `\revised0`, so it no longer takes
     the field's change.
   - ODT writes a field whose start and end alone are tracked with its result kept in both views.
-  - ODT writes a table of contents that has tracked changes as its text, with a `FieldsFlattened` warning, as an
-    OpenDocument index holds no changes.
+  - ODT writes a table of contents whose entries changed as an index with the changes inside it, as LibreOffice does,
+    so it keeps its code through the file. One whose own code or edges changed is written as its text, with a
+    `FieldsFlattened` warning, as an OpenDocument index holds its settings, not its code. A deleted hyperlink is now a
+    link inside the deletion; before, a paragraph end deleted with it was lost on reject.
+  - ODT warns `ChangesAccepted` when it writes a tracked section break as a plain one: OpenDocument, and LibreOffice,
+    track no section breaks.
+- Document compare pairs a paragraph with its edited copy across a paragraph moved in between, and takes short
+  paragraphs joined with a word or two deleted as a join, as Word does.
+- When the inputs of a comparison come from different formats, a hyperlink compares by its address, anchor and text,
+  without white space around the text; drawings compare by kind (equations, charts, SmartArt and ink each their own,
+  other drawings as one), and white space between words compares as one space.
+- RTF reads a `HYPERLINK` field as a `Hyperlink`, as DOCX and ODT do, and a `SYMBOL` field as its character. Text in a
+  symbol font (charset 2), such as Wingdings, reads at its private-use place (U+F020 to U+F0FF), as DOCX keeps it.
+  Behaviour change: before, these were fields and plain letters. An RTF shape group or OLE object's `Island.Text` is now
+  empty, as in the other formats; before, it held the shape's name or the object's class.
+- HTML reads text hidden with `display: none` inside a line as hidden text, and a paragraph holding only `&nbsp;` as an
+  empty paragraph. Behaviour change: before, the text was left out and the paragraph held a no-break space.
 - Rejecting an inserted last paragraph that holds only bookmarks or range ends besides its text now removes it, and
   moves the bookmarks to the paragraph before; before, the paragraph stayed.
 - DOCX fixes found by the document compare Word gate, where Word called 9 of 114 compare results corrupt:
