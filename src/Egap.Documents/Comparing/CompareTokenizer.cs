@@ -417,6 +417,11 @@ internal sealed class ParagraphTokens
                 case Footnote note:
                     key.Append(note.Kind).Append(':').Append(note.CustomMark);
                     break;
+                case Hyperlink link when acrossFormats:
+                    // HTML drops the white space at a line's end, and keeps runs of it as one.
+                    key.Append(link.Address).Append('#').Append(link.Anchor).Append(':')
+                        .AppendJoin(' ', link.GetText().Split((char[]?)null, StringSplitOptions.RemoveEmptyEntries));
+                    break;
                 case Hyperlink link:
                     key.Append(link.Address).Append('#').Append(link.Anchor).Append(':').Append(link.GetText());
                     break;

@@ -327,6 +327,20 @@ public sealed class TextMoveCompareTests
     }
 
     [Fact]
+    public void AcrossFormatsALinkIsTheSameWithoutItsTrailingSpace()
+    {
+        // HTML drops the white space at a line's end, a table of contents entry's included.
+        Document original = DocumentCompareTests.Make("");
+        original.Sections[0].Body.Paragraphs.First().AddHyperlink("Executive  Summary ", "#executive");
+        original.SourceFormat = DocumentFormatKind.Docx;
+        Document revised = DocumentCompareTests.Make("");
+        revised.Sections[0].Body.Paragraphs.First().AddHyperlink("Executive Summary", "#executive");
+        revised.SourceFormat = DocumentFormatKind.Html;
+
+        Assert.Empty(DocumentCompare.Run(original, revised).Changes);
+    }
+
+    [Fact]
     public void InTheSameFormatAFieldStillDiffersFromItsText()
     {
         Document original = DocumentCompareTests.Make("Membership");
