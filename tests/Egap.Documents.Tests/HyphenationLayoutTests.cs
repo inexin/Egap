@@ -112,6 +112,43 @@ public class HyphenationLayoutTests
     }
 
     [Fact]
+    public void AtLeastThreeLettersGoToTheNextLine()
+    {
+        // German's patterns allow a last syllable of two letters ("Anla-ge"); Word carries three at least.
+        Document document = new();
+        document.Settings.AutoHyphenation = true;
+        document.Settings.HyphenationZone = 0;
+        document.Styles.DefaultRunFormat.Language = "de-DE";
+        Body body = document.AddSection().Body;
+        List<Paragraph> paragraphs = [];
+        for (double indent = 250; indent < 420; indent += 3)
+        {
+            Paragraph paragraph = body.AddParagraph("Belüftungsanlage Sanierungsvorschläge Versicherungsbeiträge Zugluftmessanlage "
+                + "Förderanträge Verwaltungsgebäude Bewässerungsanlage Lieferverträge Haushaltsbeiträge Ausstellungsgelände");
+            paragraph.Format.RightIndent = indent;
+            paragraphs.Add(paragraph);
+        }
+
+        DocumentLayout layout = document.Layout(new LayoutOptions { Fonts = Fonts });
+        int hyphenated = 0;
+        foreach (Paragraph paragraph in paragraphs)
+        {
+            List<LineBox> lines = Lines(layout, paragraph);
+            for (int i = 0; i + 1 < lines.Count; i++)
+            {
+                string end = lines[i].Text, next = lines[i + 1].Text;
+                if (end.Length > 0 && char.IsLetter(end[^1]) && next.Length > 0 && char.IsLetter(next[0]))
+                {
+                    hyphenated++;
+                    Assert.True(next.TakeWhile(char.IsLetter).Count() >= 3, $"'{end}' / '{next}' carries fewer than three letters.");
+                }
+            }
+        }
+
+        Assert.True(hyphenated > 0);
+    }
+
+    [Fact]
     public void AnAddedDictionaryIsUsed()
     {
         HyphenationDictionaries dictionaries = new(HyphenationDictionaries.BuiltIn);

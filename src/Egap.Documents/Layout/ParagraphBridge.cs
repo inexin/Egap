@@ -752,6 +752,11 @@ internal sealed class ParagraphBridge(FontProvider fonts, Document document, Rev
             MaxConsecutiveLines = settings.ConsecutiveHyphenLimit,
             Zone = (float)settings.HyphenationZone,
             HyphenateCapitalized = settings.HyphenateCapitals,
+
+            // Word carries at least three letters to the next line, whatever the language's patterns allow (its PDFs of
+            // German and Norwegian prose never break before a last syllable of two letters, as "Anla-ge"); the letters kept
+            // before the hyphen are the dictionary's, two in every language Word was checked in.
+            MinAfter = 3,
         };
         hyphenation = (document.FormattingVersion, options);
         return options;
