@@ -230,8 +230,11 @@ is compared with it and the others are inserted whole (and the same for a join).
 <li>Cells inserted into or deleted from a row are not tracked changes, as the model tracks whole rows only. A table with no
 row in common is replaced whole.</li>
 <li>A resized picture is deleted and inserted, as Word does not track picture resizing.</li>
-<li>In ODT, a table of contents with changes is written as its text, as an OpenDocument index holds no changes.</li>
-<li>ODT has no tracked section breaks: a section break only in one document is kept in both views of an ODT file.</li>
+<li>In ODT, a table of contents keeps its changed entries inside the index, as LibreOffice writes them. One whose own
+code or edges changed is written as its text, with the warning <code>FieldsFlattened</code>, as an OpenDocument index holds its
+settings, not its code.</li>
+<li>ODT has no tracked section breaks, and LibreOffice has none either: a section break only in one document is kept in
+both views of an ODT file, with the warning <code>ChangesAccepted</code>.</li>
 <li>A section break only in one document after a table, or after a paragraph whose mark is already a change, is tracked
 on an empty paragraph of its own, which stays when the break is rejected.</li>
 <li>Content that cannot be a tracked change, such as a content control that could not be matched, is kept as in the base
