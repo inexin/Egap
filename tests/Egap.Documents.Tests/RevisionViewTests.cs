@@ -44,10 +44,8 @@ public class RevisionViewTests
             int at = line.Content.Text.Text.IndexOf(text, StringComparison.Ordinal);
             if (at >= 0)
             {
-                // The style of the span the text is in (Egami may lay out spans that shape alike as one run).
-                IReadOnlyList<StyleSpan> spans = line.Content.Text.RichText.Spans;
-                int span = Enumerable.Range(0, spans.Count).Single(i => spans[i].Start <= at && at < spans[i].End);
-                return line.Content.Text.GetStyle(span + 1);
+                LayoutRun run = line.Line.Runs.First(r => r.Start <= at && at < r.Start + r.Length);
+                return line.Content.Text.GetStyle(run.StyleIndex);
             }
         }
 
