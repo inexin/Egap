@@ -4,7 +4,7 @@ What each Egap package adds, newest first. From 2.1.0 all Egap packages share on
 may go out ahead of the others on its own tag, as Egap.Documents, Egap.Spreadsheets and Egap.Cli 2.3.0-preview.1 did. Nothing before the first release below was published; those versions were
 internal milestones whose public API was frozen and reviewed, and they are listed so the version numbers make sense.
 
-## Egap.Cli 2.3.0 (unreleased)
+## Egap.Cli 2.3.0 (2026-11-23)
 
 - `compare` compares documents: two files of any format egap reads, also of two different formats, become one document
   with the differences as tracked changes. `--output` writes it as DOCX, RTF or ODT, and `--redline` writes it with the
@@ -15,12 +15,6 @@ internal milestones whose public API was frozen and reviewed, and they are liste
   a PDF beside another format is read as a document. The MCP tool `compare` takes the same arguments.
 - `convert --revisions final|markup|original` writes a document's tracked changes accepted, marked or rejected: PDF, HTML
   and Markdown show the markup coloured, and DOCX, RTF and ODT keep the changes for markup.
-
-## Egap.Cli 2.3.0-preview.1 (2026-11-13)
-
-A preview with the workbook commands, built on Egap.Spreadsheets and Egap.Documents 2.3.0-preview.1; the stable 2.3.0
-follows with the rest of Egap. Install it with `dotnet tool install -g Egap.Cli --prerelease`.
-
 - Workbooks: `convert` reads XLSX, XLSM, XLTX, XLTM, CSV and TSV, and writes them as PDF (Excel's page setup decides the
   pages), images (one per page, `--dpi`), HTML, Markdown, or CSV per visible sheet. It also writes XLSX, from a workbook or
   from the tables of a document or PDF. `calc` calculates every formula and saves the results, warning of circular
@@ -46,7 +40,7 @@ follows with the rest of Egap. Install it with `dotnet tool install -g Egap.Cli 
   memory only.
 - Built on System.CommandLine 2.0.14 and Egami.Cli.Host 1.4.0.
 
-## Egap.Documents 2.3.0 (unreleased)
+## Egap.Documents 2.3.0 (2026-11-23)
 
 - Built on Egami 1.5.0 and Egami.Fonts.Substitutes 1.1.0, whose fonts read the OpenType MATH table that
   equations are set with, and on Egami.Metafiles 1.0.2 and Egami.Barcodes 1.0.1.
@@ -194,23 +188,6 @@ follows with the rest of Egap. Install it with `dotnet tool install -g Egap.Cli 
   - `ChartType.Unknown` is 0, so a default `ChartType` is unknown, not `Column`.
   - `Chart.Load`, `Chart.Save` and `ChartAxis.Id` are internal: a chart part is read and written with its document or
     workbook.
-
-### Changed
-
-Behaviour that differs from 2.2.0, all in the notes above or below:
-
-- `Document.Identify` reports Excel workbooks as `Xlsx` and binary Word files as `Doc`; before, both were `Docx`.
-- A SmartArt diagram's `Island.Text` holds its points, one per line.
-- A chart island draws the chart on pages and in PDFs; before, it showed the picture saved with it.
-- An optional hyphen that ends a line draws a hyphen; before, the line broke there with no hyphen.
-- Documents with automatic hyphenation on are hyphenated, so their lines break differently than before.
-
-## Egap.Documents 2.3.0-preview.1 (2026-11-13)
-
-A preview, published ahead of the other Egap packages so that Egap.Spreadsheets 2.3.0-preview.1 can run; the stable 2.3.0
-follows with the rest of Egap, and the API added here may still change before then. Install it with `--prerelease`.
-Egap.Documents.Html, Egap.Documents.Markdown and Egap.Preview 2.2.0 work with it.
-
 - `DocumentSettings` has Word's hyphenation settings: `AutoHyphenation`, `ConsecutiveHyphenLimit`, `HyphenationZone` and
   `HyphenateCapitals`. They are read from DOCX, DOC and RTF files and saved to DOCX and RTF. ODT files switch hyphenation
   on per style: the reader turns `AutoHyphenation` on when a style hyphenates, and the paragraphs of styles that do not
@@ -339,9 +316,18 @@ Egap.Documents.Html, Egap.Documents.Markdown and Egap.Preview 2.2.0 work with it
   as `LayoutWarning` records with the kind, a message, the node and its page, and `LayoutOptions.OnWarning` hears each
   one, also when a document is saved as PDF. The first kind, `FloatLaidOutInline`, is a floating table or framed
   paragraph in a table cell, header, footer, note or text box, which is laid out in the text instead of floating.
-- Built on Egami 1.4.0, Egami.Metafiles 1.0.2 and Egami.Barcodes 1.0.1.
 
-## Egap.Documents.Html 2.3.0 (unreleased)
+### Changed
+
+Behaviour that differs from 2.2.0, all in the notes above:
+
+- `Document.Identify` reports Excel workbooks as `Xlsx` and binary Word files as `Doc`; before, both were `Docx`.
+- A SmartArt diagram's `Island.Text` holds its points, one per line.
+- A chart island draws the chart on pages and in PDFs; before, it showed the picture saved with it.
+- An optional hyphen that ends a line draws a hyphen; before, the line broke there with no hyphen.
+- Documents with automatic hyphenation on are hyphenated, so their lines break differently than before.
+
+## Egap.Documents.Html 2.3.0 (2026-11-23)
 
 - `HtmlSaveOptions.RevisionView` and `EpubSaveOptions.RevisionView` write tracked changes as if accepted (`Final`, the
   default, as before), as a redline (`Markup`: `<ins>` and `<del>` with `data-author` and `datetime`, coloured per author
@@ -360,7 +346,7 @@ Egap.Documents.Html, Egap.Documents.Markdown and Egap.Preview 2.2.0 work with it
 - Built on AngleSharp 1.9.1. AngleSharp's new nesting limit is turned off, so deeply nested tables still read in full;
   Egap's own guard keeps hostile nesting bounded as before.
 
-## Egap.Documents.Markdown 2.3.0 (unreleased)
+## Egap.Documents.Markdown 2.3.0 (2026-11-23)
 
 - `MarkdownSaveOptions.RevisionView` writes tracked changes as if accepted (`Final`, the default, as before), marked
   (`Markup`), or as if rejected (`Original`). `MarkdownSaveOptions.RevisionStyle` picks the marks: inline `<ins>` and
@@ -368,37 +354,10 @@ Egap.Documents.Html, Egap.Documents.Markdown and Egap.Preview 2.2.0 work with it
 - Built on Markdig 1.5.1, which fixes tabs after block quote markers and in fenced code, a thematic break inside a list
   item closing the list, and autolink schemes of 2 to 32 characters.
 
-## Egap.Spreadsheets 2.3.0 (unreleased)
+## Egap.Spreadsheets 2.3.0 (2026-11-23)
 
-The stable release. API changes since 2.3.0-preview.1, made before the API is frozen:
-
-- Collections a rule, validation or range holds are `IList<T>`, not `List<T>`: `ConditionalFormat.Ranges` and `Rules`,
-  `ConditionalFormatRule.Formulas`, `DataValidation.Ranges` and `EditableRange.Ranges`. `SheetTable.Columns` is
-  read-only (`IReadOnlyList<SheetTableColumn>`), since the writer keeps one column for each column of the range.
-- `CsvOptions` and `PivotTableOptions` take their settings at creation (`init`), as every Egap options type does.
-- `SheetPdfOptions.Save` takes `PdfSaveOptions` (compression, encryption and the like); `SheetPdfOptions.IsTagged` is
-  internal (`Tagged` asks for a tagged PDF).
-- `Worksheet.SaveCsv` is `Worksheet.SaveAsCsv`, as `SaveAsPdf`.
-- `SheetReader.Open` takes the new `SheetReaderOptions` (limits and password), opens encrypted XLSX files, and says
-  that XLS files are for `Workbook.Load`; `SheetReader.OpenCsv` and `SheetWriter.CreateCsv` take a path too, with
-  `CsvOptions`. `SheetWriter.Create(path)` writes CSV with the default options.
-- `HyperlinkCollection.AddInternal` is `AddLocation`, with an overload that takes the range as text.
-- The range or cell an object goes on comes first: `EditableRangeCollection.Add(range, name, password)`,
-  `SheetDrawingCollection.AddChart(cells, type, ...)`, `AddPicture(cell or cells, image, ...)` and
-  `AddSlicer(cells, pivotTable, field)`. `ConditionalFormatRule.CellIs` takes its formulas together and the style
-  last: `CellIs(comparison, formula1, style)` and `CellIs(comparison, formula1, formula2, style)`.
-- `AddPicture` names its size's unit: `widthInPixels` and `heightInPixels`.
-- `CellCommentCollection.Find(cell)` replaces its indexer, as the other collections find by cell;
-  `Worksheet.FindAll` and `CellRange.FindAll` replace `Find` for the search that gives every matching cell.
-- `MergedCellCollection.Add` gives the range merged.
-- `FindLookIn.Notes` is `FindLookIn.Comments`, as the API calls a cell's note a comment.
-- `FunctionRegistry` says that it is one registry for the whole process and that it is thread-safe.
-
-## Egap.Spreadsheets 2.3.0-preview.1 (2026-11-13)
-
-The first release of Egap.Spreadsheets, as a preview: try it and tell us what is missing or wrong. Its API may still change
-before the stable 2.3.0, which ships with the rest of Egap. Install it with `dotnet add package Egap.Spreadsheets --prerelease`;
-it brings Egap.Documents 2.3.0-preview.1. The spreadsheets guide lists what it does not do yet.
+The first stable release of Egap.Spreadsheets, after 2.3.0-preview.1 (2026-11-13). The spreadsheets guide lists
+what it does not do yet.
 
 - Formulas written with a sheet before a table or a name read back in R1C1 style: a sheet before a table is dropped when
   the formula is written again, as Excel drops it, so `C2!Sales[Amount]` no longer reads as column 2 in R1C1 style; and a
@@ -643,9 +602,39 @@ it brings Egap.Documents 2.3.0-preview.1. The spreadsheets guide lists what it d
   reaches a function added with `FunctionRegistry`; without one it is #NAME? once calculated, and shows its saved value until then. `SUBTOTAL` leaves out rows a filter hides
   whatever its code: on a sheet whose filter has criteria, every hidden row counts as filtered.
 
-## Egap.Pdf 2.3.0 (unreleased)
+### Changed since 2.3.0-preview.1
+
+API changes made before the API was frozen:
+
+- Collections a rule, validation or range holds are `IList<T>`, not `List<T>`: `ConditionalFormat.Ranges` and `Rules`,
+  `ConditionalFormatRule.Formulas`, `DataValidation.Ranges` and `EditableRange.Ranges`. `SheetTable.Columns` is
+  read-only (`IReadOnlyList<SheetTableColumn>`), since the writer keeps one column for each column of the range.
+- `CsvOptions` and `PivotTableOptions` take their settings at creation (`init`), as every Egap options type does.
+- `SheetPdfOptions.Save` takes `PdfSaveOptions` (compression, encryption and the like); `SheetPdfOptions.IsTagged` is
+  internal (`Tagged` asks for a tagged PDF).
+- `Worksheet.SaveCsv` is `Worksheet.SaveAsCsv`, as `SaveAsPdf`.
+- `SheetReader.Open` takes the new `SheetReaderOptions` (limits and password), opens encrypted XLSX files, and says
+  that XLS files are for `Workbook.Load`; `SheetReader.OpenCsv` and `SheetWriter.CreateCsv` take a path too, with
+  `CsvOptions`. `SheetWriter.Create(path)` writes CSV with the default options.
+- `HyperlinkCollection.AddInternal` is `AddLocation`, with an overload that takes the range as text.
+- The range or cell an object goes on comes first: `EditableRangeCollection.Add(range, name, password)`,
+  `SheetDrawingCollection.AddChart(cells, type, ...)`, `AddPicture(cell or cells, image, ...)` and
+  `AddSlicer(cells, pivotTable, field)`. `ConditionalFormatRule.CellIs` takes its formulas together and the style
+  last: `CellIs(comparison, formula1, style)` and `CellIs(comparison, formula1, formula2, style)`.
+- `AddPicture` names its size's unit: `widthInPixels` and `heightInPixels`.
+- `CellCommentCollection.Find(cell)` replaces its indexer, as the other collections find by cell;
+  `Worksheet.FindAll` and `CellRange.FindAll` replace `Find` for the search that gives every matching cell.
+- `MergedCellCollection.Add` gives the range merged.
+- `FindLookIn.Notes` is `FindLookIn.Comments`, as the API calls a cell's note a comment.
+- `FunctionRegistry` says that it is one registry for the whole process and that it is thread-safe.
+
+## Egap.Pdf 2.3.0 (2026-11-23)
 
 - Built on Egami 1.5.0, Egami.Barcodes 1.0.1 and System.Security.Cryptography.Pkcs 10.0.14.
+
+## Egap.Preview 2.3.0 (2026-11-23)
+
+- Built on Egap.Documents 2.3.0 and Egami 1.5.0.
 
 ## Egap.Cli 2.2.0 (2026-10-29)
 

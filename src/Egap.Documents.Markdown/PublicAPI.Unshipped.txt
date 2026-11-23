@@ -1,8 +1,1 @@
 #nullable enable
-Egap.Documents.MarkdownRevisionStyle
-Egap.Documents.MarkdownRevisionStyle.CriticMarkup = 1 -> Egap.Documents.MarkdownRevisionStyle
-Egap.Documents.MarkdownRevisionStyle.Html = 0 -> Egap.Documents.MarkdownRevisionStyle
-Egap.Documents.MarkdownSaveOptions.RevisionStyle.get -> Egap.Documents.MarkdownRevisionStyle
-Egap.Documents.MarkdownSaveOptions.RevisionStyle.init -> void
-Egap.Documents.MarkdownSaveOptions.RevisionView.get -> Egap.Documents.RevisionView
-Egap.Documents.MarkdownSaveOptions.RevisionView.init -> void

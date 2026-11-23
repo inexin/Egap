@@ -95,3 +95,10 @@ static Egap.Documents.MarkdownFormat.ToMarkdown(this Egap.Documents.Document! do
 static Egap.Documents.MarkdownFormat.ToMarkdown(this Egap.Documents.Document! document, out System.Collections.Generic.IReadOnlyList<Egap.Documents.ConversionWarning!>! warnings, Egap.Documents.MarkdownSaveOptions? options = null) -> string!
 static Egap.Documents.MarkdownImage.operator !=(Egap.Documents.MarkdownImage? left, Egap.Documents.MarkdownImage? right) -> bool
 static Egap.Documents.MarkdownImage.operator ==(Egap.Documents.MarkdownImage? left, Egap.Documents.MarkdownImage? right) -> bool
+Egap.Documents.MarkdownRevisionStyle
+Egap.Documents.MarkdownRevisionStyle.CriticMarkup = 1 -> Egap.Documents.MarkdownRevisionStyle
+Egap.Documents.MarkdownRevisionStyle.Html = 0 -> Egap.Documents.MarkdownRevisionStyle
+Egap.Documents.MarkdownSaveOptions.RevisionStyle.get -> Egap.Documents.MarkdownRevisionStyle
+Egap.Documents.MarkdownSaveOptions.RevisionStyle.init -> void
+Egap.Documents.MarkdownSaveOptions.RevisionView.get -> Egap.Documents.RevisionView
+Egap.Documents.MarkdownSaveOptions.RevisionView.init -> void
