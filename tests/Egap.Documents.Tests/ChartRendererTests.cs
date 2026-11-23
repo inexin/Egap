@@ -18,9 +18,9 @@ public sealed class ChartRendererTests
     private static Chart Made(ChartType type)
     {
         Chart chart = Chart.Create(type);
-        chart.Plots[0].Series.Add("North", ["Jan", "Feb", "Mar"], [1, 2, 3]);
-        chart.Plots[0].Series.Add("South", ["Jan", "Feb", "Mar"], [3, 1, 2]);
-        chart.Plots[0].Series.Add("East", ["Jan", "Feb", "Mar"], [2, 3, 1]);
+        chart.Plots[0].Series.Add([1, 2, 3], ["Jan", "Feb", "Mar"], "North");
+        chart.Plots[0].Series.Add([3, 1, 2], ["Jan", "Feb", "Mar"], "South");
+        chart.Plots[0].Series.Add([2, 3, 1], ["Jan", "Feb", "Mar"], "East");
         return chart;
     }
 
@@ -84,7 +84,7 @@ public sealed class ChartRendererTests
     public void BadValuesDrawNothingBad()
     {
         Chart chart = Chart.Create(ChartType.Line);
-        chart.Plots[0].Series.Add("a", ["x", "y", "z", "w"], [double.NaN, double.PositiveInfinity, null, 1e300]);
+        chart.Plots[0].Series.Add([double.NaN, double.PositiveInfinity, null, 1e300], ["x", "y", "z", "w"], "a");
         Ink(chart);
         Chart empty = Chart.Create(ChartType.Pie);
         Ink(empty);
@@ -226,7 +226,7 @@ public sealed class ChartRendererTests
         string[] categories = [.. Enumerable.Range(1, series[0].Length).Select(i => "C" + i.ToString(System.Globalization.CultureInfo.InvariantCulture))];
         for (int k = 0; k < series.Length; k++)
         {
-            ChartSeries one = plot.Series.Add("S" + k.ToString(System.Globalization.CultureInfo.InvariantCulture), categories, [.. series[k].Select(v => (double?)v)]);
+            ChartSeries one = plot.Series.Add([.. series[k].Select(v => (double?)v)], categories, "S" + k.ToString(System.Globalization.CultureInfo.InvariantCulture));
             one.DataLabels.ShowValue = true;
         }
 
@@ -278,7 +278,7 @@ public sealed class ChartRendererTests
             Chart chart = Chart.Create(ChartType.Column);
             foreach (int k in Enumerable.Range(0, entries))
             {
-                chart.Plots[0].Series.Add("Long name", ["A"], [1]);
+                chart.Plots[0].Series.Add([1], ["A"], "Long name");
             }
 
             chart.HasLegend = true;
@@ -310,7 +310,7 @@ public sealed class ChartRendererTests
     {
         // Measured in Excel at three sizes, with and without explosion.
         Chart bare = Chart.Create(ChartType.Pie);
-        bare.Plots[0].Series.Add("S", ["A", "B"], [1, 1]);
+        bare.Plots[0].Series.Add([1, 1], ["A", "B"], "S");
         float room = new ChartRenderer(bare, null).Layout(265, 192).Plot.Width;
         Chart labelled = Labelled(ChartType.Pie, null, [1, 1]);
         Assert.Equal(room * 0.86f, new ChartRenderer(labelled, null).Layout(265, 192).Plot.Width, 0.5f);
@@ -341,7 +341,7 @@ public sealed class ChartRendererTests
     public void ARadarWithLongLabelsInASmallChartStillHasAPlot()
     {
         Chart chart = Chart.Create(ChartType.Radar);
-        chart.Plots[0].Series.Add("S", ["1/5/2002", "1/6/2002", "1/7/2002", "1/8/2002", "1/9/2002"], [1, 2, 3, 4, 5]);
+        chart.Plots[0].Series.Add([1, 2, 3, 4, 5], ["1/5/2002", "1/6/2002", "1/7/2002", "1/8/2002", "1/9/2002"], "S");
         Assert.True(new ChartRenderer(chart, null).Layout(94, 93).Plot.Width >= 4);
     }
 

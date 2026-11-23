@@ -85,7 +85,7 @@ public sealed partial class Document : Node
     public Layout.DocumentLayout Layout(Layout.LayoutOptions? options = null)
     {
         options ??= DefaultLayoutOptions;
-        if (options?.RevisionView == Egap.Documents.Layout.RevisionView.Original && HasRevisions())
+        if (options?.RevisionView == RevisionView.Original && HasRevisions())
         {
             // The original is the document with every change rejected: a copy, so this document keeps its changes.
             Document original = Clone();

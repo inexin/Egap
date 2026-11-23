@@ -71,7 +71,7 @@ internal sealed class EpubWriter
 
         // A copy, so headings can get the ids the navigation links to without changing the caller's document.
         Document document = source.Clone();
-        if (options.RevisionView == Layout.RevisionView.Original)
+        if (options.RevisionView == RevisionView.Original)
         {
             document.Revisions.RejectAll();
         }

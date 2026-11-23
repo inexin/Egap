@@ -51,7 +51,8 @@ Document notes = TextFormat.Load("notes.txt");                    // one paragra
 3. A ZIP package with a part under `xl/`, or whose extension is `.xlsx`, `.xlsm`, `.xltx` or `.xltm`, is `Xlsx`: an Excel
    workbook, which Egap.Documents does not load as a document.
 4. Another ZIP package is `Docx`. A compound file with a `WordDocument` stream is `Doc`, a binary Word file (see
-   [DOC](doc.md)). A password-protected Word file, DOCX or DOC, is `Encrypted`; it loads with its password (see
+   [DOC](doc.md)). A password-protected Word file is still `Docx` or `Doc`, and
+   `Document.IsEncrypted` tells that it needs a password; it loads with its password (see
    [DOCX passwords](docx.md#passwords) and [DOC passwords](doc.md#passwords)). Another compound file is `Docx`, and
    reading it fails with an error that says so.
 5. `%PDF-` in the first 1024 bytes is `Pdf`.

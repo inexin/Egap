@@ -19,7 +19,8 @@ public sealed class MergedCellCollection : IReadOnlyCollection<RangeAddress>
 
     /// <summary>Merges a range of more than one cell; the other cells keep their values, which Excel hides.</summary>
     /// <exception cref="ArgumentException">The range is one cell, or it overlaps a range already merged.</exception>
-    public void Add(RangeAddress range)
+    /// <returns>The range merged.</returns>
+    public RangeAddress Add(RangeAddress range)
     {
         if (range.First == range.Last)
         {
@@ -35,6 +36,7 @@ public sealed class MergedCellCollection : IReadOnlyCollection<RangeAddress>
         }
 
         ranges.Add(range);
+        return range;
     }
 
     /// <summary>Unmerges a range that was merged as it is.</summary>

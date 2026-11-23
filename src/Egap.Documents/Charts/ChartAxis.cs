@@ -132,7 +132,7 @@ public sealed class ChartAxis
     };
 
     /// <summary>The number that ties the axis to its plots in the file.</summary>
-    public long Id => long.TryParse(extended ? node.Attribute("id") : node.Value("axId"), out long id) ? id : -1;
+    internal long Id => long.TryParse(extended ? node.Attribute("id") : node.Value("axId"), out long id) ? id : -1;
 
     /// <summary>The axis this one crosses, or null.</summary>
     public ChartAxis? CrossAxis => extended ? null : chart.Axes.FirstOrDefault(a => a.Id.ToString(System.Globalization.CultureInfo.InvariantCulture) == node.Value("crossAx"));

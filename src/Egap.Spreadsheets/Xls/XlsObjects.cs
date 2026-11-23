@@ -185,7 +185,7 @@ internal sealed class XlsObjects(Worksheet sheet)
     {
         foreach (Hyperlink link in links)
         {
-            Hyperlink added = link.Address is { } address ? sheet.Hyperlinks.Add(link.Range, address) : sheet.Hyperlinks.AddInternal(link.Range, link.Location!);
+            Hyperlink added = link.Address is { } address ? sheet.Hyperlinks.Add(link.Range, address) : sheet.Hyperlinks.AddLocation(link.Range, link.Location!);
             added.Location = link.Location;
             added.Display = link.Display;
             added.ToolTip = link.ToolTip;
@@ -193,7 +193,7 @@ internal sealed class XlsObjects(Worksheet sheet)
 
         foreach ((int row, int column, int id, string author, bool visible) in notes)
         {
-            if (row >= CellAddress.MaxRows || column >= CellAddress.MaxColumns || sheet.Comments[new CellAddress(row, column)] is not null)
+            if (row >= CellAddress.MaxRows || column >= CellAddress.MaxColumns || sheet.Comments.Find(new CellAddress(row, column)) is not null)
             {
                 continue;
             }

@@ -22,7 +22,6 @@ Egap.Documents.Charts.Chart.PlotVisibleOnly.get -> bool?
 Egap.Documents.Charts.Chart.PlotVisibleOnly.set -> void
 Egap.Documents.Charts.Chart.RoundedCorners.get -> bool?
 Egap.Documents.Charts.Chart.RoundedCorners.set -> void
-Egap.Documents.Charts.Chart.Save(System.IO.Stream! stream) -> void
 Egap.Documents.Charts.Chart.Series.get -> System.Collections.Generic.IReadOnlyList<Egap.Documents.Charts.ChartSeries!>!
 Egap.Documents.Charts.Chart.Style.get -> int?
 Egap.Documents.Charts.Chart.Style.set -> void
@@ -50,7 +49,6 @@ Egap.Documents.Charts.ChartAxis.HasTitle.get -> bool
 Egap.Documents.Charts.ChartAxis.HasTitle.set -> void
 Egap.Documents.Charts.ChartAxis.Hidden.get -> bool
 Egap.Documents.Charts.ChartAxis.Hidden.set -> void
-Egap.Documents.Charts.ChartAxis.Id.get -> long
 Egap.Documents.Charts.ChartAxis.Kind.get -> Egap.Documents.Charts.ChartAxisKind
 Egap.Documents.Charts.ChartAxis.LogBase.get -> double?
 Egap.Documents.Charts.ChartAxis.LogBase.set -> void
@@ -388,6 +386,9 @@ Egap.Documents.Charts.ChartPoint.Index.get -> int
 Egap.Documents.Charts.ChartPoint.InvertIfNegative.get -> bool?
 Egap.Documents.Charts.ChartPoint.InvertIfNegative.set -> void
 Egap.Documents.Charts.ChartPoint.Marker.get -> Egap.Documents.Charts.ChartMarker!
+Egap.Documents.Charts.ChartQuartileMethod
+Egap.Documents.Charts.ChartQuartileMethod.Exclusive = 0 -> Egap.Documents.Charts.ChartQuartileMethod
+Egap.Documents.Charts.ChartQuartileMethod.Inclusive = 1 -> Egap.Documents.Charts.ChartQuartileMethod
 Egap.Documents.Charts.ChartRadarStyle
 Egap.Documents.Charts.ChartRadarStyle.Filled = 2 -> Egap.Documents.Charts.ChartRadarStyle
 Egap.Documents.Charts.ChartRadarStyle.Marker = 1 -> Egap.Documents.Charts.ChartRadarStyle
@@ -426,7 +427,7 @@ Egap.Documents.Charts.ChartSeries.ParentLabels.get -> Egap.Documents.Charts.Char
 Egap.Documents.Charts.ChartSeries.ParentLabels.set -> void
 Egap.Documents.Charts.ChartSeries.PointLabels.get -> System.Collections.Generic.IReadOnlyDictionary<int, Egap.Documents.Charts.ChartDataLabels!>!
 Egap.Documents.Charts.ChartSeries.Points.get -> System.Collections.Generic.IReadOnlyList<Egap.Documents.Charts.ChartPoint!>!
-Egap.Documents.Charts.ChartSeries.QuartileMethod.get -> string?
+Egap.Documents.Charts.ChartSeries.QuartileMethod.get -> Egap.Documents.Charts.ChartQuartileMethod?
 Egap.Documents.Charts.ChartSeries.QuartileMethod.set -> void
 Egap.Documents.Charts.ChartSeries.ShowConnectorLines.get -> bool?
 Egap.Documents.Charts.ChartSeries.ShowConnectorLines.set -> void
@@ -446,7 +447,7 @@ Egap.Documents.Charts.ChartSeries.Trendlines.get -> System.Collections.Generic.I
 Egap.Documents.Charts.ChartSeries.Values.get -> Egap.Documents.Charts.ChartData!
 Egap.Documents.Charts.ChartSeriesCollection
 Egap.Documents.Charts.ChartSeriesCollection.Add(string! values, string? categories = null, string? name = null, string? bubbleSizes = null) -> Egap.Documents.Charts.ChartSeries!
-Egap.Documents.Charts.ChartSeriesCollection.Add(string? name, System.Collections.Generic.IEnumerable<string?>? categories, System.Collections.Generic.IEnumerable<double?>! values) -> Egap.Documents.Charts.ChartSeries!
+Egap.Documents.Charts.ChartSeriesCollection.Add(System.Collections.Generic.IEnumerable<double?>! values, System.Collections.Generic.IEnumerable<string?>? categories = null, string? name = null) -> Egap.Documents.Charts.ChartSeries!
 Egap.Documents.Charts.ChartSeriesCollection.Count.get -> int
 Egap.Documents.Charts.ChartSeriesCollection.GetEnumerator() -> System.Collections.Generic.IEnumerator<Egap.Documents.Charts.ChartSeries!>!
 Egap.Documents.Charts.ChartSeriesCollection.Remove(Egap.Documents.Charts.ChartSeries! series) -> bool
@@ -516,28 +517,28 @@ Egap.Documents.Charts.ChartTrendlineType.MovingAverage = 3 -> Egap.Documents.Cha
 Egap.Documents.Charts.ChartTrendlineType.Polynomial = 4 -> Egap.Documents.Charts.ChartTrendlineType
 Egap.Documents.Charts.ChartTrendlineType.Power = 5 -> Egap.Documents.Charts.ChartTrendlineType
 Egap.Documents.Charts.ChartType
-Egap.Documents.Charts.ChartType.Area = 3 -> Egap.Documents.Charts.ChartType
-Egap.Documents.Charts.ChartType.Bar = 1 -> Egap.Documents.Charts.ChartType
-Egap.Documents.Charts.ChartType.BarOfPie = 6 -> Egap.Documents.Charts.ChartType
-Egap.Documents.Charts.ChartType.BoxWhisker = 16 -> Egap.Documents.Charts.ChartType
-Egap.Documents.Charts.ChartType.Bubble = 9 -> Egap.Documents.Charts.ChartType
-Egap.Documents.Charts.ChartType.Column = 0 -> Egap.Documents.Charts.ChartType
-Egap.Documents.Charts.ChartType.Doughnut = 7 -> Egap.Documents.Charts.ChartType
-Egap.Documents.Charts.ChartType.Funnel = 19 -> Egap.Documents.Charts.ChartType
-Egap.Documents.Charts.ChartType.Histogram = 14 -> Egap.Documents.Charts.ChartType
-Egap.Documents.Charts.ChartType.Line = 2 -> Egap.Documents.Charts.ChartType
-Egap.Documents.Charts.ChartType.Pareto = 15 -> Egap.Documents.Charts.ChartType
-Egap.Documents.Charts.ChartType.Pie = 4 -> Egap.Documents.Charts.ChartType
-Egap.Documents.Charts.ChartType.PieOfPie = 5 -> Egap.Documents.Charts.ChartType
-Egap.Documents.Charts.ChartType.Radar = 10 -> Egap.Documents.Charts.ChartType
-Egap.Documents.Charts.ChartType.RegionMap = 20 -> Egap.Documents.Charts.ChartType
-Egap.Documents.Charts.ChartType.Scatter = 8 -> Egap.Documents.Charts.ChartType
-Egap.Documents.Charts.ChartType.Stock = 11 -> Egap.Documents.Charts.ChartType
-Egap.Documents.Charts.ChartType.Sunburst = 18 -> Egap.Documents.Charts.ChartType
-Egap.Documents.Charts.ChartType.Surface = 12 -> Egap.Documents.Charts.ChartType
-Egap.Documents.Charts.ChartType.Treemap = 17 -> Egap.Documents.Charts.ChartType
-Egap.Documents.Charts.ChartType.Unknown = 21 -> Egap.Documents.Charts.ChartType
-Egap.Documents.Charts.ChartType.Waterfall = 13 -> Egap.Documents.Charts.ChartType
+Egap.Documents.Charts.ChartType.Area = 4 -> Egap.Documents.Charts.ChartType
+Egap.Documents.Charts.ChartType.Bar = 2 -> Egap.Documents.Charts.ChartType
+Egap.Documents.Charts.ChartType.BarOfPie = 7 -> Egap.Documents.Charts.ChartType
+Egap.Documents.Charts.ChartType.BoxWhisker = 17 -> Egap.Documents.Charts.ChartType
+Egap.Documents.Charts.ChartType.Bubble = 10 -> Egap.Documents.Charts.ChartType
+Egap.Documents.Charts.ChartType.Column = 1 -> Egap.Documents.Charts.ChartType
+Egap.Documents.Charts.ChartType.Doughnut = 8 -> Egap.Documents.Charts.ChartType
+Egap.Documents.Charts.ChartType.Funnel = 20 -> Egap.Documents.Charts.ChartType
+Egap.Documents.Charts.ChartType.Histogram = 15 -> Egap.Documents.Charts.ChartType
+Egap.Documents.Charts.ChartType.Line = 3 -> Egap.Documents.Charts.ChartType
+Egap.Documents.Charts.ChartType.Pareto = 16 -> Egap.Documents.Charts.ChartType
+Egap.Documents.Charts.ChartType.Pie = 5 -> Egap.Documents.Charts.ChartType
+Egap.Documents.Charts.ChartType.PieOfPie = 6 -> Egap.Documents.Charts.ChartType
+Egap.Documents.Charts.ChartType.Radar = 11 -> Egap.Documents.Charts.ChartType
+Egap.Documents.Charts.ChartType.RegionMap = 21 -> Egap.Documents.Charts.ChartType
+Egap.Documents.Charts.ChartType.Scatter = 9 -> Egap.Documents.Charts.ChartType
+Egap.Documents.Charts.ChartType.Stock = 12 -> Egap.Documents.Charts.ChartType
+Egap.Documents.Charts.ChartType.Sunburst = 19 -> Egap.Documents.Charts.ChartType
+Egap.Documents.Charts.ChartType.Surface = 13 -> Egap.Documents.Charts.ChartType
+Egap.Documents.Charts.ChartType.Treemap = 18 -> Egap.Documents.Charts.ChartType
+Egap.Documents.Charts.ChartType.Unknown = 0 -> Egap.Documents.Charts.ChartType
+Egap.Documents.Charts.ChartType.Waterfall = 14 -> Egap.Documents.Charts.ChartType
 Egap.Documents.Charts.ChartView3D
 Egap.Documents.Charts.ChartView3D.DepthPercent.get -> int?
 Egap.Documents.Charts.ChartView3D.DepthPercent.set -> void
@@ -652,7 +653,6 @@ Egap.Documents.DocumentBuilder.StartEditableRange(Egap.Documents.EditorGroup gro
 Egap.Documents.DocumentBuilder.StartEditableRange(string! editor) -> Egap.Documents.EditableRangeStart!
 Egap.Documents.DocumentFormatKind.Csv = 14 -> Egap.Documents.DocumentFormatKind
 Egap.Documents.DocumentFormatKind.Doc = 13 -> Egap.Documents.DocumentFormatKind
-Egap.Documents.DocumentFormatKind.Encrypted = 10 -> Egap.Documents.DocumentFormatKind
 Egap.Documents.DocumentFormatKind.Odt = 11 -> Egap.Documents.DocumentFormatKind
 Egap.Documents.DocumentFormatKind.Rtf = 9 -> Egap.Documents.DocumentFormatKind
 Egap.Documents.DocumentFormatKind.Xlsx = 12 -> Egap.Documents.DocumentFormatKind
@@ -726,7 +726,7 @@ Egap.Documents.Island.Island(Egap.Documents.Document! document, Egap.Documents.C
 Egap.Documents.Layout.DocumentLayout.Warnings.get -> System.Collections.Generic.IReadOnlyList<Egap.Documents.Layout.LayoutWarning!>!
 Egap.Documents.Layout.LayoutOptions.OnWarning.get -> System.Action<Egap.Documents.Layout.LayoutWarning!>?
 Egap.Documents.Layout.LayoutOptions.OnWarning.init -> void
-Egap.Documents.Layout.LayoutOptions.RevisionView.get -> Egap.Documents.Layout.RevisionView
+Egap.Documents.Layout.LayoutOptions.RevisionView.get -> Egap.Documents.RevisionView
 Egap.Documents.Layout.LayoutOptions.RevisionView.init -> void
 Egap.Documents.Layout.LayoutWarning
 Egap.Documents.Layout.LayoutWarning.<Clone>$() -> Egap.Documents.Layout.LayoutWarning!
@@ -745,10 +745,6 @@ Egap.Documents.Layout.LayoutWarningKind
 Egap.Documents.Layout.LayoutWarningKind.ChangesAccepted = 2 -> Egap.Documents.Layout.LayoutWarningKind
 Egap.Documents.Layout.LayoutWarningKind.FloatLaidOutInline = 0 -> Egap.Documents.Layout.LayoutWarningKind
 Egap.Documents.Layout.LayoutWarningKind.SmartArtDrawnAsList = 1 -> Egap.Documents.Layout.LayoutWarningKind
-Egap.Documents.Layout.RevisionView
-Egap.Documents.Layout.RevisionView.Final = 0 -> Egap.Documents.Layout.RevisionView
-Egap.Documents.Layout.RevisionView.Markup = 1 -> Egap.Documents.Layout.RevisionView
-Egap.Documents.Layout.RevisionView.Original = 2 -> Egap.Documents.Layout.RevisionView
 Egap.Documents.OdfVersion
 Egap.Documents.OdfVersion.Odf12 = 0 -> Egap.Documents.OdfVersion
 Egap.Documents.OdfVersion.Odf13 = 1 -> Egap.Documents.OdfVersion
@@ -784,7 +780,7 @@ Egap.Documents.OdtSaveOptions.Version.get -> Egap.Documents.OdfVersion
 Egap.Documents.OdtSaveOptions.Version.init -> void
 Egap.Documents.Pdf.PdfConvertOptions.Password.get -> string?
 Egap.Documents.Pdf.PdfConvertOptions.Password.init -> void
-Egap.Documents.Pdf.PdfExportOptions.RevisionView.get -> Egap.Documents.Layout.RevisionView
+Egap.Documents.Pdf.PdfExportOptions.RevisionView.get -> Egap.Documents.RevisionView
 Egap.Documents.Pdf.PdfExportOptions.RevisionView.init -> void
 Egap.Documents.ProtectionKind
 Egap.Documents.ProtectionKind.Comments = 2 -> Egap.Documents.ProtectionKind
@@ -794,6 +790,10 @@ Egap.Documents.ProtectionKind.ReadOnly = 1 -> Egap.Documents.ProtectionKind
 Egap.Documents.ProtectionKind.TrackedChanges = 3 -> Egap.Documents.ProtectionKind
 Egap.Documents.Revision.MoveName.get -> string?
 Egap.Documents.Revision.MoveName.init -> void
+Egap.Documents.RevisionView
+Egap.Documents.RevisionView.Final = 0 -> Egap.Documents.RevisionView
+Egap.Documents.RevisionView.Markup = 1 -> Egap.Documents.RevisionView
+Egap.Documents.RevisionView.Original = 2 -> Egap.Documents.RevisionView
 Egap.Documents.RtfFormat
 Egap.Documents.RtfLoadOptions
 Egap.Documents.RtfLoadOptions.Limits.get -> Egap.Documents.DocumentLimits!
@@ -825,7 +825,6 @@ override Egap.Documents.Layout.LayoutWarning.Equals(object? obj) -> bool
 override Egap.Documents.Layout.LayoutWarning.GetHashCode() -> int
 override Egap.Documents.Layout.LayoutWarning.ToString() -> string!
 static Egap.Documents.Charts.Chart.Create(Egap.Documents.Charts.ChartType type, bool threeD = false) -> Egap.Documents.Charts.Chart!
-static Egap.Documents.Charts.Chart.Load(System.IO.Stream! stream, Egap.Documents.DocumentLimits? limits = null) -> Egap.Documents.Charts.Chart!
 static Egap.Documents.Charts.ChartColor.FromHex(string! hex) -> Egap.Documents.Charts.ChartColor!
 static Egap.Documents.Charts.ChartColor.FromRgb(Egami.Pixels.Rgba8 rgb) -> Egap.Documents.Charts.ChartColor!
 static Egap.Documents.Charts.ChartColor.FromTheme(Egap.Documents.ThemeColor theme, double? lumMod = null, double? lumOff = null) -> Egap.Documents.Charts.ChartColor!
@@ -841,6 +840,8 @@ static Egap.Documents.Comparing.DocumentCompareStatistics.operator !=(Egap.Docum
 static Egap.Documents.Comparing.DocumentCompareStatistics.operator ==(Egap.Documents.Comparing.DocumentCompareStatistics? left, Egap.Documents.Comparing.DocumentCompareStatistics? right) -> bool
 static Egap.Documents.Comparing.DocumentCompareWarning.operator !=(Egap.Documents.Comparing.DocumentCompareWarning? left, Egap.Documents.Comparing.DocumentCompareWarning? right) -> bool
 static Egap.Documents.Comparing.DocumentCompareWarning.operator ==(Egap.Documents.Comparing.DocumentCompareWarning? left, Egap.Documents.Comparing.DocumentCompareWarning? right) -> bool
+static Egap.Documents.Document.IsEncrypted(string! path) -> bool
+static Egap.Documents.Document.IsEncrypted(System.IO.Stream! stream, string? fileName = null) -> bool
 static Egap.Documents.Document.Load(string! path, Egap.Documents.DocumentLoadOptions? options) -> Egap.Documents.Document!
 static Egap.Documents.Document.Load(string! path, out System.Collections.Generic.IReadOnlyList<Egap.Documents.ConversionWarning!>! warnings, Egap.Documents.DocumentLoadOptions? options) -> Egap.Documents.Document!
 static Egap.Documents.Document.Load(System.IO.Stream! stream, Egap.Documents.DocumentLoadOptions? options) -> Egap.Documents.Document!

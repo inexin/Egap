@@ -231,7 +231,7 @@ public sealed class SortTests
                     });
                 }
 
-                if (sheet.Comments[cell.Address] is { } note)
+                if (sheet.Comments.Find(cell.Address) is { } note)
                 {
                     parts.Add($"!{a}={note.Text}");
                 }

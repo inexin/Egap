@@ -23,6 +23,22 @@ internal static class XlsReader
     /// <summary>The password Excel encrypts a workbook with when it has none of its own, such as one only write-protected.</summary>
     internal const string DefaultPassword = "VelvetSweatshop";
 
+    /// <summary>
+    /// The XLSX package an encrypted compound file holds. Without a password, Excel's default one is tried first, as Excel does.
+    /// </summary>
+    /// <exception cref="DocumentPasswordException">The password is missing or wrong.</exception>
+    public static byte[] DecryptPackage(CompoundFile file, DocumentLimits limits, string? password)
+    {
+        try
+        {
+            return OfficeEncryption.Decrypt(file, password ?? DefaultPassword, null, limits);
+        }
+        catch (DocumentPasswordException) when (password is null)
+        {
+            throw new DocumentPasswordException("The workbook is encrypted: give its password in the load options.", wrongPassword: false);
+        }
+    }
+
     public static void Read(Workbook book, Stream stream, DocumentLimits limits, string? password)
     {
         CompoundFile file;
@@ -37,18 +53,7 @@ internal static class XlsReader
 
         if (file.Find("EncryptedPackage") is not null)
         {
-            // An encrypted XLSX file. Without a password, Excel's default one is tried first, as Excel does.
-            byte[] package;
-            try
-            {
-                package = OfficeEncryption.Decrypt(file, password ?? DefaultPassword, null, limits);
-            }
-            catch (DocumentPasswordException) when (password is null)
-            {
-                throw new DocumentPasswordException("The workbook is encrypted: give its password in the load options.", wrongPassword: false);
-            }
-
-            XlsxReader.Read(book, new MemoryStream(package, writable: false), limits);
+            XlsxReader.Read(book, new MemoryStream(DecryptPackage(file, limits, password), writable: false), limits);
             return;
         }
 

@@ -39,7 +39,7 @@ public class ConditionalFormatBenchmarks
         sheet.ConditionalFormats.Add("A1:A10000", ConditionalFormatRule.CellIs(ComparisonOperator.GreaterThan, "500", bold), ConditionalFormatRule.ColorScale(CellColor.White, CellColor.FromRgb(99, 190, 123)));
         sheet.ConditionalFormats.Add("B1:B10000", ConditionalFormatRule.Expression("B1>A1", red), ConditionalFormatRule.DataBar(CellColor.FromRgb(99, 142, 198)));
         sheet.ConditionalFormats.Add("C1:C10000", ConditionalFormatRule.IconSet("3Arrows"));
-        sheet.ConditionalFormats.Add("D1:D10000", ConditionalFormatRule.CellIs(ComparisonOperator.Between, "$G$2", red, "$G$5"), ConditionalFormatRule.Expression("ISODD(D1)", bold));
+        sheet.ConditionalFormats.Add("D1:D10000", ConditionalFormatRule.CellIs(ComparisonOperator.Between, "$G$2", "$G$5", red), ConditionalFormatRule.Expression("ISODD(D1)", bold));
         sheet.DataValidations.Add(RangeAddress.Parse("A1:A10000"), DataValidationType.WholeNumber, "100", "900").Operator = ComparisonOperator.Between;
         sheet.DataValidations.Add(RangeAddress.Parse("B1:B10000"), DataValidationType.List, "$G$1:$G$20");
         sheet.DataValidations.Add(RangeAddress.Parse("C1:D10000"), DataValidationType.Custom, "MOD(C1,7)<>0");

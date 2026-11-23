@@ -447,7 +447,7 @@ using Egap.Spreadsheets;
 
 Workbook book = Workbook.Load("budget.xlsx");
 Worksheet sheet = book.Worksheets[0];
-IReadOnlyList<Cell> totals = sheet.Find("total*", new FindOptions { MatchEntireCell = true, LookIn = FindLookIn.Values });
+IReadOnlyList<Cell> totals = sheet.FindAll("total*", new FindOptions { MatchEntireCell = true, LookIn = FindLookIn.Values });
 int changed = sheet.Replace("Sheet1!", "Budget!");
 ```
 
@@ -776,8 +776,10 @@ CellValue length = sheet.Evaluate("HYPOT(3,4)");            // 5
 CellValue words = sheet.Evaluate("COUNTWORDS(A1:A2)");      // 3
 ```
 
-The registry is shared by the whole process: a function added is known to every workbook until `FunctionRegistry.Remove`
-takes it away. Built-in functions cannot be replaced.
+The registry is shared by the whole process, not kept per workbook: a function added is known to every workbook until
+`FunctionRegistry.Remove` takes it away, so pick names that will not clash with another part of the program's. Adding and
+removing are thread-safe, also while other threads calculate; a workbook compiles its formulas again on its next
+calculation after a change. Built-in functions cannot be replaced.
 
 ## Number formats and cell text
 
@@ -817,7 +819,7 @@ system's start or after 9999-12-31 shows as `#` signs.
 ## CSV and TSV
 
 `Workbook.LoadCsv` reads comma- or tab-separated text (RFC 4180) into a new workbook with one sheet, and
-`Worksheet.SaveCsv` writes a sheet as text, from A1 to the last used cell. Quoted fields hold separators, doubled quotes
+`Worksheet.SaveAsCsv` writes a sheet as text, from A1 to the last used cell. Quoted fields hold separators, doubled quotes
 and line breaks.
 
 ```csharp
@@ -826,11 +828,11 @@ using Egap.Spreadsheets;
 
 Workbook book = Workbook.LoadCsv("prices.csv");      // separator, types and dates detected
 Worksheet sheet = book.Worksheets[0];
-sheet.SaveCsv("prices.tsv");                         // a tab for .tsv
+sheet.SaveAsCsv("prices.tsv");                         // a tab for .tsv
 
 CsvOptions german = new() { Culture = CultureInfo.GetCultureInfo("de-DE") };
 Workbook local = Workbook.LoadCsv("preise.csv", german);   // 1.234,5 and 15.03.2024
-local.Worksheets[0].SaveCsv("preise-kopie.csv", german);   // semicolons, as Excel in German
+local.Worksheets[0].SaveAsCsv("preise-kopie.csv", german);   // semicolons, as Excel in German
 ```
 
 Reading picks the separator from `CsvOptions.Separator`, a `sep=` first line, the `.tsv` or `.tab` extension, or
@@ -1060,10 +1062,10 @@ Workbook book = Workbook.Load("sales.xlsx");
 Worksheet report = book.Worksheets["Report"];
 PivotTable table = report.PivotTables["Sales"];
 
-Slicer region = report.Drawings.AddSlicer(table, "Region", RangeAddress.Parse("H3:J14")).Slicer!;
+Slicer region = report.Drawings.AddSlicer(RangeAddress.Parse("H3:J14"), table, "Region").Slicer!;
 region.Select(["North", "South"]);          // the table now sums those two regions
 
-Slicer year = report.Drawings.AddSlicer(table, "Year", RangeAddress.Parse("L3:O8")).Slicer!;
+Slicer year = report.Drawings.AddSlicer(RangeAddress.Parse("L3:O8"), table, "Year").Slicer!;
 year.ColumnCount = 2;
 year.StyleName = "SlicerStyleDark2";
 
@@ -1093,7 +1095,7 @@ using Egap.Spreadsheets;
 Workbook book = Workbook.Create();
 Worksheet sheet = book.Worksheets[0];
 sheet.Range("B2:B10").UpdateStyle(s => s with { Protection = s.Protection with { Locked = false } });
-sheet.Protection.EditableRanges.Add("Prices", "D2:D10", "prices-password");
+sheet.Protection.EditableRanges.Add("D2:D10", "Prices", "prices-password");
 sheet.Protection.Protect("sheet-password", SheetActions.Default | SheetActions.Sort | SheetActions.AutoFilter);
 book.Protection.Protect("book-password");
 book.Save("protected.xlsx");
@@ -1125,10 +1127,10 @@ Worksheet sheet = book.Worksheets[0];
 
 sheet.Comments.Add("B2", "Checked against the ledger", author: "Ann").Visible = true;
 sheet.Hyperlinks.Add("A10", "https://example.com/report").Display = "Full report";
-sheet.Hyperlinks.AddInternal(RangeAddress.Parse("A11"), "'Data'!A1");
+sheet.Hyperlinks.AddLocation(RangeAddress.Parse("A11"), "'Data'!A1");
 
 byte[] logo = File.ReadAllBytes("logo.png");
-SheetDrawing picture = sheet.Drawings.AddPicture(logo, CellAddress.Parse("E2"), width: 120, height: 40);
+SheetDrawing picture = sheet.Drawings.AddPicture(CellAddress.Parse("E2"), logo, widthInPixels: 120, heightInPixels: 40);
 picture.Description = "Company logo";
 
 foreach (SheetDrawing drawing in sheet.Drawings)

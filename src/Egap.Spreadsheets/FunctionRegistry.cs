@@ -7,6 +7,9 @@ namespace Egap.Spreadsheets;
 /// user-defined function in Excel. A function you add is known to every workbook in the process from then on; formulas read
 /// it when they are next calculated or evaluated. It also answers a call written through an add-in's link,
 /// <c>[1]!DOUBLE(21)</c>, which otherwise gives <c>#NAME?</c>: a workbook keeps no code for an add-in's functions.
+/// The registry is one for the whole process, not one per workbook, so give added functions names that will not clash with
+/// another part of the program's. It is thread-safe: functions can be added and removed while other threads calculate,
+/// and a workbook compiles its formulas again on its next calculation after a change.
 /// </summary>
 /// <example>
 /// <code>

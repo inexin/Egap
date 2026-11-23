@@ -1,22 +1,5 @@
 namespace Egap.Documents.Layout;
 
-/// <summary>How tracked changes show on pages, in images and in PDFs.</summary>
-public enum RevisionView
-{
-    /// <summary>As if every change were accepted: inserted text shows, deleted text does not. The default.</summary>
-    Final,
-
-    /// <summary>
-    /// Every change shows, in its author's colour: inserted text underlined, deleted text struck through and still taking
-    /// its space, text whose formatting changed in its new look with a dotted underline, and a bar in the outside margin
-    /// beside each line with a change.
-    /// </summary>
-    Markup,
-
-    /// <summary>As if every change were rejected: the document before the changes.</summary>
-    Original,
-}
-
 /// <summary>How <see cref="Document.Layout(LayoutOptions?)"/> lays a document out.</summary>
 public sealed class LayoutOptions
 {

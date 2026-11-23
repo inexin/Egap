@@ -213,7 +213,7 @@ public sealed class SheetDrawingCollection : IReadOnlyList<SheetDrawing>
     /// EMF or WMF file.
     /// </summary>
     /// <exception cref="ArgumentException">The data is not an image Excel shows.</exception>
-    public SheetDrawing AddPicture(byte[] image, RangeAddress cells)
+    public SheetDrawing AddPicture(RangeAddress cells, byte[] image)
     {
         SheetDrawing picture = NewPicture(image);
         picture.AnchorKind = DrawingAnchorKind.TwoCell;
@@ -222,18 +222,21 @@ public sealed class SheetDrawingCollection : IReadOnlyList<SheetDrawing>
         return picture;
     }
 
-    /// <summary>Adds a picture of a size in pixels (at 96 dpi) with its top-left corner at a cell; it moves with the cell.</summary>
+    /// <summary>
+    /// Adds a picture of a size in pixels (at 96 dpi, as Excel sizes pictures) with its top-left corner at a cell; it moves
+    /// with the cell. Its <see cref="SheetDrawing.Width"/> and <see cref="SheetDrawing.Height"/> are in EMUs, 9,525 to a pixel.
+    /// </summary>
     /// <exception cref="ArgumentException">The data is not an image Excel shows.</exception>
     /// <exception cref="ArgumentOutOfRangeException">A size is not positive.</exception>
-    public SheetDrawing AddPicture(byte[] image, CellAddress cell, int width, int height)
+    public SheetDrawing AddPicture(CellAddress cell, byte[] image, int widthInPixels, int heightInPixels)
     {
-        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(width);
-        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(height);
+        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(widthInPixels);
+        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(heightInPixels);
         SheetDrawing picture = NewPicture(image);
         picture.AnchorKind = DrawingAnchorKind.OneCell;
         picture.From = new DrawingPosition(cell);
-        picture.Width = width * 9525L;
-        picture.Height = height * 9525L;
+        picture.Width = widthInPixels * 9525L;
+        picture.Height = heightInPixels * 9525L;
         return picture;
     }
 
@@ -245,7 +248,7 @@ public sealed class SheetDrawingCollection : IReadOnlyList<SheetDrawing>
     /// <param name="cells">The cells it covers.</param>
     /// <param name="threeD">Draws it in 3D: column, bar, line, area, pie and surface charts.</param>
     /// <exception cref="ArgumentException">The type has no such form.</exception>
-    public SheetDrawing AddChart(ChartType type, RangeAddress cells, bool threeD = false)
+    public SheetDrawing AddChart(RangeAddress cells, ChartType type, bool threeD = false)
     {
         SheetDrawing drawing = new(SheetDrawingKind.Chart)
         {
@@ -271,9 +274,9 @@ public sealed class SheetDrawingCollection : IReadOnlyList<SheetDrawing>
     /// <param name="data">The cells it reads, on this sheet.</param>
     /// <param name="threeD">Draws it in 3D: column, bar, line, area, pie and surface charts.</param>
     /// <exception cref="ArgumentException">The type has no such form.</exception>
-    public SheetDrawing AddChart(ChartType type, RangeAddress cells, RangeAddress data, bool threeD = false)
+    public SheetDrawing AddChart(RangeAddress cells, ChartType type, RangeAddress data, bool threeD = false)
     {
-        SheetDrawing drawing = AddChart(type, cells, threeD);
+        SheetDrawing drawing = AddChart(cells, type, threeD);
         Chart chart = drawing.Chart!;
         int firstRow = data.First.Row;
         bool names = Enumerable.Range(data.First.Column, data.ColumnCount).Any(c => sheet[firstRow, c].ValueKind == CellValueKind.Text);
@@ -347,7 +350,7 @@ public sealed class SheetDrawingCollection : IReadOnlyList<SheetDrawing>
     /// <param name="cells">The cells the slicer covers.</param>
     /// <exception cref="ArgumentException">The pivot table is another workbook's, or it has no such field.</exception>
     /// <exception cref="InvalidOperationException">The pivot table cannot be refreshed (see <see cref="PivotTable.CanRefresh"/>).</exception>
-    public SheetDrawing AddSlicer(PivotTable pivotTable, string field, RangeAddress cells) =>
+    public SheetDrawing AddSlicer(RangeAddress cells, PivotTable pivotTable, string field) =>
         sheet.Workbook.Slicers.Create(sheet, pivotTable, field, cells);
 
     /// <summary>Adds a drawing object Egap made, such as a slicer, fixed to two cells.</summary>

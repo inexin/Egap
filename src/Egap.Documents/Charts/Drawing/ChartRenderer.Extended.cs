@@ -682,7 +682,7 @@ internal sealed partial class ChartRenderer
         double high = double.NegativeInfinity;
         for (int s = 0; s < plot.Series.Count; s++)
         {
-            bool exclusive = plot.Series[s].QuartileMethod != "inclusive";
+            bool exclusive = plot.Series[s].QuartileMethod != ChartQuartileMethod.Inclusive;
             for (int c = 0; c < names.Count; c++)
             {
                 if (groups.TryGetValue((s, names[c]), out List<double>? list) && StatsOf(list, exclusive) is { } st)

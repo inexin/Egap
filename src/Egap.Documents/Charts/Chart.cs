@@ -279,7 +279,7 @@ public sealed class Chart
 
     /// <summary>Reads a chart part: the XML of a <c>c:chartSpace</c> or <c>cx:chartSpace</c>.</summary>
     /// <exception cref="DocumentException">The data is not a chart part.</exception>
-    public static Chart Load(Stream stream, DocumentLimits? limits = null)
+    internal static Chart Load(Stream stream, DocumentLimits? limits = null)
     {
         ArgumentNullException.ThrowIfNull(stream);
         limits ??= new DocumentLimits();
@@ -308,7 +308,7 @@ public sealed class Chart
     }
 
     /// <summary>Writes the chart part.</summary>
-    public void Save(Stream stream)
+    internal void Save(Stream stream)
     {
         ArgumentNullException.ThrowIfNull(stream);
         stream.Write(ToBytes());

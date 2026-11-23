@@ -11,7 +11,7 @@ public enum DocumentFormatKind
 
     /// <summary>
     /// A Word file: DOCX, DOTX, DOCM or DOTM (a binary Word file is <see cref="Doc"/>), or another compound file Egap does
-    /// not read, whose error names it. An encrypted Word file is <see cref="Encrypted"/>.
+    /// not read, whose error names it. An encrypted Word file is this kind too; <see cref="Document.IsEncrypted(Stream, string?)"/> tells.
     /// </summary>
     Docx,
 
@@ -37,33 +37,26 @@ public enum DocumentFormatKind
     Rtf,
 
     /// <summary>
-    /// An encrypted file: a password-protected Word document (an encrypted Office package or a password-protected binary
-    /// Word file) in a compound file, or a password-protected OpenDocument text package. Loading it needs its password, in <see cref="DocumentLoadOptions.Password"/>,
-    /// <see cref="DocxLoadOptions.Password"/> or <see cref="OdtLoadOptions.Password"/>.
-    /// </summary>
-    Encrypted,
-
-    /// <summary>
     /// OpenDocument Text: an ODT document or OTT template (a ZIP package whose stored first entry is its <c>mimetype</c>), or a
-    /// flat FODT file (one XML document). A password-protected one is <see cref="Encrypted"/>.
+    /// flat FODT file (one XML document). A password-protected one is this kind too; <see cref="Document.IsEncrypted(Stream, string?)"/> tells.
     /// </summary>
-    Odt,
+    Odt = 11,
 
     /// <summary>
     /// An Excel workbook: XLSX, XLSM, XLTX or XLTM, known by a package part under <c>xl/</c> or by its extension. Loading one
     /// as a document needs the Egap.Spreadsheets package and <c>SpreadsheetFormat.Register()</c>.
     /// </summary>
-    Xlsx,
+    Xlsx = 12,
 
     /// <summary>
     /// A binary Word document or template (DOC or DOT): Word 97 to 2003, and Word 6 and Word 95, a compound file with a
-    /// <c>WordDocument</c> stream. Egap reads it and does not write it. A password-protected one is <see cref="Encrypted"/>.
+    /// <c>WordDocument</c> stream. Egap reads it and does not write it. A password-protected one is this kind too; <see cref="Document.IsEncrypted(Stream, string?)"/> tells.
     /// </summary>
-    Doc,
+    Doc = 13,
 
     /// <summary>
     /// Comma- or tab-separated text, known by a <c>.csv</c>, <c>.tsv</c> or <c>.tab</c> extension. Loading it as a document needs
     /// the Egap.Spreadsheets package and <c>SpreadsheetFormat.Register()</c>.
     /// </summary>
-    Csv,
+    Csv = 14,
 }

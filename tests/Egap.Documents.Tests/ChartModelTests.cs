@@ -28,8 +28,8 @@ public sealed class ChartModelTests
     private static Chart Made()
     {
         Chart chart = Chart.Create(ChartType.Column);
-        chart.Plots[0].Series.Add("North", ["Jan", "Feb"], [1, 2]);
-        chart.Plots[0].Series.Add("South", ["Jan", "Feb"], [3, null]);
+        chart.Plots[0].Series.Add([1, 2], ["Jan", "Feb"], "North");
+        chart.Plots[0].Series.Add([3, null], ["Jan", "Feb"], "South");
         return chart;
     }
 
@@ -371,7 +371,7 @@ public sealed class ChartModelTests
             plot.Grouping = grouping;
         }
 
-        ChartSeries series = plot.Series.Add("S", ["A", "B"], [1, 2]);
+        ChartSeries series = plot.Series.Add([1, 2], ["A", "B"], "S");
         foreach (ChartLabelPosition position in Enum.GetValues<ChartLabelPosition>())
         {
             if (allowed.Split(' ').Contains(position.ToString()))
@@ -395,8 +395,8 @@ public sealed class ChartModelTests
         Chart chart = Chart.Create(ChartType.Column);
         ChartPlot plot = chart.Plots[0];
         plot.Grouping = ChartGrouping.Clustered;
-        ChartSeries first = plot.Series.Add("S", ["A"], [1]);
-        ChartSeries second = plot.Series.Add("T", ["A"], [1]);
+        ChartSeries first = plot.Series.Add([1], ["A"], "S");
+        ChartSeries second = plot.Series.Add([1], ["A"], "T");
         first.DataLabels.Position = ChartLabelPosition.OutsideEnd;
         second.DataLabels.Position = ChartLabelPosition.Center;
         plot.Grouping = ChartGrouping.Stacked;
@@ -431,7 +431,7 @@ public sealed class ChartModelTests
 
     private static void Set(string property, ChartPlot plot, bool clear)
     {
-        ChartSeries series = plot.Series.Count > 0 ? plot.Series[0] : plot.Series.Add("S", ["A"], [1]);
+        ChartSeries series = plot.Series.Count > 0 ? plot.Series[0] : plot.Series.Add([1], ["A"], "S");
         switch (property)
         {
             case "GapWidth": plot.GapWidth = clear ? null : 50; break;
@@ -626,7 +626,7 @@ public sealed class ChartModelTests
     public void WritingNumbersWithoutAFormatKeepsTheOneTheyHad(ChartType type)
     {
         Chart chart = Chart.Create(type);
-        ChartSeries series = type == ChartType.Column ? chart.Plots[0].Series.Add("a", null, [1]) : chart.Plots[0].Series[0];
+        ChartSeries series = type == ChartType.Column ? chart.Plots[0].Series.Add([1], null, "a") : chart.Plots[0].Series[0];
         series.Values.SetNumbers([1, 2], "0.0%");
         series.Values.SetNumbers([3, 4]);
         Assert.Equal("0.0%", RoundTrip(chart).Plots[0].Series[0].Values.FormatCode);
@@ -726,7 +726,7 @@ public sealed class ChartModelTests
         series.Subtotals = [1];
         series.Binning.BinSize = 1;
         series.Binning.Underflow = 1;
-        series.QuartileMethod = "exclusive";
+        series.QuartileMethod = ChartQuartileMethod.Exclusive;
         series.ShowMeanLine = true;
         series.ParentLabels = ChartParentLabels.Banner;
         Assert.Equal(before, chart.ToBytes());
@@ -879,7 +879,7 @@ public sealed class ChartModelTests
     public void ValuesThatMustBeNumbersRefuseText(ChartType type)
     {
         Chart chart = Chart.Create(type);
-        ChartSeries series = type == ChartType.Waterfall ? chart.Plots[0].Series[0] : chart.Plots[0].Series.Add("a", null, [1]);
+        ChartSeries series = type == ChartType.Waterfall ? chart.Plots[0].Series[0] : chart.Plots[0].Series.Add([1], null, "a");
         Assert.Throws<InvalidOperationException>(() => series.Values.SetText(["a"]));
         Assert.Throws<InvalidOperationException>(() => series.Values.SetTextLevels([["a"]]));
         if (type == ChartType.Bubble)
@@ -921,16 +921,16 @@ public sealed class ChartModelTests
     {
         Chart chart = Chart.Create(ChartType.Funnel);
         ChartSeriesCollection all = chart.Plots[0].Series;
-        ChartSeries second = all.Add("b", null, [1]);
-        all.Add("c", null, [1]);
+        ChartSeries second = all.Add([1], null, "b");
+        all.Add([1], null, "c");
         all.Remove(second);
-        all.Add("d", null, [1]);
+        all.Add([1], null, "d");
         XElement region = chart.Plots[0].Element;
         List<string?> ids = [.. region.Elements(ChartNs.Cx + "series").Select(e => (string?)e.Attribute("uniqueId"))];
         Assert.Equal(ids.Count, ids.Distinct().Count());
 
         region.Add(new XElement(ChartNs.Cx + "extLst"));
-        all.Add("e", null, [1]);
+        all.Add([1], null, "e");
         Assert.Equal("extLst", region.Elements().Last().Name.LocalName);
     }
 

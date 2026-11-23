@@ -105,7 +105,7 @@ sheet["B2"].Value = 12;
 sheet["A3"].Value = "Feb";
 sheet["B3"].Value = 18;
 
-SheetDrawing drawing = sheet.Drawings.AddChart(ChartType.Column, RangeAddress.Parse("D1:J15"), RangeAddress.Parse("A1:B3"));
+SheetDrawing drawing = sheet.Drawings.AddChart(RangeAddress.Parse("D1:J15"), ChartType.Column, RangeAddress.Parse("A1:B3"));
 drawing.Name = "Sales";
 drawing.Chart!.Title.Text = "Sales";
 
@@ -210,12 +210,12 @@ foreach (Island island in document.Descendants<Island>())
 }
 
 Chart chart = Chart.Create(ChartType.Pie);
-chart.Plots[0].Series.Add("Share", ["North", "South"], [60, 40]);
+chart.Plots[0].Series.Add([60, 40], ["North", "South"], "Share");
 document.Sections[0].Body.AddParagraph("Share by region: ").Inlines.Add(new Island(document, chart, 360, 216));
 DocxFormat.Save(document, "revised.docx");
 ```
 
 ## On its own
 
-`Chart.Load` and `Chart.Save` read and write the part itself, the XML of a `c:chartSpace` or `cx:chartSpace`. `Chart.Create`
-makes one of any type, and `chart.Clone()` copies one. Corrupt input gives a `DocumentException`.
+`Chart.Create` makes a chart of any type outside a document or workbook, and `chart.Clone()` copies one; a chart part
+is read and written with the document or workbook that holds it.

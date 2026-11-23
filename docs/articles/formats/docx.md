@@ -35,7 +35,7 @@ search use.
 ## Passwords
 
 A Word file saved with a password to open it is encrypted: its package sits, encrypted, in a compound file.
-`Document.Identify` calls it `Encrypted`, so a program can ask for the password before it loads the file. Give the password
+`Document.Identify` calls it `Docx` and `Document.IsEncrypted` says it is encrypted, so a program can ask for the password before it loads the file. Give the password
 in `DocxLoadOptions.Password`, or in `DocumentLoadOptions.Password` for `Document.Load`; `PasswordCallback` is asked when
 the password is missing or wrong, with the attempt's number, until it gives the right one or null. Without the right
 password, loading throws `DocumentPasswordException`, whose `WrongPassword` says whether a password was given.
@@ -48,7 +48,7 @@ management (IRM), which needs a rights server, or encrypted for a certificate ar
 ```csharp
 using Egap.Documents;
 
-if (Document.Identify("contract.docx") == DocumentFormatKind.Encrypted)
+if (Document.IsEncrypted("contract.docx"))
 {
     Document contract = Document.Load("contract.docx", new DocumentLoadOptions
     {

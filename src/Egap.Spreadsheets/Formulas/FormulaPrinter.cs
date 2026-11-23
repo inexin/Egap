@@ -307,7 +307,7 @@ internal static class FormulaPrinter
         /// <summary>A column's name as the table writes it, with what brackets give a meaning to escaped.</summary>
         private static string ColumnName(SheetTable table, string name)
         {
-            string written = table.Columns.Find(c => string.Equals(c.Name, name, StringComparison.OrdinalIgnoreCase))?.Name ?? name;
+            string written = table.ColumnList.Find(c => string.Equals(c.Name, name, StringComparison.OrdinalIgnoreCase))?.Name ?? name;
             StringBuilder escaped = new(written.Length);
             foreach (char c in written)
             {

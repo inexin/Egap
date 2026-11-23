@@ -270,7 +270,7 @@ internal static class Targets
         try
         {
             Egap.Documents.Charts.Chart chart = Egap.Documents.Charts.Chart.Create(Egap.Documents.Charts.ChartType.Waterfall);
-            chart.Plots[0].Series.Add("Series", ["a", "b"], [1, 2]);
+            chart.Plots[0].Series.Add([1, 2], ["a", "b"], "Series");
             chart.Title.Text = "Title";
             chart.UseStylePart(System.Xml.Linq.XDocument.Load(System.Xml.XmlReader.Create(input, new System.Xml.XmlReaderSettings { DtdProcessing = System.Xml.DtdProcessing.Prohibit })).Root);
             using Egami.Raster<Egami.Pixels.Rgba8> picture = Egami.Raster.Create(240, 150, new Egami.Pixels.Rgba8(255, 255, 255, 255));

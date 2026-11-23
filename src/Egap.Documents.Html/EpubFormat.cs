@@ -75,7 +75,7 @@ public sealed class EpubSaveOptions
     public DateTimeOffset? Modified { get; init; }
 
     /// <summary>How tracked changes are written, as <see cref="HtmlSaveOptions.RevisionView"/> says for HTML; as if accepted by default.</summary>
-    public Layout.RevisionView RevisionView { get; init; }
+    public RevisionView RevisionView { get; init; }
 }
 
 /// <summary>

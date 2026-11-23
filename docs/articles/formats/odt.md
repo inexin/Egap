@@ -118,8 +118,8 @@ form.Save("application.odt");
 
 Give the password in `OdtLoadOptions.Password`, or in `DocumentLoadOptions.Password` with `Document.Load`. A missing or
 wrong password throws a `DocumentPasswordException`, whose `WrongPassword` tells the two apart; `PasswordCallback` is
-asked for another password, with the attempt's number, until it gives a right one or null. `Document.Identify` reports
-an encrypted ODT as `DocumentFormatKind.Encrypted`, so a program can ask for the password first. `OdtSaveOptions.Password`
+asked for another password, with the attempt's number, until it gives a right one or null. `Document.IsEncrypted` tells
+whether an ODT is encrypted, so a program can ask for the password first. `OdtSaveOptions.Password`
 encrypts a package Egap writes: each file with AES-256 in CBC mode and the key from PBKDF2, as LibreOffice writes for
 ODF 1.2 to 1.4, or with `Encryption = OdtEncryption.AesGcm` the whole package in one file, as LibreOffice 24.2 and later
 do. A flat file cannot be encrypted.
@@ -127,7 +127,7 @@ do. A flat file cannot be encrypted.
 ```csharp
 using Egap.Documents;
 
-if (Document.Identify("report.odt") == DocumentFormatKind.Encrypted)
+if (Document.IsEncrypted("report.odt"))
 {
     Document report = Document.Load("report.odt", new DocumentLoadOptions { Password = "s3cret" });
 }

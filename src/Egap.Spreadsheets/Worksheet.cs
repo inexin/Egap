@@ -251,7 +251,7 @@ public sealed partial class Worksheet
     /// <see cref="CsvOptions"/>.
     /// </summary>
     /// <exception cref="ArgumentNullException">The path is null.</exception>
-    public void SaveCsv(string path, CsvOptions? options = null)
+    public void SaveAsCsv(string path, CsvOptions? options = null)
     {
         ArgumentNullException.ThrowIfNull(path);
         using FileStream stream = File.Create(path);
@@ -260,7 +260,7 @@ public sealed partial class Worksheet
 
     /// <summary>Writes the sheet as comma- or tab-separated text to a stream, a comma unless the options name another separator.</summary>
     /// <exception cref="ArgumentNullException">The stream is null.</exception>
-    public void SaveCsv(Stream stream, CsvOptions? options = null) => Csv.CsvWriter.Write(this, stream, null, options);
+    public void SaveAsCsv(Stream stream, CsvOptions? options = null) => Csv.CsvWriter.Write(this, stream, null, options);
 
     /// <summary>
     /// The sheet laid out on pages as Excel prints it: its print area or used cells, at its scale or fitted to its pages,

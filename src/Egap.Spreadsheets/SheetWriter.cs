@@ -99,16 +99,18 @@ public sealed class SheetWriter : IDisposable
     /// <summary>The zero-based index of the row the next <see cref="WriteRow(ReadOnlySpan{CellValue})"/> writes.</summary>
     public int Row { get; private set; }
 
-    /// <summary>Starts writing an XLSX file, or CSV or TSV text when the path ends in .csv, .tsv or .tab.</summary>
+    /// <summary>
+    /// Starts writing an XLSX file, or CSV or TSV text with the default <see cref="CsvOptions"/> when the path ends in .csv,
+    /// .tsv or .tab; <see cref="CreateCsv(string, CsvOptions?)"/> takes others.
+    /// </summary>
     /// <param name="path">The file to make or overwrite.</param>
-    /// <param name="csvOptions">How CSV text is written; not used for XLSX.</param>
-    public static SheetWriter Create(string path, CsvOptions? csvOptions = null)
+    public static SheetWriter Create(string path)
     {
         ArgumentNullException.ThrowIfNull(path);
         FileStream file = new(path, FileMode.Create, FileAccess.Write, FileShare.None, 65536);
         try
         {
-            return Workbook.IsCsv(path) ? new SheetWriter(file, true, path, csvOptions ?? new CsvOptions()) : new SheetWriter(file, true);
+            return Workbook.IsCsv(path) ? new SheetWriter(file, true, path, new CsvOptions()) : new SheetWriter(file, true);
         }
         catch
         {
@@ -122,6 +124,24 @@ public sealed class SheetWriter : IDisposable
     {
         ArgumentNullException.ThrowIfNull(stream);
         return new SheetWriter(stream, false);
+    }
+
+    /// <summary>Starts writing a CSV, TSV or TAB file; its extension picks the separator unless the options name one.</summary>
+    /// <param name="path">The file to make or overwrite.</param>
+    /// <param name="options">How the text is written, or null for the defaults.</param>
+    public static SheetWriter CreateCsv(string path, CsvOptions? options = null)
+    {
+        ArgumentNullException.ThrowIfNull(path);
+        FileStream file = new(path, FileMode.Create, FileAccess.Write, FileShare.None, 65536);
+        try
+        {
+            return new SheetWriter(file, true, path, options ?? new CsvOptions());
+        }
+        catch
+        {
+            file.Dispose();
+            throw;
+        }
     }
 
     /// <summary>Starts writing CSV or TSV text to a stream, which is left open.</summary>

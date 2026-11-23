@@ -7,7 +7,7 @@ namespace Egap.Spreadsheets;
 /// <summary>
 /// A slicer: buttons for the items of a pivot table field, which filter the pivot tables it is connected to. Selecting items
 /// hides the others in those tables and refreshes them, as clicking the slicer in Excel does. A slicer sits on a sheet's
-/// drawing layer: see <see cref="SheetDrawingCollection.AddSlicer(PivotTable, string, RangeAddress)"/> and
+/// drawing layer: see <see cref="SheetDrawingCollection.AddSlicer(RangeAddress, PivotTable, string)"/> and
 /// <see cref="SheetDrawing.Slicer"/>.
 /// </summary>
 /// <remarks>

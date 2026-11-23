@@ -64,7 +64,7 @@ internal static class WorkbookConvert
         foreach (Worksheet sheet in sheets)
         {
             string target = sheets.Count == 1 ? path : WorkbookFiles.SheetPath(path, sheet.Name);
-            Output.Write(session, target, stream => sheet.SaveCsv(stream));
+            Output.Write(session, target, stream => sheet.SaveAsCsv(stream));
             written.Add(target);
         }
 

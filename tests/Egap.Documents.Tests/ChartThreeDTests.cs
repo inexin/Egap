@@ -17,10 +17,10 @@ public sealed class ChartThreeDTests
 
     private static Chart Filled(Chart chart)
     {
-        chart.Plots[0].Series.Add("North", ["Jan", "Feb", "Mar", "Apr"], [10, 20, 5, 30]);
+        chart.Plots[0].Series.Add([10, 20, 5, 30], ["Jan", "Feb", "Mar", "Apr"], "North");
         if (!chart.IsExtended)
         {
-            chart.Plots[0].Series.Add("South", ["Jan", "Feb", "Mar", "Apr"], [3, 1, 2, 4]);
+            chart.Plots[0].Series.Add([3, 1, 2, 4], ["Jan", "Feb", "Mar", "Apr"], "South");
         }
 
         return chart;

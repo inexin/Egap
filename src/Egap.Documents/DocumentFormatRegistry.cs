@@ -59,9 +59,6 @@ internal static class DocumentFormatRegistry
         [DocumentFormatKind.Pdf] = new(DocumentFormatKind.Pdf, ReadPdf, SavePdf),
         [DocumentFormatKind.Rtf] = new(DocumentFormatKind.Rtf, ReadRtf, (document, path) => RtfFormat.Save(document, path)),
 
-        // An encrypted package is read as DOCX once decrypted; without a password that throws DocumentPasswordException.
-        [DocumentFormatKind.Encrypted] = new(DocumentFormatKind.Encrypted, ReadDocx, null),
-
         [DocumentFormatKind.Odt] = new(DocumentFormatKind.Odt, ReadOdt, (document, path) => OdtFormat.Save(document, path)),
 
         // Binary Word files are read, not written.
@@ -180,7 +177,6 @@ internal static class DocumentFormatRegistry
         DocumentFormatKind.Epub => "EPUB",
         DocumentFormatKind.Mhtml => "MHTML",
         DocumentFormatKind.Rtf => "RTF",
-        DocumentFormatKind.Encrypted => "encrypted Office files",
         DocumentFormatKind.Odt => "ODT",
         DocumentFormatKind.Doc => "DOC",
         DocumentFormatKind.Xlsx => "XLSX",

@@ -550,7 +550,7 @@ internal static class XlsbWorkbook
                 };
                 foreach (XlsbTable.Column column in table.Columns)
                 {
-                    made.Columns.Add(new SheetTableColumn(column.Name)
+                    made.ColumnList.Add(new SheetTableColumn(column.Name)
                     {
                         TotalsRowFunction = column.Function,
                         TotalsRowLabel = column.Label,
@@ -623,7 +623,7 @@ internal static class XlsbWorkbook
                             }
 
                             CellAddress cell = new(note.Row, note.Column);
-                            if (sheet.Comments[cell] is not null)
+                            if (sheet.Comments.Find(cell) is not null)
                             {
                                 break;
                             }

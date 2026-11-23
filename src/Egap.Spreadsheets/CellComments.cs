@@ -62,7 +62,7 @@ public sealed class CellCommentCollection : IReadOnlyCollection<CellComment>
     internal bool Changed { get; set; }
 
     /// <summary>The note on a cell, or null when it has none.</summary>
-    public CellComment? this[CellAddress cell] => comments.Find(c => c.Cell == cell);
+    public CellComment? Find(CellAddress cell) => comments.Find(c => c.Cell == cell);
 
     /// <summary>Adds a note to a cell.</summary>
     /// <exception cref="ArgumentException">The cell has a note already.</exception>
@@ -70,7 +70,7 @@ public sealed class CellCommentCollection : IReadOnlyCollection<CellComment>
     {
         ArgumentNullException.ThrowIfNull(text);
         ArgumentNullException.ThrowIfNull(author);
-        if (this[cell] is not null)
+        if (Find(cell) is not null)
         {
             throw new ArgumentException($"{cell} has a note already.", nameof(cell));
         }

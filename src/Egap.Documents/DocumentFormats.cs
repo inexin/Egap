@@ -129,19 +129,46 @@ public sealed partial class Document
     /// Tells which format a file is in without loading it, from its first bytes and, for text, its extension: a ZIP package
     /// whose first entry is an EPUB <c>mimetype</c> is EPUB, one with a part under <c>xl/</c> or named .xlsx, .xlsm, .xltx or
     /// .xltm is an Excel workbook, another ZIP package is Word's, a compound file with a <c>WordDocument</c> stream is a
-    /// binary Word file (DOC), a compound file that holds an encrypted package or a password-protected DOC is
-    /// <see cref="DocumentFormatKind.Encrypted"/>, and another compound file is taken as Word's, an OpenDocument text
-    /// package is ODT (and <see cref="DocumentFormatKind.Encrypted"/> when its manifest says it is encrypted), a MIME
+    /// binary Word file (DOC), a compound file that holds an encrypted package is Word's, or an Excel workbook when its name
+    /// says so, and another compound file is taken as Word's, an OpenDocument text package is ODT, a MIME
     /// message of <c>multipart/related</c> parts is MHTML, <c>%PDF-</c> is PDF, <c>{\rtf</c> is RTF, a JSON object naming the <c>DoclingDocument</c> schema is
     /// Docling JSON, text that starts with a tag is HTML, and other text is Markdown, or plain text when the extension says
-    /// so. It needs no add-on package, so a program can tell its user which package a file needs.
+    /// so. It needs no add-on package, so a program can tell its user which package a file needs. An encrypted file is
+    /// identified as its format; <see cref="IsEncrypted(Stream, string?)"/> tells whether it needs a password.
     /// </summary>
     /// <param name="stream">The file. A stream that can seek is put back where it was; one that cannot has its first bytes read.</param>
     /// <param name="fileName">The file's name or extension, or <see langword="null"/> to go by the bytes alone.</param>
     /// <returns>The format, or <see cref="DocumentFormatKind.Unknown"/> for binary data no format here knows.</returns>
-    public static DocumentFormatKind Identify(Stream stream, string? fileName = null)
+    public static DocumentFormatKind Identify(Stream stream, string? fileName = null) => Identify(stream, fileName, out _);
+
+    /// <summary>
+    /// Whether a file needs a password to load, without loading it: an encrypted Office package (DOCX or XLSX), a
+    /// password-protected binary Word file (DOC) or a password-protected OpenDocument text package. Loading one needs its
+    /// password, in <see cref="DocumentLoadOptions.Password"/>, <see cref="DocxLoadOptions.Password"/> or
+    /// <see cref="OdtLoadOptions.Password"/>; <see cref="Identify(Stream, string?)"/> tells which format it is.
+    /// </summary>
+    /// <param name="stream">The file. A stream that can seek is put back where it was; one that cannot has its first bytes read.</param>
+    /// <param name="fileName">The file's name or extension, or <see langword="null"/> to go by the bytes alone.</param>
+    /// <returns>Whether the file is encrypted or password-protected.</returns>
+    public static bool IsEncrypted(Stream stream, string? fileName = null)
+    {
+        Identify(stream, fileName, out bool encrypted);
+        return encrypted;
+    }
+
+    /// <summary>Whether the file at <paramref name="path"/> needs a password to load. See <see cref="IsEncrypted(Stream, string?)"/>.</summary>
+    /// <returns>Whether the file is encrypted or password-protected.</returns>
+    public static bool IsEncrypted(string path)
+    {
+        ArgumentException.ThrowIfNullOrEmpty(path);
+        using FileStream stream = File.OpenRead(path);
+        return IsEncrypted(stream, path);
+    }
+
+    private static DocumentFormatKind Identify(Stream stream, string? fileName, out bool encrypted)
     {
         ArgumentNullException.ThrowIfNull(stream);
+        encrypted = false;
         byte[] head = new byte[HeadLength];
         long start = stream.CanSeek ? stream.Position : 0;
         int length = stream.ReadAtLeast(head, head.Length, throwOnEndOfStream: false);
@@ -157,14 +184,13 @@ public sealed partial class Document
         // WordDocument stream; a stream that cannot seek is judged by the sectors among its first bytes.
         if (kind == DocumentFormatKind.Docx && Office.CompoundFile.IsCompoundFile(head.AsSpan(0, length)))
         {
-            kind = CompoundKind(stream.CanSeek ? stream : new MemoryStream(head, 0, length, writable: false), out _);
+            kind = CompoundKind(stream.CanSeek ? stream : new MemoryStream(head, 0, length, writable: false), extension, out _, out encrypted);
         }
 
         // An encrypted OpenDocument package says so in its manifest, which a stream that cannot seek may hold too late to read.
         if (kind == DocumentFormatKind.Odt && stream.CanSeek && head is [0x50, 0x4B, 0x03, 0x04, ..] && Odf.OdfPackage.IsEncryptedZip(stream))
         {
-            stream.Position = start;
-            return DocumentFormatKind.Encrypted;
+            encrypted = true;
         }
 
         if (stream.CanSeek)
@@ -184,22 +210,32 @@ public sealed partial class Document
         return Identify(stream, path);
     }
 
-    /// <summary>Which Word file a compound file is: a binary one (DOC), an encrypted one, or else DOCX, whose reader names it.</summary>
-    private static DocumentFormatKind CompoundKind(Stream source, out bool binaryWord)
+    /// <summary>
+    /// Which file a compound file is: a binary Word file (DOC), an encrypted package (an Excel workbook when its name says so,
+    /// else Word's), or else DOCX, whose reader names it.
+    /// </summary>
+    private static DocumentFormatKind CompoundKind(Stream source, string? extension, out bool binaryWord, out bool encrypted)
     {
         long start = source.Position;
         binaryWord = false;
+        encrypted = false;
         try
         {
             Office.CompoundFile file = Office.CompoundFile.Read(source, new DocumentLimits());
             if (Office.OfficeEncryption.IsEncryptedPackage(file))
             {
-                return DocumentFormatKind.Encrypted;
+                encrypted = true;
+                return KindOfExtension(extension) == DocumentFormatKind.Xlsx ? DocumentFormatKind.Xlsx : DocumentFormatKind.Docx;
             }
 
-            DocumentFormatKind? word = Doc.DocReader.KindOf(file);
-            binaryWord = word is not null;
-            return word ?? DocumentFormatKind.Docx;
+            if (Doc.DocReader.IsWordDocument(file, out bool passwordProtected))
+            {
+                binaryWord = true;
+                encrypted = passwordProtected;
+                return DocumentFormatKind.Doc;
+            }
+
+            return DocumentFormatKind.Docx;
         }
         catch (Exception e) when (e is DocumentException or IOException or ArgumentException or InvalidOperationException)
         {
@@ -229,7 +265,7 @@ public sealed partial class Document
         // A binary Word file, password-protected or not, takes the options' password and limits.
         if (kind == DocumentFormatKind.Docx && Office.CompoundFile.IsCompoundFile(bytes))
         {
-            CompoundKind(new MemoryStream(bytes, writable: false), out bool binaryWord);
+            CompoundKind(new MemoryStream(bytes, writable: false), extension, out bool binaryWord, out _);
             if (binaryWord)
             {
                 kind = DocumentFormatKind.Doc;

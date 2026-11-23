@@ -24,7 +24,7 @@ public sealed partial class Worksheet
     /// IReadOnlyList&lt;Cell&gt; totals = sheet.Find("total*", new FindOptions { MatchEntireCell = true });
     /// </code>
     /// </example>
-    public IReadOnlyList<Cell> Find(string what, FindOptions? options = null) =>
+    public IReadOnlyList<Cell> FindAll(string what, FindOptions? options = null) =>
         UsedRange is { } used ? FindCells(used.Address, what, options ?? new FindOptions()) : [];
 
     /// <summary>
@@ -165,7 +165,7 @@ public sealed partial class Worksheet
     /// <summary>The cells of a range that hold something to search, in the order asked for.</summary>
     private List<(int Row, int Column)> Visit(RangeAddress range, FindOptions options)
     {
-        IEnumerable<(int Row, int Column)> cells = options.LookIn == FindLookIn.Notes
+        IEnumerable<(int Row, int Column)> cells = options.LookIn == FindLookIn.Comments
             ? Comments.Where(c => range.Contains(c.Cell)).Select(c => (c.Cell.Row, c.Cell.Column))
             : store.Occupied(range);
         return options.Order == FindOrder.ByColumns
@@ -176,9 +176,9 @@ public sealed partial class Worksheet
     /// <summary>The text Excel searches in a cell: its formula bar, what it shows, or its note.</summary>
     private string? Searched(int row, int column, FindLookIn lookIn)
     {
-        if (lookIn == FindLookIn.Notes)
+        if (lookIn == FindLookIn.Comments)
         {
-            return Comments[new CellAddress(row, column)]?.Text;
+            return Comments.Find(new CellAddress(row, column))?.Text;
         }
 
         Cell cell = this[row, column];

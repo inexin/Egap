@@ -62,7 +62,7 @@ public sealed class ChartOracleTests
         {
             RangeAddress at = new(10 + (place / 6 * 16), 6 + (place % 6 * 8), 24 + (place / 6 * 16), 12 + (place % 6 * 8));
             place++;
-            SheetDrawing drawing = sheet.Drawings.AddChart(type, at, cells, threeD);
+            SheetDrawing drawing = sheet.Drawings.AddChart(at, type, cells, threeD);
             drawing.Name = name;
             dress?.Invoke(drawing.Chart!);
         }

@@ -99,16 +99,21 @@ public sealed class SheetReader : IDisposable
     /// <summary>The value of a cell of the row last read; empty past its last cell.</summary>
     public CellValue this[int column] => Find(column) is int i ? cells[i].Value : CellValue.Empty;
 
-    /// <summary>Opens an XLSX, XLSM, XLTX or XLTM file, or a CSV, TSV or TAB file by its extension, at its first sheet.</summary>
-    /// <exception cref="DocumentException">The file is not a workbook.</exception>
-    /// <exception cref="DocumentLimitException">The file is past a limit of <see cref="WorkbookLoadOptions.Limits"/>.</exception>
-    public static SheetReader Open(string path, WorkbookLoadOptions? options = null)
+    /// <summary>
+    /// Opens an XLSX, XLSM, XLTX or XLTM file, encrypted or not, or a CSV, TSV or TAB file by its extension (read with the
+    /// default <see cref="CsvOptions"/>; <see cref="OpenCsv(string, CsvOptions?)"/> takes others), at its first sheet. XLS, XLSB
+    /// and OpenDocument spreadsheets are not read row by row: <see cref="Workbook.Load(string, WorkbookLoadOptions?)"/> loads them.
+    /// </summary>
+    /// <exception cref="DocumentException">The file is not a workbook this reader reads.</exception>
+    /// <exception cref="DocumentLimitException">The file is past a limit of <see cref="SheetReaderOptions.Limits"/>.</exception>
+    /// <exception cref="DocumentPasswordException">The file is encrypted, and the options give no password or a wrong one.</exception>
+    public static SheetReader Open(string path, SheetReaderOptions? options = null)
     {
         ArgumentNullException.ThrowIfNull(path);
         FileStream file = new(path, FileMode.Open, FileAccess.Read, FileShare.Read, 65536);
         try
         {
-            return Workbook.IsCsv(path) ? new SheetReader(file, file, path, options?.Csv ?? new CsvOptions()) : OpenXlsx(file, file, options);
+            return Workbook.IsCsv(path) ? new SheetReader(file, file, path, new CsvOptions()) : OpenXlsx(file, file, options);
         }
         catch
         {
@@ -117,13 +122,33 @@ public sealed class SheetReader : IDisposable
         }
     }
 
-    /// <summary>Opens an XLSX, XLSM, XLTX or XLTM package at its first sheet; the stream is left open. A stream that cannot seek is copied into memory first.</summary>
-    /// <exception cref="DocumentException">The stream is not a workbook.</exception>
-    /// <exception cref="DocumentLimitException">The package is past a limit of <see cref="WorkbookLoadOptions.Limits"/>.</exception>
-    public static SheetReader Open(Stream stream, WorkbookLoadOptions? options = null)
+    /// <summary>
+    /// Opens an XLSX, XLSM, XLTX or XLTM package, encrypted or not, at its first sheet; the stream is left open. A stream that
+    /// cannot seek, or an encrypted package, is read into memory first.
+    /// </summary>
+    /// <exception cref="DocumentException">The stream is not a workbook this reader reads.</exception>
+    /// <exception cref="DocumentLimitException">The package is past a limit of <see cref="SheetReaderOptions.Limits"/>.</exception>
+    /// <exception cref="DocumentPasswordException">The package is encrypted, and the options give no password or a wrong one.</exception>
+    public static SheetReader Open(Stream stream, SheetReaderOptions? options = null)
     {
         ArgumentNullException.ThrowIfNull(stream);
         return OpenXlsx(null, stream, options);
+    }
+
+    /// <summary>Opens a CSV, TSV or TAB file; its extension picks the separator unless the options name one.</summary>
+    public static SheetReader OpenCsv(string path, CsvOptions? options = null)
+    {
+        ArgumentNullException.ThrowIfNull(path);
+        FileStream file = new(path, FileMode.Open, FileAccess.Read, FileShare.Read, 65536);
+        try
+        {
+            return new SheetReader(file, file, path, options ?? new CsvOptions());
+        }
+        catch
+        {
+            file.Dispose();
+            throw;
+        }
     }
 
     /// <summary>Opens CSV or TSV text; the stream is left open.</summary>
@@ -228,7 +253,7 @@ public sealed class SheetReader : IDisposable
         ownedStream?.Dispose();
     }
 
-    private static SheetReader OpenXlsx(Stream? owned, Stream stream, WorkbookLoadOptions? options)
+    private static SheetReader OpenXlsx(Stream? owned, Stream stream, SheetReaderOptions? options)
     {
         DocumentLimits limits = options?.Limits ?? new DocumentLimits();
         Stream input = stream;
@@ -239,6 +264,35 @@ public sealed class SheetReader : IDisposable
             copy.Position = 0;
             input = copy;
             owned = copy;
+        }
+
+        // A compound file is an encrypted package, read once decrypted, or an XLS workbook, which this reader does not read.
+        Span<byte> head = stackalloc byte[8];
+        long start = input.Position;
+        int length = input.ReadAtLeast(head, head.Length, throwOnEndOfStream: false);
+        input.Position = start;
+        if (Xls.XlsReader.Sniff(head[..length]))
+        {
+            Egap.Documents.Office.CompoundFile file;
+            try
+            {
+                file = Egap.Documents.Office.CompoundFile.Read(input, limits);
+            }
+            catch (InvalidDataException e)
+            {
+                throw new DocumentException("The file is not a compound file Egap can read: " + e.Message, e);
+            }
+
+            if (file.Find("EncryptedPackage") is null)
+            {
+                throw new DocumentException("The file is an Excel 97-2003 workbook (XLS), which SheetReader does not read; load it with Workbook.Load.");
+            }
+
+            // The package is read from memory: a file or copy opened here is done with, and a caller's stream stays open.
+            byte[] package = Xls.XlsReader.DecryptPackage(file, limits, options?.Password);
+            owned?.Dispose();
+            input = new MemoryStream(package, writable: false);
+            owned = input;
         }
 
         ZipArchive archive;
@@ -631,4 +685,17 @@ public sealed class SheetReader : IDisposable
 
         return list;
     }
+}
+
+/// <summary>How <see cref="SheetReader.Open(string, SheetReaderOptions?)"/> reads a workbook.</summary>
+public sealed class SheetReaderOptions
+{
+    /// <summary>The limits the reader keeps to, against files made to use up memory; the defaults suit any real workbook.</summary>
+    public DocumentLimits Limits { get; init; } = new();
+
+    /// <summary>
+    /// The password of an XLSX file Excel encrypted, or null. Without one, Excel's own default password is tried, as Excel does
+    /// for a workbook it encrypted only to protect it from writing.
+    /// </summary>
+    public string? Password { get; init; }
 }

@@ -222,7 +222,7 @@ static void Csv(Stream input)
     }
 
     MemoryStream output = new();
-    book.Worksheets[0].SaveCsv(output);
+    book.Worksheets[0].SaveAsCsv(output);
     output.Position = 0;
     Workbook.LoadCsv(output);
 
@@ -577,7 +577,7 @@ static void Xlsx(Stream input)
             }
 
             CellAddress last = new(CellAddress.MaxRows - 1, 0);
-            if (sheet.Comments[last] is null)
+            if (sheet.Comments.Find(last) is null)
             {
                 sheet.Comments.Add(last, "fuzz");
             }
@@ -603,7 +603,7 @@ static void Xlsx(Stream input)
 
     try
     {
-        using SheetReader reader = SheetReader.Open(new MemoryStream(bytes, writable: false), new WorkbookLoadOptions { Limits = limits });
+        using SheetReader reader = SheetReader.Open(new MemoryStream(bytes, writable: false), new SheetReaderOptions { Limits = limits });
         for (int sheet = 0; sheet < reader.SheetNames.Count; sheet++)
         {
             reader.SelectSheet(sheet);
@@ -844,8 +844,8 @@ static void Sorts(Stream input)
             () => sheet.Range("A2:D30").Sort(new SortField(3), new SortField(1, Descending: true)),
             () => sheet.AutoFilter?.Apply(),
             () => (sheet.Tables.Count > 0 ? sheet.Tables[0].AutoFilter : null)?.Apply(),
-            () => sheet.Find("a*", new Egap.Spreadsheets.FindOptions { LookIn = FindLookIn.Values, Order = FindOrder.ByColumns }),
-            () => sheet.Find("~*?", new Egap.Spreadsheets.FindOptions { LookIn = FindLookIn.Notes, MatchCase = true }),
+            () => sheet.FindAll("a*", new Egap.Spreadsheets.FindOptions { LookIn = FindLookIn.Values, Order = FindOrder.ByColumns }),
+            () => sheet.FindAll("~*?", new Egap.Spreadsheets.FindOptions { LookIn = FindLookIn.Comments, MatchCase = true }),
             () => sheet.Replace("1", "2"),
             () => sheet.Replace("A", "=", new Egap.Spreadsheets.FindOptions { MatchEntireCell = true }),
             () => sheet.AutoFilter?.ShowAll()])
@@ -897,7 +897,7 @@ static void Find(Stream input)
         {
             foreach (bool whole in (bool[])[false, true])
             {
-                _ = sheet.Find(what, new Egap.Spreadsheets.FindOptions { LookIn = place, MatchEntireCell = whole, MatchCase = whole, Order = whole ? FindOrder.ByColumns : FindOrder.ByRows });
+                _ = sheet.FindAll(what, new Egap.Spreadsheets.FindOptions { LookIn = place, MatchEntireCell = whole, MatchCase = whole, Order = whole ? FindOrder.ByColumns : FindOrder.ByRows });
             }
         }
 
@@ -953,7 +953,7 @@ static void Conditional(Stream input)
         book.Names.Add("Fuzz", "Sheet1!$A$1:$A$9");
         CellStyle bold = CellStyle.Default with { Font = CellStyle.Default.Font with { Bold = true } };
         made.ConditionalFormats.Add("A1:B8", ConditionalFormatRule.Expression(text.Length == 0 ? "A1" : text, bold));
-        made.ConditionalFormats.Add("B1:C8", ConditionalFormatRule.CellIs(ComparisonOperator.Between, text.Length == 0 ? "0" : text, bold, "B2")).Ranges.Add(RangeAddress.Parse("A3:A4"));
+        made.ConditionalFormats.Add("B1:C8", ConditionalFormatRule.CellIs(ComparisonOperator.Between, text.Length == 0 ? "0" : text, "B2", bold)).Ranges.Add(RangeAddress.Parse("A3:A4"));
         made.ConditionalFormats.Add("A1:D8", ConditionalFormatRule.ColorScale(CellColor.Black, CellColor.White), ConditionalFormatRule.DataBar(CellColor.Black), ConditionalFormatRule.IconSet("5Arrows"));
         foreach (DataValidationType type in Enum.GetValues<DataValidationType>())
         {

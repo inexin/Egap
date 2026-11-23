@@ -339,9 +339,9 @@ internal static class XlsChart
                 SortedDictionary<int, (double? Number, string? Text)>? labels = one.LiteralCategories ? cached.GetValueOrDefault((2, number)) : null;
                 int count = values.Count == 0 ? 0 : values.Keys.Max() + 1;
                 ChartSeries literal = plot.Series.Add(
-                    one.NameReference is null ? one.Name : null,
+                    Enumerable.Range(0, count).Select(i => values.TryGetValue(i, out var value) ? value.Number : null),
                     labels is null ? null : Enumerable.Range(0, count).Select(i => labels.TryGetValue(i, out var label) ? label.Text ?? (label.Number is { } n ? XlsFormula.Number(n) : null) : null),
-                    Enumerable.Range(0, count).Select(i => values.TryGetValue(i, out var value) ? value.Number : null));
+                    one.NameReference is null ? one.Name : null);
                 if (one.NameReference is not null)
                 {
                     literal.NameReference = one.NameReference;

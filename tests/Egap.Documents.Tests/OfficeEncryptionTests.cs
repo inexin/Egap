@@ -112,14 +112,14 @@ public sealed class OfficeEncryptionTests : IDisposable
         string path = Path.Combine(folder, "secret.docx");
         Sample().SaveAsDocx(path, new DocxSaveOptions { Password = "open sesame" });
 
-        Assert.Equal(DocumentFormatKind.Encrypted, Document.Identify(path));
+        Assert.True(Document.IsEncrypted(path));
         using (FileStream stream = File.OpenRead(path))
         {
-            Assert.Equal(DocumentFormatKind.Encrypted, Document.Identify(stream));
+            Assert.True(Document.IsEncrypted(stream));
             Assert.Equal(0, stream.Position);
         }
 
-        Assert.Equal(DocumentFormatKind.Encrypted, Document.Identify(new NonSeekableStream(File.ReadAllBytes(path))));
+        Assert.True(Document.IsEncrypted(new NonSeekableStream(File.ReadAllBytes(path))));
         Assert.Throws<DocumentPasswordException>(() => Document.Load(path));
         Document loaded = Document.Load(path, new DocumentLoadOptions { Password = "open sesame" });
         Assert.Equal(path, loaded.FileName);
@@ -214,7 +214,7 @@ public sealed class OfficeEncryptionTests : IDisposable
         byte[] info = file.ReadStream("EncryptionInfo")!;
 
         Assert.Equal(2, BinaryPrimitives.ReadUInt16LittleEndian(info.AsSpan(2)));
-        Assert.Equal(DocumentFormatKind.Encrypted, Document.Identify(path));
+        Assert.True(Document.IsEncrypted(path));
         Document loaded = Document.Load(path, new DocumentLoadOptions { Password = "Lo pässwörd" });
         string text = loaded.GetText();
         Assert.Contains("Hello from Egap, encrypted. Æøå 日本語", text, StringComparison.Ordinal);

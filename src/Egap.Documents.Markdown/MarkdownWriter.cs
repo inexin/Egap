@@ -45,7 +45,7 @@ internal sealed class MarkdownWriter
     /// <summary>The document as Markdown; with <paramref name="path"/>, images go to a folder beside that file.</summary>
     public static string Write(Document document, MarkdownSaveOptions options, string? path, out IReadOnlyList<ConversionWarning> warnings)
     {
-        if (options.RevisionView == Layout.RevisionView.Original && document.Revisions.Count > 0)
+        if (options.RevisionView == RevisionView.Original && document.Revisions.Count > 0)
         {
             // The original is the document with every change rejected: a copy, so the caller's document keeps its changes.
             document = document.Clone();
@@ -780,7 +780,7 @@ internal sealed class MarkdownWriter
 
     private void WriteInline(Inline inline, StringBuilder text, InlineState state)
     {
-        if (options.RevisionView == Layout.RevisionView.Markup)
+        if (options.RevisionView == RevisionView.Markup)
         {
             // Inlines with the same change share one mark; emphasis closes at its edges, so marks and emphasis nest.
             Revision? wanted = inline.Revision == outerRevision ? null : inline.Revision;

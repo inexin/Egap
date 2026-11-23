@@ -438,8 +438,8 @@ internal static class OpenFormulaWriter
             int lastColumn = range.Last.Column;
             if (node.FirstColumn is { } from)
             {
-                int start = table.Columns.FindIndex(c => string.Equals(c.Name, from, StringComparison.OrdinalIgnoreCase));
-                int end = node.LastColumn is { } to ? table.Columns.FindIndex(c => string.Equals(c.Name, to, StringComparison.OrdinalIgnoreCase)) : start;
+                int start = table.ColumnList.FindIndex(c => string.Equals(c.Name, from, StringComparison.OrdinalIgnoreCase));
+                int end = node.LastColumn is { } to ? table.ColumnList.FindIndex(c => string.Equals(c.Name, to, StringComparison.OrdinalIgnoreCase)) : start;
                 if (start < 0 || end < 0)
                 {
                     return null;

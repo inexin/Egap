@@ -1,6 +1,6 @@
 namespace Egap.Spreadsheets;
 
-/// <summary>What <see cref="Worksheet.Find(string, FindOptions?)"/> searches in each cell, as Excel's "Look in".</summary>
+/// <summary>What <see cref="Worksheet.FindAll(string, FindOptions?)"/> searches in each cell, as Excel's "Look in".</summary>
 public enum FindLookIn
 {
     /// <summary>
@@ -12,11 +12,11 @@ public enum FindLookIn
     /// <summary>The text a cell shows, formatted as <see cref="Cell.Text"/> gives it.</summary>
     Values,
 
-    /// <summary>The text of a cell's note.</summary>
-    Notes,
+    /// <summary>The text of a cell's comment (<see cref="CellComment"/>).</summary>
+    Comments,
 }
 
-/// <summary>The order <see cref="Worksheet.Find(string, FindOptions?)"/> visits cells in.</summary>
+/// <summary>The order <see cref="Worksheet.FindAll(string, FindOptions?)"/> visits cells in.</summary>
 public enum FindOrder
 {
     /// <summary>Row by row, left to right. Excel's default.</summary>
@@ -27,7 +27,7 @@ public enum FindOrder
 }
 
 /// <summary>
-/// How <see cref="Worksheet.Find(string, FindOptions?)"/> and <see cref="Worksheet.Replace(string, string, FindOptions?)"/>
+/// How <see cref="Worksheet.FindAll(string, FindOptions?)"/> and <see cref="Worksheet.Replace(string, string, FindOptions?)"/>
 /// match, as the options of Excel's Find and Replace dialog.
 /// </summary>
 public sealed class FindOptions

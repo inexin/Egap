@@ -60,12 +60,15 @@ public sealed record SheetPdfOptions
     /// <summary>The document's title; null for the file name, or the first sheet's name.</summary>
     public string? Title { get; init; }
 
+    /// <summary>How the PDF is saved: compression, encryption and the like; null for the defaults.</summary>
+    public PdfSaveOptions? Save { get; init; }
+
     /// <summary>Whether the PDF is tagged: asked for, or needed by PDF/UA or an a level of PDF/A.</summary>
-    public bool IsTagged => Tagged || UniversalAccessibility || Conformance is PdfAConformance.PdfA2a or PdfAConformance.PdfA3a;
+    internal bool IsTagged => Tagged || UniversalAccessibility || Conformance is PdfAConformance.PdfA2a or PdfAConformance.PdfA3a;
 }
 
 /// <summary>
-/// One or more sheets laid out on pages as Excel prints them (Build Plan task 17): the print area, the scale or fit to pages,
+/// One or more sheets laid out on pages as Excel prints them: the print area, the scale or fit to pages,
 /// the page breaks, the repeated titles and the page order give the pages; each draws on any Egami canvas.
 /// </summary>
 public sealed class SheetPrintLayout
