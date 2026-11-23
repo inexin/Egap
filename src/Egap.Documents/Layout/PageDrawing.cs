@@ -240,19 +240,6 @@ internal static class PageDrawing
         // Backgrounds (highlight and run shading) fill the line's height behind each run.
         foreach (LayoutRun run in text.Runs)
         {
-            if (Pieces(paragraph, run) is { } pieces)
-            {
-                foreach (Piece piece in pieces)
-                {
-                    if (paragraph.GetStyle(piece.Style).Background is { } shade && piece.Right > piece.Left)
-                    {
-                        canvas.FillRect(RectF.FromEdges(origin.X + piece.Left, (float)line.Bounds.Y, origin.X + piece.Right, (float)line.Bounds.Bottom), shade);
-                    }
-                }
-
-                continue;
-            }
-
             TextStyle style = paragraph.GetStyle(run.StyleIndex);
             if (style.Background is { } background && run.Advance > 0)
             {
@@ -267,21 +254,6 @@ internal static class PageDrawing
                 continue;
             }
 
-            if (Pieces(paragraph, run) is { } pieces)
-            {
-                foreach (Piece piece in pieces)
-                {
-                    TextStyle pieceStyle = paragraph.GetStyle(piece.Style);
-                    canvas.DrawGlyphRun(piece.Glyphs, origin, pieceStyle.Color ?? Black);
-                    if (pieceStyle.Decoration is { } pieceDecoration && piece.Right > piece.Left)
-                    {
-                        DrawDecoration(canvas, pieceDecoration, pieceStyle, origin.X + piece.Left, piece.Right - piece.Left, (float)line.Baseline - (pieceStyle.BaselineShift ?? 0));
-                    }
-                }
-
-                continue;
-            }
-
             TextStyle style = paragraph.GetStyle(run.StyleIndex);
             canvas.DrawGlyphRun(OwnText(glyphs, run), origin, style.Color ?? Black);
             if (style.Decoration is { } decoration && run.Advance > 0)
@@ -289,109 +261,6 @@ internal static class PageDrawing
                 DrawDecoration(canvas, decoration, style, origin.X + run.X, run.Advance, (float)line.Baseline - (style.BaselineShift ?? 0));
             }
         }
-    }
-
-    /// <summary>A run's glyphs of one style span, with that span's style index and its left and right edges in the line.</summary>
-    private readonly record struct Piece(int Style, GlyphRun Glyphs, float Left, float Right);
-
-    /// <summary>
-    /// The pieces of a run that crosses style spans, or null for a run in one span. Egami shapes text that shapes alike as
-    /// one run even where colour, decoration or background change (a red word in a black line), and names the style at the
-    /// run's start; each span's glyphs are drawn here in their own style.
-    /// </summary>
-    private static List<Piece>? Pieces(Egami.Fonts.Layout.Paragraph paragraph, LayoutRun run)
-    {
-        IReadOnlyList<StyleSpan> spans = paragraph.RichText.Spans;
-        if (run.Kind != LayoutRunKind.Text || run.Length < 2 || spans.Count < 2 || SpanAt(spans, run.Start) == SpanAt(spans, run.Start + run.Length - 1)
-            || run.Glyphs is not { } glyphs || glyphs.Count == 0 || glyphs.Clusters.Length != glyphs.Count || !glyphs.Transforms.IsEmpty)
-        {
-            return null;
-        }
-
-        // The glyphs by span, in glyph order; a span's glyphs are together in a run of one direction.
-        ReadOnlySpan<int> clusters = glyphs.Clusters;
-        ReadOnlySpan<Vector2> positions = glyphs.Positions;
-        string source = glyphs.Text ?? paragraph.Text;
-        List<Piece> pieces = [];
-        int first = 0;
-        while (first < glyphs.Count)
-        {
-            int span = SpanAt(spans, clusters[first]);
-            int end = first + 1;
-            while (end < glyphs.Count && SpanAt(spans, clusters[end]) == span)
-            {
-                end++;
-            }
-
-            // The piece's text: from its lowest cluster to the next cluster after its highest, or the run's end.
-            int low = int.MaxValue, high = int.MinValue;
-            float left = float.MaxValue, right = float.MinValue;
-            for (int g = first; g < end; g++)
-            {
-                low = Math.Min(low, clusters[g]);
-                high = Math.Max(high, clusters[g]);
-                left = Math.Min(left, positions[g].X);
-            }
-
-            int textEnd = run.Start + run.Length;
-            right = run.X + run.Advance;
-            for (int g = 0; g < glyphs.Count; g++)
-            {
-                if (g >= first && g < end)
-                {
-                    continue;
-                }
-
-                if (clusters[g] > high)
-                {
-                    textEnd = Math.Min(textEnd, clusters[g]);
-                }
-
-                if (positions[g].X > left)
-                {
-                    right = Math.Min(right, positions[g].X);
-                }
-            }
-
-            low = Math.Clamp(low, 0, source.Length);
-            textEnd = Math.Clamp(textEnd, low, source.Length);
-            int[] own = new int[end - first];
-            for (int g = first; g < end; g++)
-            {
-                own[g - first] = Math.Clamp(clusters[g] - low, 0, textEnd - low);
-            }
-
-            GlyphRun piece = GlyphRun.Create(glyphs.Font, glyphs.Glyphs[first..end], positions[first..end], source[low..textEnd], own);
-            pieces.Add(new Piece(span + 1, piece, left, right));
-            first = end;
-        }
-
-        return pieces;
-    }
-
-    /// <summary>The index of the span holding a text index, or -1 for text in no span.</summary>
-    private static int SpanAt(IReadOnlyList<StyleSpan> spans, int index)
-    {
-        int low = 0, high = spans.Count - 1;
-        while (low <= high)
-        {
-            int middle = (low + high) >>> 1;
-            StyleSpan span = spans[middle];
-            if (index < span.Start)
-            {
-                high = middle - 1;
-            }
-            else if (index >= span.End)
-            {
-                low = middle + 1;
-            }
-            else
-            {
-                return middle;
-            }
-        }
-
-        return -1;
     }
 
     private static void DrawDecoration(Canvas canvas, TextDecoration decoration, TextStyle style, float x, float width, float baseline)
