@@ -31,6 +31,9 @@ internal sealed class OpcPackageWriter
     private readonly List<(string Name, string ContentType, byte[] Data)> parts = [];
     private readonly Dictionary<string, List<OpcRelationship>> relationships = new(StringComparer.OrdinalIgnoreCase);
 
+    /// <summary>The relationship ids used from each source, so that a new id is found without scanning them all.</summary>
+    private readonly Dictionary<string, HashSet<string>> usedIds = new(StringComparer.OrdinalIgnoreCase);
+
     /// <summary>Adds a part; its name must be unique.</summary>
     public void AddPart(string name, string contentType, byte[] data)
     {
@@ -51,6 +54,7 @@ internal sealed class OpcPackageWriter
         string normalized = OpcPackage.NormalizeName(name);
         parts.RemoveAll(p => string.Equals(p.Name, normalized, StringComparison.OrdinalIgnoreCase));
         relationships.Remove(normalized);
+        usedIds.Remove(normalized);
     }
 
     /// <summary>The relationships added from <paramref name="sourceName"/>.</summary>
@@ -65,6 +69,7 @@ internal sealed class OpcPackageWriter
         if (relationships.TryGetValue(sourceName, out List<OpcRelationship>? list))
         {
             list.RemoveAll(match);
+            usedIds.Remove(sourceName);
         }
     }
 
@@ -85,12 +90,21 @@ internal sealed class OpcPackageWriter
         }
 
         list.Add(new OpcRelationship(id, type, target, external, target));
+        if (usedIds.TryGetValue(sourceName, out HashSet<string>? used))
+        {
+            used.Add(id);
+        }
     }
 
     /// <summary>A relationship id not yet used from <paramref name="sourceName"/>.</summary>
     public string NextRelationshipId(string sourceName)
     {
-        HashSet<string> used = relationships.TryGetValue(sourceName, out List<OpcRelationship>? list) ? [.. list.Select(r => r.Id)] : [];
+        if (!usedIds.TryGetValue(sourceName, out HashSet<string>? used))
+        {
+            used = relationships.TryGetValue(sourceName, out List<OpcRelationship>? list) ? [.. list.Select(r => r.Id)] : [];
+            usedIds[sourceName] = used;
+        }
+
         for (int i = used.Count + 1; ; i++)
         {
             string id = "rId" + i.ToString(System.Globalization.CultureInfo.InvariantCulture);
