@@ -97,7 +97,7 @@ Class CsvOptions  <a class="header-action link-secondary" title="View source" hr
   <dl><dt>Assembly</dt><dd>Egap.Spreadsheets.dll</dd></dl>
   </div>
 
-  <div class="markdown summary"><p>How <a class="xref" href="Egap.Spreadsheets.Workbook.html#Egap_Spreadsheets_Workbook_LoadCsv_System_String_Egap_Spreadsheets_CsvOptions_">LoadCsv(string, CsvOptions?)</a> reads and <a class="xref" href="Egap.Spreadsheets.Worksheet.html#Egap_Spreadsheets_Worksheet_SaveCsv_System_String_Egap_Spreadsheets_CsvOptions_">SaveCsv(string, CsvOptions?)</a>
+  <div class="markdown summary"><p>How <a class="xref" href="Egap.Spreadsheets.Workbook.html#Egap_Spreadsheets_Workbook_LoadCsv_System_String_Egap_Spreadsheets_CsvOptions_">LoadCsv(string, CsvOptions?)</a> reads and <a class="xref" href="Egap.Spreadsheets.Worksheet.html#Egap_Spreadsheets_Worksheet_SaveAsCsv_System_String_Egap_Spreadsheets_CsvOptions_">SaveAsCsv(string, CsvOptions?)</a>
 writes comma- and tab-separated text (RFC 4180): the separator, encoding, culture and type detection.</p>
 </div>
   <div class="markdown conceptual"></div>
@@ -146,7 +146,7 @@ writes comma- and tab-separated text (RFC 4180): the separator, encoding, cultur
 
   <h2 id="Egap_Spreadsheets_CsvOptions_examples">Examples</h2>
   <pre><code class="lang-csharp">Workbook book = Workbook.LoadCsv("prices.csv", new CsvOptions { Separator = ';', Culture = CultureInfo.GetCultureInfo("de-DE") });
-book.Worksheets[0].SaveCsv("prices.tsv");</code></pre>
+book.Worksheets[0].SaveAsCsv("prices.tsv");</code></pre>
 
 
 
@@ -168,7 +168,7 @@ culture, the default, reads and writes them as Excel in English does.</p>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public CultureInfo Culture { get; set; }</code></pre>
+    <pre><code class="lang-csharp hljs">public CultureInfo Culture { get; init; }</code></pre>
   </div>
 
 
@@ -208,7 +208,7 @@ text, and so does a field that starts with <code>=</code>: reading never makes f
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public bool DetectTypes { get; set; }</code></pre>
+    <pre><code class="lang-csharp hljs">public bool DetectTypes { get; init; }</code></pre>
   </div>
 
 
@@ -241,7 +241,7 @@ Excel needs to tell UTF-8 from the system code page.</p>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public Encoding? Encoding { get; set; }</code></pre>
+    <pre><code class="lang-csharp hljs">public Encoding? Encoding { get; init; }</code></pre>
   </div>
 
 
@@ -273,7 +273,7 @@ Excel needs to tell UTF-8 from the system code page.</p>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public string NewLine { get; set; }</code></pre>
+    <pre><code class="lang-csharp hljs">public string NewLine { get; init; }</code></pre>
   </div>
 
 
@@ -314,7 +314,7 @@ a semicolon where the comma is the decimal separator.</p>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public char? Separator { get; set; }</code></pre>
+    <pre><code class="lang-csharp hljs">public char? Separator { get; init; }</code></pre>
   </div>
 
 
@@ -346,7 +346,7 @@ a semicolon where the comma is the decimal separator.</p>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public string SheetName { get; set; }</code></pre>
+    <pre><code class="lang-csharp hljs">public string SheetName { get; init; }</code></pre>
   </div>
 
 
@@ -379,7 +379,7 @@ numbers are written in full, in <a class="xref" href="Egap.Spreadsheets.CsvOptio
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public bool WriteFormattedText { get; set; }</code></pre>
+    <pre><code class="lang-csharp hljs">public bool WriteFormattedText { get; init; }</code></pre>
   </div>
 
 
@@ -411,7 +411,7 @@ numbers are written in full, in <a class="xref" href="Egap.Spreadsheets.CsvOptio
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public bool WriteSeparatorHint { get; set; }</code></pre>
+    <pre><code class="lang-csharp hljs">public bool WriteSeparatorHint { get; init; }</code></pre>
   </div>
 
 

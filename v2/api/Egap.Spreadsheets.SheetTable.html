@@ -155,7 +155,7 @@ refer to it by name, as in <code>SUM(Sales[Amount])</code>.</p>
 
   <h3 id="Egap_Spreadsheets_SheetTable_AutoFilter" data-uid="Egap.Spreadsheets.SheetTable.AutoFilter">
   AutoFilter
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/SheetTables.cs/#L124"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/SheetTables.cs/#L127"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>The table's filter, as its file held it; null when the table has none, or has a header row without filter buttons.
@@ -196,7 +196,7 @@ refer to it by name, as in <code>SUM(Sales[Amount])</code>.</p>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public List&lt;SheetTableColumn&gt; Columns { get; }</code></pre>
+    <pre><code class="lang-csharp hljs">public IReadOnlyList&lt;SheetTableColumn&gt; Columns { get; }</code></pre>
   </div>
 
 
@@ -205,7 +205,7 @@ refer to it by name, as in <code>SUM(Sales[Amount])</code>.</p>
 
   <h4 class="section">Property Value</h4>
   <dl class="parameters">
-    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.list-1">List</a>&lt;<a class="xref" href="Egap.Spreadsheets.SheetTableColumn.html">SheetTableColumn</a>&gt;</dt>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ireadonlylist-1">IReadOnlyList</a>&lt;<a class="xref" href="Egap.Spreadsheets.SheetTableColumn.html">SheetTableColumn</a>&gt;</dt>
     <dd></dd>
   </dl>
 
@@ -291,7 +291,7 @@ unique among the workbook's tables, case ignored.</p>
 
   <h3 id="Egap_Spreadsheets_SheetTable_ShowColumnStripes" data-uid="Egap.Spreadsheets.SheetTable.ShowColumnStripes">
   ShowColumnStripes
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/SheetTables.cs/#L136"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/SheetTables.cs/#L139"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Whether columns are banded.</p>
@@ -323,7 +323,7 @@ unique among the workbook's tables, case ignored.</p>
 
   <h3 id="Egap_Spreadsheets_SheetTable_ShowFilterButtons" data-uid="Egap.Spreadsheets.SheetTable.ShowFilterButtons">
   ShowFilterButtons
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/SheetTables.cs/#L118"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/SheetTables.cs/#L121"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Whether the header row has filter buttons. Default true.</p>
@@ -355,7 +355,7 @@ unique among the workbook's tables, case ignored.</p>
 
   <h3 id="Egap_Spreadsheets_SheetTable_ShowFirstColumn" data-uid="Egap.Spreadsheets.SheetTable.ShowFirstColumn">
   ShowFirstColumn
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/SheetTables.cs/#L139"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/SheetTables.cs/#L142"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Whether the first column is set apart.</p>
@@ -387,7 +387,7 @@ unique among the workbook's tables, case ignored.</p>
 
   <h3 id="Egap_Spreadsheets_SheetTable_ShowHeaderRow" data-uid="Egap.Spreadsheets.SheetTable.ShowHeaderRow">
   ShowHeaderRow
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/SheetTables.cs/#L112"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/SheetTables.cs/#L115"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Whether the first row is a header row. Default true.</p>
@@ -419,7 +419,7 @@ unique among the workbook's tables, case ignored.</p>
 
   <h3 id="Egap_Spreadsheets_SheetTable_ShowLastColumn" data-uid="Egap.Spreadsheets.SheetTable.ShowLastColumn">
   ShowLastColumn
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/SheetTables.cs/#L142"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/SheetTables.cs/#L145"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Whether the last column is set apart.</p>
@@ -451,7 +451,7 @@ unique among the workbook's tables, case ignored.</p>
 
   <h3 id="Egap_Spreadsheets_SheetTable_ShowRowStripes" data-uid="Egap.Spreadsheets.SheetTable.ShowRowStripes">
   ShowRowStripes
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/SheetTables.cs/#L133"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/SheetTables.cs/#L136"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Whether rows are banded. Default true.</p>
@@ -483,7 +483,7 @@ unique among the workbook's tables, case ignored.</p>
 
   <h3 id="Egap_Spreadsheets_SheetTable_ShowTotalsRow" data-uid="Egap.Spreadsheets.SheetTable.ShowTotalsRow">
   ShowTotalsRow
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/SheetTables.cs/#L115"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/SheetTables.cs/#L118"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Whether the last row is a totals row.</p>
@@ -515,7 +515,7 @@ unique among the workbook's tables, case ignored.</p>
 
   <h3 id="Egap_Spreadsheets_SheetTable_StyleName" data-uid="Egap.Spreadsheets.SheetTable.StyleName">
   StyleName
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/SheetTables.cs/#L130"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/SheetTables.cs/#L133"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>The table style, such as <code>TableStyleMedium2</code>, Excel's default; null for none.</p>

@@ -173,7 +173,7 @@ sheet[&quot;B2&quot;].Value = 12;
 sheet[&quot;A3&quot;].Value = &quot;Feb&quot;;
 sheet[&quot;B3&quot;].Value = 18;
 
-SheetDrawing drawing = sheet.Drawings.AddChart(ChartType.Column, RangeAddress.Parse(&quot;D1:J15&quot;), RangeAddress.Parse(&quot;A1:B3&quot;));
+SheetDrawing drawing = sheet.Drawings.AddChart(RangeAddress.Parse(&quot;D1:J15&quot;), ChartType.Column, RangeAddress.Parse(&quot;A1:B3&quot;));
 drawing.Name = &quot;Sales&quot;;
 drawing.Chart!.Title.Text = &quot;Sales&quot;;
 
@@ -343,13 +343,13 @@ foreach (Island island in document.Descendants&lt;Island&gt;())
 }
 
 Chart chart = Chart.Create(ChartType.Pie);
-chart.Plots[0].Series.Add(&quot;Share&quot;, [&quot;North&quot;, &quot;South&quot;], [60, 40]);
+chart.Plots[0].Series.Add([60, 40], [&quot;North&quot;, &quot;South&quot;], &quot;Share&quot;);
 document.Sections[0].Body.AddParagraph(&quot;Share by region: &quot;).Inlines.Add(new Island(document, chart, 360, 216));
 DocxFormat.Save(document, &quot;revised.docx&quot;);
 </code></pre>
 <h2 id="on-its-own">On its own</h2>
-<p><code>Chart.Load</code> and <code>Chart.Save</code> read and write the part itself, the XML of a <code>c:chartSpace</code> or <code>cx:chartSpace</code>. <code>Chart.Create</code>
-makes one of any type, and <code>chart.Clone()</code> copies one. Corrupt input gives a <code>DocumentException</code>.</p>
+<p><code>Chart.Create</code> makes a chart of any type outside a document or workbook, and <code>chart.Clone()</code> copies one; a chart part
+is read and written with the document or workbook that holds it.</p>
 
 </article>
 

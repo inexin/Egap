@@ -447,7 +447,7 @@ replacement makes a formula Excel refuses, the replace stops there, as Excel's d
 
 Workbook book = Workbook.Load(&quot;budget.xlsx&quot;);
 Worksheet sheet = book.Worksheets[0];
-IReadOnlyList&lt;Cell&gt; totals = sheet.Find(&quot;total*&quot;, new FindOptions { MatchEntireCell = true, LookIn = FindLookIn.Values });
+IReadOnlyList&lt;Cell&gt; totals = sheet.FindAll(&quot;total*&quot;, new FindOptions { MatchEntireCell = true, LookIn = FindLookIn.Values });
 int changed = sheet.Replace(&quot;Sheet1!&quot;, &quot;Budget!&quot;);
 </code></pre>
 <h2 id="names-and-printing">Names and printing</h2>
@@ -725,8 +725,10 @@ sheet[&quot;A2&quot;].Value = &quot;three&quot;;
 CellValue length = sheet.Evaluate(&quot;HYPOT(3,4)&quot;);            // 5
 CellValue words = sheet.Evaluate(&quot;COUNTWORDS(A1:A2)&quot;);      // 3
 </code></pre>
-<p>The registry is shared by the whole process: a function added is known to every workbook until <code>FunctionRegistry.Remove</code>
-takes it away. Built-in functions cannot be replaced.</p>
+<p>The registry is shared by the whole process, not kept per workbook: a function added is known to every workbook until
+<code>FunctionRegistry.Remove</code> takes it away, so pick names that will not clash with another part of the program's. Adding and
+removing are thread-safe, also while other threads calculate; a workbook compiles its formulas again on its next
+calculation after a change. Built-in functions cannot be replaced.</p>
 <h2 id="number-formats-and-cell-text">Number formats and cell text</h2>
 <p><code>cell.Text</code> is the value as Excel shows it in the cell, through the cell's number format: <code>1,234.50</code> for 1234.5 with
 <code>#,##0.00</code>, <code>2024-03-15</code> for the date serial 45366 with <code>yyyy-mm-dd</code>, <code>TRUE</code> for a boolean and <code>#DIV/0!</code> for an error. A
@@ -758,18 +760,18 @@ Excel's 1900 date system, 29 February 1900 included, or the 1904 system when <co
 system's start or after 9999-12-31 shows as <code>#</code> signs.</p>
 <h2 id="csv-and-tsv">CSV and TSV</h2>
 <p><code>Workbook.LoadCsv</code> reads comma- or tab-separated text (RFC 4180) into a new workbook with one sheet, and
-<code>Worksheet.SaveCsv</code> writes a sheet as text, from A1 to the last used cell. Quoted fields hold separators, doubled quotes
+<code>Worksheet.SaveAsCsv</code> writes a sheet as text, from A1 to the last used cell. Quoted fields hold separators, doubled quotes
 and line breaks.</p>
 <pre><code class="lang-csharp">using System.Globalization;
 using Egap.Spreadsheets;
 
 Workbook book = Workbook.LoadCsv(&quot;prices.csv&quot;);      // separator, types and dates detected
 Worksheet sheet = book.Worksheets[0];
-sheet.SaveCsv(&quot;prices.tsv&quot;);                         // a tab for .tsv
+sheet.SaveAsCsv(&quot;prices.tsv&quot;);                         // a tab for .tsv
 
 CsvOptions german = new() { Culture = CultureInfo.GetCultureInfo(&quot;de-DE&quot;) };
 Workbook local = Workbook.LoadCsv(&quot;preise.csv&quot;, german);   // 1.234,5 and 15.03.2024
-local.Worksheets[0].SaveCsv(&quot;preise-kopie.csv&quot;, german);   // semicolons, as Excel in German
+local.Worksheets[0].SaveAsCsv(&quot;preise-kopie.csv&quot;, german);   // semicolons, as Excel in German
 </code></pre>
 <p>Reading picks the separator from <code>CsvOptions.Separator</code>, a <code>sep=</code> first line, the <code>.tsv</code> or <code>.tab</code> extension, or
 whichever of comma, semicolon and tab the first line holds most of. It reads UTF-8 unless a byte order mark or
@@ -964,10 +966,10 @@ Workbook book = Workbook.Load(&quot;sales.xlsx&quot;);
 Worksheet report = book.Worksheets[&quot;Report&quot;];
 PivotTable table = report.PivotTables[&quot;Sales&quot;];
 
-Slicer region = report.Drawings.AddSlicer(table, &quot;Region&quot;, RangeAddress.Parse(&quot;H3:J14&quot;)).Slicer!;
+Slicer region = report.Drawings.AddSlicer(RangeAddress.Parse(&quot;H3:J14&quot;), table, &quot;Region&quot;).Slicer!;
 region.Select([&quot;North&quot;, &quot;South&quot;]);          // the table now sums those two regions
 
-Slicer year = report.Drawings.AddSlicer(table, &quot;Year&quot;, RangeAddress.Parse(&quot;L3:O8&quot;)).Slicer!;
+Slicer year = report.Drawings.AddSlicer(RangeAddress.Parse(&quot;L3:O8&quot;), table, &quot;Year&quot;).Slicer!;
 year.ColumnCount = 2;
 year.StyleName = &quot;SlicerStyleDark2&quot;;
 
@@ -992,7 +994,7 @@ hidden or shown.</p>
 Workbook book = Workbook.Create();
 Worksheet sheet = book.Worksheets[0];
 sheet.Range(&quot;B2:B10&quot;).UpdateStyle(s =&gt; s with { Protection = s.Protection with { Locked = false } });
-sheet.Protection.EditableRanges.Add(&quot;Prices&quot;, &quot;D2:D10&quot;, &quot;prices-password&quot;);
+sheet.Protection.EditableRanges.Add(&quot;D2:D10&quot;, &quot;Prices&quot;, &quot;prices-password&quot;);
 sheet.Protection.Protect(&quot;sheet-password&quot;, SheetActions.Default | SheetActions.Sort | SheetActions.AutoFilter);
 book.Protection.Protect(&quot;book-password&quot;);
 book.Save(&quot;protected.xlsx&quot;);
@@ -1019,10 +1021,10 @@ Worksheet sheet = book.Worksheets[0];
 
 sheet.Comments.Add(&quot;B2&quot;, &quot;Checked against the ledger&quot;, author: &quot;Ann&quot;).Visible = true;
 sheet.Hyperlinks.Add(&quot;A10&quot;, &quot;https://example.com/report&quot;).Display = &quot;Full report&quot;;
-sheet.Hyperlinks.AddInternal(RangeAddress.Parse(&quot;A11&quot;), &quot;'Data'!A1&quot;);
+sheet.Hyperlinks.AddLocation(RangeAddress.Parse(&quot;A11&quot;), &quot;'Data'!A1&quot;);
 
 byte[] logo = File.ReadAllBytes(&quot;logo.png&quot;);
-SheetDrawing picture = sheet.Drawings.AddPicture(logo, CellAddress.Parse(&quot;E2&quot;), width: 120, height: 40);
+SheetDrawing picture = sheet.Drawings.AddPicture(CellAddress.Parse(&quot;E2&quot;), logo, widthInPixels: 120, heightInPixels: 40);
 picture.Description = &quot;Company logo&quot;;
 
 foreach (SheetDrawing drawing in sheet.Drawings)

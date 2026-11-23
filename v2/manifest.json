@@ -755,6 +755,20 @@
     },
     {
       "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Documents.Charts.ChartQuartileMethod.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Documents.Charts.ChartQuartileMethod.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Documents.Charts.ChartQuartileMethod",
+      "Summary": "<p sourcefile=\"api/Egap.Documents.Charts.ChartQuartileMethod.yml\" sourcestartlinenumber=\"1\">How a box and whisker chart works out its quartiles.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
       "source_relative_path": "api/Egap.Documents.Charts.ChartRadarStyle.yml",
       "output": {
         ".html": {
@@ -2715,20 +2729,6 @@
     },
     {
       "type": "ManagedReference",
-      "source_relative_path": "api/Egap.Documents.Layout.RevisionView.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/Egap.Documents.Layout.RevisionView.html"
-        }
-      },
-      "version": "",
-      "Uid": null,
-      "IsMRef": true,
-      "Title": "Egap.Documents.Layout.RevisionView",
-      "Summary": "<p sourcefile=\"api/Egap.Documents.Layout.RevisionView.yml\" sourcestartlinenumber=\"1\">How tracked changes show on pages, in images and in PDFs.</p>\n"
-    },
-    {
-      "type": "ManagedReference",
       "source_relative_path": "api/Egap.Documents.Layout.RowBox.yml",
       "output": {
         ".html": {
@@ -3075,7 +3075,7 @@
       "Uid": null,
       "IsMRef": true,
       "Title": "Egap.Documents.MarkdownRevisionStyle",
-      "Summary": "<p sourcefile=\"api/Egap.Documents.MarkdownRevisionStyle.yml\" sourcestartlinenumber=\"1\">How the Markdown writer marks tracked changes in <xref href=\"Egap.Documents.Layout.RevisionView.Markup\" data-throw-if-not-resolved=\"false\"></xref>.</p>\n"
+      "Summary": "<p sourcefile=\"api/Egap.Documents.MarkdownRevisionStyle.yml\" sourcestartlinenumber=\"1\">How the Markdown writer marks tracked changes in <xref href=\"Egap.Documents.RevisionView.Markup\" data-throw-if-not-resolved=\"false\"></xref>.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -4210,6 +4210,20 @@
       "IsMRef": true,
       "Title": "Egap.Documents.RevisionKind",
       "Summary": "<p sourcefile=\"api/Egap.Documents.RevisionKind.yml\" sourcestartlinenumber=\"1\">What a tracked change did (Phase 6 design Q8: changes are marks on the nodes they change).</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Documents.RevisionView.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Documents.RevisionView.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Documents.RevisionView",
+      "Summary": "<p sourcefile=\"api/Egap.Documents.RevisionView.yml\" sourcestartlinenumber=\"1\">How tracked changes show on pages, in images and PDFs, and in the HTML, EPUB and Markdown written.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -9179,7 +9193,7 @@
       "Uid": null,
       "IsMRef": true,
       "Title": "Egap.Spreadsheets.CsvOptions",
-      "Summary": "<p sourcefile=\"api/Egap.Spreadsheets.CsvOptions.yml\" sourcestartlinenumber=\"1\">How <xref href=\"Egap.Spreadsheets.Workbook.LoadCsv(System.String%2cEgap.Spreadsheets.CsvOptions)\" data-throw-if-not-resolved=\"false\"></xref> reads and <xref href=\"Egap.Spreadsheets.Worksheet.SaveCsv(System.String%2cEgap.Spreadsheets.CsvOptions)\" data-throw-if-not-resolved=\"false\"></xref>\nwrites comma- and tab-separated text (RFC 4180): the separator, encoding, culture and type detection.</p>\n"
+      "Summary": "<p sourcefile=\"api/Egap.Spreadsheets.CsvOptions.yml\" sourcestartlinenumber=\"1\">How <xref href=\"Egap.Spreadsheets.Workbook.LoadCsv(System.String%2cEgap.Spreadsheets.CsvOptions)\" data-throw-if-not-resolved=\"false\"></xref> reads and <xref href=\"Egap.Spreadsheets.Worksheet.SaveAsCsv(System.String%2cEgap.Spreadsheets.CsvOptions)\" data-throw-if-not-resolved=\"false\"></xref>\nwrites comma- and tab-separated text (RFC 4180): the separator, encoding, culture and type detection.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -9361,7 +9375,7 @@
       "Uid": null,
       "IsMRef": true,
       "Title": "Egap.Spreadsheets.FindLookIn",
-      "Summary": "<p sourcefile=\"api/Egap.Spreadsheets.FindLookIn.yml\" sourcestartlinenumber=\"1\">What <xref href=\"Egap.Spreadsheets.Worksheet.Find(System.String%2cEgap.Spreadsheets.FindOptions)\" data-throw-if-not-resolved=\"false\"></xref> searches in each cell, as Excel's &quot;Look in&quot;.</p>\n"
+      "Summary": "<p sourcefile=\"api/Egap.Spreadsheets.FindLookIn.yml\" sourcestartlinenumber=\"1\">What <xref href=\"Egap.Spreadsheets.Worksheet.FindAll(System.String%2cEgap.Spreadsheets.FindOptions)\" data-throw-if-not-resolved=\"false\"></xref> searches in each cell, as Excel's &quot;Look in&quot;.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -9375,7 +9389,7 @@
       "Uid": null,
       "IsMRef": true,
       "Title": "Egap.Spreadsheets.FindOptions",
-      "Summary": "<p sourcefile=\"api/Egap.Spreadsheets.FindOptions.yml\" sourcestartlinenumber=\"1\">How <xref href=\"Egap.Spreadsheets.Worksheet.Find(System.String%2cEgap.Spreadsheets.FindOptions)\" data-throw-if-not-resolved=\"false\"></xref> and <xref href=\"Egap.Spreadsheets.Worksheet.Replace(System.String%2cSystem.String%2cEgap.Spreadsheets.FindOptions)\" data-throw-if-not-resolved=\"false\"></xref>\nmatch, as the options of Excel's Find and Replace dialog.</p>\n"
+      "Summary": "<p sourcefile=\"api/Egap.Spreadsheets.FindOptions.yml\" sourcestartlinenumber=\"1\">How <xref href=\"Egap.Spreadsheets.Worksheet.FindAll(System.String%2cEgap.Spreadsheets.FindOptions)\" data-throw-if-not-resolved=\"false\"></xref> and <xref href=\"Egap.Spreadsheets.Worksheet.Replace(System.String%2cSystem.String%2cEgap.Spreadsheets.FindOptions)\" data-throw-if-not-resolved=\"false\"></xref>\nmatch, as the options of Excel's Find and Replace dialog.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -9389,7 +9403,7 @@
       "Uid": null,
       "IsMRef": true,
       "Title": "Egap.Spreadsheets.FindOrder",
-      "Summary": "<p sourcefile=\"api/Egap.Spreadsheets.FindOrder.yml\" sourcestartlinenumber=\"1\">The order <xref href=\"Egap.Spreadsheets.Worksheet.Find(System.String%2cEgap.Spreadsheets.FindOptions)\" data-throw-if-not-resolved=\"false\"></xref> visits cells in.</p>\n"
+      "Summary": "<p sourcefile=\"api/Egap.Spreadsheets.FindOrder.yml\" sourcestartlinenumber=\"1\">The order <xref href=\"Egap.Spreadsheets.Worksheet.FindAll(System.String%2cEgap.Spreadsheets.FindOptions)\" data-throw-if-not-resolved=\"false\"></xref> visits cells in.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -9431,7 +9445,7 @@
       "Uid": null,
       "IsMRef": true,
       "Title": "Egap.Spreadsheets.FunctionRegistry",
-      "Summary": "<p sourcefile=\"api/Egap.Spreadsheets.FunctionRegistry.yml\" sourcestartlinenumber=\"1\">The worksheet functions formulas can call: the built-in ones, and functions you add for your own formulas, as a\nuser-defined function in Excel. A function you add is known to every workbook in the process from then on; formulas read\nit when they are next calculated or evaluated. It also answers a call written through an add-in's link,\n<code>[1]!DOUBLE(21)</code>, which otherwise gives <code>#NAME?</code>: a workbook keeps no code for an add-in's functions.</p>\n"
+      "Summary": "<p sourcefile=\"api/Egap.Spreadsheets.FunctionRegistry.yml\" sourcestartlinenumber=\"1\">The worksheet functions formulas can call: the built-in ones, and functions you add for your own formulas, as a\nuser-defined function in Excel. A function you add is known to every workbook in the process from then on; formulas read\nit when they are next calculated or evaluated. It also answers a call written through an add-in's link,\n<code>[1]!DOUBLE(21)</code>, which otherwise gives <code>#NAME?</code>: a workbook keeps no code for an add-in's functions.\nThe registry is one for the whole process, not one per workbook, so give added functions names that will not clash with\nanother part of the program's. It is thread-safe: functions can be added and removed while other threads calculate,\nand a workbook compiles its formulas again on its next calculation after a change.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -9767,7 +9781,7 @@
       "Uid": null,
       "IsMRef": true,
       "Title": "Egap.Spreadsheets.SheetPrintLayout",
-      "Summary": "<p sourcefile=\"api/Egap.Spreadsheets.SheetPrintLayout.yml\" sourcestartlinenumber=\"1\">One or more sheets laid out on pages as Excel prints them (Build Plan task 17): the print area, the scale or fit to pages,\nthe page breaks, the repeated titles and the page order give the pages; each draws on any Egami canvas.</p>\n"
+      "Summary": "<p sourcefile=\"api/Egap.Spreadsheets.SheetPrintLayout.yml\" sourcestartlinenumber=\"1\">One or more sheets laid out on pages as Excel prints them: the print area, the scale or fit to pages,\nthe page breaks, the repeated titles and the page order give the pages; each draws on any Egami canvas.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -9810,6 +9824,20 @@
       "IsMRef": true,
       "Title": "Egap.Spreadsheets.SheetReader",
       "Summary": "<p sourcefile=\"api/Egap.Spreadsheets.SheetReader.yml\" sourcestartlinenumber=\"1\">Reads a sheet's rows one at a time from an XLSX file or CSV text, without building a <xref href=\"Egap.Spreadsheets.Workbook\" data-throw-if-not-resolved=\"false\"></xref>: memory stays\nthe same however many rows there are. An XLSX file's shared strings and styles are read first, as every cell may use\nthem; the rows are then read from the sheet's part as they come.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Spreadsheets.SheetReaderOptions.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Spreadsheets.SheetReaderOptions.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Spreadsheets.SheetReaderOptions",
+      "Summary": "<p sourcefile=\"api/Egap.Spreadsheets.SheetReaderOptions.yml\" sourcestartlinenumber=\"1\">How <xref href=\"Egap.Spreadsheets.SheetReader.Open(System.String%2cEgap.Spreadsheets.SheetReaderOptions)\" data-throw-if-not-resolved=\"false\"></xref> reads a workbook.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -9935,7 +9963,7 @@
       "Uid": null,
       "IsMRef": true,
       "Title": "Egap.Spreadsheets.Slicer",
-      "Summary": "<p sourcefile=\"api/Egap.Spreadsheets.Slicer.yml\" sourcestartlinenumber=\"1\">A slicer: buttons for the items of a pivot table field, which filter the pivot tables it is connected to. Selecting items\nhides the others in those tables and refreshes them, as clicking the slicer in Excel does. A slicer sits on a sheet's\ndrawing layer: see <xref href=\"Egap.Spreadsheets.SheetDrawingCollection.AddSlicer(Egap.Spreadsheets.PivotTable%2cSystem.String%2cEgap.Spreadsheets.RangeAddress)\" data-throw-if-not-resolved=\"false\"></xref> and\n<xref href=\"Egap.Spreadsheets.SheetDrawing.Slicer\" data-throw-if-not-resolved=\"false\"></xref>.</p>\n"
+      "Summary": "<p sourcefile=\"api/Egap.Spreadsheets.Slicer.yml\" sourcestartlinenumber=\"1\">A slicer: buttons for the items of a pivot table field, which filter the pivot tables it is connected to. Selecting items\nhides the others in those tables and refreshes them, as clicking the slicer in Excel does. A slicer sits on a sheet's\ndrawing layer: see <xref href=\"Egap.Spreadsheets.SheetDrawingCollection.AddSlicer(Egap.Spreadsheets.RangeAddress%2cEgap.Spreadsheets.PivotTable%2cSystem.String)\" data-throw-if-not-resolved=\"false\"></xref> and\n<xref href=\"Egap.Spreadsheets.SheetDrawing.Slicer\" data-throw-if-not-resolved=\"false\"></xref>.</p>\n"
     },
     {
       "type": "ManagedReference",

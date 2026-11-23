@@ -199,7 +199,7 @@ overlap.</p>
 
   <h3 id="Egap_Spreadsheets_MergedCellCollection_Add_Egap_Spreadsheets_RangeAddress_" data-uid="Egap.Spreadsheets.MergedCellCollection.Add(Egap.Spreadsheets.RangeAddress)">
   Add(RangeAddress)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/MergedCellCollection.cs/#L22"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/MergedCellCollection.cs/#L23"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Merges a range of more than one cell; the other cells keep their values, which Excel hides.</p>
@@ -207,7 +207,7 @@ overlap.</p>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public void Add(RangeAddress range)</code></pre>
+    <pre><code class="lang-csharp hljs">public RangeAddress Add(RangeAddress range)</code></pre>
   </div>
 
   <h4 class="section">Parameters</h4>
@@ -216,6 +216,12 @@ overlap.</p>
     <dd></dd>
   </dl>
 
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Egap.Spreadsheets.RangeAddress.html">RangeAddress</a></dt>
+    <dd><p>The range merged.</p>
+</dd>
+  </dl>
 
 
 
@@ -237,7 +243,7 @@ overlap.</p>
 
   <h3 id="Egap_Spreadsheets_MergedCellCollection_Clear" data-uid="Egap.Spreadsheets.MergedCellCollection.Clear">
   Clear()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/MergedCellCollection.cs/#L45"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/MergedCellCollection.cs/#L47"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Unmerges every range.</p>
@@ -264,7 +270,7 @@ overlap.</p>
 
   <h3 id="Egap_Spreadsheets_MergedCellCollection_Find_Egap_Spreadsheets_CellAddress_" data-uid="Egap.Spreadsheets.MergedCellCollection.Find(Egap.Spreadsheets.CellAddress)">
   Find(CellAddress)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/MergedCellCollection.cs/#L48"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/MergedCellCollection.cs/#L50"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>The merged range that holds a cell, or null when the cell is not merged.</p>
@@ -301,7 +307,7 @@ overlap.</p>
 
   <h3 id="Egap_Spreadsheets_MergedCellCollection_GetEnumerator" data-uid="Egap.Spreadsheets.MergedCellCollection.GetEnumerator">
   GetEnumerator()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/MergedCellCollection.cs/#L62"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/MergedCellCollection.cs/#L64"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Returns an enumerator that iterates through the collection.</p>
@@ -334,7 +340,7 @@ overlap.</p>
 
   <h3 id="Egap_Spreadsheets_MergedCellCollection_Remove_Egap_Spreadsheets_RangeAddress_" data-uid="Egap.Spreadsheets.MergedCellCollection.Remove(Egap.Spreadsheets.RangeAddress)">
   Remove(RangeAddress)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/MergedCellCollection.cs/#L42"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/MergedCellCollection.cs/#L44"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Unmerges a range that was merged as it is.</p>

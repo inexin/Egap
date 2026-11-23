@@ -194,7 +194,8 @@ Document notes = TextFormat.Load(&quot;notes.txt&quot;);                    // o
 <li>A ZIP package with a part under <code>xl/</code>, or whose extension is <code>.xlsx</code>, <code>.xlsm</code>, <code>.xltx</code> or <code>.xltm</code>, is <code>Xlsx</code>: an Excel
 workbook, which Egap.Documents does not load as a document.</li>
 <li>Another ZIP package is <code>Docx</code>. A compound file with a <code>WordDocument</code> stream is <code>Doc</code>, a binary Word file (see
-<a href="doc.html">DOC</a>). A password-protected Word file, DOCX or DOC, is <code>Encrypted</code>; it loads with its password (see
+<a href="doc.html">DOC</a>). A password-protected Word file is still <code>Docx</code> or <code>Doc</code>, and
+<code>Document.IsEncrypted</code> tells that it needs a password; it loads with its password (see
 <a href="docx.html#passwords">DOCX passwords</a> and <a href="doc.html#passwords">DOC passwords</a>). Another compound file is <code>Docx</code>, and
 reading it fails with an error that says so.</li>
 <li><code>%PDF-</code> in the first 1024 bytes is <code>Pdf</code>.</li>

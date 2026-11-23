@@ -89,7 +89,7 @@
 
 
   <h1 id="Egap_Spreadsheets_EditableRangeCollection" data-uid="Egap.Spreadsheets.EditableRangeCollection" class="text-break">
-Class EditableRangeCollection  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/Protection.cs/#L196"><i class="bi bi-code-slash"></i></a>
+Class EditableRangeCollection  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/Protection.cs/#L198"><i class="bi bi-code-slash"></i></a>
   </h1>
 
   <div class="facts text-secondary">
@@ -163,7 +163,7 @@ Class EditableRangeCollection  <a class="header-action link-secondary" title="Vi
 
   <h3 id="Egap_Spreadsheets_EditableRangeCollection_Count" data-uid="Egap.Spreadsheets.EditableRangeCollection.Count">
   Count
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/Protection.cs/#L205"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/Protection.cs/#L207"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Gets the number of elements in the collection.</p>
@@ -196,7 +196,7 @@ Class EditableRangeCollection  <a class="header-action link-secondary" title="Vi
 
   <h3 id="Egap_Spreadsheets_EditableRangeCollection_Item_System_Int32_" data-uid="Egap.Spreadsheets.EditableRangeCollection.Item(System.Int32)">
   this[int]
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/Protection.cs/#L208"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/Protection.cs/#L210"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Gets the element at the specified index in the read-only list.</p>
@@ -237,9 +237,9 @@ Class EditableRangeCollection  <a class="header-action link-secondary" title="Vi
 
   <a id="Egap_Spreadsheets_EditableRangeCollection_Add_" data-uid="Egap.Spreadsheets.EditableRangeCollection.Add*"></a>
 
-  <h3 id="Egap_Spreadsheets_EditableRangeCollection_Add_System_String_Egap_Spreadsheets_RangeAddress_System_String_" data-uid="Egap.Spreadsheets.EditableRangeCollection.Add(System.String,Egap.Spreadsheets.RangeAddress,System.String)">
-  Add(string, RangeAddress, string?)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/Protection.cs/#L212"><i class="bi bi-code-slash"></i></a>
+  <h3 id="Egap_Spreadsheets_EditableRangeCollection_Add_Egap_Spreadsheets_RangeAddress_System_String_System_String_" data-uid="Egap.Spreadsheets.EditableRangeCollection.Add(Egap.Spreadsheets.RangeAddress,System.String,System.String)">
+  Add(RangeAddress, string, string?)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/Protection.cs/#L214"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Adds a range users may edit while the sheet is protected, with a password if one is given.</p>
@@ -247,14 +247,14 @@ Class EditableRangeCollection  <a class="header-action link-secondary" title="Vi
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public EditableRange Add(string name, RangeAddress range, string? password = null)</code></pre>
+    <pre><code class="lang-csharp hljs">public EditableRange Add(RangeAddress range, string name, string? password = null)</code></pre>
   </div>
 
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
-    <dt><code>name</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
-    <dd></dd>
     <dt><code>range</code> <a class="xref" href="Egap.Spreadsheets.RangeAddress.html">RangeAddress</a></dt>
+    <dd></dd>
+    <dt><code>name</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
     <dd></dd>
     <dt><code>password</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
     <dd></dd>
@@ -286,7 +286,7 @@ Class EditableRangeCollection  <a class="header-action link-secondary" title="Vi
 
   <h3 id="Egap_Spreadsheets_EditableRangeCollection_Add_System_String_System_String_System_String_" data-uid="Egap.Spreadsheets.EditableRangeCollection.Add(System.String,System.String,System.String)">
   Add(string, string, string?)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/Protection.cs/#L222"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/Protection.cs/#L224"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Adds a range given in A1 style, such as <code>B2:D9</code>.</p>
@@ -294,14 +294,14 @@ Class EditableRangeCollection  <a class="header-action link-secondary" title="Vi
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public EditableRange Add(string name, string range, string? password = null)</code></pre>
+    <pre><code class="lang-csharp hljs">public EditableRange Add(string range, string name, string? password = null)</code></pre>
   </div>
 
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
-    <dt><code>name</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
-    <dd></dd>
     <dt><code>range</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd></dd>
+    <dt><code>name</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
     <dd></dd>
     <dt><code>password</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
     <dd></dd>
@@ -333,7 +333,7 @@ Class EditableRangeCollection  <a class="header-action link-secondary" title="Vi
 
   <h3 id="Egap_Spreadsheets_EditableRangeCollection_Clear" data-uid="Egap.Spreadsheets.EditableRangeCollection.Clear">
   Clear()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/Protection.cs/#L228"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/Protection.cs/#L230"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Removes every range.</p>
@@ -360,7 +360,7 @@ Class EditableRangeCollection  <a class="header-action link-secondary" title="Vi
 
   <h3 id="Egap_Spreadsheets_EditableRangeCollection_GetEnumerator" data-uid="Egap.Spreadsheets.EditableRangeCollection.GetEnumerator">
   GetEnumerator()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/Protection.cs/#L231"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/Protection.cs/#L233"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Returns an enumerator that iterates through the collection.</p>
@@ -393,7 +393,7 @@ Class EditableRangeCollection  <a class="header-action link-secondary" title="Vi
 
   <h3 id="Egap_Spreadsheets_EditableRangeCollection_Remove_Egap_Spreadsheets_EditableRange_" data-uid="Egap.Spreadsheets.EditableRangeCollection.Remove(Egap.Spreadsheets.EditableRange)">
   Remove(EditableRange)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/Protection.cs/#L225"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/Protection.cs/#L227"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Removes a range; false when it is not in the collection.</p>
@@ -430,7 +430,7 @@ Class EditableRangeCollection  <a class="header-action link-secondary" title="Vi
 </article>
 
         <div class="contribution d-print-none">
-          <a href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/Protection.cs/#L196" class="edit-link">Edit this page</a>
+          <a href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/Protection.cs/#L198" class="edit-link">Edit this page</a>
         </div>
 
 

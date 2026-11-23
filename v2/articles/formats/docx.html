@@ -114,7 +114,7 @@ a new line. An equation's <code>Island.Text</code> is its linear form (UnicodeMa
 search use.</p>
 <h2 id="passwords">Passwords</h2>
 <p>A Word file saved with a password to open it is encrypted: its package sits, encrypted, in a compound file.
-<code>Document.Identify</code> calls it <code>Encrypted</code>, so a program can ask for the password before it loads the file. Give the password
+<code>Document.Identify</code> calls it <code>Docx</code> and <code>Document.IsEncrypted</code> says it is encrypted, so a program can ask for the password before it loads the file. Give the password
 in <code>DocxLoadOptions.Password</code>, or in <code>DocumentLoadOptions.Password</code> for <code>Document.Load</code>; <code>PasswordCallback</code> is asked when
 the password is missing or wrong, with the attempt's number, until it gives the right one or null. Without the right
 password, loading throws <code>DocumentPasswordException</code>, whose <code>WrongPassword</code> says whether a password was given.</p>
@@ -124,7 +124,7 @@ encrypts the file as Word 2013 and later do: AES-256 with SHA-512 and 100,000 ke
 management (IRM), which needs a rights server, or encrypted for a certificate are refused with an error that says so.</p>
 <pre><code class="lang-csharp">using Egap.Documents;
 
-if (Document.Identify(&quot;contract.docx&quot;) == DocumentFormatKind.Encrypted)
+if (Document.IsEncrypted(&quot;contract.docx&quot;))
 {
     Document contract = Document.Load(&quot;contract.docx&quot;, new DocumentLoadOptions
     {

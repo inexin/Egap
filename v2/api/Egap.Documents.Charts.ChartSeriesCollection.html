@@ -89,7 +89,7 @@
 
 
   <h1 id="Egap_Documents_Charts_ChartSeriesCollection" data-uid="Egap.Documents.Charts.ChartSeriesCollection" class="text-break">
-Class ChartSeriesCollection  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Charts/ChartSeries.cs/#L382"><i class="bi bi-code-slash"></i></a>
+Class ChartSeriesCollection  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Charts/ChartSeries.cs/#L393"><i class="bi bi-code-slash"></i></a>
   </h1>
 
   <div class="facts text-secondary">
@@ -163,7 +163,7 @@ Class ChartSeriesCollection  <a class="header-action link-secondary" title="View
 
   <h3 id="Egap_Documents_Charts_ChartSeriesCollection_Count" data-uid="Egap.Documents.Charts.ChartSeriesCollection.Count">
   Count
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Charts/ChartSeries.cs/#L394"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Charts/ChartSeries.cs/#L405"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Gets the number of elements in the collection.</p>
@@ -196,7 +196,7 @@ Class ChartSeriesCollection  <a class="header-action link-secondary" title="View
 
   <h3 id="Egap_Documents_Charts_ChartSeriesCollection_Item_System_Int32_" data-uid="Egap.Documents.Charts.ChartSeriesCollection.Item(System.Int32)">
   this[int]
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Charts/ChartSeries.cs/#L397"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Charts/ChartSeries.cs/#L408"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Gets the element at the specified index in the read-only list.</p>
@@ -237,33 +237,38 @@ Class ChartSeriesCollection  <a class="header-action link-secondary" title="View
 
   <a id="Egap_Documents_Charts_ChartSeriesCollection_Add_" data-uid="Egap.Documents.Charts.ChartSeriesCollection.Add*"></a>
 
-  <h3 id="Egap_Documents_Charts_ChartSeriesCollection_Add_System_String_System_Collections_Generic_IEnumerable_System_String__System_Collections_Generic_IEnumerable_System_Nullable_System_Double___" data-uid="Egap.Documents.Charts.ChartSeriesCollection.Add(System.String,System.Collections.Generic.IEnumerable{System.String},System.Collections.Generic.IEnumerable{System.Nullable{System.Double}})">
-  Add(string?, IEnumerable&lt;string?&gt;?, IEnumerable&lt;double?&gt;)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Charts/ChartSeries.cs/#L433"><i class="bi bi-code-slash"></i></a>
+  <h3 id="Egap_Documents_Charts_ChartSeriesCollection_Add_System_Collections_Generic_IEnumerable_System_Nullable_System_Double___System_Collections_Generic_IEnumerable_System_String__System_String_" data-uid="Egap.Documents.Charts.ChartSeriesCollection.Add(System.Collections.Generic.IEnumerable{System.Nullable{System.Double}},System.Collections.Generic.IEnumerable{System.String},System.String)">
+  Add(IEnumerable&lt;double?&gt;, IEnumerable&lt;string?&gt;?, string?)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Charts/ChartSeries.cs/#L451"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Adds a series whose name and values are written in the chart, not read from cells.</p>
+  <div class="markdown level1 summary"><p>Adds a series whose values, categories and name are written in the chart, not read from cells. The parameters come in
+the order of <a class="xref" href="Egap.Documents.Charts.ChartSeriesCollection.html#Egap_Documents_Charts_ChartSeriesCollection_Add_System_String_System_String_System_String_System_String_">Add(string, string?, string?, string?)</a>.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public ChartSeries Add(string? name, IEnumerable&lt;string?&gt;? categories, IEnumerable&lt;double?&gt; values)</code></pre>
+    <pre><code class="lang-csharp hljs">public ChartSeries Add(IEnumerable&lt;double?&gt; values, IEnumerable&lt;string?&gt;? categories = null, string? name = null)</code></pre>
   </div>
 
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
-    <dt><code>name</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
-    <dd></dd>
-    <dt><code>categories</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ienumerable-1">IEnumerable</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a>&gt;</dt>
-    <dd></dd>
     <dt><code>values</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ienumerable-1">IEnumerable</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.double">double</a>?&gt;</dt>
-    <dd></dd>
+    <dd><p>The series' values; null for a value left out.</p>
+</dd>
+    <dt><code>categories</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ienumerable-1">IEnumerable</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a>&gt;</dt>
+    <dd><p>The category labels, or null for none.</p>
+</dd>
+    <dt><code>name</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The series' name, or null for none.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><a class="xref" href="Egap.Documents.Charts.ChartSeries.html">ChartSeries</a></dt>
-    <dd></dd>
+    <dd><p>The series added.</p>
+</dd>
   </dl>
 
 
@@ -280,7 +285,7 @@ Class ChartSeriesCollection  <a class="header-action link-secondary" title="View
 
   <h3 id="Egap_Documents_Charts_ChartSeriesCollection_Add_System_String_System_String_System_String_System_String_" data-uid="Egap.Documents.Charts.ChartSeriesCollection.Add(System.String,System.String,System.String,System.String)">
   Add(string, string?, string?, string?)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Charts/ChartSeries.cs/#L409"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Charts/ChartSeries.cs/#L420"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Adds a series that reads cells: <code class="paramref">values</code> and <code class="paramref">categories</code> are references such as
@@ -335,7 +340,7 @@ the categories.</p>
 
   <h3 id="Egap_Documents_Charts_ChartSeriesCollection_GetEnumerator" data-uid="Egap.Documents.Charts.ChartSeriesCollection.GetEnumerator">
   GetEnumerator()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Charts/ChartSeries.cs/#L467"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Charts/ChartSeries.cs/#L485"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Returns an enumerator that iterates through the collection.</p>
@@ -368,7 +373,7 @@ the categories.</p>
 
   <h3 id="Egap_Documents_Charts_ChartSeriesCollection_Remove_Egap_Documents_Charts_ChartSeries_" data-uid="Egap.Documents.Charts.ChartSeriesCollection.Remove(Egap.Documents.Charts.ChartSeries)">
   Remove(ChartSeries)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Charts/ChartSeries.cs/#L449"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Charts/ChartSeries.cs/#L467"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Takes a series off the chart.</p>
@@ -406,7 +411,7 @@ the categories.</p>
 </article>
 
         <div class="contribution d-print-none">
-          <a href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Charts/ChartSeries.cs/#L382" class="edit-link">Edit this page</a>
+          <a href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Charts/ChartSeries.cs/#L393" class="edit-link">Edit this page</a>
         </div>
 
 

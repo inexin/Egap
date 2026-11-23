@@ -325,10 +325,10 @@ Class HyperlinkCollection  <a class="header-action link-secondary" title="View s
 
 
 
-  <a id="Egap_Spreadsheets_HyperlinkCollection_AddInternal_" data-uid="Egap.Spreadsheets.HyperlinkCollection.AddInternal*"></a>
+  <a id="Egap_Spreadsheets_HyperlinkCollection_AddLocation_" data-uid="Egap.Spreadsheets.HyperlinkCollection.AddLocation*"></a>
 
-  <h3 id="Egap_Spreadsheets_HyperlinkCollection_AddInternal_Egap_Spreadsheets_RangeAddress_System_String_" data-uid="Egap.Spreadsheets.HyperlinkCollection.AddInternal(Egap.Spreadsheets.RangeAddress,System.String)">
-  AddInternal(RangeAddress, string)
+  <h3 id="Egap_Spreadsheets_HyperlinkCollection_AddLocation_Egap_Spreadsheets_RangeAddress_System_String_" data-uid="Egap.Spreadsheets.HyperlinkCollection.AddLocation(Egap.Spreadsheets.RangeAddress,System.String)">
+  AddLocation(RangeAddress, string)
   <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/Hyperlinks.cs/#L77"><i class="bi bi-code-slash"></i></a>
   </h3>
 
@@ -337,7 +337,7 @@ Class HyperlinkCollection  <a class="header-action link-secondary" title="View s
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public Hyperlink AddInternal(RangeAddress range, string location)</code></pre>
+    <pre><code class="lang-csharp hljs">public Hyperlink AddLocation(RangeAddress range, string location)</code></pre>
   </div>
 
   <h4 class="section">Parameters</h4>
@@ -370,11 +370,59 @@ Class HyperlinkCollection  <a class="header-action link-secondary" title="View s
 
 
 
+  <a id="Egap_Spreadsheets_HyperlinkCollection_AddLocation_" data-uid="Egap.Spreadsheets.HyperlinkCollection.AddLocation*"></a>
+
+  <h3 id="Egap_Spreadsheets_HyperlinkCollection_AddLocation_System_String_System_String_" data-uid="Egap.Spreadsheets.HyperlinkCollection.AddLocation(System.String,System.String)">
+  AddLocation(string, string)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/Hyperlinks.cs/#L88"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Adds a link to a place in the workbook; see <a class="xref" href="Egap.Spreadsheets.HyperlinkCollection.html#Egap_Spreadsheets_HyperlinkCollection_AddLocation_Egap_Spreadsheets_RangeAddress_System_String_">AddLocation(RangeAddress, string)</a>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Hyperlink AddLocation(string range, string location)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>range</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd></dd>
+    <dt><code>location</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Egap.Spreadsheets.Hyperlink.html">Hyperlink</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.formatexception">FormatException</a></dt>
+    <dd><p>The range is not an A1 reference.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a></dt>
+    <dd><p>The location is empty.</p>
+</dd>
+  </dl>
+
+
+
   <a id="Egap_Spreadsheets_HyperlinkCollection_Clear_" data-uid="Egap.Spreadsheets.HyperlinkCollection.Clear*"></a>
 
   <h3 id="Egap_Spreadsheets_HyperlinkCollection_Clear" data-uid="Egap.Spreadsheets.HyperlinkCollection.Clear">
   Clear()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/Hyperlinks.cs/#L93"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/Hyperlinks.cs/#L98"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Removes every hyperlink.</p>
@@ -401,7 +449,7 @@ Class HyperlinkCollection  <a class="header-action link-secondary" title="View s
 
   <h3 id="Egap_Spreadsheets_HyperlinkCollection_Find_Egap_Spreadsheets_CellAddress_" data-uid="Egap.Spreadsheets.HyperlinkCollection.Find(Egap.Spreadsheets.CellAddress)">
   Find(CellAddress)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/Hyperlinks.cs/#L86"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/Hyperlinks.cs/#L91"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>The first hyperlink on a cell, or null when it has none.</p>
@@ -438,7 +486,7 @@ Class HyperlinkCollection  <a class="header-action link-secondary" title="View s
 
   <h3 id="Egap_Spreadsheets_HyperlinkCollection_GetEnumerator" data-uid="Egap.Spreadsheets.HyperlinkCollection.GetEnumerator">
   GetEnumerator()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/Hyperlinks.cs/#L96"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/Hyperlinks.cs/#L101"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Returns an enumerator that iterates through the collection.</p>
@@ -471,7 +519,7 @@ Class HyperlinkCollection  <a class="header-action link-secondary" title="View s
 
   <h3 id="Egap_Spreadsheets_HyperlinkCollection_Remove_Egap_Spreadsheets_Hyperlink_" data-uid="Egap.Spreadsheets.HyperlinkCollection.Remove(Egap.Spreadsheets.Hyperlink)">
   Remove(Hyperlink)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/Hyperlinks.cs/#L90"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/Hyperlinks.cs/#L95"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Removes a hyperlink.</p>

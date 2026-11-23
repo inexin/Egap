@@ -245,7 +245,7 @@ disposed. Text is written in the cells (inline strings), so no table of strings 
 
   <h3 id="Egap_Spreadsheets_SheetWriter_Create_System_IO_Stream_" data-uid="Egap.Spreadsheets.SheetWriter.Create(System.IO.Stream)">
   Create(Stream)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/SheetWriter.cs/#L121"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/SheetWriter.cs/#L123"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Starts writing an XLSX package to a stream, which is left open; the stream need not seek.</p>
@@ -280,26 +280,24 @@ disposed. Text is written in the cells (inline strings), so no table of strings 
 
   <a id="Egap_Spreadsheets_SheetWriter_Create_" data-uid="Egap.Spreadsheets.SheetWriter.Create*"></a>
 
-  <h3 id="Egap_Spreadsheets_SheetWriter_Create_System_String_Egap_Spreadsheets_CsvOptions_" data-uid="Egap.Spreadsheets.SheetWriter.Create(System.String,Egap.Spreadsheets.CsvOptions)">
-  Create(string, CsvOptions?)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/SheetWriter.cs/#L105"><i class="bi bi-code-slash"></i></a>
+  <h3 id="Egap_Spreadsheets_SheetWriter_Create_System_String_" data-uid="Egap.Spreadsheets.SheetWriter.Create(System.String)">
+  Create(string)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/SheetWriter.cs/#L107"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Starts writing an XLSX file, or CSV or TSV text when the path ends in .csv, .tsv or .tab.</p>
+  <div class="markdown level1 summary"><p>Starts writing an XLSX file, or CSV or TSV text with the default <a class="xref" href="Egap.Spreadsheets.CsvOptions.html">CsvOptions</a> when the path ends in .csv,
+.tsv or .tab; <a class="xref" href="Egap.Spreadsheets.SheetWriter.html#Egap_Spreadsheets_SheetWriter_CreateCsv_System_String_Egap_Spreadsheets_CsvOptions_">CreateCsv(string, CsvOptions?)</a> takes others.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public static SheetWriter Create(string path, CsvOptions? csvOptions = null)</code></pre>
+    <pre><code class="lang-csharp hljs">public static SheetWriter Create(string path)</code></pre>
   </div>
 
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>path</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
     <dd><p>The file to make or overwrite.</p>
-</dd>
-    <dt><code>csvOptions</code> <a class="xref" href="Egap.Spreadsheets.CsvOptions.html">CsvOptions</a></dt>
-    <dd><p>How CSV text is written; not used for XLSX.</p>
 </dd>
   </dl>
 
@@ -323,7 +321,7 @@ disposed. Text is written in the cells (inline strings), so no table of strings 
 
   <h3 id="Egap_Spreadsheets_SheetWriter_CreateCsv_System_IO_Stream_Egap_Spreadsheets_CsvOptions_" data-uid="Egap.Spreadsheets.SheetWriter.CreateCsv(System.IO.Stream,Egap.Spreadsheets.CsvOptions)">
   CreateCsv(Stream, CsvOptions?)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/SheetWriter.cs/#L128"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/SheetWriter.cs/#L148"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Starts writing CSV or TSV text to a stream, which is left open.</p>
@@ -358,11 +356,52 @@ disposed. Text is written in the cells (inline strings), so no table of strings 
 
 
 
+  <a id="Egap_Spreadsheets_SheetWriter_CreateCsv_" data-uid="Egap.Spreadsheets.SheetWriter.CreateCsv*"></a>
+
+  <h3 id="Egap_Spreadsheets_SheetWriter_CreateCsv_System_String_Egap_Spreadsheets_CsvOptions_" data-uid="Egap.Spreadsheets.SheetWriter.CreateCsv(System.String,Egap.Spreadsheets.CsvOptions)">
+  CreateCsv(string, CsvOptions?)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/SheetWriter.cs/#L132"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Starts writing a CSV, TSV or TAB file; its extension picks the separator unless the options name one.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static SheetWriter CreateCsv(string path, CsvOptions? options = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>path</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The file to make or overwrite.</p>
+</dd>
+    <dt><code>options</code> <a class="xref" href="Egap.Spreadsheets.CsvOptions.html">CsvOptions</a></dt>
+    <dd><p>How the text is written, or null for the defaults.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Egap.Spreadsheets.SheetWriter.html">SheetWriter</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
   <a id="Egap_Spreadsheets_SheetWriter_Dispose_" data-uid="Egap.Spreadsheets.SheetWriter.Dispose*"></a>
 
   <h3 id="Egap_Spreadsheets_SheetWriter_Dispose" data-uid="Egap.Spreadsheets.SheetWriter.Dispose">
   Dispose()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/SheetWriter.cs/#L250"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/SheetWriter.cs/#L270"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Finishes the file: the sheet being written and the workbook's parts. The writer's stream is closed only when the writer opened it.</p>
@@ -389,7 +428,7 @@ disposed. Text is written in the cells (inline strings), so no table of strings 
 
   <h3 id="Egap_Spreadsheets_SheetWriter_FreezeTopRows_System_Int32_" data-uid="Egap.Spreadsheets.SheetWriter.FreezeTopRows(System.Int32)">
   FreezeTopRows(int)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/SheetWriter.cs/#L176"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/SheetWriter.cs/#L196"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Keeps the top rows of the sheet being written in view as it scrolls; before its first row.</p>
@@ -427,7 +466,7 @@ disposed. Text is written in the cells (inline strings), so no table of strings 
 
   <h3 id="Egap_Spreadsheets_SheetWriter_SetColumnFormat_System_Int32_System_String_" data-uid="Egap.Spreadsheets.SheetWriter.SetColumnFormat(System.Int32,System.String)">
   SetColumnFormat(int, string)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/SheetWriter.cs/#L185"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/SheetWriter.cs/#L205"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Gives a column's cells a number format, such as <code>yyyy-mm-dd</code> for dates, in the rows written from now on.</p>
@@ -461,7 +500,7 @@ disposed. Text is written in the cells (inline strings), so no table of strings 
 
   <h3 id="Egap_Spreadsheets_SheetWriter_SetColumnWidth_System_Int32_System_Double_" data-uid="Egap.Spreadsheets.SheetWriter.SetColumnWidth(System.Int32,System.Double)">
   SetColumnWidth(int, double)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/SheetWriter.cs/#L165"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/SheetWriter.cs/#L185"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Sets a column's width in characters for the sheet being written; before its first row.</p>
@@ -501,7 +540,7 @@ disposed. Text is written in the cells (inline strings), so no table of strings 
 
   <h3 id="Egap_Spreadsheets_SheetWriter_SkipRows_System_Int32_" data-uid="Egap.Spreadsheets.SheetWriter.SkipRows(System.Int32)">
   SkipRows(int)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/SheetWriter.cs/#L195"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/SheetWriter.cs/#L215"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Leaves rows empty.</p>
@@ -539,7 +578,7 @@ disposed. Text is written in the cells (inline strings), so no table of strings 
 
   <h3 id="Egap_Spreadsheets_SheetWriter_StartSheet_System_String_" data-uid="Egap.Spreadsheets.SheetWriter.StartSheet(System.String)">
   StartSheet(string)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/SheetWriter.cs/#L140"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/SheetWriter.cs/#L160"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Starts a new sheet; the rows written next go to it. The first row written without a sheet started goes to
@@ -581,7 +620,7 @@ disposed. Text is written in the cells (inline strings), so no table of strings 
 
   <h3 id="Egap_Spreadsheets_SheetWriter_WriteRow_Egap_Spreadsheets_CellStyle_System_ReadOnlySpan_Egap_Spreadsheets_CellValue__" data-uid="Egap.Spreadsheets.SheetWriter.WriteRow(Egap.Spreadsheets.CellStyle,System.ReadOnlySpan{Egap.Spreadsheets.CellValue})">
   WriteRow(CellStyle?, params ReadOnlySpan&lt;CellValue&gt;)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/SheetWriter.cs/#L223"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/SheetWriter.cs/#L243"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Writes a row from column A with every cell in a style, which wins over the columns' number formats.</p>
@@ -624,7 +663,7 @@ disposed. Text is written in the cells (inline strings), so no table of strings 
 
   <h3 id="Egap_Spreadsheets_SheetWriter_WriteRow_System_ReadOnlySpan_Egap_Spreadsheets_CellValue__" data-uid="Egap.Spreadsheets.SheetWriter.WriteRow(System.ReadOnlySpan{Egap.Spreadsheets.CellValue})">
   WriteRow(params ReadOnlySpan&lt;CellValue&gt;)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/SheetWriter.cs/#L218"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/SheetWriter.cs/#L238"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Writes a row from column A; empty values leave their cells empty.</p>

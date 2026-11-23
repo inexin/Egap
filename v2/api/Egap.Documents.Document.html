@@ -945,12 +945,12 @@ formats and the text it puts before and after a value (<code>\b</code>, <code>\f
   <div class="markdown level1 summary"><p>Tells which format a file is in without loading it, from its first bytes and, for text, its extension: a ZIP package
 whose first entry is an EPUB <code>mimetype</code> is EPUB, one with a part under <code>xl/</code> or named .xlsx, .xlsm, .xltx or
 .xltm is an Excel workbook, another ZIP package is Word's, a compound file with a <code>WordDocument</code> stream is a
-binary Word file (DOC), a compound file that holds an encrypted package or a password-protected DOC is
-<a class="xref" href="Egap.Documents.DocumentFormatKind.html#Egap_Documents_DocumentFormatKind_Encrypted">Encrypted</a>, and another compound file is taken as Word's, an OpenDocument text
-package is ODT (and <a class="xref" href="Egap.Documents.DocumentFormatKind.html#Egap_Documents_DocumentFormatKind_Encrypted">Encrypted</a> when its manifest says it is encrypted), a MIME
+binary Word file (DOC), a compound file that holds an encrypted package is Word's, or an Excel workbook when its name
+says so, and another compound file is taken as Word's, an OpenDocument text package is ODT, a MIME
 message of <code>multipart/related</code> parts is MHTML, <code>%PDF-</code> is PDF, <code>{\rtf</code> is RTF, a JSON object naming the <code>DoclingDocument</code> schema is
 Docling JSON, text that starts with a tag is HTML, and other text is Markdown, or plain text when the extension says
-so. It needs no add-on package, so a program can tell its user which package a file needs.</p>
+so. It needs no add-on package, so a program can tell its user which package a file needs. An encrypted file is
+identified as its format; <a class="xref" href="Egap.Documents.Document.html#Egap_Documents_Document_IsEncrypted_System_IO_Stream_System_String_">IsEncrypted(Stream, string?)</a> tells whether it needs a password.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -989,7 +989,7 @@ so. It needs no add-on package, so a program can tell its user which package a f
 
   <h3 id="Egap_Documents_Document_Identify_System_String_" data-uid="Egap.Documents.Document.Identify(System.String)">
   Identify(string)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/DocumentFormats.cs/#L180"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/DocumentFormats.cs/#L206"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Tells which format the file at <code class="paramref">path</code> is in without loading it. See <a class="xref" href="Egap.Documents.Document.html#Egap_Documents_Document_Identify_System_IO_Stream_System_String_">Identify(Stream, string?)</a>.</p>
@@ -1103,6 +1103,89 @@ includes everything the node holds. The styles and lists the copy uses come alon
     <dt><code>T</code></dt>
     <dd></dd>
   </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="Egap_Documents_Document_IsEncrypted_" data-uid="Egap.Documents.Document.IsEncrypted*"></a>
+
+  <h3 id="Egap_Documents_Document_IsEncrypted_System_IO_Stream_System_String_" data-uid="Egap.Documents.Document.IsEncrypted(System.IO.Stream,System.String)">
+  IsEncrypted(Stream, string?)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/DocumentFormats.cs/#L153"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Whether a file needs a password to load, without loading it: an encrypted Office package (DOCX or XLSX), a
+password-protected binary Word file (DOC) or a password-protected OpenDocument text package. Loading one needs its
+password, in <a class="xref" href="Egap.Documents.DocumentLoadOptions.html#Egap_Documents_DocumentLoadOptions_Password">Password</a>, <a class="xref" href="Egap.Documents.DocxLoadOptions.html#Egap_Documents_DocxLoadOptions_Password">Password</a> or
+<a class="xref" href="Egap.Documents.OdtLoadOptions.html#Egap_Documents_OdtLoadOptions_Password">Password</a>; <a class="xref" href="Egap.Documents.Document.html#Egap_Documents_Document_Identify_System_IO_Stream_System_String_">Identify(Stream, string?)</a> tells which format it is.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static bool IsEncrypted(Stream stream, string? fileName = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>stream</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.io.stream">Stream</a></dt>
+    <dd><p>The file. A stream that can seek is put back where it was; one that cannot has its first bytes read.</p>
+</dd>
+    <dt><code>fileName</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The file's name or extension, or <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> to go by the bytes alone.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p>Whether the file is encrypted or password-protected.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Egap_Documents_Document_IsEncrypted_" data-uid="Egap.Documents.Document.IsEncrypted*"></a>
+
+  <h3 id="Egap_Documents_Document_IsEncrypted_System_String_" data-uid="Egap.Documents.Document.IsEncrypted(System.String)">
+  IsEncrypted(string)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/DocumentFormats.cs/#L161"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Whether the file at <code class="paramref">path</code> needs a password to load. See <a class="xref" href="Egap.Documents.Document.html#Egap_Documents_Document_IsEncrypted_System_IO_Stream_System_String_">IsEncrypted(Stream, string?)</a>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static bool IsEncrypted(string path)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>path</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p>Whether the file is encrypted or password-protected.</p>
+</dd>
+  </dl>
+
 
 
 

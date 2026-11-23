@@ -1231,10 +1231,10 @@ cells give the values they hold now; formula cells give their last results, whic
 
 
 
-  <a id="Egap_Spreadsheets_Worksheet_Find_" data-uid="Egap.Spreadsheets.Worksheet.Find*"></a>
+  <a id="Egap_Spreadsheets_Worksheet_FindAll_" data-uid="Egap.Spreadsheets.Worksheet.FindAll*"></a>
 
-  <h3 id="Egap_Spreadsheets_Worksheet_Find_System_String_Egap_Spreadsheets_FindOptions_" data-uid="Egap.Spreadsheets.Worksheet.Find(System.String,Egap.Spreadsheets.FindOptions)">
-  Find(string, FindOptions?)
+  <h3 id="Egap_Spreadsheets_Worksheet_FindAll_System_String_Egap_Spreadsheets_FindOptions_" data-uid="Egap.Spreadsheets.Worksheet.FindAll(System.String,Egap.Spreadsheets.FindOptions)">
+  FindAll(string, FindOptions?)
   <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/Worksheet.Find.cs/#L27"><i class="bi bi-code-slash"></i></a>
   </h3>
 
@@ -1245,7 +1245,7 @@ cells give the values they hold now; formula cells give their last results, whic
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public IReadOnlyList&lt;Cell&gt; Find(string what, FindOptions? options = null)</code></pre>
+    <pre><code class="lang-csharp hljs">public IReadOnlyList&lt;Cell&gt; FindAll(string what, FindOptions? options = null)</code></pre>
   </div>
 
   <h4 class="section">Parameters</h4>
@@ -1270,7 +1270,7 @@ cells give the values they hold now; formula cells give their last results, whic
 
 
 
-  <h4 class="section" id="Egap_Spreadsheets_Worksheet_Find_System_String_Egap_Spreadsheets_FindOptions__examples">Examples</h4>
+  <h4 class="section" id="Egap_Spreadsheets_Worksheet_FindAll_System_String_Egap_Spreadsheets_FindOptions__examples">Examples</h4>
   <pre><code class="lang-csharp">IReadOnlyList&lt;Cell&gt; totals = sheet.Find("total*", new FindOptions { MatchEntireCell = true });</code></pre>
 
 
@@ -1651,6 +1651,88 @@ changed. See <a class="xref" href="Egap.Spreadsheets.CellRange.html#Egap_Spreads
 
 
 
+  <a id="Egap_Spreadsheets_Worksheet_SaveAsCsv_" data-uid="Egap.Spreadsheets.Worksheet.SaveAsCsv*"></a>
+
+  <h3 id="Egap_Spreadsheets_Worksheet_SaveAsCsv_System_IO_Stream_Egap_Spreadsheets_CsvOptions_" data-uid="Egap.Spreadsheets.Worksheet.SaveAsCsv(System.IO.Stream,Egap.Spreadsheets.CsvOptions)">
+  SaveAsCsv(Stream, CsvOptions?)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/Worksheet.cs/#L263"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Writes the sheet as comma- or tab-separated text to a stream, a comma unless the options name another separator.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void SaveAsCsv(Stream stream, CsvOptions? options = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>stream</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.io.stream">Stream</a></dt>
+    <dd></dd>
+    <dt><code>options</code> <a class="xref" href="Egap.Spreadsheets.CsvOptions.html">CsvOptions</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p>The stream is null.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Egap_Spreadsheets_Worksheet_SaveAsCsv_" data-uid="Egap.Spreadsheets.Worksheet.SaveAsCsv*"></a>
+
+  <h3 id="Egap_Spreadsheets_Worksheet_SaveAsCsv_System_String_Egap_Spreadsheets_CsvOptions_" data-uid="Egap.Spreadsheets.Worksheet.SaveAsCsv(System.String,Egap.Spreadsheets.CsvOptions)">
+  SaveAsCsv(string, CsvOptions?)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/Worksheet.cs/#L254"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Writes the sheet as comma- or tab-separated text, from A1 to the last used cell: a tab for a <code>.tsv</code> or
+<code>.tab</code> path, otherwise a comma, unless the options name one. Values are written as their cells show them; see
+<a class="xref" href="Egap.Spreadsheets.CsvOptions.html">CsvOptions</a>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void SaveAsCsv(string path, CsvOptions? options = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>path</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd></dd>
+    <dt><code>options</code> <a class="xref" href="Egap.Spreadsheets.CsvOptions.html">CsvOptions</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p>The path is null.</p>
+</dd>
+  </dl>
+
+
+
   <a id="Egap_Spreadsheets_Worksheet_SaveAsPdf_" data-uid="Egap.Spreadsheets.Worksheet.SaveAsPdf*"></a>
 
   <h3 id="Egap_Spreadsheets_Worksheet_SaveAsPdf_System_IO_Stream_Egap_Spreadsheets_SheetPdfOptions_" data-uid="Egap.Spreadsheets.Worksheet.SaveAsPdf(System.IO.Stream,Egap.Spreadsheets.SheetPdfOptions)">
@@ -1726,88 +1808,6 @@ changed. See <a class="xref" href="Egap.Spreadsheets.CellRange.html#Egap_Spreads
   <dl class="parameters">
     <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a></dt>
     <dd><p>The path is null or empty.</p>
-</dd>
-  </dl>
-
-
-
-  <a id="Egap_Spreadsheets_Worksheet_SaveCsv_" data-uid="Egap.Spreadsheets.Worksheet.SaveCsv*"></a>
-
-  <h3 id="Egap_Spreadsheets_Worksheet_SaveCsv_System_IO_Stream_Egap_Spreadsheets_CsvOptions_" data-uid="Egap.Spreadsheets.Worksheet.SaveCsv(System.IO.Stream,Egap.Spreadsheets.CsvOptions)">
-  SaveCsv(Stream, CsvOptions?)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/Worksheet.cs/#L263"><i class="bi bi-code-slash"></i></a>
-  </h3>
-
-  <div class="markdown level1 summary"><p>Writes the sheet as comma- or tab-separated text to a stream, a comma unless the options name another separator.</p>
-</div>
-  <div class="markdown level1 conceptual"></div>
-
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public void SaveCsv(Stream stream, CsvOptions? options = null)</code></pre>
-  </div>
-
-  <h4 class="section">Parameters</h4>
-  <dl class="parameters">
-    <dt><code>stream</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.io.stream">Stream</a></dt>
-    <dd></dd>
-    <dt><code>options</code> <a class="xref" href="Egap.Spreadsheets.CsvOptions.html">CsvOptions</a></dt>
-    <dd></dd>
-  </dl>
-
-
-
-
-
-
-
-
-
-  <h4 class="section">Exceptions</h4>
-  <dl class="parameters">
-    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
-    <dd><p>The stream is null.</p>
-</dd>
-  </dl>
-
-
-
-  <a id="Egap_Spreadsheets_Worksheet_SaveCsv_" data-uid="Egap.Spreadsheets.Worksheet.SaveCsv*"></a>
-
-  <h3 id="Egap_Spreadsheets_Worksheet_SaveCsv_System_String_Egap_Spreadsheets_CsvOptions_" data-uid="Egap.Spreadsheets.Worksheet.SaveCsv(System.String,Egap.Spreadsheets.CsvOptions)">
-  SaveCsv(string, CsvOptions?)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/Worksheet.cs/#L254"><i class="bi bi-code-slash"></i></a>
-  </h3>
-
-  <div class="markdown level1 summary"><p>Writes the sheet as comma- or tab-separated text, from A1 to the last used cell: a tab for a <code>.tsv</code> or
-<code>.tab</code> path, otherwise a comma, unless the options name one. Values are written as their cells show them; see
-<a class="xref" href="Egap.Spreadsheets.CsvOptions.html">CsvOptions</a>.</p>
-</div>
-  <div class="markdown level1 conceptual"></div>
-
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public void SaveCsv(string path, CsvOptions? options = null)</code></pre>
-  </div>
-
-  <h4 class="section">Parameters</h4>
-  <dl class="parameters">
-    <dt><code>path</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
-    <dd></dd>
-    <dt><code>options</code> <a class="xref" href="Egap.Spreadsheets.CsvOptions.html">CsvOptions</a></dt>
-    <dd></dd>
-  </dl>
-
-
-
-
-
-
-
-
-
-  <h4 class="section">Exceptions</h4>
-  <dl class="parameters">
-    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
-    <dd><p>The path is null.</p>
 </dd>
   </dl>
 

@@ -118,7 +118,7 @@ placed as Word places them, and the members of shape groups.</li>
 <p>What the reader cannot place is left out with a <code>ConversionWarning</code>: drawing shapes Egap has no kind for (WordArt, for
 one), pictures in a format it does not read, and the headers, footers and drawings of Word 6 and Word 95 files.</p>
 <h2 id="passwords">Passwords</h2>
-<p>A DOC file protected with a password to open it is <code>Encrypted</code> to <code>Document.Identify</code>, and loads with its password.
+<p>A DOC file protected with a password to open it is <code>Doc</code> to <code>Document.Identify</code> and encrypted to <code>Document.IsEncrypted</code>, and loads with its password.
 <code>DocumentLoadOptions</code> takes the password, or a callback that asks for one; a missing or wrong password throws a
 <code>DocumentPasswordException</code>. The reader opens the three kinds of protection Word 97 and later write: RC4 CryptoAPI
 encryption (the default from Word 2002 on), RC4 encryption (&quot;Office 97/2000 compatible&quot;) and XOR obfuscation (&quot;weak

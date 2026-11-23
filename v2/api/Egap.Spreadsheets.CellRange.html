@@ -610,20 +610,20 @@ own cells.</p>
 
 
 
-  <a id="Egap_Spreadsheets_CellRange_Find_" data-uid="Egap.Spreadsheets.CellRange.Find*"></a>
+  <a id="Egap_Spreadsheets_CellRange_FindAll_" data-uid="Egap.Spreadsheets.CellRange.FindAll*"></a>
 
-  <h3 id="Egap_Spreadsheets_CellRange_Find_System_String_Egap_Spreadsheets_FindOptions_" data-uid="Egap.Spreadsheets.CellRange.Find(System.String,Egap.Spreadsheets.FindOptions)">
-  Find(string, FindOptions?)
+  <h3 id="Egap_Spreadsheets_CellRange_FindAll_System_String_Egap_Spreadsheets_FindOptions_" data-uid="Egap.Spreadsheets.CellRange.FindAll(System.String,Egap.Spreadsheets.FindOptions)">
+  FindAll(string, FindOptions?)
   <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/CellRange.cs/#L348"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Finds the cells of the range whose text matches, as Excel's Find All does with the range selected; see
-<a class="xref" href="Egap.Spreadsheets.Worksheet.html#Egap_Spreadsheets_Worksheet_Find_System_String_Egap_Spreadsheets_FindOptions_">Find(string, FindOptions?)</a>.</p>
+<a class="xref" href="Egap.Spreadsheets.Worksheet.html#Egap_Spreadsheets_Worksheet_FindAll_System_String_Egap_Spreadsheets_FindOptions_">FindAll(string, FindOptions?)</a>.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public IReadOnlyList&lt;Cell&gt; Find(string what, FindOptions? options = null)</code></pre>
+    <pre><code class="lang-csharp hljs">public IReadOnlyList&lt;Cell&gt; FindAll(string what, FindOptions? options = null)</code></pre>
   </div>
 
   <h4 class="section">Parameters</h4>
@@ -648,7 +648,7 @@ own cells.</p>
 
 
 
-  <h4 class="section" id="Egap_Spreadsheets_CellRange_Find_System_String_Egap_Spreadsheets_FindOptions__examples">Examples</h4>
+  <h4 class="section" id="Egap_Spreadsheets_CellRange_FindAll_System_String_Egap_Spreadsheets_FindOptions__examples">Examples</h4>
   <pre><code class="lang-csharp">IReadOnlyList&lt;Cell&gt; found = sheet.Range("A1:D100").Find("apple");</code></pre>
 
 

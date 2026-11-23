@@ -163,7 +163,7 @@ not describe in full, such as an icon set's thresholds, keep those parts and wri
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public List&lt;string&gt; Formulas { get; }</code></pre>
+    <pre><code class="lang-csharp hljs">public IList&lt;string&gt; Formulas { get; }</code></pre>
   </div>
 
 
@@ -172,7 +172,7 @@ not describe in full, such as an icon set's thresholds, keep those parts and wri
 
   <h4 class="section">Property Value</h4>
   <dl class="parameters">
-    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.list-1">List</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a>&gt;</dt>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ilist-1">IList</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a>&gt;</dt>
     <dd></dd>
   </dl>
 
@@ -219,7 +219,7 @@ not describe in full, such as an icon set's thresholds, keep those parts and wri
 
   <h3 id="Egap_Spreadsheets_ConditionalFormatRule_Priority" data-uid="Egap.Spreadsheets.ConditionalFormatRule.Priority">
   Priority
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/ConditionalFormats.cs/#L91"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/ConditionalFormats.cs/#L93"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>The rule's place among the sheet's rules: 1 is checked first. Zero lets the writer give it the next free place after
@@ -252,7 +252,7 @@ the rules there are.</p>
 
   <h3 id="Egap_Spreadsheets_ConditionalFormatRule_StopIfTrue" data-uid="Egap.Spreadsheets.ConditionalFormatRule.StopIfTrue">
   StopIfTrue
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/ConditionalFormats.cs/#L94"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/ConditionalFormats.cs/#L96"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Whether no rule after this one applies to a cell this rule formats.</p>
@@ -284,7 +284,7 @@ the rules there are.</p>
 
   <h3 id="Egap_Spreadsheets_ConditionalFormatRule_Style" data-uid="Egap.Spreadsheets.ConditionalFormatRule.Style">
   Style
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/ConditionalFormats.cs/#L101"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/ConditionalFormats.cs/#L103"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>The style the rule applies, or null for a rule that draws (colour scale, data bar, icon set). Only what differs from
@@ -318,7 +318,7 @@ and the number format.</p>
 
   <h3 id="Egap_Spreadsheets_ConditionalFormatRule_Text" data-uid="Egap.Spreadsheets.ConditionalFormatRule.Text">
   Text
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/ConditionalFormats.cs/#L85"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/ConditionalFormats.cs/#L87"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>The text a text rule looks for, or null.</p>
@@ -384,17 +384,17 @@ and the number format.</p>
 
   <a id="Egap_Spreadsheets_ConditionalFormatRule_CellIs_" data-uid="Egap.Spreadsheets.ConditionalFormatRule.CellIs*"></a>
 
-  <h3 id="Egap_Spreadsheets_ConditionalFormatRule_CellIs_Egap_Spreadsheets_ComparisonOperator_System_String_Egap_Spreadsheets_CellStyle_System_String_" data-uid="Egap.Spreadsheets.ConditionalFormatRule.CellIs(Egap.Spreadsheets.ComparisonOperator,System.String,Egap.Spreadsheets.CellStyle,System.String)">
-  CellIs(ComparisonOperator, string, CellStyle, string?)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/ConditionalFormats.cs/#L126"><i class="bi bi-code-slash"></i></a>
+  <h3 id="Egap_Spreadsheets_ConditionalFormatRule_CellIs_Egap_Spreadsheets_ComparisonOperator_System_String_Egap_Spreadsheets_CellStyle_" data-uid="Egap.Spreadsheets.ConditionalFormatRule.CellIs(Egap.Spreadsheets.ComparisonOperator,System.String,Egap.Spreadsheets.CellStyle)">
+  CellIs(ComparisonOperator, string, CellStyle)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/ConditionalFormats.cs/#L128"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>A rule for cells whose value compares with one formula, or two for between and not between.</p>
+  <div class="markdown level1 summary"><p>A rule for cells whose value compares with one formula: equal, greater than and the like.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public static ConditionalFormatRule CellIs(ComparisonOperator comparison, string formula1, CellStyle style, string? formula2 = null)</code></pre>
+    <pre><code class="lang-csharp hljs">public static ConditionalFormatRule CellIs(ComparisonOperator comparison, string formula1, CellStyle style)</code></pre>
   </div>
 
   <h4 class="section">Parameters</h4>
@@ -405,7 +405,48 @@ and the number format.</p>
     <dd></dd>
     <dt><code>style</code> <a class="xref" href="Egap.Spreadsheets.CellStyle.html">CellStyle</a></dt>
     <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Egap.Spreadsheets.ConditionalFormatRule.html">ConditionalFormatRule</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Egap_Spreadsheets_ConditionalFormatRule_CellIs_" data-uid="Egap.Spreadsheets.ConditionalFormatRule.CellIs*"></a>
+
+  <h3 id="Egap_Spreadsheets_ConditionalFormatRule_CellIs_Egap_Spreadsheets_ComparisonOperator_System_String_System_String_Egap_Spreadsheets_CellStyle_" data-uid="Egap.Spreadsheets.ConditionalFormatRule.CellIs(Egap.Spreadsheets.ComparisonOperator,System.String,System.String,Egap.Spreadsheets.CellStyle)">
+  CellIs(ComparisonOperator, string, string?, CellStyle)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/ConditionalFormats.cs/#L131"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>A rule for cells whose value compares with one formula, or two for between and not between.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static ConditionalFormatRule CellIs(ComparisonOperator comparison, string formula1, string? formula2, CellStyle style)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>comparison</code> <a class="xref" href="Egap.Spreadsheets.ComparisonOperator.html">ComparisonOperator</a></dt>
+    <dd></dd>
+    <dt><code>formula1</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd></dd>
     <dt><code>formula2</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd></dd>
+    <dt><code>style</code> <a class="xref" href="Egap.Spreadsheets.CellStyle.html">CellStyle</a></dt>
     <dd></dd>
   </dl>
 
@@ -429,7 +470,7 @@ and the number format.</p>
 
   <h3 id="Egap_Spreadsheets_ConditionalFormatRule_ColorScale_Egap_Spreadsheets_CellColor_Egap_Spreadsheets_CellColor_" data-uid="Egap.Spreadsheets.ConditionalFormatRule.ColorScale(Egap.Spreadsheets.CellColor,Egap.Spreadsheets.CellColor)">
   ColorScale(CellColor, CellColor)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/ConditionalFormats.cs/#L141"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/ConditionalFormats.cs/#L146"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>A rule that shades cells from one colour at the lowest value to another at the highest.</p>
@@ -468,7 +509,7 @@ and the number format.</p>
 
   <h3 id="Egap_Spreadsheets_ConditionalFormatRule_ColorScale_Egap_Spreadsheets_CellColor_Egap_Spreadsheets_CellColor_Egap_Spreadsheets_CellColor_" data-uid="Egap.Spreadsheets.ConditionalFormatRule.ColorScale(Egap.Spreadsheets.CellColor,Egap.Spreadsheets.CellColor,Egap.Spreadsheets.CellColor)">
   ColorScale(CellColor, CellColor, CellColor)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/ConditionalFormats.cs/#L145"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/ConditionalFormats.cs/#L150"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>A rule that shades cells along three colours: lowest, the 50th percentile and highest.</p>
@@ -509,7 +550,7 @@ and the number format.</p>
 
   <h3 id="Egap_Spreadsheets_ConditionalFormatRule_DataBar_Egap_Spreadsheets_CellColor_" data-uid="Egap.Spreadsheets.ConditionalFormatRule.DataBar(Egap.Spreadsheets.CellColor)">
   DataBar(CellColor)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/ConditionalFormats.cs/#L149"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/ConditionalFormats.cs/#L154"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>A rule that draws a bar of a colour in each cell, from the lowest value to the highest.</p>
@@ -546,7 +587,7 @@ and the number format.</p>
 
   <h3 id="Egap_Spreadsheets_ConditionalFormatRule_Expression_System_String_Egap_Spreadsheets_CellStyle_" data-uid="Egap.Spreadsheets.ConditionalFormatRule.Expression(System.String,Egap.Spreadsheets.CellStyle)">
   Expression(string, CellStyle)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/ConditionalFormats.cs/#L116"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/ConditionalFormats.cs/#L118"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>A rule for cells for which a formula, written for the top-left cell of the rule's ranges, is true.</p>
@@ -585,7 +626,7 @@ and the number format.</p>
 
   <h3 id="Egap_Spreadsheets_ConditionalFormatRule_IconSet_System_String_" data-uid="Egap.Spreadsheets.ConditionalFormatRule.IconSet(System.String)">
   IconSet(string)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/ConditionalFormats.cs/#L166"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/ConditionalFormats.cs/#L171"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>A rule that draws one of Excel's icon sets, such as <code>3TrafficLights1</code>, <code>3Arrows</code> or <code>5Rating</code>, with

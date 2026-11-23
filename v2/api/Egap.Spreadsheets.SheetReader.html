@@ -169,7 +169,7 @@ while (reader.Read())
 
   <h3 id="Egap_Spreadsheets_SheetReader_Cells" data-uid="Egap.Spreadsheets.SheetReader.Cells">
   Cells
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/SheetReader.cs/#L220"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/SheetReader.cs/#L245"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>The cells of the row last read that are not empty, by column.</p>
@@ -440,7 +440,7 @@ while (reader.Read())
 
   <h3 id="Egap_Spreadsheets_SheetReader_Dispose" data-uid="Egap.Spreadsheets.SheetReader.Dispose">
   Dispose()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/SheetReader.cs/#L223"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/SheetReader.cs/#L248"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Closes the file, or the stream when the reader opened it.</p>
@@ -467,7 +467,7 @@ while (reader.Read())
 
   <h3 id="Egap_Spreadsheets_SheetReader_GetNumberFormat_System_Int32_" data-uid="Egap.Spreadsheets.SheetReader.GetNumberFormat(System.Int32)">
   GetNumberFormat(int)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/SheetReader.cs/#L204"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/SheetReader.cs/#L229"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>The number format of a cell of the row last read, such as <code>General</code> or <code>yyyy-mm-dd</code>.</p>
@@ -504,7 +504,7 @@ while (reader.Read())
 
   <h3 id="Egap_Spreadsheets_SheetReader_GetText_System_Int32_" data-uid="Egap.Spreadsheets.SheetReader.GetText(System.Int32)">
   GetText(int)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/SheetReader.cs/#L207"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/SheetReader.cs/#L232"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>A cell of the row last read as Excel shows it, through its number format (<a class="xref" href="Egap.Spreadsheets.Cell.html#Egap_Spreadsheets_Cell_Text">Text</a>).</p>
@@ -539,24 +539,25 @@ while (reader.Read())
 
   <a id="Egap_Spreadsheets_SheetReader_Open_" data-uid="Egap.Spreadsheets.SheetReader.Open*"></a>
 
-  <h3 id="Egap_Spreadsheets_SheetReader_Open_System_IO_Stream_Egap_Spreadsheets_WorkbookLoadOptions_" data-uid="Egap.Spreadsheets.SheetReader.Open(System.IO.Stream,Egap.Spreadsheets.WorkbookLoadOptions)">
-  Open(Stream, WorkbookLoadOptions?)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/SheetReader.cs/#L123"><i class="bi bi-code-slash"></i></a>
+  <h3 id="Egap_Spreadsheets_SheetReader_Open_System_IO_Stream_Egap_Spreadsheets_SheetReaderOptions_" data-uid="Egap.Spreadsheets.SheetReader.Open(System.IO.Stream,Egap.Spreadsheets.SheetReaderOptions)">
+  Open(Stream, SheetReaderOptions?)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/SheetReader.cs/#L132"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Opens an XLSX, XLSM, XLTX or XLTM package at its first sheet; the stream is left open. A stream that cannot seek is copied into memory first.</p>
+  <div class="markdown level1 summary"><p>Opens an XLSX, XLSM, XLTX or XLTM package, encrypted or not, at its first sheet; the stream is left open. A stream that
+cannot seek, or an encrypted package, is read into memory first.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public static SheetReader Open(Stream stream, WorkbookLoadOptions? options = null)</code></pre>
+    <pre><code class="lang-csharp hljs">public static SheetReader Open(Stream stream, SheetReaderOptions? options = null)</code></pre>
   </div>
 
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>stream</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.io.stream">Stream</a></dt>
     <dd></dd>
-    <dt><code>options</code> <a class="xref" href="Egap.Spreadsheets.WorkbookLoadOptions.html">WorkbookLoadOptions</a></dt>
+    <dt><code>options</code> <a class="xref" href="Egap.Spreadsheets.SheetReaderOptions.html">SheetReaderOptions</a></dt>
     <dd></dd>
   </dl>
 
@@ -576,10 +577,13 @@ while (reader.Read())
   <h4 class="section">Exceptions</h4>
   <dl class="parameters">
     <dt><a class="xref" href="Egap.Documents.DocumentException.html">DocumentException</a></dt>
-    <dd><p>The stream is not a workbook.</p>
+    <dd><p>The stream is not a workbook this reader reads.</p>
 </dd>
     <dt><a class="xref" href="Egap.Documents.DocumentLimitException.html">DocumentLimitException</a></dt>
-    <dd><p>The package is past a limit of <a class="xref" href="Egap.Spreadsheets.WorkbookLoadOptions.html#Egap_Spreadsheets_WorkbookLoadOptions_Limits">Limits</a>.</p>
+    <dd><p>The package is past a limit of <a class="xref" href="Egap.Spreadsheets.SheetReaderOptions.html#Egap_Spreadsheets_SheetReaderOptions_Limits">Limits</a>.</p>
+</dd>
+    <dt><a class="xref" href="Egap.Documents.DocumentPasswordException.html">DocumentPasswordException</a></dt>
+    <dd><p>The package is encrypted, and the options give no password or a wrong one.</p>
 </dd>
   </dl>
 
@@ -587,24 +591,26 @@ while (reader.Read())
 
   <a id="Egap_Spreadsheets_SheetReader_Open_" data-uid="Egap.Spreadsheets.SheetReader.Open*"></a>
 
-  <h3 id="Egap_Spreadsheets_SheetReader_Open_System_String_Egap_Spreadsheets_WorkbookLoadOptions_" data-uid="Egap.Spreadsheets.SheetReader.Open(System.String,Egap.Spreadsheets.WorkbookLoadOptions)">
-  Open(string, WorkbookLoadOptions?)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/SheetReader.cs/#L105"><i class="bi bi-code-slash"></i></a>
+  <h3 id="Egap_Spreadsheets_SheetReader_Open_System_String_Egap_Spreadsheets_SheetReaderOptions_" data-uid="Egap.Spreadsheets.SheetReader.Open(System.String,Egap.Spreadsheets.SheetReaderOptions)">
+  Open(string, SheetReaderOptions?)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/SheetReader.cs/#L110"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Opens an XLSX, XLSM, XLTX or XLTM file, or a CSV, TSV or TAB file by its extension, at its first sheet.</p>
+  <div class="markdown level1 summary"><p>Opens an XLSX, XLSM, XLTX or XLTM file, encrypted or not, or a CSV, TSV or TAB file by its extension (read with the
+default <a class="xref" href="Egap.Spreadsheets.CsvOptions.html">CsvOptions</a>; <a class="xref" href="Egap.Spreadsheets.SheetReader.html#Egap_Spreadsheets_SheetReader_OpenCsv_System_String_Egap_Spreadsheets_CsvOptions_">OpenCsv(string, CsvOptions?)</a> takes others), at its first sheet. XLS, XLSB
+and OpenDocument spreadsheets are not read row by row: <a class="xref" href="Egap.Spreadsheets.Workbook.html#Egap_Spreadsheets_Workbook_Load_System_String_Egap_Spreadsheets_WorkbookLoadOptions_">Load(string, WorkbookLoadOptions?)</a> loads them.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public static SheetReader Open(string path, WorkbookLoadOptions? options = null)</code></pre>
+    <pre><code class="lang-csharp hljs">public static SheetReader Open(string path, SheetReaderOptions? options = null)</code></pre>
   </div>
 
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>path</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
     <dd></dd>
-    <dt><code>options</code> <a class="xref" href="Egap.Spreadsheets.WorkbookLoadOptions.html">WorkbookLoadOptions</a></dt>
+    <dt><code>options</code> <a class="xref" href="Egap.Spreadsheets.SheetReaderOptions.html">SheetReaderOptions</a></dt>
     <dd></dd>
   </dl>
 
@@ -624,10 +630,13 @@ while (reader.Read())
   <h4 class="section">Exceptions</h4>
   <dl class="parameters">
     <dt><a class="xref" href="Egap.Documents.DocumentException.html">DocumentException</a></dt>
-    <dd><p>The file is not a workbook.</p>
+    <dd><p>The file is not a workbook this reader reads.</p>
 </dd>
     <dt><a class="xref" href="Egap.Documents.DocumentLimitException.html">DocumentLimitException</a></dt>
-    <dd><p>The file is past a limit of <a class="xref" href="Egap.Spreadsheets.WorkbookLoadOptions.html#Egap_Spreadsheets_WorkbookLoadOptions_Limits">Limits</a>.</p>
+    <dd><p>The file is past a limit of <a class="xref" href="Egap.Spreadsheets.SheetReaderOptions.html#Egap_Spreadsheets_SheetReaderOptions_Limits">Limits</a>.</p>
+</dd>
+    <dt><a class="xref" href="Egap.Documents.DocumentPasswordException.html">DocumentPasswordException</a></dt>
+    <dd><p>The file is encrypted, and the options give no password or a wrong one.</p>
 </dd>
   </dl>
 
@@ -637,7 +646,7 @@ while (reader.Read())
 
   <h3 id="Egap_Spreadsheets_SheetReader_OpenCsv_System_IO_Stream_Egap_Spreadsheets_CsvOptions_" data-uid="Egap.Spreadsheets.SheetReader.OpenCsv(System.IO.Stream,Egap.Spreadsheets.CsvOptions)">
   OpenCsv(Stream, CsvOptions?)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/SheetReader.cs/#L130"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/SheetReader.cs/#L155"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Opens CSV or TSV text; the stream is left open.</p>
@@ -672,11 +681,50 @@ while (reader.Read())
 
 
 
+  <a id="Egap_Spreadsheets_SheetReader_OpenCsv_" data-uid="Egap.Spreadsheets.SheetReader.OpenCsv*"></a>
+
+  <h3 id="Egap_Spreadsheets_SheetReader_OpenCsv_System_String_Egap_Spreadsheets_CsvOptions_" data-uid="Egap.Spreadsheets.SheetReader.OpenCsv(System.String,Egap.Spreadsheets.CsvOptions)">
+  OpenCsv(string, CsvOptions?)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/SheetReader.cs/#L139"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Opens a CSV, TSV or TAB file; its extension picks the separator unless the options name one.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static SheetReader OpenCsv(string path, CsvOptions? options = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>path</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd></dd>
+    <dt><code>options</code> <a class="xref" href="Egap.Spreadsheets.CsvOptions.html">CsvOptions</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Egap.Spreadsheets.SheetReader.html">SheetReader</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
   <a id="Egap_Spreadsheets_SheetReader_Read_" data-uid="Egap.Spreadsheets.SheetReader.Read*"></a>
 
   <h3 id="Egap_Spreadsheets_SheetReader_Read" data-uid="Egap.Spreadsheets.SheetReader.Read">
   Read()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/SheetReader.cs/#L197"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/SheetReader.cs/#L222"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Reads the next row that has cells, or that the file lists; false at the end of the sheet.</p>
@@ -714,7 +762,7 @@ while (reader.Read())
 
   <h3 id="Egap_Spreadsheets_SheetReader_SelectSheet_System_Int32_" data-uid="Egap.Spreadsheets.SheetReader.SelectSheet(System.Int32)">
   SelectSheet(int)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/SheetReader.cs/#L152"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/SheetReader.cs/#L177"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Starts reading the sheet at a position in tab order, from its first row.</p>
@@ -755,7 +803,7 @@ while (reader.Read())
 
   <h3 id="Egap_Spreadsheets_SheetReader_SelectSheet_System_String_" data-uid="Egap.Spreadsheets.SheetReader.SelectSheet(System.String)">
   SelectSheet(string)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/SheetReader.cs/#L138"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Spreadsheets/SheetReader.cs/#L163"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Starts reading another sheet, from its first row.</p>

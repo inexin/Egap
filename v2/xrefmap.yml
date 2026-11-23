@@ -2014,22 +2014,6 @@ references:
   isSpec: "True"
   fullName: Egap.Documents.Charts.Chart.Legend
   nameWithType: Chart.Legend
-- uid: Egap.Documents.Charts.Chart.Load(System.IO.Stream,Egap.Documents.DocumentLimits)
-  name: Load(Stream, DocumentLimits?)
-  href: api/Egap.Documents.Charts.Chart.html#Egap_Documents_Charts_Chart_Load_System_IO_Stream_Egap_Documents_DocumentLimits_
-  commentId: M:Egap.Documents.Charts.Chart.Load(System.IO.Stream,Egap.Documents.DocumentLimits)
-  name.vb: Load(Stream, DocumentLimits)
-  fullName: Egap.Documents.Charts.Chart.Load(System.IO.Stream, Egap.Documents.DocumentLimits?)
-  fullName.vb: Egap.Documents.Charts.Chart.Load(System.IO.Stream, Egap.Documents.DocumentLimits)
-  nameWithType: Chart.Load(Stream, DocumentLimits?)
-  nameWithType.vb: Chart.Load(Stream, DocumentLimits)
-- uid: Egap.Documents.Charts.Chart.Load*
-  name: Load
-  href: api/Egap.Documents.Charts.Chart.html#Egap_Documents_Charts_Chart_Load_
-  commentId: Overload:Egap.Documents.Charts.Chart.Load
-  isSpec: "True"
-  fullName: Egap.Documents.Charts.Chart.Load
-  nameWithType: Chart.Load
 - uid: Egap.Documents.Charts.Chart.PlotAreaFormat
   name: PlotAreaFormat
   href: api/Egap.Documents.Charts.Chart.html#Egap_Documents_Charts_Chart_PlotAreaFormat
@@ -2095,19 +2079,6 @@ references:
   isSpec: "True"
   fullName: Egap.Documents.Charts.Chart.RoundedCorners
   nameWithType: Chart.RoundedCorners
-- uid: Egap.Documents.Charts.Chart.Save(System.IO.Stream)
-  name: Save(Stream)
-  href: api/Egap.Documents.Charts.Chart.html#Egap_Documents_Charts_Chart_Save_System_IO_Stream_
-  commentId: M:Egap.Documents.Charts.Chart.Save(System.IO.Stream)
-  fullName: Egap.Documents.Charts.Chart.Save(System.IO.Stream)
-  nameWithType: Chart.Save(Stream)
-- uid: Egap.Documents.Charts.Chart.Save*
-  name: Save
-  href: api/Egap.Documents.Charts.Chart.html#Egap_Documents_Charts_Chart_Save_
-  commentId: Overload:Egap.Documents.Charts.Chart.Save
-  isSpec: "True"
-  fullName: Egap.Documents.Charts.Chart.Save
-  nameWithType: Chart.Save
 - uid: Egap.Documents.Charts.Chart.Series
   name: Series
   href: api/Egap.Documents.Charts.Chart.html#Egap_Documents_Charts_Chart_Series
@@ -2335,19 +2306,6 @@ references:
   isSpec: "True"
   fullName: Egap.Documents.Charts.ChartAxis.Hidden
   nameWithType: ChartAxis.Hidden
-- uid: Egap.Documents.Charts.ChartAxis.Id
-  name: Id
-  href: api/Egap.Documents.Charts.ChartAxis.html#Egap_Documents_Charts_ChartAxis_Id
-  commentId: P:Egap.Documents.Charts.ChartAxis.Id
-  fullName: Egap.Documents.Charts.ChartAxis.Id
-  nameWithType: ChartAxis.Id
-- uid: Egap.Documents.Charts.ChartAxis.Id*
-  name: Id
-  href: api/Egap.Documents.Charts.ChartAxis.html#Egap_Documents_Charts_ChartAxis_Id_
-  commentId: Overload:Egap.Documents.Charts.ChartAxis.Id
-  isSpec: "True"
-  fullName: Egap.Documents.Charts.ChartAxis.Id
-  nameWithType: ChartAxis.Id
 - uid: Egap.Documents.Charts.ChartAxis.Kind
   name: Kind
   href: api/Egap.Documents.Charts.ChartAxis.html#Egap_Documents_Charts_ChartAxis_Kind
@@ -4846,6 +4804,24 @@ references:
   isSpec: "True"
   fullName: Egap.Documents.Charts.ChartPoint.Marker
   nameWithType: ChartPoint.Marker
+- uid: Egap.Documents.Charts.ChartQuartileMethod
+  name: ChartQuartileMethod
+  href: api/Egap.Documents.Charts.ChartQuartileMethod.html
+  commentId: T:Egap.Documents.Charts.ChartQuartileMethod
+  fullName: Egap.Documents.Charts.ChartQuartileMethod
+  nameWithType: ChartQuartileMethod
+- uid: Egap.Documents.Charts.ChartQuartileMethod.Exclusive
+  name: Exclusive
+  href: api/Egap.Documents.Charts.ChartQuartileMethod.html#Egap_Documents_Charts_ChartQuartileMethod_Exclusive
+  commentId: F:Egap.Documents.Charts.ChartQuartileMethod.Exclusive
+  fullName: Egap.Documents.Charts.ChartQuartileMethod.Exclusive
+  nameWithType: ChartQuartileMethod.Exclusive
+- uid: Egap.Documents.Charts.ChartQuartileMethod.Inclusive
+  name: Inclusive
+  href: api/Egap.Documents.Charts.ChartQuartileMethod.html#Egap_Documents_Charts_ChartQuartileMethod_Inclusive
+  commentId: F:Egap.Documents.Charts.ChartQuartileMethod.Inclusive
+  fullName: Egap.Documents.Charts.ChartQuartileMethod.Inclusive
+  nameWithType: ChartQuartileMethod.Inclusive
 - uid: Egap.Documents.Charts.ChartRadarStyle
   name: ChartRadarStyle
   href: api/Egap.Documents.Charts.ChartRadarStyle.html
@@ -5288,15 +5264,15 @@ references:
   commentId: T:Egap.Documents.Charts.ChartSeriesCollection
   fullName: Egap.Documents.Charts.ChartSeriesCollection
   nameWithType: ChartSeriesCollection
-- uid: Egap.Documents.Charts.ChartSeriesCollection.Add(System.String,System.Collections.Generic.IEnumerable{System.String},System.Collections.Generic.IEnumerable{System.Nullable{System.Double}})
-  name: Add(string?, IEnumerable<string?>?, IEnumerable<double?>)
-  href: api/Egap.Documents.Charts.ChartSeriesCollection.html#Egap_Documents_Charts_ChartSeriesCollection_Add_System_String_System_Collections_Generic_IEnumerable_System_String__System_Collections_Generic_IEnumerable_System_Nullable_System_Double___
-  commentId: M:Egap.Documents.Charts.ChartSeriesCollection.Add(System.String,System.Collections.Generic.IEnumerable{System.String},System.Collections.Generic.IEnumerable{System.Nullable{System.Double}})
-  name.vb: Add(String, IEnumerable(Of String), IEnumerable(Of Double?))
-  fullName: Egap.Documents.Charts.ChartSeriesCollection.Add(string?, System.Collections.Generic.IEnumerable<string?>?, System.Collections.Generic.IEnumerable<double?>)
-  fullName.vb: Egap.Documents.Charts.ChartSeriesCollection.Add(String, System.Collections.Generic.IEnumerable(Of String), System.Collections.Generic.IEnumerable(Of Double?))
-  nameWithType: ChartSeriesCollection.Add(string?, IEnumerable<string?>?, IEnumerable<double?>)
-  nameWithType.vb: ChartSeriesCollection.Add(String, IEnumerable(Of String), IEnumerable(Of Double?))
+- uid: Egap.Documents.Charts.ChartSeriesCollection.Add(System.Collections.Generic.IEnumerable{System.Nullable{System.Double}},System.Collections.Generic.IEnumerable{System.String},System.String)
+  name: Add(IEnumerable<double?>, IEnumerable<string?>?, string?)
+  href: api/Egap.Documents.Charts.ChartSeriesCollection.html#Egap_Documents_Charts_ChartSeriesCollection_Add_System_Collections_Generic_IEnumerable_System_Nullable_System_Double___System_Collections_Generic_IEnumerable_System_String__System_String_
+  commentId: M:Egap.Documents.Charts.ChartSeriesCollection.Add(System.Collections.Generic.IEnumerable{System.Nullable{System.Double}},System.Collections.Generic.IEnumerable{System.String},System.String)
+  name.vb: Add(IEnumerable(Of Double?), IEnumerable(Of String), String)
+  fullName: Egap.Documents.Charts.ChartSeriesCollection.Add(System.Collections.Generic.IEnumerable<double?>, System.Collections.Generic.IEnumerable<string?>?, string?)
+  fullName.vb: Egap.Documents.Charts.ChartSeriesCollection.Add(System.Collections.Generic.IEnumerable(Of Double?), System.Collections.Generic.IEnumerable(Of String), String)
+  nameWithType: ChartSeriesCollection.Add(IEnumerable<double?>, IEnumerable<string?>?, string?)
+  nameWithType.vb: ChartSeriesCollection.Add(IEnumerable(Of Double?), IEnumerable(Of String), String)
 - uid: Egap.Documents.Charts.ChartSeriesCollection.Add(System.String,System.String,System.String,System.String)
   name: Add(string, string?, string?, string?)
   href: api/Egap.Documents.Charts.ChartSeriesCollection.html#Egap_Documents_Charts_ChartSeriesCollection_Add_System_String_System_String_System_String_System_String_
@@ -8247,6 +8223,31 @@ references:
   fullName.vb: Egap.Documents.Document.Import(Of T)(T, Boolean)
   nameWithType: Document.Import<T>(T, bool)
   nameWithType.vb: Document.Import(Of T)(T, Boolean)
+- uid: Egap.Documents.Document.IsEncrypted(System.IO.Stream,System.String)
+  name: IsEncrypted(Stream, string?)
+  href: api/Egap.Documents.Document.html#Egap_Documents_Document_IsEncrypted_System_IO_Stream_System_String_
+  commentId: M:Egap.Documents.Document.IsEncrypted(System.IO.Stream,System.String)
+  name.vb: IsEncrypted(Stream, String)
+  fullName: Egap.Documents.Document.IsEncrypted(System.IO.Stream, string?)
+  fullName.vb: Egap.Documents.Document.IsEncrypted(System.IO.Stream, String)
+  nameWithType: Document.IsEncrypted(Stream, string?)
+  nameWithType.vb: Document.IsEncrypted(Stream, String)
+- uid: Egap.Documents.Document.IsEncrypted(System.String)
+  name: IsEncrypted(string)
+  href: api/Egap.Documents.Document.html#Egap_Documents_Document_IsEncrypted_System_String_
+  commentId: M:Egap.Documents.Document.IsEncrypted(System.String)
+  name.vb: IsEncrypted(String)
+  fullName: Egap.Documents.Document.IsEncrypted(string)
+  fullName.vb: Egap.Documents.Document.IsEncrypted(String)
+  nameWithType: Document.IsEncrypted(string)
+  nameWithType.vb: Document.IsEncrypted(String)
+- uid: Egap.Documents.Document.IsEncrypted*
+  name: IsEncrypted
+  href: api/Egap.Documents.Document.html#Egap_Documents_Document_IsEncrypted_
+  commentId: Overload:Egap.Documents.Document.IsEncrypted
+  isSpec: "True"
+  fullName: Egap.Documents.Document.IsEncrypted
+  nameWithType: Document.IsEncrypted
 - uid: Egap.Documents.Document.Layout(Egap.Documents.Layout.LayoutOptions)
   name: Layout(LayoutOptions?)
   href: api/Egap.Documents.Document.html#Egap_Documents_Document_Layout_Egap_Documents_Layout_LayoutOptions_
@@ -9421,12 +9422,6 @@ references:
   commentId: F:Egap.Documents.DocumentFormatKind.Docx
   fullName: Egap.Documents.DocumentFormatKind.Docx
   nameWithType: DocumentFormatKind.Docx
-- uid: Egap.Documents.DocumentFormatKind.Encrypted
-  name: Encrypted
-  href: api/Egap.Documents.DocumentFormatKind.html#Egap_Documents_DocumentFormatKind_Encrypted
-  commentId: F:Egap.Documents.DocumentFormatKind.Encrypted
-  fullName: Egap.Documents.DocumentFormatKind.Encrypted
-  nameWithType: DocumentFormatKind.Encrypted
 - uid: Egap.Documents.DocumentFormatKind.Epub
   name: Epub
   href: api/Egap.Documents.DocumentFormatKind.html#Egap_Documents_DocumentFormatKind_Epub
@@ -17118,30 +17113,6 @@ references:
   isSpec: "True"
   fullName: Egap.Documents.Layout.ParagraphBox.Paragraph
   nameWithType: ParagraphBox.Paragraph
-- uid: Egap.Documents.Layout.RevisionView
-  name: RevisionView
-  href: api/Egap.Documents.Layout.RevisionView.html
-  commentId: T:Egap.Documents.Layout.RevisionView
-  fullName: Egap.Documents.Layout.RevisionView
-  nameWithType: RevisionView
-- uid: Egap.Documents.Layout.RevisionView.Final
-  name: Final
-  href: api/Egap.Documents.Layout.RevisionView.html#Egap_Documents_Layout_RevisionView_Final
-  commentId: F:Egap.Documents.Layout.RevisionView.Final
-  fullName: Egap.Documents.Layout.RevisionView.Final
-  nameWithType: RevisionView.Final
-- uid: Egap.Documents.Layout.RevisionView.Markup
-  name: Markup
-  href: api/Egap.Documents.Layout.RevisionView.html#Egap_Documents_Layout_RevisionView_Markup
-  commentId: F:Egap.Documents.Layout.RevisionView.Markup
-  fullName: Egap.Documents.Layout.RevisionView.Markup
-  nameWithType: RevisionView.Markup
-- uid: Egap.Documents.Layout.RevisionView.Original
-  name: Original
-  href: api/Egap.Documents.Layout.RevisionView.html#Egap_Documents_Layout_RevisionView_Original
-  commentId: F:Egap.Documents.Layout.RevisionView.Original
-  fullName: Egap.Documents.Layout.RevisionView.Original
-  nameWithType: RevisionView.Original
 - uid: Egap.Documents.Layout.RowBox
   name: RowBox
   href: api/Egap.Documents.Layout.RowBox.html
@@ -26797,6 +26768,30 @@ references:
   commentId: F:Egap.Documents.RevisionKind.MoveTo
   fullName: Egap.Documents.RevisionKind.MoveTo
   nameWithType: RevisionKind.MoveTo
+- uid: Egap.Documents.RevisionView
+  name: RevisionView
+  href: api/Egap.Documents.RevisionView.html
+  commentId: T:Egap.Documents.RevisionView
+  fullName: Egap.Documents.RevisionView
+  nameWithType: RevisionView
+- uid: Egap.Documents.RevisionView.Final
+  name: Final
+  href: api/Egap.Documents.RevisionView.html#Egap_Documents_RevisionView_Final
+  commentId: F:Egap.Documents.RevisionView.Final
+  fullName: Egap.Documents.RevisionView.Final
+  nameWithType: RevisionView.Final
+- uid: Egap.Documents.RevisionView.Markup
+  name: Markup
+  href: api/Egap.Documents.RevisionView.html#Egap_Documents_RevisionView_Markup
+  commentId: F:Egap.Documents.RevisionView.Markup
+  fullName: Egap.Documents.RevisionView.Markup
+  nameWithType: RevisionView.Markup
+- uid: Egap.Documents.RevisionView.Original
+  name: Original
+  href: api/Egap.Documents.RevisionView.html#Egap_Documents_RevisionView_Original
+  commentId: F:Egap.Documents.RevisionView.Original
+  fullName: Egap.Documents.RevisionView.Original
+  nameWithType: RevisionView.Original
 - uid: Egap.Documents.Row
   name: Row
   href: api/Egap.Documents.Row.html
@@ -58987,6 +58982,19 @@ references:
   isSpec: "True"
   fullName: Egap.Spreadsheets.CellCommentCollection.Count
   nameWithType: CellCommentCollection.Count
+- uid: Egap.Spreadsheets.CellCommentCollection.Find(Egap.Spreadsheets.CellAddress)
+  name: Find(CellAddress)
+  href: api/Egap.Spreadsheets.CellCommentCollection.html#Egap_Spreadsheets_CellCommentCollection_Find_Egap_Spreadsheets_CellAddress_
+  commentId: M:Egap.Spreadsheets.CellCommentCollection.Find(Egap.Spreadsheets.CellAddress)
+  fullName: Egap.Spreadsheets.CellCommentCollection.Find(Egap.Spreadsheets.CellAddress)
+  nameWithType: CellCommentCollection.Find(CellAddress)
+- uid: Egap.Spreadsheets.CellCommentCollection.Find*
+  name: Find
+  href: api/Egap.Spreadsheets.CellCommentCollection.html#Egap_Spreadsheets_CellCommentCollection_Find_
+  commentId: Overload:Egap.Spreadsheets.CellCommentCollection.Find
+  isSpec: "True"
+  fullName: Egap.Spreadsheets.CellCommentCollection.Find
+  nameWithType: CellCommentCollection.Find
 - uid: Egap.Spreadsheets.CellCommentCollection.GetEnumerator
   name: GetEnumerator()
   href: api/Egap.Spreadsheets.CellCommentCollection.html#Egap_Spreadsheets_CellCommentCollection_GetEnumerator
@@ -59000,25 +59008,6 @@ references:
   isSpec: "True"
   fullName: Egap.Spreadsheets.CellCommentCollection.GetEnumerator
   nameWithType: CellCommentCollection.GetEnumerator
-- uid: Egap.Spreadsheets.CellCommentCollection.Item(Egap.Spreadsheets.CellAddress)
-  name: this[CellAddress]
-  href: api/Egap.Spreadsheets.CellCommentCollection.html#Egap_Spreadsheets_CellCommentCollection_Item_Egap_Spreadsheets_CellAddress_
-  commentId: P:Egap.Spreadsheets.CellCommentCollection.Item(Egap.Spreadsheets.CellAddress)
-  name.vb: this[](CellAddress)
-  fullName: Egap.Spreadsheets.CellCommentCollection.this[Egap.Spreadsheets.CellAddress]
-  fullName.vb: Egap.Spreadsheets.CellCommentCollection.this[](Egap.Spreadsheets.CellAddress)
-  nameWithType: CellCommentCollection.this[CellAddress]
-  nameWithType.vb: CellCommentCollection.this[](CellAddress)
-- uid: Egap.Spreadsheets.CellCommentCollection.Item*
-  name: this
-  href: api/Egap.Spreadsheets.CellCommentCollection.html#Egap_Spreadsheets_CellCommentCollection_Item_
-  commentId: Overload:Egap.Spreadsheets.CellCommentCollection.Item
-  isSpec: "True"
-  name.vb: this[]
-  fullName: Egap.Spreadsheets.CellCommentCollection.this
-  fullName.vb: Egap.Spreadsheets.CellCommentCollection.this[]
-  nameWithType: CellCommentCollection.this
-  nameWithType.vb: CellCommentCollection.this[]
 - uid: Egap.Spreadsheets.CellCommentCollection.Remove(Egap.Spreadsheets.CellComment)
   name: Remove(CellComment)
   href: api/Egap.Spreadsheets.CellCommentCollection.html#Egap_Spreadsheets_CellCommentCollection_Remove_Egap_Spreadsheets_CellComment_
@@ -59693,22 +59682,22 @@ references:
   isSpec: "True"
   fullName: Egap.Spreadsheets.CellRange.Equals
   nameWithType: CellRange.Equals
-- uid: Egap.Spreadsheets.CellRange.Find(System.String,Egap.Spreadsheets.FindOptions)
-  name: Find(string, FindOptions?)
-  href: api/Egap.Spreadsheets.CellRange.html#Egap_Spreadsheets_CellRange_Find_System_String_Egap_Spreadsheets_FindOptions_
-  commentId: M:Egap.Spreadsheets.CellRange.Find(System.String,Egap.Spreadsheets.FindOptions)
-  name.vb: Find(String, FindOptions)
-  fullName: Egap.Spreadsheets.CellRange.Find(string, Egap.Spreadsheets.FindOptions?)
-  fullName.vb: Egap.Spreadsheets.CellRange.Find(String, Egap.Spreadsheets.FindOptions)
-  nameWithType: CellRange.Find(string, FindOptions?)
-  nameWithType.vb: CellRange.Find(String, FindOptions)
-- uid: Egap.Spreadsheets.CellRange.Find*
-  name: Find
-  href: api/Egap.Spreadsheets.CellRange.html#Egap_Spreadsheets_CellRange_Find_
-  commentId: Overload:Egap.Spreadsheets.CellRange.Find
+- uid: Egap.Spreadsheets.CellRange.FindAll(System.String,Egap.Spreadsheets.FindOptions)
+  name: FindAll(string, FindOptions?)
+  href: api/Egap.Spreadsheets.CellRange.html#Egap_Spreadsheets_CellRange_FindAll_System_String_Egap_Spreadsheets_FindOptions_
+  commentId: M:Egap.Spreadsheets.CellRange.FindAll(System.String,Egap.Spreadsheets.FindOptions)
+  name.vb: FindAll(String, FindOptions)
+  fullName: Egap.Spreadsheets.CellRange.FindAll(string, Egap.Spreadsheets.FindOptions?)
+  fullName.vb: Egap.Spreadsheets.CellRange.FindAll(String, Egap.Spreadsheets.FindOptions)
+  nameWithType: CellRange.FindAll(string, FindOptions?)
+  nameWithType.vb: CellRange.FindAll(String, FindOptions)
+- uid: Egap.Spreadsheets.CellRange.FindAll*
+  name: FindAll
+  href: api/Egap.Spreadsheets.CellRange.html#Egap_Spreadsheets_CellRange_FindAll_
+  commentId: Overload:Egap.Spreadsheets.CellRange.FindAll
   isSpec: "True"
-  fullName: Egap.Spreadsheets.CellRange.Find
-  nameWithType: CellRange.Find
+  fullName: Egap.Spreadsheets.CellRange.FindAll
+  nameWithType: CellRange.FindAll
 - uid: Egap.Spreadsheets.CellRange.GetEnumerator
   name: GetEnumerator()
   href: api/Egap.Spreadsheets.CellRange.html#Egap_Spreadsheets_CellRange_GetEnumerator
@@ -61105,15 +61094,24 @@ references:
   commentId: T:Egap.Spreadsheets.ConditionalFormatRule
   fullName: Egap.Spreadsheets.ConditionalFormatRule
   nameWithType: ConditionalFormatRule
-- uid: Egap.Spreadsheets.ConditionalFormatRule.CellIs(Egap.Spreadsheets.ComparisonOperator,System.String,Egap.Spreadsheets.CellStyle,System.String)
-  name: CellIs(ComparisonOperator, string, CellStyle, string?)
-  href: api/Egap.Spreadsheets.ConditionalFormatRule.html#Egap_Spreadsheets_ConditionalFormatRule_CellIs_Egap_Spreadsheets_ComparisonOperator_System_String_Egap_Spreadsheets_CellStyle_System_String_
-  commentId: M:Egap.Spreadsheets.ConditionalFormatRule.CellIs(Egap.Spreadsheets.ComparisonOperator,System.String,Egap.Spreadsheets.CellStyle,System.String)
-  name.vb: CellIs(ComparisonOperator, String, CellStyle, String)
-  fullName: Egap.Spreadsheets.ConditionalFormatRule.CellIs(Egap.Spreadsheets.ComparisonOperator, string, Egap.Spreadsheets.CellStyle, string?)
-  fullName.vb: Egap.Spreadsheets.ConditionalFormatRule.CellIs(Egap.Spreadsheets.ComparisonOperator, String, Egap.Spreadsheets.CellStyle, String)
-  nameWithType: ConditionalFormatRule.CellIs(ComparisonOperator, string, CellStyle, string?)
-  nameWithType.vb: ConditionalFormatRule.CellIs(ComparisonOperator, String, CellStyle, String)
+- uid: Egap.Spreadsheets.ConditionalFormatRule.CellIs(Egap.Spreadsheets.ComparisonOperator,System.String,Egap.Spreadsheets.CellStyle)
+  name: CellIs(ComparisonOperator, string, CellStyle)
+  href: api/Egap.Spreadsheets.ConditionalFormatRule.html#Egap_Spreadsheets_ConditionalFormatRule_CellIs_Egap_Spreadsheets_ComparisonOperator_System_String_Egap_Spreadsheets_CellStyle_
+  commentId: M:Egap.Spreadsheets.ConditionalFormatRule.CellIs(Egap.Spreadsheets.ComparisonOperator,System.String,Egap.Spreadsheets.CellStyle)
+  name.vb: CellIs(ComparisonOperator, String, CellStyle)
+  fullName: Egap.Spreadsheets.ConditionalFormatRule.CellIs(Egap.Spreadsheets.ComparisonOperator, string, Egap.Spreadsheets.CellStyle)
+  fullName.vb: Egap.Spreadsheets.ConditionalFormatRule.CellIs(Egap.Spreadsheets.ComparisonOperator, String, Egap.Spreadsheets.CellStyle)
+  nameWithType: ConditionalFormatRule.CellIs(ComparisonOperator, string, CellStyle)
+  nameWithType.vb: ConditionalFormatRule.CellIs(ComparisonOperator, String, CellStyle)
+- uid: Egap.Spreadsheets.ConditionalFormatRule.CellIs(Egap.Spreadsheets.ComparisonOperator,System.String,System.String,Egap.Spreadsheets.CellStyle)
+  name: CellIs(ComparisonOperator, string, string?, CellStyle)
+  href: api/Egap.Spreadsheets.ConditionalFormatRule.html#Egap_Spreadsheets_ConditionalFormatRule_CellIs_Egap_Spreadsheets_ComparisonOperator_System_String_System_String_Egap_Spreadsheets_CellStyle_
+  commentId: M:Egap.Spreadsheets.ConditionalFormatRule.CellIs(Egap.Spreadsheets.ComparisonOperator,System.String,System.String,Egap.Spreadsheets.CellStyle)
+  name.vb: CellIs(ComparisonOperator, String, String, CellStyle)
+  fullName: Egap.Spreadsheets.ConditionalFormatRule.CellIs(Egap.Spreadsheets.ComparisonOperator, string, string?, Egap.Spreadsheets.CellStyle)
+  fullName.vb: Egap.Spreadsheets.ConditionalFormatRule.CellIs(Egap.Spreadsheets.ComparisonOperator, String, String, Egap.Spreadsheets.CellStyle)
+  nameWithType: ConditionalFormatRule.CellIs(ComparisonOperator, string, string?, CellStyle)
+  nameWithType.vb: ConditionalFormatRule.CellIs(ComparisonOperator, String, String, CellStyle)
 - uid: Egap.Spreadsheets.ConditionalFormatRule.CellIs*
   name: CellIs
   href: api/Egap.Spreadsheets.ConditionalFormatRule.html#Egap_Spreadsheets_ConditionalFormatRule_CellIs_
@@ -62451,15 +62449,15 @@ references:
   commentId: T:Egap.Spreadsheets.EditableRangeCollection
   fullName: Egap.Spreadsheets.EditableRangeCollection
   nameWithType: EditableRangeCollection
-- uid: Egap.Spreadsheets.EditableRangeCollection.Add(System.String,Egap.Spreadsheets.RangeAddress,System.String)
-  name: Add(string, RangeAddress, string?)
-  href: api/Egap.Spreadsheets.EditableRangeCollection.html#Egap_Spreadsheets_EditableRangeCollection_Add_System_String_Egap_Spreadsheets_RangeAddress_System_String_
-  commentId: M:Egap.Spreadsheets.EditableRangeCollection.Add(System.String,Egap.Spreadsheets.RangeAddress,System.String)
-  name.vb: Add(String, RangeAddress, String)
-  fullName: Egap.Spreadsheets.EditableRangeCollection.Add(string, Egap.Spreadsheets.RangeAddress, string?)
-  fullName.vb: Egap.Spreadsheets.EditableRangeCollection.Add(String, Egap.Spreadsheets.RangeAddress, String)
-  nameWithType: EditableRangeCollection.Add(string, RangeAddress, string?)
-  nameWithType.vb: EditableRangeCollection.Add(String, RangeAddress, String)
+- uid: Egap.Spreadsheets.EditableRangeCollection.Add(Egap.Spreadsheets.RangeAddress,System.String,System.String)
+  name: Add(RangeAddress, string, string?)
+  href: api/Egap.Spreadsheets.EditableRangeCollection.html#Egap_Spreadsheets_EditableRangeCollection_Add_Egap_Spreadsheets_RangeAddress_System_String_System_String_
+  commentId: M:Egap.Spreadsheets.EditableRangeCollection.Add(Egap.Spreadsheets.RangeAddress,System.String,System.String)
+  name.vb: Add(RangeAddress, String, String)
+  fullName: Egap.Spreadsheets.EditableRangeCollection.Add(Egap.Spreadsheets.RangeAddress, string, string?)
+  fullName.vb: Egap.Spreadsheets.EditableRangeCollection.Add(Egap.Spreadsheets.RangeAddress, String, String)
+  nameWithType: EditableRangeCollection.Add(RangeAddress, string, string?)
+  nameWithType.vb: EditableRangeCollection.Add(RangeAddress, String, String)
 - uid: Egap.Spreadsheets.EditableRangeCollection.Add(System.String,System.String,System.String)
   name: Add(string, string, string?)
   href: api/Egap.Spreadsheets.EditableRangeCollection.html#Egap_Spreadsheets_EditableRangeCollection_Add_System_String_System_String_System_String_
@@ -62553,18 +62551,18 @@ references:
   commentId: T:Egap.Spreadsheets.FindLookIn
   fullName: Egap.Spreadsheets.FindLookIn
   nameWithType: FindLookIn
+- uid: Egap.Spreadsheets.FindLookIn.Comments
+  name: Comments
+  href: api/Egap.Spreadsheets.FindLookIn.html#Egap_Spreadsheets_FindLookIn_Comments
+  commentId: F:Egap.Spreadsheets.FindLookIn.Comments
+  fullName: Egap.Spreadsheets.FindLookIn.Comments
+  nameWithType: FindLookIn.Comments
 - uid: Egap.Spreadsheets.FindLookIn.Formulas
   name: Formulas
   href: api/Egap.Spreadsheets.FindLookIn.html#Egap_Spreadsheets_FindLookIn_Formulas
   commentId: F:Egap.Spreadsheets.FindLookIn.Formulas
   fullName: Egap.Spreadsheets.FindLookIn.Formulas
   nameWithType: FindLookIn.Formulas
-- uid: Egap.Spreadsheets.FindLookIn.Notes
-  name: Notes
-  href: api/Egap.Spreadsheets.FindLookIn.html#Egap_Spreadsheets_FindLookIn_Notes
-  commentId: F:Egap.Spreadsheets.FindLookIn.Notes
-  fullName: Egap.Spreadsheets.FindLookIn.Notes
-  nameWithType: FindLookIn.Notes
 - uid: Egap.Spreadsheets.FindLookIn.Values
   name: Values
   href: api/Egap.Spreadsheets.FindLookIn.html#Egap_Spreadsheets_FindLookIn_Values
@@ -62956,22 +62954,31 @@ references:
   isSpec: "True"
   fullName: Egap.Spreadsheets.HyperlinkCollection.Add
   nameWithType: HyperlinkCollection.Add
-- uid: Egap.Spreadsheets.HyperlinkCollection.AddInternal(Egap.Spreadsheets.RangeAddress,System.String)
-  name: AddInternal(RangeAddress, string)
-  href: api/Egap.Spreadsheets.HyperlinkCollection.html#Egap_Spreadsheets_HyperlinkCollection_AddInternal_Egap_Spreadsheets_RangeAddress_System_String_
-  commentId: M:Egap.Spreadsheets.HyperlinkCollection.AddInternal(Egap.Spreadsheets.RangeAddress,System.String)
-  name.vb: AddInternal(RangeAddress, String)
-  fullName: Egap.Spreadsheets.HyperlinkCollection.AddInternal(Egap.Spreadsheets.RangeAddress, string)
-  fullName.vb: Egap.Spreadsheets.HyperlinkCollection.AddInternal(Egap.Spreadsheets.RangeAddress, String)
-  nameWithType: HyperlinkCollection.AddInternal(RangeAddress, string)
-  nameWithType.vb: HyperlinkCollection.AddInternal(RangeAddress, String)
-- uid: Egap.Spreadsheets.HyperlinkCollection.AddInternal*
-  name: AddInternal
-  href: api/Egap.Spreadsheets.HyperlinkCollection.html#Egap_Spreadsheets_HyperlinkCollection_AddInternal_
-  commentId: Overload:Egap.Spreadsheets.HyperlinkCollection.AddInternal
+- uid: Egap.Spreadsheets.HyperlinkCollection.AddLocation(Egap.Spreadsheets.RangeAddress,System.String)
+  name: AddLocation(RangeAddress, string)
+  href: api/Egap.Spreadsheets.HyperlinkCollection.html#Egap_Spreadsheets_HyperlinkCollection_AddLocation_Egap_Spreadsheets_RangeAddress_System_String_
+  commentId: M:Egap.Spreadsheets.HyperlinkCollection.AddLocation(Egap.Spreadsheets.RangeAddress,System.String)
+  name.vb: AddLocation(RangeAddress, String)
+  fullName: Egap.Spreadsheets.HyperlinkCollection.AddLocation(Egap.Spreadsheets.RangeAddress, string)
+  fullName.vb: Egap.Spreadsheets.HyperlinkCollection.AddLocation(Egap.Spreadsheets.RangeAddress, String)
+  nameWithType: HyperlinkCollection.AddLocation(RangeAddress, string)
+  nameWithType.vb: HyperlinkCollection.AddLocation(RangeAddress, String)
+- uid: Egap.Spreadsheets.HyperlinkCollection.AddLocation(System.String,System.String)
+  name: AddLocation(string, string)
+  href: api/Egap.Spreadsheets.HyperlinkCollection.html#Egap_Spreadsheets_HyperlinkCollection_AddLocation_System_String_System_String_
+  commentId: M:Egap.Spreadsheets.HyperlinkCollection.AddLocation(System.String,System.String)
+  name.vb: AddLocation(String, String)
+  fullName: Egap.Spreadsheets.HyperlinkCollection.AddLocation(string, string)
+  fullName.vb: Egap.Spreadsheets.HyperlinkCollection.AddLocation(String, String)
+  nameWithType: HyperlinkCollection.AddLocation(string, string)
+  nameWithType.vb: HyperlinkCollection.AddLocation(String, String)
+- uid: Egap.Spreadsheets.HyperlinkCollection.AddLocation*
+  name: AddLocation
+  href: api/Egap.Spreadsheets.HyperlinkCollection.html#Egap_Spreadsheets_HyperlinkCollection_AddLocation_
+  commentId: Overload:Egap.Spreadsheets.HyperlinkCollection.AddLocation
   isSpec: "True"
-  fullName: Egap.Spreadsheets.HyperlinkCollection.AddInternal
-  nameWithType: HyperlinkCollection.AddInternal
+  fullName: Egap.Spreadsheets.HyperlinkCollection.AddLocation
+  nameWithType: HyperlinkCollection.AddLocation
 - uid: Egap.Spreadsheets.HyperlinkCollection.Clear
   name: Clear()
   href: api/Egap.Spreadsheets.HyperlinkCollection.html#Egap_Spreadsheets_HyperlinkCollection_Clear
@@ -65003,24 +65010,24 @@ references:
   commentId: T:Egap.Spreadsheets.SheetDrawingCollection
   fullName: Egap.Spreadsheets.SheetDrawingCollection
   nameWithType: SheetDrawingCollection
-- uid: Egap.Spreadsheets.SheetDrawingCollection.AddChart(Egap.Documents.Charts.ChartType,Egap.Spreadsheets.RangeAddress,Egap.Spreadsheets.RangeAddress,System.Boolean)
-  name: AddChart(ChartType, RangeAddress, RangeAddress, bool)
-  href: api/Egap.Spreadsheets.SheetDrawingCollection.html#Egap_Spreadsheets_SheetDrawingCollection_AddChart_Egap_Documents_Charts_ChartType_Egap_Spreadsheets_RangeAddress_Egap_Spreadsheets_RangeAddress_System_Boolean_
-  commentId: M:Egap.Spreadsheets.SheetDrawingCollection.AddChart(Egap.Documents.Charts.ChartType,Egap.Spreadsheets.RangeAddress,Egap.Spreadsheets.RangeAddress,System.Boolean)
-  name.vb: AddChart(ChartType, RangeAddress, RangeAddress, Boolean)
-  fullName: Egap.Spreadsheets.SheetDrawingCollection.AddChart(Egap.Documents.Charts.ChartType, Egap.Spreadsheets.RangeAddress, Egap.Spreadsheets.RangeAddress, bool)
-  fullName.vb: Egap.Spreadsheets.SheetDrawingCollection.AddChart(Egap.Documents.Charts.ChartType, Egap.Spreadsheets.RangeAddress, Egap.Spreadsheets.RangeAddress, Boolean)
-  nameWithType: SheetDrawingCollection.AddChart(ChartType, RangeAddress, RangeAddress, bool)
-  nameWithType.vb: SheetDrawingCollection.AddChart(ChartType, RangeAddress, RangeAddress, Boolean)
-- uid: Egap.Spreadsheets.SheetDrawingCollection.AddChart(Egap.Documents.Charts.ChartType,Egap.Spreadsheets.RangeAddress,System.Boolean)
-  name: AddChart(ChartType, RangeAddress, bool)
-  href: api/Egap.Spreadsheets.SheetDrawingCollection.html#Egap_Spreadsheets_SheetDrawingCollection_AddChart_Egap_Documents_Charts_ChartType_Egap_Spreadsheets_RangeAddress_System_Boolean_
-  commentId: M:Egap.Spreadsheets.SheetDrawingCollection.AddChart(Egap.Documents.Charts.ChartType,Egap.Spreadsheets.RangeAddress,System.Boolean)
-  name.vb: AddChart(ChartType, RangeAddress, Boolean)
-  fullName: Egap.Spreadsheets.SheetDrawingCollection.AddChart(Egap.Documents.Charts.ChartType, Egap.Spreadsheets.RangeAddress, bool)
-  fullName.vb: Egap.Spreadsheets.SheetDrawingCollection.AddChart(Egap.Documents.Charts.ChartType, Egap.Spreadsheets.RangeAddress, Boolean)
-  nameWithType: SheetDrawingCollection.AddChart(ChartType, RangeAddress, bool)
-  nameWithType.vb: SheetDrawingCollection.AddChart(ChartType, RangeAddress, Boolean)
+- uid: Egap.Spreadsheets.SheetDrawingCollection.AddChart(Egap.Spreadsheets.RangeAddress,Egap.Documents.Charts.ChartType,Egap.Spreadsheets.RangeAddress,System.Boolean)
+  name: AddChart(RangeAddress, ChartType, RangeAddress, bool)
+  href: api/Egap.Spreadsheets.SheetDrawingCollection.html#Egap_Spreadsheets_SheetDrawingCollection_AddChart_Egap_Spreadsheets_RangeAddress_Egap_Documents_Charts_ChartType_Egap_Spreadsheets_RangeAddress_System_Boolean_
+  commentId: M:Egap.Spreadsheets.SheetDrawingCollection.AddChart(Egap.Spreadsheets.RangeAddress,Egap.Documents.Charts.ChartType,Egap.Spreadsheets.RangeAddress,System.Boolean)
+  name.vb: AddChart(RangeAddress, ChartType, RangeAddress, Boolean)
+  fullName: Egap.Spreadsheets.SheetDrawingCollection.AddChart(Egap.Spreadsheets.RangeAddress, Egap.Documents.Charts.ChartType, Egap.Spreadsheets.RangeAddress, bool)
+  fullName.vb: Egap.Spreadsheets.SheetDrawingCollection.AddChart(Egap.Spreadsheets.RangeAddress, Egap.Documents.Charts.ChartType, Egap.Spreadsheets.RangeAddress, Boolean)
+  nameWithType: SheetDrawingCollection.AddChart(RangeAddress, ChartType, RangeAddress, bool)
+  nameWithType.vb: SheetDrawingCollection.AddChart(RangeAddress, ChartType, RangeAddress, Boolean)
+- uid: Egap.Spreadsheets.SheetDrawingCollection.AddChart(Egap.Spreadsheets.RangeAddress,Egap.Documents.Charts.ChartType,System.Boolean)
+  name: AddChart(RangeAddress, ChartType, bool)
+  href: api/Egap.Spreadsheets.SheetDrawingCollection.html#Egap_Spreadsheets_SheetDrawingCollection_AddChart_Egap_Spreadsheets_RangeAddress_Egap_Documents_Charts_ChartType_System_Boolean_
+  commentId: M:Egap.Spreadsheets.SheetDrawingCollection.AddChart(Egap.Spreadsheets.RangeAddress,Egap.Documents.Charts.ChartType,System.Boolean)
+  name.vb: AddChart(RangeAddress, ChartType, Boolean)
+  fullName: Egap.Spreadsheets.SheetDrawingCollection.AddChart(Egap.Spreadsheets.RangeAddress, Egap.Documents.Charts.ChartType, bool)
+  fullName.vb: Egap.Spreadsheets.SheetDrawingCollection.AddChart(Egap.Spreadsheets.RangeAddress, Egap.Documents.Charts.ChartType, Boolean)
+  nameWithType: SheetDrawingCollection.AddChart(RangeAddress, ChartType, bool)
+  nameWithType.vb: SheetDrawingCollection.AddChart(RangeAddress, ChartType, Boolean)
 - uid: Egap.Spreadsheets.SheetDrawingCollection.AddChart*
   name: AddChart
   href: api/Egap.Spreadsheets.SheetDrawingCollection.html#Egap_Spreadsheets_SheetDrawingCollection_AddChart_
@@ -65028,24 +65035,24 @@ references:
   isSpec: "True"
   fullName: Egap.Spreadsheets.SheetDrawingCollection.AddChart
   nameWithType: SheetDrawingCollection.AddChart
-- uid: Egap.Spreadsheets.SheetDrawingCollection.AddPicture(System.Byte[],Egap.Spreadsheets.CellAddress,System.Int32,System.Int32)
-  name: AddPicture(byte[], CellAddress, int, int)
-  href: api/Egap.Spreadsheets.SheetDrawingCollection.html#Egap_Spreadsheets_SheetDrawingCollection_AddPicture_System_Byte___Egap_Spreadsheets_CellAddress_System_Int32_System_Int32_
-  commentId: M:Egap.Spreadsheets.SheetDrawingCollection.AddPicture(System.Byte[],Egap.Spreadsheets.CellAddress,System.Int32,System.Int32)
-  name.vb: AddPicture(Byte(), CellAddress, Integer, Integer)
-  fullName: Egap.Spreadsheets.SheetDrawingCollection.AddPicture(byte[], Egap.Spreadsheets.CellAddress, int, int)
-  fullName.vb: Egap.Spreadsheets.SheetDrawingCollection.AddPicture(Byte(), Egap.Spreadsheets.CellAddress, Integer, Integer)
-  nameWithType: SheetDrawingCollection.AddPicture(byte[], CellAddress, int, int)
-  nameWithType.vb: SheetDrawingCollection.AddPicture(Byte(), CellAddress, Integer, Integer)
-- uid: Egap.Spreadsheets.SheetDrawingCollection.AddPicture(System.Byte[],Egap.Spreadsheets.RangeAddress)
-  name: AddPicture(byte[], RangeAddress)
-  href: api/Egap.Spreadsheets.SheetDrawingCollection.html#Egap_Spreadsheets_SheetDrawingCollection_AddPicture_System_Byte___Egap_Spreadsheets_RangeAddress_
-  commentId: M:Egap.Spreadsheets.SheetDrawingCollection.AddPicture(System.Byte[],Egap.Spreadsheets.RangeAddress)
-  name.vb: AddPicture(Byte(), RangeAddress)
-  fullName: Egap.Spreadsheets.SheetDrawingCollection.AddPicture(byte[], Egap.Spreadsheets.RangeAddress)
-  fullName.vb: Egap.Spreadsheets.SheetDrawingCollection.AddPicture(Byte(), Egap.Spreadsheets.RangeAddress)
-  nameWithType: SheetDrawingCollection.AddPicture(byte[], RangeAddress)
-  nameWithType.vb: SheetDrawingCollection.AddPicture(Byte(), RangeAddress)
+- uid: Egap.Spreadsheets.SheetDrawingCollection.AddPicture(Egap.Spreadsheets.CellAddress,System.Byte[],System.Int32,System.Int32)
+  name: AddPicture(CellAddress, byte[], int, int)
+  href: api/Egap.Spreadsheets.SheetDrawingCollection.html#Egap_Spreadsheets_SheetDrawingCollection_AddPicture_Egap_Spreadsheets_CellAddress_System_Byte___System_Int32_System_Int32_
+  commentId: M:Egap.Spreadsheets.SheetDrawingCollection.AddPicture(Egap.Spreadsheets.CellAddress,System.Byte[],System.Int32,System.Int32)
+  name.vb: AddPicture(CellAddress, Byte(), Integer, Integer)
+  fullName: Egap.Spreadsheets.SheetDrawingCollection.AddPicture(Egap.Spreadsheets.CellAddress, byte[], int, int)
+  fullName.vb: Egap.Spreadsheets.SheetDrawingCollection.AddPicture(Egap.Spreadsheets.CellAddress, Byte(), Integer, Integer)
+  nameWithType: SheetDrawingCollection.AddPicture(CellAddress, byte[], int, int)
+  nameWithType.vb: SheetDrawingCollection.AddPicture(CellAddress, Byte(), Integer, Integer)
+- uid: Egap.Spreadsheets.SheetDrawingCollection.AddPicture(Egap.Spreadsheets.RangeAddress,System.Byte[])
+  name: AddPicture(RangeAddress, byte[])
+  href: api/Egap.Spreadsheets.SheetDrawingCollection.html#Egap_Spreadsheets_SheetDrawingCollection_AddPicture_Egap_Spreadsheets_RangeAddress_System_Byte___
+  commentId: M:Egap.Spreadsheets.SheetDrawingCollection.AddPicture(Egap.Spreadsheets.RangeAddress,System.Byte[])
+  name.vb: AddPicture(RangeAddress, Byte())
+  fullName: Egap.Spreadsheets.SheetDrawingCollection.AddPicture(Egap.Spreadsheets.RangeAddress, byte[])
+  fullName.vb: Egap.Spreadsheets.SheetDrawingCollection.AddPicture(Egap.Spreadsheets.RangeAddress, Byte())
+  nameWithType: SheetDrawingCollection.AddPicture(RangeAddress, byte[])
+  nameWithType.vb: SheetDrawingCollection.AddPicture(RangeAddress, Byte())
 - uid: Egap.Spreadsheets.SheetDrawingCollection.AddPicture*
   name: AddPicture
   href: api/Egap.Spreadsheets.SheetDrawingCollection.html#Egap_Spreadsheets_SheetDrawingCollection_AddPicture_
@@ -65053,15 +65060,15 @@ references:
   isSpec: "True"
   fullName: Egap.Spreadsheets.SheetDrawingCollection.AddPicture
   nameWithType: SheetDrawingCollection.AddPicture
-- uid: Egap.Spreadsheets.SheetDrawingCollection.AddSlicer(Egap.Spreadsheets.PivotTable,System.String,Egap.Spreadsheets.RangeAddress)
-  name: AddSlicer(PivotTable, string, RangeAddress)
-  href: api/Egap.Spreadsheets.SheetDrawingCollection.html#Egap_Spreadsheets_SheetDrawingCollection_AddSlicer_Egap_Spreadsheets_PivotTable_System_String_Egap_Spreadsheets_RangeAddress_
-  commentId: M:Egap.Spreadsheets.SheetDrawingCollection.AddSlicer(Egap.Spreadsheets.PivotTable,System.String,Egap.Spreadsheets.RangeAddress)
-  name.vb: AddSlicer(PivotTable, String, RangeAddress)
-  fullName: Egap.Spreadsheets.SheetDrawingCollection.AddSlicer(Egap.Spreadsheets.PivotTable, string, Egap.Spreadsheets.RangeAddress)
-  fullName.vb: Egap.Spreadsheets.SheetDrawingCollection.AddSlicer(Egap.Spreadsheets.PivotTable, String, Egap.Spreadsheets.RangeAddress)
-  nameWithType: SheetDrawingCollection.AddSlicer(PivotTable, string, RangeAddress)
-  nameWithType.vb: SheetDrawingCollection.AddSlicer(PivotTable, String, RangeAddress)
+- uid: Egap.Spreadsheets.SheetDrawingCollection.AddSlicer(Egap.Spreadsheets.RangeAddress,Egap.Spreadsheets.PivotTable,System.String)
+  name: AddSlicer(RangeAddress, PivotTable, string)
+  href: api/Egap.Spreadsheets.SheetDrawingCollection.html#Egap_Spreadsheets_SheetDrawingCollection_AddSlicer_Egap_Spreadsheets_RangeAddress_Egap_Spreadsheets_PivotTable_System_String_
+  commentId: M:Egap.Spreadsheets.SheetDrawingCollection.AddSlicer(Egap.Spreadsheets.RangeAddress,Egap.Spreadsheets.PivotTable,System.String)
+  name.vb: AddSlicer(RangeAddress, PivotTable, String)
+  fullName: Egap.Spreadsheets.SheetDrawingCollection.AddSlicer(Egap.Spreadsheets.RangeAddress, Egap.Spreadsheets.PivotTable, string)
+  fullName.vb: Egap.Spreadsheets.SheetDrawingCollection.AddSlicer(Egap.Spreadsheets.RangeAddress, Egap.Spreadsheets.PivotTable, String)
+  nameWithType: SheetDrawingCollection.AddSlicer(RangeAddress, PivotTable, string)
+  nameWithType.vb: SheetDrawingCollection.AddSlicer(RangeAddress, PivotTable, String)
 - uid: Egap.Spreadsheets.SheetDrawingCollection.AddSlicer*
   name: AddSlicer
   href: api/Egap.Spreadsheets.SheetDrawingCollection.html#Egap_Spreadsheets_SheetDrawingCollection_AddSlicer_
@@ -65340,19 +65347,6 @@ references:
   isSpec: "True"
   fullName: Egap.Spreadsheets.SheetPdfOptions.Default
   nameWithType: SheetPdfOptions.Default
-- uid: Egap.Spreadsheets.SheetPdfOptions.IsTagged
-  name: IsTagged
-  href: api/Egap.Spreadsheets.SheetPdfOptions.html#Egap_Spreadsheets_SheetPdfOptions_IsTagged
-  commentId: P:Egap.Spreadsheets.SheetPdfOptions.IsTagged
-  fullName: Egap.Spreadsheets.SheetPdfOptions.IsTagged
-  nameWithType: SheetPdfOptions.IsTagged
-- uid: Egap.Spreadsheets.SheetPdfOptions.IsTagged*
-  name: IsTagged
-  href: api/Egap.Spreadsheets.SheetPdfOptions.html#Egap_Spreadsheets_SheetPdfOptions_IsTagged_
-  commentId: Overload:Egap.Spreadsheets.SheetPdfOptions.IsTagged
-  isSpec: "True"
-  fullName: Egap.Spreadsheets.SheetPdfOptions.IsTagged
-  nameWithType: SheetPdfOptions.IsTagged
 - uid: Egap.Spreadsheets.SheetPdfOptions.Language
   name: Language
   href: api/Egap.Spreadsheets.SheetPdfOptions.html#Egap_Spreadsheets_SheetPdfOptions_Language
@@ -65379,6 +65373,19 @@ references:
   isSpec: "True"
   fullName: Egap.Spreadsheets.SheetPdfOptions.Print
   nameWithType: SheetPdfOptions.Print
+- uid: Egap.Spreadsheets.SheetPdfOptions.Save
+  name: Save
+  href: api/Egap.Spreadsheets.SheetPdfOptions.html#Egap_Spreadsheets_SheetPdfOptions_Save
+  commentId: P:Egap.Spreadsheets.SheetPdfOptions.Save
+  fullName: Egap.Spreadsheets.SheetPdfOptions.Save
+  nameWithType: SheetPdfOptions.Save
+- uid: Egap.Spreadsheets.SheetPdfOptions.Save*
+  name: Save
+  href: api/Egap.Spreadsheets.SheetPdfOptions.html#Egap_Spreadsheets_SheetPdfOptions_Save_
+  commentId: Overload:Egap.Spreadsheets.SheetPdfOptions.Save
+  isSpec: "True"
+  fullName: Egap.Spreadsheets.SheetPdfOptions.Save
+  nameWithType: SheetPdfOptions.Save
 - uid: Egap.Spreadsheets.SheetPdfOptions.Tagged
   name: Tagged
   href: api/Egap.Spreadsheets.SheetPdfOptions.html#Egap_Spreadsheets_SheetPdfOptions_Tagged
@@ -65775,24 +65782,24 @@ references:
   fullName.vb: Egap.Spreadsheets.SheetReader.this[]
   nameWithType: SheetReader.this
   nameWithType.vb: SheetReader.this[]
-- uid: Egap.Spreadsheets.SheetReader.Open(System.IO.Stream,Egap.Spreadsheets.WorkbookLoadOptions)
-  name: Open(Stream, WorkbookLoadOptions?)
-  href: api/Egap.Spreadsheets.SheetReader.html#Egap_Spreadsheets_SheetReader_Open_System_IO_Stream_Egap_Spreadsheets_WorkbookLoadOptions_
-  commentId: M:Egap.Spreadsheets.SheetReader.Open(System.IO.Stream,Egap.Spreadsheets.WorkbookLoadOptions)
-  name.vb: Open(Stream, WorkbookLoadOptions)
-  fullName: Egap.Spreadsheets.SheetReader.Open(System.IO.Stream, Egap.Spreadsheets.WorkbookLoadOptions?)
-  fullName.vb: Egap.Spreadsheets.SheetReader.Open(System.IO.Stream, Egap.Spreadsheets.WorkbookLoadOptions)
-  nameWithType: SheetReader.Open(Stream, WorkbookLoadOptions?)
-  nameWithType.vb: SheetReader.Open(Stream, WorkbookLoadOptions)
-- uid: Egap.Spreadsheets.SheetReader.Open(System.String,Egap.Spreadsheets.WorkbookLoadOptions)
-  name: Open(string, WorkbookLoadOptions?)
-  href: api/Egap.Spreadsheets.SheetReader.html#Egap_Spreadsheets_SheetReader_Open_System_String_Egap_Spreadsheets_WorkbookLoadOptions_
-  commentId: M:Egap.Spreadsheets.SheetReader.Open(System.String,Egap.Spreadsheets.WorkbookLoadOptions)
-  name.vb: Open(String, WorkbookLoadOptions)
-  fullName: Egap.Spreadsheets.SheetReader.Open(string, Egap.Spreadsheets.WorkbookLoadOptions?)
-  fullName.vb: Egap.Spreadsheets.SheetReader.Open(String, Egap.Spreadsheets.WorkbookLoadOptions)
-  nameWithType: SheetReader.Open(string, WorkbookLoadOptions?)
-  nameWithType.vb: SheetReader.Open(String, WorkbookLoadOptions)
+- uid: Egap.Spreadsheets.SheetReader.Open(System.IO.Stream,Egap.Spreadsheets.SheetReaderOptions)
+  name: Open(Stream, SheetReaderOptions?)
+  href: api/Egap.Spreadsheets.SheetReader.html#Egap_Spreadsheets_SheetReader_Open_System_IO_Stream_Egap_Spreadsheets_SheetReaderOptions_
+  commentId: M:Egap.Spreadsheets.SheetReader.Open(System.IO.Stream,Egap.Spreadsheets.SheetReaderOptions)
+  name.vb: Open(Stream, SheetReaderOptions)
+  fullName: Egap.Spreadsheets.SheetReader.Open(System.IO.Stream, Egap.Spreadsheets.SheetReaderOptions?)
+  fullName.vb: Egap.Spreadsheets.SheetReader.Open(System.IO.Stream, Egap.Spreadsheets.SheetReaderOptions)
+  nameWithType: SheetReader.Open(Stream, SheetReaderOptions?)
+  nameWithType.vb: SheetReader.Open(Stream, SheetReaderOptions)
+- uid: Egap.Spreadsheets.SheetReader.Open(System.String,Egap.Spreadsheets.SheetReaderOptions)
+  name: Open(string, SheetReaderOptions?)
+  href: api/Egap.Spreadsheets.SheetReader.html#Egap_Spreadsheets_SheetReader_Open_System_String_Egap_Spreadsheets_SheetReaderOptions_
+  commentId: M:Egap.Spreadsheets.SheetReader.Open(System.String,Egap.Spreadsheets.SheetReaderOptions)
+  name.vb: Open(String, SheetReaderOptions)
+  fullName: Egap.Spreadsheets.SheetReader.Open(string, Egap.Spreadsheets.SheetReaderOptions?)
+  fullName.vb: Egap.Spreadsheets.SheetReader.Open(String, Egap.Spreadsheets.SheetReaderOptions)
+  nameWithType: SheetReader.Open(string, SheetReaderOptions?)
+  nameWithType.vb: SheetReader.Open(String, SheetReaderOptions)
 - uid: Egap.Spreadsheets.SheetReader.Open*
   name: Open
   href: api/Egap.Spreadsheets.SheetReader.html#Egap_Spreadsheets_SheetReader_Open_
@@ -65809,6 +65816,15 @@ references:
   fullName.vb: Egap.Spreadsheets.SheetReader.OpenCsv(System.IO.Stream, Egap.Spreadsheets.CsvOptions)
   nameWithType: SheetReader.OpenCsv(Stream, CsvOptions?)
   nameWithType.vb: SheetReader.OpenCsv(Stream, CsvOptions)
+- uid: Egap.Spreadsheets.SheetReader.OpenCsv(System.String,Egap.Spreadsheets.CsvOptions)
+  name: OpenCsv(string, CsvOptions?)
+  href: api/Egap.Spreadsheets.SheetReader.html#Egap_Spreadsheets_SheetReader_OpenCsv_System_String_Egap_Spreadsheets_CsvOptions_
+  commentId: M:Egap.Spreadsheets.SheetReader.OpenCsv(System.String,Egap.Spreadsheets.CsvOptions)
+  name.vb: OpenCsv(String, CsvOptions)
+  fullName: Egap.Spreadsheets.SheetReader.OpenCsv(string, Egap.Spreadsheets.CsvOptions?)
+  fullName.vb: Egap.Spreadsheets.SheetReader.OpenCsv(String, Egap.Spreadsheets.CsvOptions)
+  nameWithType: SheetReader.OpenCsv(string, CsvOptions?)
+  nameWithType.vb: SheetReader.OpenCsv(String, CsvOptions)
 - uid: Egap.Spreadsheets.SheetReader.OpenCsv*
   name: OpenCsv
   href: api/Egap.Spreadsheets.SheetReader.html#Egap_Spreadsheets_SheetReader_OpenCsv_
@@ -65893,6 +65909,38 @@ references:
   isSpec: "True"
   fullName: Egap.Spreadsheets.SheetReader.SheetNames
   nameWithType: SheetReader.SheetNames
+- uid: Egap.Spreadsheets.SheetReaderOptions
+  name: SheetReaderOptions
+  href: api/Egap.Spreadsheets.SheetReaderOptions.html
+  commentId: T:Egap.Spreadsheets.SheetReaderOptions
+  fullName: Egap.Spreadsheets.SheetReaderOptions
+  nameWithType: SheetReaderOptions
+- uid: Egap.Spreadsheets.SheetReaderOptions.Limits
+  name: Limits
+  href: api/Egap.Spreadsheets.SheetReaderOptions.html#Egap_Spreadsheets_SheetReaderOptions_Limits
+  commentId: P:Egap.Spreadsheets.SheetReaderOptions.Limits
+  fullName: Egap.Spreadsheets.SheetReaderOptions.Limits
+  nameWithType: SheetReaderOptions.Limits
+- uid: Egap.Spreadsheets.SheetReaderOptions.Limits*
+  name: Limits
+  href: api/Egap.Spreadsheets.SheetReaderOptions.html#Egap_Spreadsheets_SheetReaderOptions_Limits_
+  commentId: Overload:Egap.Spreadsheets.SheetReaderOptions.Limits
+  isSpec: "True"
+  fullName: Egap.Spreadsheets.SheetReaderOptions.Limits
+  nameWithType: SheetReaderOptions.Limits
+- uid: Egap.Spreadsheets.SheetReaderOptions.Password
+  name: Password
+  href: api/Egap.Spreadsheets.SheetReaderOptions.html#Egap_Spreadsheets_SheetReaderOptions_Password
+  commentId: P:Egap.Spreadsheets.SheetReaderOptions.Password
+  fullName: Egap.Spreadsheets.SheetReaderOptions.Password
+  nameWithType: SheetReaderOptions.Password
+- uid: Egap.Spreadsheets.SheetReaderOptions.Password*
+  name: Password
+  href: api/Egap.Spreadsheets.SheetReaderOptions.html#Egap_Spreadsheets_SheetReaderOptions_Password_
+  commentId: Overload:Egap.Spreadsheets.SheetReaderOptions.Password
+  isSpec: "True"
+  fullName: Egap.Spreadsheets.SheetReaderOptions.Password
+  nameWithType: SheetReaderOptions.Password
 - uid: Egap.Spreadsheets.SheetRow
   name: SheetRow
   href: api/Egap.Spreadsheets.SheetRow.html
@@ -66557,15 +66605,15 @@ references:
   commentId: M:Egap.Spreadsheets.SheetWriter.Create(System.IO.Stream)
   fullName: Egap.Spreadsheets.SheetWriter.Create(System.IO.Stream)
   nameWithType: SheetWriter.Create(Stream)
-- uid: Egap.Spreadsheets.SheetWriter.Create(System.String,Egap.Spreadsheets.CsvOptions)
-  name: Create(string, CsvOptions?)
-  href: api/Egap.Spreadsheets.SheetWriter.html#Egap_Spreadsheets_SheetWriter_Create_System_String_Egap_Spreadsheets_CsvOptions_
-  commentId: M:Egap.Spreadsheets.SheetWriter.Create(System.String,Egap.Spreadsheets.CsvOptions)
-  name.vb: Create(String, CsvOptions)
-  fullName: Egap.Spreadsheets.SheetWriter.Create(string, Egap.Spreadsheets.CsvOptions?)
-  fullName.vb: Egap.Spreadsheets.SheetWriter.Create(String, Egap.Spreadsheets.CsvOptions)
-  nameWithType: SheetWriter.Create(string, CsvOptions?)
-  nameWithType.vb: SheetWriter.Create(String, CsvOptions)
+- uid: Egap.Spreadsheets.SheetWriter.Create(System.String)
+  name: Create(string)
+  href: api/Egap.Spreadsheets.SheetWriter.html#Egap_Spreadsheets_SheetWriter_Create_System_String_
+  commentId: M:Egap.Spreadsheets.SheetWriter.Create(System.String)
+  name.vb: Create(String)
+  fullName: Egap.Spreadsheets.SheetWriter.Create(string)
+  fullName.vb: Egap.Spreadsheets.SheetWriter.Create(String)
+  nameWithType: SheetWriter.Create(string)
+  nameWithType.vb: SheetWriter.Create(String)
 - uid: Egap.Spreadsheets.SheetWriter.Create*
   name: Create
   href: api/Egap.Spreadsheets.SheetWriter.html#Egap_Spreadsheets_SheetWriter_Create_
@@ -66582,6 +66630,15 @@ references:
   fullName.vb: Egap.Spreadsheets.SheetWriter.CreateCsv(System.IO.Stream, Egap.Spreadsheets.CsvOptions)
   nameWithType: SheetWriter.CreateCsv(Stream, CsvOptions?)
   nameWithType.vb: SheetWriter.CreateCsv(Stream, CsvOptions)
+- uid: Egap.Spreadsheets.SheetWriter.CreateCsv(System.String,Egap.Spreadsheets.CsvOptions)
+  name: CreateCsv(string, CsvOptions?)
+  href: api/Egap.Spreadsheets.SheetWriter.html#Egap_Spreadsheets_SheetWriter_CreateCsv_System_String_Egap_Spreadsheets_CsvOptions_
+  commentId: M:Egap.Spreadsheets.SheetWriter.CreateCsv(System.String,Egap.Spreadsheets.CsvOptions)
+  name.vb: CreateCsv(String, CsvOptions)
+  fullName: Egap.Spreadsheets.SheetWriter.CreateCsv(string, Egap.Spreadsheets.CsvOptions?)
+  fullName.vb: Egap.Spreadsheets.SheetWriter.CreateCsv(String, Egap.Spreadsheets.CsvOptions)
+  nameWithType: SheetWriter.CreateCsv(string, CsvOptions?)
+  nameWithType.vb: SheetWriter.CreateCsv(String, CsvOptions)
 - uid: Egap.Spreadsheets.SheetWriter.CreateCsv*
   name: CreateCsv
   href: api/Egap.Spreadsheets.SheetWriter.html#Egap_Spreadsheets_SheetWriter_CreateCsv_
@@ -67957,22 +68014,22 @@ references:
   isSpec: "True"
   fullName: Egap.Spreadsheets.Worksheet.Evaluate
   nameWithType: Worksheet.Evaluate
-- uid: Egap.Spreadsheets.Worksheet.Find(System.String,Egap.Spreadsheets.FindOptions)
-  name: Find(string, FindOptions?)
-  href: api/Egap.Spreadsheets.Worksheet.html#Egap_Spreadsheets_Worksheet_Find_System_String_Egap_Spreadsheets_FindOptions_
-  commentId: M:Egap.Spreadsheets.Worksheet.Find(System.String,Egap.Spreadsheets.FindOptions)
-  name.vb: Find(String, FindOptions)
-  fullName: Egap.Spreadsheets.Worksheet.Find(string, Egap.Spreadsheets.FindOptions?)
-  fullName.vb: Egap.Spreadsheets.Worksheet.Find(String, Egap.Spreadsheets.FindOptions)
-  nameWithType: Worksheet.Find(string, FindOptions?)
-  nameWithType.vb: Worksheet.Find(String, FindOptions)
-- uid: Egap.Spreadsheets.Worksheet.Find*
-  name: Find
-  href: api/Egap.Spreadsheets.Worksheet.html#Egap_Spreadsheets_Worksheet_Find_
-  commentId: Overload:Egap.Spreadsheets.Worksheet.Find
+- uid: Egap.Spreadsheets.Worksheet.FindAll(System.String,Egap.Spreadsheets.FindOptions)
+  name: FindAll(string, FindOptions?)
+  href: api/Egap.Spreadsheets.Worksheet.html#Egap_Spreadsheets_Worksheet_FindAll_System_String_Egap_Spreadsheets_FindOptions_
+  commentId: M:Egap.Spreadsheets.Worksheet.FindAll(System.String,Egap.Spreadsheets.FindOptions)
+  name.vb: FindAll(String, FindOptions)
+  fullName: Egap.Spreadsheets.Worksheet.FindAll(string, Egap.Spreadsheets.FindOptions?)
+  fullName.vb: Egap.Spreadsheets.Worksheet.FindAll(String, Egap.Spreadsheets.FindOptions)
+  nameWithType: Worksheet.FindAll(string, FindOptions?)
+  nameWithType.vb: Worksheet.FindAll(String, FindOptions)
+- uid: Egap.Spreadsheets.Worksheet.FindAll*
+  name: FindAll
+  href: api/Egap.Spreadsheets.Worksheet.html#Egap_Spreadsheets_Worksheet_FindAll_
+  commentId: Overload:Egap.Spreadsheets.Worksheet.FindAll
   isSpec: "True"
-  fullName: Egap.Spreadsheets.Worksheet.Find
-  nameWithType: Worksheet.Find
+  fullName: Egap.Spreadsheets.Worksheet.FindAll
+  nameWithType: Worksheet.FindAll
 - uid: Egap.Spreadsheets.Worksheet.Hyperlinks
   name: Hyperlinks
   href: api/Egap.Spreadsheets.Worksheet.html#Egap_Spreadsheets_Worksheet_Hyperlinks
@@ -68218,6 +68275,31 @@ references:
   isSpec: "True"
   fullName: Egap.Spreadsheets.Worksheet.Rows
   nameWithType: Worksheet.Rows
+- uid: Egap.Spreadsheets.Worksheet.SaveAsCsv(System.IO.Stream,Egap.Spreadsheets.CsvOptions)
+  name: SaveAsCsv(Stream, CsvOptions?)
+  href: api/Egap.Spreadsheets.Worksheet.html#Egap_Spreadsheets_Worksheet_SaveAsCsv_System_IO_Stream_Egap_Spreadsheets_CsvOptions_
+  commentId: M:Egap.Spreadsheets.Worksheet.SaveAsCsv(System.IO.Stream,Egap.Spreadsheets.CsvOptions)
+  name.vb: SaveAsCsv(Stream, CsvOptions)
+  fullName: Egap.Spreadsheets.Worksheet.SaveAsCsv(System.IO.Stream, Egap.Spreadsheets.CsvOptions?)
+  fullName.vb: Egap.Spreadsheets.Worksheet.SaveAsCsv(System.IO.Stream, Egap.Spreadsheets.CsvOptions)
+  nameWithType: Worksheet.SaveAsCsv(Stream, CsvOptions?)
+  nameWithType.vb: Worksheet.SaveAsCsv(Stream, CsvOptions)
+- uid: Egap.Spreadsheets.Worksheet.SaveAsCsv(System.String,Egap.Spreadsheets.CsvOptions)
+  name: SaveAsCsv(string, CsvOptions?)
+  href: api/Egap.Spreadsheets.Worksheet.html#Egap_Spreadsheets_Worksheet_SaveAsCsv_System_String_Egap_Spreadsheets_CsvOptions_
+  commentId: M:Egap.Spreadsheets.Worksheet.SaveAsCsv(System.String,Egap.Spreadsheets.CsvOptions)
+  name.vb: SaveAsCsv(String, CsvOptions)
+  fullName: Egap.Spreadsheets.Worksheet.SaveAsCsv(string, Egap.Spreadsheets.CsvOptions?)
+  fullName.vb: Egap.Spreadsheets.Worksheet.SaveAsCsv(String, Egap.Spreadsheets.CsvOptions)
+  nameWithType: Worksheet.SaveAsCsv(string, CsvOptions?)
+  nameWithType.vb: Worksheet.SaveAsCsv(String, CsvOptions)
+- uid: Egap.Spreadsheets.Worksheet.SaveAsCsv*
+  name: SaveAsCsv
+  href: api/Egap.Spreadsheets.Worksheet.html#Egap_Spreadsheets_Worksheet_SaveAsCsv_
+  commentId: Overload:Egap.Spreadsheets.Worksheet.SaveAsCsv
+  isSpec: "True"
+  fullName: Egap.Spreadsheets.Worksheet.SaveAsCsv
+  nameWithType: Worksheet.SaveAsCsv
 - uid: Egap.Spreadsheets.Worksheet.SaveAsPdf(System.IO.Stream,Egap.Spreadsheets.SheetPdfOptions)
   name: SaveAsPdf(Stream, SheetPdfOptions?)
   href: api/Egap.Spreadsheets.Worksheet.html#Egap_Spreadsheets_Worksheet_SaveAsPdf_System_IO_Stream_Egap_Spreadsheets_SheetPdfOptions_
@@ -68243,31 +68325,6 @@ references:
   isSpec: "True"
   fullName: Egap.Spreadsheets.Worksheet.SaveAsPdf
   nameWithType: Worksheet.SaveAsPdf
-- uid: Egap.Spreadsheets.Worksheet.SaveCsv(System.IO.Stream,Egap.Spreadsheets.CsvOptions)
-  name: SaveCsv(Stream, CsvOptions?)
-  href: api/Egap.Spreadsheets.Worksheet.html#Egap_Spreadsheets_Worksheet_SaveCsv_System_IO_Stream_Egap_Spreadsheets_CsvOptions_
-  commentId: M:Egap.Spreadsheets.Worksheet.SaveCsv(System.IO.Stream,Egap.Spreadsheets.CsvOptions)
-  name.vb: SaveCsv(Stream, CsvOptions)
-  fullName: Egap.Spreadsheets.Worksheet.SaveCsv(System.IO.Stream, Egap.Spreadsheets.CsvOptions?)
-  fullName.vb: Egap.Spreadsheets.Worksheet.SaveCsv(System.IO.Stream, Egap.Spreadsheets.CsvOptions)
-  nameWithType: Worksheet.SaveCsv(Stream, CsvOptions?)
-  nameWithType.vb: Worksheet.SaveCsv(Stream, CsvOptions)
-- uid: Egap.Spreadsheets.Worksheet.SaveCsv(System.String,Egap.Spreadsheets.CsvOptions)
-  name: SaveCsv(string, CsvOptions?)
-  href: api/Egap.Spreadsheets.Worksheet.html#Egap_Spreadsheets_Worksheet_SaveCsv_System_String_Egap_Spreadsheets_CsvOptions_
-  commentId: M:Egap.Spreadsheets.Worksheet.SaveCsv(System.String,Egap.Spreadsheets.CsvOptions)
-  name.vb: SaveCsv(String, CsvOptions)
-  fullName: Egap.Spreadsheets.Worksheet.SaveCsv(string, Egap.Spreadsheets.CsvOptions?)
-  fullName.vb: Egap.Spreadsheets.Worksheet.SaveCsv(String, Egap.Spreadsheets.CsvOptions)
-  nameWithType: Worksheet.SaveCsv(string, CsvOptions?)
-  nameWithType.vb: Worksheet.SaveCsv(String, CsvOptions)
-- uid: Egap.Spreadsheets.Worksheet.SaveCsv*
-  name: SaveCsv
-  href: api/Egap.Spreadsheets.Worksheet.html#Egap_Spreadsheets_Worksheet_SaveCsv_
-  commentId: Overload:Egap.Spreadsheets.Worksheet.SaveCsv
-  isSpec: "True"
-  fullName: Egap.Spreadsheets.Worksheet.SaveCsv
-  nameWithType: Worksheet.SaveCsv
 - uid: Egap.Spreadsheets.Worksheet.TabColor
   name: TabColor
   href: api/Egap.Spreadsheets.Worksheet.html#Egap_Spreadsheets_Worksheet_TabColor
