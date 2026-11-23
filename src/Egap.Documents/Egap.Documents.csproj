@@ -49,6 +49,7 @@
     <InternalsVisibleTo Include="Egap.Documents.Html.Tests" />
     <InternalsVisibleTo Include="Egap.Documents.Markdown.Tests" />
     <InternalsVisibleTo Include="Egap.Documents.Fuzz" />
+    <InternalsVisibleTo Include="Egap.Documents.Benchmarks" />
     <InternalsVisibleTo Include="Egap.Pdf.Fuzz" />
     <InternalsVisibleTo Include="Compare" />
     <InternalsVisibleTo Include="Compare.Tests" />

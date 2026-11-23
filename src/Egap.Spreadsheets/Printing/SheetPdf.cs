@@ -12,11 +12,11 @@ internal static class SheetPdf
         using PdfDocument pdf = new SheetPdfExporter(layout, options).Export(book, path is null ? null : Path.GetFileNameWithoutExtension(path));
         if (path is not null)
         {
-            pdf.Save(path);
+            pdf.Save(path, options.Save);
         }
         else
         {
-            pdf.Save(stream!);
+            pdf.Save(stream!, options.Save);
         }
     }
 }

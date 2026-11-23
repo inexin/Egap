@@ -5,6 +5,9 @@ namespace Egap.Documents.Charts;
 /// <summary>What a chart or one of its plots draws.</summary>
 public enum ChartType
 {
+    /// <summary>A type this model does not know, kept as it is.</summary>
+    Unknown,
+
     /// <summary>Upright bars.</summary>
     Column,
 
@@ -67,9 +70,6 @@ public enum ChartType
 
     /// <summary>Values on a map: a cx: chart, kept and edited but not on the plan to be drawn.</summary>
     RegionMap,
-
-    /// <summary>A type this model does not know, kept as it is.</summary>
-    Unknown,
 }
 
 /// <summary>How the series of a plot sit against each other.</summary>

@@ -763,7 +763,7 @@ public sealed class ConditionalFormatEvaluation
             Format = format;
             Rule = rule;
             Order = order;
-            Origin = TopLeft(format.Ranges);
+            Origin = TopLeft(format.RangeList);
             string? name = rule.Type switch
             {
                 ConditionalFormatType.ColorScale => "colorScale",

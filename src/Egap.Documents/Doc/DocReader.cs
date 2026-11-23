@@ -43,29 +43,31 @@ internal sealed partial class DocReader
     }
 
     /// <summary>
-    /// Whether a compound file is a Word document, from its WordDocument stream's first bytes: <see cref="DocumentFormatKind.Doc"/>,
-    /// <see cref="DocumentFormatKind.Encrypted"/> when the FIB says it is password-protected, or null when it is not one.
+    /// Whether a compound file is a Word document, from its WordDocument stream's first bytes, and whether the FIB says it is
+    /// password-protected.
     /// </summary>
-    public static DocumentFormatKind? KindOf(CompoundFile file)
+    public static bool IsWordDocument(CompoundFile file, out bool passwordProtected)
     {
+        passwordProtected = false;
         if (file.Find("WordDocument") is not { Type: CompoundFileEntryType.Stream } entry)
         {
-            return null;
+            return false;
         }
 
         byte[] head = file.ReadStreamStart(entry, 12);
         if (head.Length < 12)
         {
-            return null;
+            return false;
         }
 
         ushort ident = BinaryPrimitives.ReadUInt16LittleEndian(head);
         if (ident is not (DocFib.WordIdent or DocFib.Word6Ident))
         {
-            return null;
+            return false;
         }
 
-        return (BinaryPrimitives.ReadUInt16LittleEndian(head.AsSpan(10)) & 0x0100) != 0 ? DocumentFormatKind.Encrypted : DocumentFormatKind.Doc;
+        passwordProtected = (BinaryPrimitives.ReadUInt16LittleEndian(head.AsSpan(10)) & 0x0100) != 0;
+        return true;
     }
 
     /// <summary>Reads a DOC file's bytes.</summary>

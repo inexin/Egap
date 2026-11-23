@@ -87,7 +87,7 @@ public sealed class SlicerTests
     {
         Workbook book = SalesBook(out PivotTable table);
         Worksheet report = table.Worksheet;
-        SheetDrawing drawing = report.Drawings.AddSlicer(table, "region", RangeAddress.Parse("E2:G12"));
+        SheetDrawing drawing = report.Drawings.AddSlicer(RangeAddress.Parse("E2:G12"), table, "region");
         Slicer slicer = drawing.Slicer!;
         Assert.Equal(SheetDrawingKind.Slicer, drawing.Kind);
         Assert.Equal("Region", slicer.Name);
@@ -99,7 +99,7 @@ public sealed class SlicerTests
         Assert.Equal(17.0, report[3, 1].Value.Number);
 
         // A second slicer of a field off the table's axes filters it too.
-        SheetDrawing month = report.Drawings.AddSlicer(table, "Month", RangeAddress.Parse("I2:K12"));
+        SheetDrawing month = report.Drawings.AddSlicer(RangeAddress.Parse("I2:K12"), table, "Month");
         month.Slicer!.Select(["Jan"]);
         month.Slicer.StyleName = "SlicerStyleDark2";
         month.Slicer.ColumnCount = 2;
@@ -159,9 +159,9 @@ public sealed class SlicerTests
 
         Workbook made = SalesBook(out PivotTable first);
         PivotTable table = made.Worksheets["Report"].PivotTables.Add(new CellAddress(20, 0), made.Worksheets["Data"].Range("A1:C7"), new PivotTableOptions { Rows = { "Month" }, Values = { new PivotValueField("Units") } });
-        Slicer slicer = made.Worksheets["Report"].Drawings.AddSlicer(first, "Region", RangeAddress.Parse("E2:G12")).Slicer!;
+        Slicer slicer = made.Worksheets["Report"].Drawings.AddSlicer(RangeAddress.Parse("E2:G12"), first, "Region").Slicer!;
         Assert.Throws<ArgumentException>(() => slicer.Connect(table));
-        Assert.Throws<ArgumentException>(() => made.Worksheets["Report"].Drawings.AddSlicer(first, "Nope", RangeAddress.Parse("A1:B2")));
+        Assert.Throws<ArgumentException>(() => made.Worksheets["Report"].Drawings.AddSlicer(RangeAddress.Parse("A1:B2"), first, "Nope"));
     }
 
     [Fact]
@@ -169,8 +169,8 @@ public sealed class SlicerTests
     {
         Workbook book = SalesBook(out PivotTable table);
         Worksheet report = table.Worksheet;
-        Slicer first = report.Drawings.AddSlicer(table, "Region", RangeAddress.Parse("E2:G12")).Slicer!;
-        Slicer second = report.Drawings.AddSlicer(table, "Region", RangeAddress.Parse("I2:K12")).Slicer!;
+        Slicer first = report.Drawings.AddSlicer(RangeAddress.Parse("E2:G12"), table, "Region").Slicer!;
+        Slicer second = report.Drawings.AddSlicer(RangeAddress.Parse("I2:K12"), table, "Region").Slicer!;
         Assert.Equal("Region", first.Name);
         Assert.Equal("Region 1", second.Name);
 

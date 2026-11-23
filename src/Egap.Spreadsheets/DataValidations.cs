@@ -83,12 +83,14 @@ public sealed class DataValidation
 {
     internal DataValidation(IEnumerable<RangeAddress> ranges, DataValidationType type)
     {
-        Ranges = [.. ranges];
+        RangeList = [.. ranges];
         Type = type;
     }
 
     /// <summary>The cells the rule applies to.</summary>
-    public List<RangeAddress> Ranges { get; }
+    public IList<RangeAddress> Ranges => RangeList;
+
+    internal List<RangeAddress> RangeList { get; }
 
     /// <summary>What the cells allow.</summary>
     public DataValidationType Type { get; set; }
@@ -190,7 +192,7 @@ public sealed class DataValidationCollection : IReadOnlyList<DataValidation>
     }
 
     /// <summary>The first rule that applies to a cell, or null.</summary>
-    public DataValidation? Find(CellAddress cell) => rules.Find(rule => rule.Ranges.Exists(range => range.Contains(cell)));
+    public DataValidation? Find(CellAddress cell) => rules.Find(rule => rule.RangeList.Exists(range => range.Contains(cell)));
 
     /// <summary>
     /// Whether a cell's value passes the rule that applies to it, as Excel's Circle Invalid Data checks it; true when no rule
@@ -542,7 +544,7 @@ public sealed class DataValidationCollection : IReadOnlyList<DataValidation>
     private EvalContext Context(DataValidation rule, CellAddress cell) =>
         EvalContext.ForCell(sheet, cell.Row, cell.Column, Origin(rule), [], arrayMode: true);
 
-    private static CellAddress Origin(DataValidation rule) => ConditionalFormatEvaluation.TopLeft(rule.Ranges);
+    private static CellAddress Origin(DataValidation rule) => ConditionalFormatEvaluation.TopLeft(rule.RangeList);
 
     private static CompiledFormula? Parse(string formula, DataValidation rule)
     {

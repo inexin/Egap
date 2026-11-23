@@ -51,7 +51,7 @@ public sealed class ChartPrintingTests
             without = Ink(plain);
         }
 
-        SheetDrawing drawing = sheet.Drawings.AddChart(ChartType.Column, RangeAddress.Parse("D1:J12"), RangeAddress.Parse("A1:B3"));
+        SheetDrawing drawing = sheet.Drawings.AddChart(RangeAddress.Parse("D1:J12"), ChartType.Column, RangeAddress.Parse("A1:B3"));
         foreach (ChartSeries series in drawing.Chart!.Series)
         {
             series.Values.SetNumbers([]);

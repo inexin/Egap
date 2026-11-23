@@ -38,7 +38,7 @@ public class TextBenchmarks
         }
 
         MemoryStream stream = new();
-        sheet.SaveCsv(stream);
+        sheet.SaveAsCsv(stream);
         csv = stream.ToArray();
     }
 
@@ -57,11 +57,11 @@ public class TextBenchmarks
         return length;
     }
 
-    [Benchmark(Description = "SaveCsv, 100k cells")]
-    public long SaveCsv()
+    [Benchmark(Description = "SaveAsCsv, 100k cells")]
+    public long SaveAsCsv()
     {
         MemoryStream stream = new();
-        sheet.SaveCsv(stream);
+        sheet.SaveAsCsv(stream);
         return stream.Length;
     }
 

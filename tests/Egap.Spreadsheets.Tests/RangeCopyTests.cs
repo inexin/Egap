@@ -444,7 +444,7 @@ public sealed class RangeCopyTests
             Assert.Equal("C10+10", copied.Formula2);
             Assert.Equal("D1:D9 D12:D20", string.Join(' ', each.DataValidations.Find(CellAddress.Parse("D1"))!.Ranges));
             Assert.Equal("B2:B5", string.Join(' ', each.DataValidations.Find(CellAddress.Parse("B2"))!.Ranges));
-            ConditionalFormat format = each.ConditionalFormats.Single(f => f.Ranges.Exists(r => r.Contains(CellAddress.Parse("D10"))));
+            ConditionalFormat format = each.ConditionalFormats.Single(f => f.Ranges.Any(r => r.Contains(CellAddress.Parse("D10"))));
             Assert.Equal("D10>C10", format.Rules[0].Formulas[0]);
         }
     }

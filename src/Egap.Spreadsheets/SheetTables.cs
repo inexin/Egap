@@ -106,7 +106,10 @@ public sealed class SheetTable
     public RangeAddress Range { get; set; }
 
     /// <summary>The columns, one for each column of <see cref="Range"/>; the writer adds or drops columns to match.</summary>
-    public List<SheetTableColumn> Columns { get; } = [];
+    public IReadOnlyList<SheetTableColumn> Columns => ColumnList;
+
+    /// <summary>The columns, for the readers and the writer to fill.</summary>
+    internal List<SheetTableColumn> ColumnList { get; } = [];
 
     /// <summary>Whether the first row is a header row. Default true.</summary>
     public bool ShowHeaderRow { get; set; } = true;
@@ -156,12 +159,12 @@ public sealed class SheetTable
         int width = Range.ColumnCount;
         while (Columns.Count > width)
         {
-            Columns.RemoveAt(Columns.Count - 1);
+            ColumnList.RemoveAt(ColumnList.Count - 1);
         }
 
         while (Columns.Count < width)
         {
-            Columns.Add(new SheetTableColumn("Column" + (Columns.Count + 1)));
+            ColumnList.Add(new SheetTableColumn("Column" + (Columns.Count + 1)));
         }
 
         HashSet<string> seen = new(StringComparer.OrdinalIgnoreCase);

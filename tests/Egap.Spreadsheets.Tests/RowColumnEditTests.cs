@@ -282,8 +282,8 @@ public sealed class RowColumnEditTests
         Worksheet other = book.Worksheets.Add("Other");
         sheet.DataValidations.Add(RangeAddress.Parse("B5:B9"), DataValidationType.WholeNumber, "A5", "$A$10");
         sheet.ConditionalFormats.Add("C5:C9", ConditionalFormatRule.Expression("C5>A$1", new CellStyle()));
-        sheet.Hyperlinks.AddInternal(RangeAddress.Parse("D5"), "Sheet1!A8");
-        other.Hyperlinks.AddInternal(RangeAddress.Parse("A1"), "Sheet1!A8");
+        sheet.Hyperlinks.AddLocation(RangeAddress.Parse("D5"), "Sheet1!A8");
+        other.Hyperlinks.AddLocation(RangeAddress.Parse("A1"), "Sheet1!A8");
         book.Names.Add("Picked", "Sheet1!$A$5:$A$9");
 
         sheet.InsertRows(0, 2);
@@ -500,7 +500,7 @@ public sealed class RowColumnEditTests
             sheet.Cells[r, 1].Value = r;
         }
 
-        SheetDrawing drawing = sheet.Drawings.AddChart(ChartType.Column, RangeAddress.Parse("D2:J12"), RangeAddress.Parse("A1:B4"));
+        SheetDrawing drawing = sheet.Drawings.AddChart(RangeAddress.Parse("D2:J12"), ChartType.Column, RangeAddress.Parse("A1:B4"));
         sheet.InsertRows(0);
         Assert.Contains("$B$3:$B$5", drawing.Chart!.Series[0].Values.Reference, StringComparison.Ordinal);
         Assert.Equal(new CellAddress(2, 3), drawing.From.Cell);

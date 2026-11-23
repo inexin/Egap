@@ -38,7 +38,7 @@ public class SortFindBenchmarks
     public int Filter() => filtered.AutoFilter!.Apply();
 
     [Benchmark(Description = "Find in values, 50k cells")]
-    public int Find() => searched.Find("word1*", new FindOptions { LookIn = FindLookIn.Values }).Count;
+    public int Find() => searched.FindAll("word1*", new FindOptions { LookIn = FindLookIn.Values }).Count;
 
     [Benchmark(Description = "Replace in formulas, 10k rows")]
     public int Replace()

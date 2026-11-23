@@ -147,7 +147,7 @@ public sealed class SheetProtection
     public bool CanEdit(CellAddress cell)
     {
         return !IsProtected || !sheet.Cells[cell.Row, cell.Column].Style.Protection.Locked
-            || EditableRanges.Any(r => !r.HasPassword && r.Ranges.Exists(range => range.Contains(cell)));
+            || EditableRanges.Any(r => !r.HasPassword && r.RangeList.Exists(range => range.Contains(cell)));
     }
 
     /// <summary>Sets what a reader found.</summary>
@@ -166,7 +166,7 @@ public sealed class EditableRange
     internal EditableRange(string name, IEnumerable<RangeAddress> ranges, PasswordHash? password)
     {
         Name = name;
-        Ranges = [.. ranges];
+        RangeList = [.. ranges];
         Password = password;
     }
 
@@ -174,7 +174,9 @@ public sealed class EditableRange
     public string Name { get; set; }
 
     /// <summary>The cells it covers.</summary>
-    public List<RangeAddress> Ranges { get; }
+    public IList<RangeAddress> Ranges => RangeList;
+
+    internal List<RangeAddress> RangeList { get; }
 
     /// <summary>Whether a password is needed to edit it.</summary>
     public bool HasPassword => Password is not null;
@@ -209,7 +211,7 @@ public sealed class EditableRangeCollection : IReadOnlyList<EditableRange>
 
     /// <summary>Adds a range users may edit while the sheet is protected, with a password if one is given.</summary>
     /// <exception cref="ArgumentException">The name is empty.</exception>
-    public EditableRange Add(string name, RangeAddress range, string? password = null)
+    public EditableRange Add(RangeAddress range, string name, string? password = null)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(name);
         EditableRange made = new(name, [range], PasswordHash.Create(password));
@@ -219,7 +221,7 @@ public sealed class EditableRangeCollection : IReadOnlyList<EditableRange>
 
     /// <summary>Adds a range given in A1 style, such as <c>B2:D9</c>.</summary>
     /// <exception cref="FormatException">The range is not an A1 range.</exception>
-    public EditableRange Add(string name, string range, string? password = null) => Add(name, RangeAddress.Parse(range), password);
+    public EditableRange Add(string range, string name, string? password = null) => Add(RangeAddress.Parse(range), name, password);
 
     /// <summary>Removes a range; false when it is not in the collection.</summary>
     public bool Remove(EditableRange range) => ranges.Remove(range);

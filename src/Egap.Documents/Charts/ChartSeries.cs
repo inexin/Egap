@@ -250,11 +250,22 @@ public sealed class ChartSeries
     /// <summary>Whether the values go into bins, rather than adding up by category.</summary>
     internal bool HasBinning => LayoutProperties["binning"].Exists;
 
-    /// <summary>A box and whisker chart's way of working out quartiles: <c>exclusive</c>, <c>inclusive</c>, or null when not said.</summary>
-    public string? QuartileMethod
+    /// <summary>A box and whisker chart's way of working out quartiles, or null when not said (Excel then takes them exclusive).</summary>
+    public ChartQuartileMethod? QuartileMethod
     {
-        get => LayoutProperties["statistics"].Attribute("quartileMethod");
-        set => LayoutProperties["statistics"].SetAttribute("quartileMethod", value);
+        get => LayoutProperties["statistics"].Attribute("quartileMethod") switch
+        {
+            "exclusive" => ChartQuartileMethod.Exclusive,
+            "inclusive" => ChartQuartileMethod.Inclusive,
+            _ => null,
+        };
+        set => LayoutProperties["statistics"].SetAttribute("quartileMethod", value switch
+        {
+            ChartQuartileMethod.Exclusive => "exclusive",
+            ChartQuartileMethod.Inclusive => "inclusive",
+            null => null,
+            _ => throw new ArgumentOutOfRangeException(nameof(value)),
+        });
     }
 
     /// <summary>A box and whisker chart: whether the mean line shows, or null when not said.</summary>
@@ -429,8 +440,15 @@ public sealed class ChartSeriesCollection : IReadOnlyList<ChartSeries>
         return series;
     }
 
-    /// <summary>Adds a series whose name and values are written in the chart, not read from cells.</summary>
-    public ChartSeries Add(string? name, IEnumerable<string?>? categories, IEnumerable<double?> values)
+    /// <summary>
+    /// Adds a series whose values, categories and name are written in the chart, not read from cells. The parameters come in
+    /// the order of <see cref="Add(string, string?, string?, string?)"/>.
+    /// </summary>
+    /// <param name="values">The series' values; null for a value left out.</param>
+    /// <param name="categories">The category labels, or null for none.</param>
+    /// <param name="name">The series' name, or null for none.</param>
+    /// <returns>The series added.</returns>
+    public ChartSeries Add(IEnumerable<double?> values, IEnumerable<string?>? categories = null, string? name = null)
     {
         ArgumentNullException.ThrowIfNull(values);
         ChartSeries series = AddEmpty();
@@ -471,4 +489,14 @@ public sealed class ChartSeriesCollection : IReadOnlyList<ChartSeries>
     private List<ChartSeries> List() => [.. plot.SeriesElements().Select(chart.SeriesOf)];
 
     private ChartSeries AddEmpty() => chart.AddSeries(plot);
+}
+
+/// <summary>How a box and whisker chart works out its quartiles.</summary>
+public enum ChartQuartileMethod
+{
+    /// <summary>Leaving out the median, as <c>QUARTILE.EXC</c> does.</summary>
+    Exclusive,
+
+    /// <summary>Taking in the median, as <c>QUARTILE.INC</c> does.</summary>
+    Inclusive,
 }

@@ -79,7 +79,9 @@ public sealed class ConditionalFormatRule
     public ComparisonOperator Operator { get; set; }
 
     /// <summary>The rule's formulas, without the leading <c>=</c>: one for an expression, one or two for a comparison.</summary>
-    public List<string> Formulas { get; } = [];
+    public IList<string> Formulas => FormulaList;
+
+    internal List<string> FormulaList { get; } = [];
 
     /// <summary>The text a text rule looks for, or null.</summary>
     public string? Text { get; set; }
@@ -122,8 +124,11 @@ public sealed class ConditionalFormatRule
         return rule;
     }
 
+    /// <summary>A rule for cells whose value compares with one formula: equal, greater than and the like.</summary>
+    public static ConditionalFormatRule CellIs(ComparisonOperator comparison, string formula1, CellStyle style) => CellIs(comparison, formula1, null, style);
+
     /// <summary>A rule for cells whose value compares with one formula, or two for between and not between.</summary>
-    public static ConditionalFormatRule CellIs(ComparisonOperator comparison, string formula1, CellStyle style, string? formula2 = null)
+    public static ConditionalFormatRule CellIs(ComparisonOperator comparison, string formula1, string? formula2, CellStyle style)
     {
         ArgumentException.ThrowIfNullOrEmpty(formula1);
         ArgumentNullException.ThrowIfNull(style);
@@ -205,14 +210,18 @@ public sealed class ConditionalFormat
 {
     internal ConditionalFormat(IEnumerable<RangeAddress> ranges)
     {
-        Ranges = [.. ranges];
+        RangeList = [.. ranges];
     }
 
     /// <summary>The cells the rules apply to.</summary>
-    public List<RangeAddress> Ranges { get; }
+    public IList<RangeAddress> Ranges => RangeList;
+
+    internal List<RangeAddress> RangeList { get; }
 
     /// <summary>The rules, each with its own priority.</summary>
-    public List<ConditionalFormatRule> Rules { get; } = [];
+    public IList<ConditionalFormatRule> Rules => RuleList;
+
+    internal List<ConditionalFormatRule> RuleList { get; } = [];
 
     /// <summary>The file's conditionalFormatting element, for the attributes the model does not hold.</summary>
     internal XElement? Source { get; set; }
@@ -246,7 +255,7 @@ public sealed class ConditionalFormatCollection : IReadOnlyList<ConditionalForma
         }
 
         ConditionalFormat format = new([range]);
-        format.Rules.AddRange(rules);
+        format.RuleList.AddRange(rules);
         formats.Add(format);
         return format;
     }

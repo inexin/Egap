@@ -658,7 +658,7 @@ internal sealed class XlsbSheet(XlsbWorkbook.State state, Worksheet sheet, OpcPa
         string? address = string.IsNullOrEmpty(id) ? null : part.GetRelationship(id)?.Target;
         RangeAddress range = new(r1, c1, r2, c2);
         Hyperlink? link = !string.IsNullOrEmpty(address) ? sheet.Hyperlinks.Add(range, address)
-            : location.Length > 0 ? sheet.Hyperlinks.AddInternal(range, location)
+            : location.Length > 0 ? sheet.Hyperlinks.AddLocation(range, location)
             : null;
         if (link is null)
         {

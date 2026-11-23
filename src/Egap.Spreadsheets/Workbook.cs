@@ -298,8 +298,8 @@ public sealed partial class Workbook
 
             foreach (DataValidation rule in sheet.DataValidations)
             {
-                rule.Formula1 = Rule(rule.Formula1, rule.Ranges, sheet);
-                rule.Formula2 = Rule(rule.Formula2, rule.Ranges, sheet);
+                rule.Formula1 = Rule(rule.Formula1, rule.RangeList, sheet);
+                rule.Formula2 = Rule(rule.Formula2, rule.RangeList, sheet);
             }
 
             foreach (ConditionalFormat format in sheet.ConditionalFormats)
@@ -308,7 +308,7 @@ public sealed partial class Workbook
                 {
                     for (int i = 0; i < rule.Formulas.Count; i++)
                     {
-                        rule.Formulas[i] = Rule(rule.Formulas[i], format.Ranges, sheet)!;
+                        rule.FormulaList[i] = Rule(rule.FormulaList[i], format.RangeList, sheet)!;
                     }
                 }
             }
@@ -574,7 +574,7 @@ public sealed partial class Workbook
     /// <see cref="WorkbookSaveOptions.Format"/> names one. A workbook with macros saved as .xlsx or .xltx leaves the macros out.
     /// An OpenDocument spreadsheet gets its formulas in OpenFormula; see <see cref="WorkbookFormat.Ods"/>.
     /// A <c>.csv</c>, <c>.tsv</c> or <c>.tab</c> path writes the first visible sheet as text, as
-    /// <see cref="Worksheet.SaveCsv(string, CsvOptions?)"/> does, with <see cref="WorkbookSaveOptions.Csv"/>.
+    /// <see cref="Worksheet.SaveAsCsv(string, CsvOptions?)"/> does, with <see cref="WorkbookSaveOptions.Csv"/>.
     /// </summary>
     /// <exception cref="InvalidOperationException">The workbook has no worksheets, or no visible one for CSV.</exception>
     /// <exception cref="ArgumentException">The extension names no workbook kind and the options name none.</exception>
@@ -586,7 +586,7 @@ public sealed partial class Workbook
         {
             Worksheet sheet = Worksheets.FirstOrDefault(s => s.Visibility == SheetVisibility.Visible)
                 ?? throw new InvalidOperationException("The workbook has no visible sheet to save as CSV.");
-            sheet.SaveCsv(path, options?.Csv);
+            sheet.SaveAsCsv(path, options?.Csv);
             return;
         }
 

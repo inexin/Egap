@@ -141,9 +141,9 @@ public class OdfEncryptionTests
     public void DocumentLoadAndIdentifyKnowEncryptedOdt()
     {
         byte[] file = Encrypt(Plain(), "pw", OdfEncryptionMethod.AesCbc);
-        Assert.Equal(DocumentFormatKind.Encrypted, Document.Identify(new MemoryStream(file), "a.odt"));
+        Assert.True(Document.IsEncrypted(new MemoryStream(file), "a.odt"));
         Assert.Equal(DocumentFormatKind.Odt, Document.Identify(new MemoryStream(Plain()), "a.odt"));
-        Assert.Equal(DocumentFormatKind.Encrypted, Document.Identify(Fixture("libreoffice-aes-gcm.odt")));
+        Assert.True(Document.IsEncrypted(Fixture("libreoffice-aes-gcm.odt")));
         string path = Path.Combine(Path.GetTempPath(), $"egap-odfenc-{Guid.NewGuid():N}.odt");
         try
         {

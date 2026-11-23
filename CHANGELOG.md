@@ -168,6 +168,27 @@ follows with the rest of Egap. Install it with `dotnet tool install -g Egap.Cli 
     parts it points at, such as its images. Before, it kept the other file's relationship ids, which named other parts
     of the file it was saved to.
 
+- API changes since 2.3.0-preview.1, made before the API is frozen:
+  - `Document.IsEncrypted` tells whether a file needs a password, and `Document.Identify` gives an encrypted file's own
+    format (`Docx`, `Doc`, `Odt`, or `Xlsx` for an encrypted workbook named so). `DocumentFormatKind.Encrypted` is gone.
+  - `RevisionView` moved from `Egap.Documents.Layout` to `Egap.Documents`, since PDF, HTML, EPUB and Markdown options
+    take it too.
+  - `ChartSeriesCollection.Add` with values in the chart takes the values first, as the overload that reads cells
+    does: `Add(values, categories, name)`.
+  - `ChartSeries.QuartileMethod` is the new `ChartQuartileMethod` enum, not a string.
+  - `ChartType.Unknown` is 0, so a default `ChartType` is unknown, not `Column`.
+  - `Chart.Load`, `Chart.Save` and `ChartAxis.Id` are internal: a chart part is read and written with its document or
+    workbook.
+
+### Changed
+
+Behaviour that differs from 2.2.0, all in the notes above or below:
+
+- `Document.Identify` reports Excel workbooks as `Xlsx` and binary Word files as `Doc`; before, both were `Docx`.
+- A SmartArt diagram's `Island.Text` holds its points, one per line.
+- A chart island draws the chart on pages and in PDFs; before, it showed the picture saved with it.
+- An optional hyphen that ends a line draws a hyphen; before, the line broke there with no hyphen.
+
 ## Egap.Documents 2.3.0-preview.1 (2026-11-13)
 
 A preview, published ahead of the other Egap packages so that Egap.Spreadsheets 2.3.0-preview.1 can run; the stable 2.3.0
@@ -323,6 +344,32 @@ Egap.Documents.Html, Egap.Documents.Markdown and Egap.Preview 2.2.0 work with it
   `<del>` HTML (the default) or CriticMarkup (`{++ ++}`, `{-- --}`).
 - Built on Markdig 1.5.1, which fixes tabs after block quote markers and in fenced code, a thematic break inside a list
   item closing the list, and autolink schemes of 2 to 32 characters.
+
+## Egap.Spreadsheets 2.3.0 (unreleased)
+
+The stable release. API changes since 2.3.0-preview.1, made before the API is frozen:
+
+- Collections a rule, validation or range holds are `IList<T>`, not `List<T>`: `ConditionalFormat.Ranges` and `Rules`,
+  `ConditionalFormatRule.Formulas`, `DataValidation.Ranges` and `EditableRange.Ranges`. `SheetTable.Columns` is
+  read-only (`IReadOnlyList<SheetTableColumn>`), since the writer keeps one column for each column of the range.
+- `CsvOptions` and `PivotTableOptions` take their settings at creation (`init`), as every Egap options type does.
+- `SheetPdfOptions.Save` takes `PdfSaveOptions` (compression, encryption and the like); `SheetPdfOptions.IsTagged` is
+  internal (`Tagged` asks for a tagged PDF).
+- `Worksheet.SaveCsv` is `Worksheet.SaveAsCsv`, as `SaveAsPdf`.
+- `SheetReader.Open` takes the new `SheetReaderOptions` (limits and password), opens encrypted XLSX files, and says
+  that XLS files are for `Workbook.Load`; `SheetReader.OpenCsv` and `SheetWriter.CreateCsv` take a path too, with
+  `CsvOptions`. `SheetWriter.Create(path)` writes CSV with the default options.
+- `HyperlinkCollection.AddInternal` is `AddLocation`, with an overload that takes the range as text.
+- The range or cell an object goes on comes first: `EditableRangeCollection.Add(range, name, password)`,
+  `SheetDrawingCollection.AddChart(cells, type, ...)`, `AddPicture(cell or cells, image, ...)` and
+  `AddSlicer(cells, pivotTable, field)`. `ConditionalFormatRule.CellIs` takes its formulas together and the style
+  last: `CellIs(comparison, formula1, style)` and `CellIs(comparison, formula1, formula2, style)`.
+- `AddPicture` names its size's unit: `widthInPixels` and `heightInPixels`.
+- `CellCommentCollection.Find(cell)` replaces its indexer, as the other collections find by cell;
+  `Worksheet.FindAll` and `CellRange.FindAll` replace `Find` for the search that gives every matching cell.
+- `MergedCellCollection.Add` gives the range merged.
+- `FindLookIn.Notes` is `FindLookIn.Comments`, as the API calls a cell's note a comment.
+- `FunctionRegistry` says that it is one registry for the whole process and that it is thread-safe.
 
 ## Egap.Spreadsheets 2.3.0-preview.1 (2026-11-13)
 

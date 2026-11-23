@@ -44,7 +44,7 @@ public sealed class SheetObjectTests
         Hyperlink web = sheet.Hyperlinks.Add("D1", "https://example.com/a?b=c");
         web.Display = "Example";
         web.ToolTip = "Opens the site";
-        sheet.Hyperlinks.AddInternal(RangeAddress.Parse("D2"), "'Sheet1'!A1");
+        sheet.Hyperlinks.AddLocation(RangeAddress.Parse("D2"), "'Sheet1'!A1");
         DataValidation list = sheet.DataValidations.AddList(RangeAddress.Parse("E1:E9"), ["Yes", "No"]);
         list.Prompt = "Pick one";
         sheet.DataValidations.Add(RangeAddress.Parse("F1:F9"), DataValidationType.WholeNumber, "1", "10").ShowDropDown = false;
@@ -57,9 +57,9 @@ public sealed class SheetObjectTests
         table.Columns[0].TotalsRowLabel = "Total";
         sheet.Comments.Add("B2", "Two\nlines", "Ann").Visible = true;
         sheet.Comments.Add("A3", "Plain");
-        SheetDrawing picture = sheet.Drawings.AddPicture(Png, CellAddress.Parse("H2"), 64, 32);
+        SheetDrawing picture = sheet.Drawings.AddPicture(CellAddress.Parse("H2"), Png, 64, 32);
         picture.Description = "Logo";
-        sheet.Drawings.AddPicture(Jpeg, RangeAddress.Parse("H5:J8"));
+        sheet.Drawings.AddPicture(RangeAddress.Parse("H5:J8"), Jpeg);
 
         (Workbook loaded, MemoryStream package) = XlsxSeed.RoundTrip(book);
         Worksheet back = loaded.Worksheets[0];
@@ -88,8 +88,8 @@ public sealed class SheetObjectTests
         Assert.Equal(TableTotalsFunction.Sum, fruit.Columns[1].TotalsRowFunction);
         Assert.Equal("Total", fruit.Columns[0].TotalsRowLabel);
 
-        Assert.Equal(("Two\nlines", "Ann", true), (back.Comments[CellAddress.Parse("B2")]!.Text, back.Comments[CellAddress.Parse("B2")]!.Author, back.Comments[CellAddress.Parse("B2")]!.Visible));
-        Assert.False(back.Comments[CellAddress.Parse("A3")]!.Visible);
+        Assert.Equal(("Two\nlines", "Ann", true), (back.Comments.Find(CellAddress.Parse("B2"))!.Text, back.Comments.Find(CellAddress.Parse("B2"))!.Author, back.Comments.Find(CellAddress.Parse("B2"))!.Visible));
+        Assert.False(back.Comments.Find(CellAddress.Parse("A3"))!.Visible);
 
         Assert.Equal(2, back.Drawings.Count);
         SheetDrawing logo = back.Drawings[0];
@@ -391,8 +391,8 @@ public sealed class SheetObjectTests
     public void PicturesNeedImagesExcelShows()
     {
         Worksheet sheet = Workbook.Create().Worksheets[0];
-        Assert.Throws<ArgumentException>(() => sheet.Drawings.AddPicture([1, 2, 3], RangeAddress.Parse("A1:B2")));
-        Assert.Throws<ArgumentOutOfRangeException>(() => sheet.Drawings.AddPicture(Png, CellAddress.Parse("A1"), 0, 5));
+        Assert.Throws<ArgumentException>(() => sheet.Drawings.AddPicture(RangeAddress.Parse("A1:B2"), [1, 2, 3]));
+        Assert.Throws<ArgumentOutOfRangeException>(() => sheet.Drawings.AddPicture(CellAddress.Parse("A1"), Png, 0, 5));
         Assert.Empty(sheet.Drawings);
         Assert.Throws<ArgumentException>(() => sheet.Comments.Add("A1", "x") is { } && sheet.Comments.Add("A1", "y") is { });
     }

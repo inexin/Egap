@@ -3,6 +3,11 @@ const Egap.Spreadsheets.CalculationSettings.IterationLimit = 32767 -> int
 const Egap.Spreadsheets.CellAddress.MaxColumns = 16384 -> int
 const Egap.Spreadsheets.CellAddress.MaxRows = 1048576 -> int
 const Egap.Spreadsheets.CellValue.MaxTextLength = 32767 -> int
+Egap.Spreadsheets.AutoFilter
+Egap.Spreadsheets.AutoFilter.Apply() -> int
+Egap.Spreadsheets.AutoFilter.HasCriteria.get -> bool
+Egap.Spreadsheets.AutoFilter.Range.get -> Egap.Spreadsheets.RangeAddress
+Egap.Spreadsheets.AutoFilter.ShowAll() -> void
 Egap.Spreadsheets.CalculationMode
 Egap.Spreadsheets.CalculationMode.Automatic = 0 -> Egap.Spreadsheets.CalculationMode
 Egap.Spreadsheets.CalculationMode.AutomaticExceptTables = 1 -> Egap.Spreadsheets.CalculationMode
@@ -37,6 +42,9 @@ Egap.Spreadsheets.Cell.Formula.set -> void
 Egap.Spreadsheets.Cell.FormulaR1C1.get -> string?
 Egap.Spreadsheets.Cell.FormulaR1C1.set -> void
 Egap.Spreadsheets.Cell.HasFormula.get -> bool
+Egap.Spreadsheets.Cell.ImportData(System.Data.DataTable! table, Egap.Spreadsheets.DataImportOptions? options = null) -> Egap.Spreadsheets.CellRange
+Egap.Spreadsheets.Cell.ImportData(System.Data.IDataReader! reader, Egap.Spreadsheets.DataImportOptions? options = null) -> Egap.Spreadsheets.CellRange
+Egap.Spreadsheets.Cell.ImportData<T>(System.Collections.Generic.IEnumerable<T>! items, Egap.Spreadsheets.DataImportOptions? options = null) -> Egap.Spreadsheets.CellRange
 Egap.Spreadsheets.Cell.IsEmpty.get -> bool
 Egap.Spreadsheets.Cell.NumberFormat.get -> string!
 Egap.Spreadsheets.Cell.NumberFormat.set -> void
@@ -143,9 +151,9 @@ Egap.Spreadsheets.CellCommentCollection.Add(Egap.Spreadsheets.CellAddress cell, 
 Egap.Spreadsheets.CellCommentCollection.Add(string! cell, string! text, string! author = "") -> Egap.Spreadsheets.CellComment!
 Egap.Spreadsheets.CellCommentCollection.Clear() -> void
 Egap.Spreadsheets.CellCommentCollection.Count.get -> int
+Egap.Spreadsheets.CellCommentCollection.Find(Egap.Spreadsheets.CellAddress cell) -> Egap.Spreadsheets.CellComment?
 Egap.Spreadsheets.CellCommentCollection.GetEnumerator() -> System.Collections.Generic.IEnumerator<Egap.Spreadsheets.CellComment!>!
 Egap.Spreadsheets.CellCommentCollection.Remove(Egap.Spreadsheets.CellComment! comment) -> bool
-Egap.Spreadsheets.CellCommentCollection.this[Egap.Spreadsheets.CellAddress cell].get -> Egap.Spreadsheets.CellComment?
 Egap.Spreadsheets.CellError
 Egap.Spreadsheets.CellError.Calc = 9 -> Egap.Spreadsheets.CellError
 Egap.Spreadsheets.CellError.DivisionByZero = 1 -> Egap.Spreadsheets.CellError
@@ -236,19 +244,29 @@ Egap.Spreadsheets.CellProtection.Locked.get -> bool
 Egap.Spreadsheets.CellProtection.Locked.init -> void
 Egap.Spreadsheets.CellRange
 Egap.Spreadsheets.CellRange.Address.get -> Egap.Spreadsheets.RangeAddress
+Egap.Spreadsheets.CellRange.AutoFitColumns() -> void
+Egap.Spreadsheets.CellRange.AutoFitRows() -> void
 Egap.Spreadsheets.CellRange.CellRange() -> void
 Egap.Spreadsheets.CellRange.Clear() -> void
 Egap.Spreadsheets.CellRange.ClearContents() -> void
 Egap.Spreadsheets.CellRange.ColumnCount.get -> int
+Egap.Spreadsheets.CellRange.CopyTo(Egap.Spreadsheets.Cell! destination) -> void
 Egap.Spreadsheets.CellRange.Equals(Egap.Spreadsheets.CellRange other) -> bool
+Egap.Spreadsheets.CellRange.FindAll(string! what, Egap.Spreadsheets.FindOptions? options = null) -> System.Collections.Generic.IReadOnlyList<Egap.Spreadsheets.Cell!>!
 Egap.Spreadsheets.CellRange.GetEnumerator() -> System.Collections.Generic.IEnumerator<Egap.Spreadsheets.Cell!>!
 Egap.Spreadsheets.CellRange.GetValues() -> Egap.Spreadsheets.CellValue[,]!
+Egap.Spreadsheets.CellRange.MoveTo(Egap.Spreadsheets.Cell! destination) -> void
+Egap.Spreadsheets.CellRange.Replace(string! what, string! replacement, Egap.Spreadsheets.FindOptions? options = null) -> int
 Egap.Spreadsheets.CellRange.RowCount.get -> int
 Egap.Spreadsheets.CellRange.SetArrayFormula(string! formula) -> void
 Egap.Spreadsheets.CellRange.SetStyle(Egap.Spreadsheets.CellStyle! style) -> void
 Egap.Spreadsheets.CellRange.SetValue(Egap.Spreadsheets.CellValue value) -> void
 Egap.Spreadsheets.CellRange.SetValues(Egap.Spreadsheets.CellValue[,]! values) -> void
+Egap.Spreadsheets.CellRange.Sort(Egap.Spreadsheets.SortOptions! options, params Egap.Spreadsheets.SortField[]! keys) -> void
+Egap.Spreadsheets.CellRange.Sort(params Egap.Spreadsheets.SortField[]! keys) -> void
 Egap.Spreadsheets.CellRange.this[int row, int column].get -> Egap.Spreadsheets.Cell!
+Egap.Spreadsheets.CellRange.ToDataTable(Egap.Spreadsheets.DataExportOptions? options = null) -> System.Data.DataTable!
+Egap.Spreadsheets.CellRange.ToList<T>(Egap.Spreadsheets.DataExportOptions? options = null) -> System.Collections.Generic.List<T>!
 Egap.Spreadsheets.CellRange.UpdateStyle(System.Func<Egap.Spreadsheets.CellStyle!, Egap.Spreadsheets.CellStyle!>! change) -> void
 Egap.Spreadsheets.CellRange.UsedCells.get -> System.Collections.Generic.IEnumerable<Egap.Spreadsheets.Cell!>!
 Egap.Spreadsheets.CellRange.Worksheet.get -> Egap.Spreadsheets.Worksheet!
@@ -323,19 +341,40 @@ Egap.Spreadsheets.ComparisonOperator.LessThan = 4 -> Egap.Spreadsheets.Compariso
 Egap.Spreadsheets.ComparisonOperator.LessThanOrEqual = 5 -> Egap.Spreadsheets.ComparisonOperator
 Egap.Spreadsheets.ComparisonOperator.NotBetween = 1 -> Egap.Spreadsheets.ComparisonOperator
 Egap.Spreadsheets.ComparisonOperator.NotEqual = 3 -> Egap.Spreadsheets.ComparisonOperator
+Egap.Spreadsheets.ConditionalCellFormat
+Egap.Spreadsheets.ConditionalCellFormat.DataBar.get -> Egap.Spreadsheets.ConditionalDataBar?
+Egap.Spreadsheets.ConditionalCellFormat.Icon.get -> Egap.Spreadsheets.ConditionalIcon?
+Egap.Spreadsheets.ConditionalCellFormat.Rules.get -> System.Collections.Generic.IReadOnlyList<Egap.Spreadsheets.ConditionalFormatRule!>!
+Egap.Spreadsheets.ConditionalCellFormat.ShowsValue.get -> bool
+Egap.Spreadsheets.ConditionalCellFormat.Style.get -> Egap.Spreadsheets.CellStyle!
+Egap.Spreadsheets.ConditionalDataBar
+Egap.Spreadsheets.ConditionalDataBar.Color.get -> Egap.Spreadsheets.CellColor
+Egap.Spreadsheets.ConditionalDataBar.Color.init -> void
+Egap.Spreadsheets.ConditionalDataBar.ConditionalDataBar() -> void
+Egap.Spreadsheets.ConditionalDataBar.ConditionalDataBar(double Fraction, Egap.Spreadsheets.CellColor Color) -> void
+Egap.Spreadsheets.ConditionalDataBar.Deconstruct(out double Fraction, out Egap.Spreadsheets.CellColor Color) -> void
+Egap.Spreadsheets.ConditionalDataBar.Equals(Egap.Spreadsheets.ConditionalDataBar other) -> bool
+Egap.Spreadsheets.ConditionalDataBar.Fraction.get -> double
+Egap.Spreadsheets.ConditionalDataBar.Fraction.init -> void
 Egap.Spreadsheets.ConditionalFormat
-Egap.Spreadsheets.ConditionalFormat.Ranges.get -> System.Collections.Generic.List<Egap.Spreadsheets.RangeAddress>!
-Egap.Spreadsheets.ConditionalFormat.Rules.get -> System.Collections.Generic.List<Egap.Spreadsheets.ConditionalFormatRule!>!
+Egap.Spreadsheets.ConditionalFormat.Ranges.get -> System.Collections.Generic.IList<Egap.Spreadsheets.RangeAddress>!
+Egap.Spreadsheets.ConditionalFormat.Rules.get -> System.Collections.Generic.IList<Egap.Spreadsheets.ConditionalFormatRule!>!
 Egap.Spreadsheets.ConditionalFormatCollection
 Egap.Spreadsheets.ConditionalFormatCollection.Add(Egap.Spreadsheets.RangeAddress range, params Egap.Spreadsheets.ConditionalFormatRule![]! rules) -> Egap.Spreadsheets.ConditionalFormat!
 Egap.Spreadsheets.ConditionalFormatCollection.Add(string! range, params Egap.Spreadsheets.ConditionalFormatRule![]! rules) -> Egap.Spreadsheets.ConditionalFormat!
 Egap.Spreadsheets.ConditionalFormatCollection.Clear() -> void
 Egap.Spreadsheets.ConditionalFormatCollection.Count.get -> int
+Egap.Spreadsheets.ConditionalFormatCollection.Evaluate() -> Egap.Spreadsheets.ConditionalFormatEvaluation!
+Egap.Spreadsheets.ConditionalFormatCollection.Evaluate(Egap.Spreadsheets.CellAddress cell) -> Egap.Spreadsheets.ConditionalCellFormat!
 Egap.Spreadsheets.ConditionalFormatCollection.GetEnumerator() -> System.Collections.Generic.IEnumerator<Egap.Spreadsheets.ConditionalFormat!>!
 Egap.Spreadsheets.ConditionalFormatCollection.Remove(Egap.Spreadsheets.ConditionalFormat! format) -> bool
 Egap.Spreadsheets.ConditionalFormatCollection.this[int index].get -> Egap.Spreadsheets.ConditionalFormat!
+Egap.Spreadsheets.ConditionalFormatEvaluation
+Egap.Spreadsheets.ConditionalFormatEvaluation.this[Egap.Spreadsheets.CellAddress cell].get -> Egap.Spreadsheets.ConditionalCellFormat!
+Egap.Spreadsheets.ConditionalFormatEvaluation.this[int row, int column].get -> Egap.Spreadsheets.ConditionalCellFormat!
+Egap.Spreadsheets.ConditionalFormatEvaluation.this[string! cell].get -> Egap.Spreadsheets.ConditionalCellFormat!
 Egap.Spreadsheets.ConditionalFormatRule
-Egap.Spreadsheets.ConditionalFormatRule.Formulas.get -> System.Collections.Generic.List<string!>!
+Egap.Spreadsheets.ConditionalFormatRule.Formulas.get -> System.Collections.Generic.IList<string!>!
 Egap.Spreadsheets.ConditionalFormatRule.Operator.get -> Egap.Spreadsheets.ComparisonOperator
 Egap.Spreadsheets.ConditionalFormatRule.Operator.set -> void
 Egap.Spreadsheets.ConditionalFormatRule.Priority.get -> int
@@ -366,24 +405,53 @@ Egap.Spreadsheets.ConditionalFormatType.NotContainsText = 9 -> Egap.Spreadsheets
 Egap.Spreadsheets.ConditionalFormatType.TimePeriod = 16 -> Egap.Spreadsheets.ConditionalFormatType
 Egap.Spreadsheets.ConditionalFormatType.Top10 = 5 -> Egap.Spreadsheets.ConditionalFormatType
 Egap.Spreadsheets.ConditionalFormatType.UniqueValues = 6 -> Egap.Spreadsheets.ConditionalFormatType
+Egap.Spreadsheets.ConditionalIcon
+Egap.Spreadsheets.ConditionalIcon.ConditionalIcon() -> void
+Egap.Spreadsheets.ConditionalIcon.ConditionalIcon(string! IconSet, int Index) -> void
+Egap.Spreadsheets.ConditionalIcon.Deconstruct(out string! IconSet, out int Index) -> void
+Egap.Spreadsheets.ConditionalIcon.Equals(Egap.Spreadsheets.ConditionalIcon other) -> bool
+Egap.Spreadsheets.ConditionalIcon.IconSet.get -> string!
+Egap.Spreadsheets.ConditionalIcon.IconSet.init -> void
+Egap.Spreadsheets.ConditionalIcon.Index.get -> int
+Egap.Spreadsheets.ConditionalIcon.Index.init -> void
 Egap.Spreadsheets.CsvOptions
 Egap.Spreadsheets.CsvOptions.CsvOptions() -> void
 Egap.Spreadsheets.CsvOptions.Culture.get -> System.Globalization.CultureInfo!
-Egap.Spreadsheets.CsvOptions.Culture.set -> void
+Egap.Spreadsheets.CsvOptions.Culture.init -> void
 Egap.Spreadsheets.CsvOptions.DetectTypes.get -> bool
-Egap.Spreadsheets.CsvOptions.DetectTypes.set -> void
+Egap.Spreadsheets.CsvOptions.DetectTypes.init -> void
 Egap.Spreadsheets.CsvOptions.Encoding.get -> System.Text.Encoding?
-Egap.Spreadsheets.CsvOptions.Encoding.set -> void
+Egap.Spreadsheets.CsvOptions.Encoding.init -> void
 Egap.Spreadsheets.CsvOptions.NewLine.get -> string!
-Egap.Spreadsheets.CsvOptions.NewLine.set -> void
+Egap.Spreadsheets.CsvOptions.NewLine.init -> void
 Egap.Spreadsheets.CsvOptions.Separator.get -> char?
-Egap.Spreadsheets.CsvOptions.Separator.set -> void
+Egap.Spreadsheets.CsvOptions.Separator.init -> void
 Egap.Spreadsheets.CsvOptions.SheetName.get -> string!
-Egap.Spreadsheets.CsvOptions.SheetName.set -> void
+Egap.Spreadsheets.CsvOptions.SheetName.init -> void
 Egap.Spreadsheets.CsvOptions.WriteFormattedText.get -> bool
-Egap.Spreadsheets.CsvOptions.WriteFormattedText.set -> void
+Egap.Spreadsheets.CsvOptions.WriteFormattedText.init -> void
 Egap.Spreadsheets.CsvOptions.WriteSeparatorHint.get -> bool
-Egap.Spreadsheets.CsvOptions.WriteSeparatorHint.set -> void
+Egap.Spreadsheets.CsvOptions.WriteSeparatorHint.init -> void
+Egap.Spreadsheets.DataExportOptions
+Egap.Spreadsheets.DataExportOptions.DataExportOptions() -> void
+Egap.Spreadsheets.DataExportOptions.Header.get -> bool
+Egap.Spreadsheets.DataExportOptions.Header.init -> void
+Egap.Spreadsheets.DataExportOptions.SkipEmptyRows.get -> bool
+Egap.Spreadsheets.DataExportOptions.SkipEmptyRows.init -> void
+Egap.Spreadsheets.DataImportOptions
+Egap.Spreadsheets.DataImportOptions.Columns.get -> System.Collections.Generic.IReadOnlyList<string!>?
+Egap.Spreadsheets.DataImportOptions.Columns.init -> void
+Egap.Spreadsheets.DataImportOptions.DataImportOptions() -> void
+Egap.Spreadsheets.DataImportOptions.DateFormat.get -> string!
+Egap.Spreadsheets.DataImportOptions.DateFormat.init -> void
+Egap.Spreadsheets.DataImportOptions.DateTimeFormat.get -> string!
+Egap.Spreadsheets.DataImportOptions.DateTimeFormat.init -> void
+Egap.Spreadsheets.DataImportOptions.Header.get -> bool
+Egap.Spreadsheets.DataImportOptions.Header.init -> void
+Egap.Spreadsheets.DataImportOptions.TableName.get -> string?
+Egap.Spreadsheets.DataImportOptions.TableName.init -> void
+Egap.Spreadsheets.DataImportOptions.TimeFormat.get -> string!
+Egap.Spreadsheets.DataImportOptions.TimeFormat.init -> void
 Egap.Spreadsheets.DataValidation
 Egap.Spreadsheets.DataValidation.AllowBlank.get -> bool
 Egap.Spreadsheets.DataValidation.AllowBlank.set -> void
@@ -403,7 +471,7 @@ Egap.Spreadsheets.DataValidation.Prompt.get -> string?
 Egap.Spreadsheets.DataValidation.Prompt.set -> void
 Egap.Spreadsheets.DataValidation.PromptTitle.get -> string?
 Egap.Spreadsheets.DataValidation.PromptTitle.set -> void
-Egap.Spreadsheets.DataValidation.Ranges.get -> System.Collections.Generic.List<Egap.Spreadsheets.RangeAddress>!
+Egap.Spreadsheets.DataValidation.Ranges.get -> System.Collections.Generic.IList<Egap.Spreadsheets.RangeAddress>!
 Egap.Spreadsheets.DataValidation.ShowDropDown.get -> bool
 Egap.Spreadsheets.DataValidation.ShowDropDown.set -> void
 Egap.Spreadsheets.DataValidation.ShowErrorMessage.get -> bool
@@ -418,7 +486,11 @@ Egap.Spreadsheets.DataValidationCollection.AddList(Egap.Spreadsheets.RangeAddres
 Egap.Spreadsheets.DataValidationCollection.Clear() -> void
 Egap.Spreadsheets.DataValidationCollection.Count.get -> int
 Egap.Spreadsheets.DataValidationCollection.Find(Egap.Spreadsheets.CellAddress cell) -> Egap.Spreadsheets.DataValidation?
+Egap.Spreadsheets.DataValidationCollection.FindInvalid() -> System.Collections.Generic.IReadOnlyList<Egap.Spreadsheets.CellAddress>!
 Egap.Spreadsheets.DataValidationCollection.GetEnumerator() -> System.Collections.Generic.IEnumerator<Egap.Spreadsheets.DataValidation!>!
+Egap.Spreadsheets.DataValidationCollection.IsValid(Egap.Spreadsheets.CellAddress cell) -> bool
+Egap.Spreadsheets.DataValidationCollection.IsValid(Egap.Spreadsheets.CellAddress cell, Egap.Spreadsheets.CellValue value) -> bool
+Egap.Spreadsheets.DataValidationCollection.ListItems(Egap.Spreadsheets.CellAddress cell) -> System.Collections.Generic.IReadOnlyList<Egap.Spreadsheets.CellValue>!
 Egap.Spreadsheets.DataValidationCollection.Remove(Egap.Spreadsheets.DataValidation! rule) -> bool
 Egap.Spreadsheets.DataValidationCollection.this[int index].get -> Egap.Spreadsheets.DataValidation!
 Egap.Spreadsheets.DataValidationErrorStyle
@@ -465,6 +537,38 @@ Egap.Spreadsheets.DrawingPosition.OffsetX.get -> long
 Egap.Spreadsheets.DrawingPosition.OffsetX.init -> void
 Egap.Spreadsheets.DrawingPosition.OffsetY.get -> long
 Egap.Spreadsheets.DrawingPosition.OffsetY.init -> void
+Egap.Spreadsheets.EditableRange
+Egap.Spreadsheets.EditableRange.HasPassword.get -> bool
+Egap.Spreadsheets.EditableRange.Name.get -> string!
+Egap.Spreadsheets.EditableRange.Name.set -> void
+Egap.Spreadsheets.EditableRange.Ranges.get -> System.Collections.Generic.IList<Egap.Spreadsheets.RangeAddress>!
+Egap.Spreadsheets.EditableRange.SetPassword(string? password) -> void
+Egap.Spreadsheets.EditableRange.Verify(string? password) -> bool
+Egap.Spreadsheets.EditableRangeCollection
+Egap.Spreadsheets.EditableRangeCollection.Add(Egap.Spreadsheets.RangeAddress range, string! name, string? password = null) -> Egap.Spreadsheets.EditableRange!
+Egap.Spreadsheets.EditableRangeCollection.Add(string! range, string! name, string? password = null) -> Egap.Spreadsheets.EditableRange!
+Egap.Spreadsheets.EditableRangeCollection.Clear() -> void
+Egap.Spreadsheets.EditableRangeCollection.Count.get -> int
+Egap.Spreadsheets.EditableRangeCollection.GetEnumerator() -> System.Collections.Generic.IEnumerator<Egap.Spreadsheets.EditableRange!>!
+Egap.Spreadsheets.EditableRangeCollection.Remove(Egap.Spreadsheets.EditableRange! range) -> bool
+Egap.Spreadsheets.EditableRangeCollection.this[int index].get -> Egap.Spreadsheets.EditableRange!
+Egap.Spreadsheets.FindLookIn
+Egap.Spreadsheets.FindLookIn.Comments = 2 -> Egap.Spreadsheets.FindLookIn
+Egap.Spreadsheets.FindLookIn.Formulas = 0 -> Egap.Spreadsheets.FindLookIn
+Egap.Spreadsheets.FindLookIn.Values = 1 -> Egap.Spreadsheets.FindLookIn
+Egap.Spreadsheets.FindOptions
+Egap.Spreadsheets.FindOptions.FindOptions() -> void
+Egap.Spreadsheets.FindOptions.LookIn.get -> Egap.Spreadsheets.FindLookIn
+Egap.Spreadsheets.FindOptions.LookIn.init -> void
+Egap.Spreadsheets.FindOptions.MatchCase.get -> bool
+Egap.Spreadsheets.FindOptions.MatchCase.init -> void
+Egap.Spreadsheets.FindOptions.MatchEntireCell.get -> bool
+Egap.Spreadsheets.FindOptions.MatchEntireCell.init -> void
+Egap.Spreadsheets.FindOptions.Order.get -> Egap.Spreadsheets.FindOrder
+Egap.Spreadsheets.FindOptions.Order.init -> void
+Egap.Spreadsheets.FindOrder
+Egap.Spreadsheets.FindOrder.ByColumns = 1 -> Egap.Spreadsheets.FindOrder
+Egap.Spreadsheets.FindOrder.ByRows = 0 -> Egap.Spreadsheets.FindOrder
 Egap.Spreadsheets.FormulaException
 Egap.Spreadsheets.FormulaException.Formula.get -> string!
 Egap.Spreadsheets.FormulaException.FormulaException(string! message) -> void
@@ -491,7 +595,8 @@ Egap.Spreadsheets.Hyperlink.ToolTip.set -> void
 Egap.Spreadsheets.HyperlinkCollection
 Egap.Spreadsheets.HyperlinkCollection.Add(Egap.Spreadsheets.RangeAddress range, string! address) -> Egap.Spreadsheets.Hyperlink!
 Egap.Spreadsheets.HyperlinkCollection.Add(string! range, string! address) -> Egap.Spreadsheets.Hyperlink!
-Egap.Spreadsheets.HyperlinkCollection.AddInternal(Egap.Spreadsheets.RangeAddress range, string! location) -> Egap.Spreadsheets.Hyperlink!
+Egap.Spreadsheets.HyperlinkCollection.AddLocation(Egap.Spreadsheets.RangeAddress range, string! location) -> Egap.Spreadsheets.Hyperlink!
+Egap.Spreadsheets.HyperlinkCollection.AddLocation(string! range, string! location) -> Egap.Spreadsheets.Hyperlink!
 Egap.Spreadsheets.HyperlinkCollection.Clear() -> void
 Egap.Spreadsheets.HyperlinkCollection.Count.get -> int
 Egap.Spreadsheets.HyperlinkCollection.Find(Egap.Spreadsheets.CellAddress cell) -> Egap.Spreadsheets.Hyperlink?
@@ -499,7 +604,7 @@ Egap.Spreadsheets.HyperlinkCollection.GetEnumerator() -> System.Collections.Gene
 Egap.Spreadsheets.HyperlinkCollection.Remove(Egap.Spreadsheets.Hyperlink! link) -> bool
 Egap.Spreadsheets.HyperlinkCollection.this[int index].get -> Egap.Spreadsheets.Hyperlink!
 Egap.Spreadsheets.MergedCellCollection
-Egap.Spreadsheets.MergedCellCollection.Add(Egap.Spreadsheets.RangeAddress range) -> void
+Egap.Spreadsheets.MergedCellCollection.Add(Egap.Spreadsheets.RangeAddress range) -> Egap.Spreadsheets.RangeAddress
 Egap.Spreadsheets.MergedCellCollection.Clear() -> void
 Egap.Spreadsheets.MergedCellCollection.Count.get -> int
 Egap.Spreadsheets.MergedCellCollection.Find(Egap.Spreadsheets.CellAddress cell) -> Egap.Spreadsheets.RangeAddress?
@@ -567,6 +672,70 @@ Egap.Spreadsheets.PageSetup.Scale.get -> int?
 Egap.Spreadsheets.PageSetup.Scale.set -> void
 Egap.Spreadsheets.PageSetup.TopMargin.get -> double
 Egap.Spreadsheets.PageSetup.TopMargin.set -> void
+Egap.Spreadsheets.PivotFunction
+Egap.Spreadsheets.PivotFunction.Average = 2 -> Egap.Spreadsheets.PivotFunction
+Egap.Spreadsheets.PivotFunction.Count = 1 -> Egap.Spreadsheets.PivotFunction
+Egap.Spreadsheets.PivotFunction.CountNumbers = 6 -> Egap.Spreadsheets.PivotFunction
+Egap.Spreadsheets.PivotFunction.Max = 3 -> Egap.Spreadsheets.PivotFunction
+Egap.Spreadsheets.PivotFunction.Min = 4 -> Egap.Spreadsheets.PivotFunction
+Egap.Spreadsheets.PivotFunction.Product = 5 -> Egap.Spreadsheets.PivotFunction
+Egap.Spreadsheets.PivotFunction.StandardDeviation = 7 -> Egap.Spreadsheets.PivotFunction
+Egap.Spreadsheets.PivotFunction.StandardDeviationPopulation = 8 -> Egap.Spreadsheets.PivotFunction
+Egap.Spreadsheets.PivotFunction.Sum = 0 -> Egap.Spreadsheets.PivotFunction
+Egap.Spreadsheets.PivotFunction.Variance = 9 -> Egap.Spreadsheets.PivotFunction
+Egap.Spreadsheets.PivotFunction.VariancePopulation = 10 -> Egap.Spreadsheets.PivotFunction
+Egap.Spreadsheets.PivotTable
+Egap.Spreadsheets.PivotTable.CanRefresh.get -> bool
+Egap.Spreadsheets.PivotTable.Name.get -> string!
+Egap.Spreadsheets.PivotTable.Range.get -> Egap.Spreadsheets.RangeAddress
+Egap.Spreadsheets.PivotTable.Refresh() -> void
+Egap.Spreadsheets.PivotTable.Source.get -> string?
+Egap.Spreadsheets.PivotTable.Worksheet.get -> Egap.Spreadsheets.Worksheet!
+Egap.Spreadsheets.PivotTableCollection
+Egap.Spreadsheets.PivotTableCollection.Add(Egap.Spreadsheets.CellAddress location, Egap.Spreadsheets.CellRange source, Egap.Spreadsheets.PivotTableOptions! options, string? name = null) -> Egap.Spreadsheets.PivotTable!
+Egap.Spreadsheets.PivotTableCollection.Add(Egap.Spreadsheets.CellAddress location, Egap.Spreadsheets.SheetTable! source, Egap.Spreadsheets.PivotTableOptions! options, string? name = null) -> Egap.Spreadsheets.PivotTable!
+Egap.Spreadsheets.PivotTableCollection.Add(Egap.Spreadsheets.CellAddress location, string! source, Egap.Spreadsheets.PivotTableOptions! options, string? name = null) -> Egap.Spreadsheets.PivotTable!
+Egap.Spreadsheets.PivotTableCollection.Add(string! location, string! source, Egap.Spreadsheets.PivotTableOptions! options, string? name = null) -> Egap.Spreadsheets.PivotTable!
+Egap.Spreadsheets.PivotTableCollection.Count.get -> int
+Egap.Spreadsheets.PivotTableCollection.GetEnumerator() -> System.Collections.Generic.IEnumerator<Egap.Spreadsheets.PivotTable!>!
+Egap.Spreadsheets.PivotTableCollection.this[int index].get -> Egap.Spreadsheets.PivotTable!
+Egap.Spreadsheets.PivotTableCollection.this[string! name].get -> Egap.Spreadsheets.PivotTable!
+Egap.Spreadsheets.PivotTableLayout
+Egap.Spreadsheets.PivotTableLayout.Compact = 0 -> Egap.Spreadsheets.PivotTableLayout
+Egap.Spreadsheets.PivotTableLayout.Outline = 1 -> Egap.Spreadsheets.PivotTableLayout
+Egap.Spreadsheets.PivotTableLayout.Tabular = 2 -> Egap.Spreadsheets.PivotTableLayout
+Egap.Spreadsheets.PivotTableOptions
+Egap.Spreadsheets.PivotTableOptions.Columns.get -> System.Collections.Generic.IList<string!>!
+Egap.Spreadsheets.PivotTableOptions.Filters.get -> System.Collections.Generic.IList<string!>!
+Egap.Spreadsheets.PivotTableOptions.GrandTotalColumn.get -> bool
+Egap.Spreadsheets.PivotTableOptions.GrandTotalColumn.init -> void
+Egap.Spreadsheets.PivotTableOptions.GrandTotalRow.get -> bool
+Egap.Spreadsheets.PivotTableOptions.GrandTotalRow.init -> void
+Egap.Spreadsheets.PivotTableOptions.Layout.get -> Egap.Spreadsheets.PivotTableLayout
+Egap.Spreadsheets.PivotTableOptions.Layout.init -> void
+Egap.Spreadsheets.PivotTableOptions.PivotTableOptions() -> void
+Egap.Spreadsheets.PivotTableOptions.Rows.get -> System.Collections.Generic.IList<string!>!
+Egap.Spreadsheets.PivotTableOptions.ShowColumnHeaders.get -> bool
+Egap.Spreadsheets.PivotTableOptions.ShowColumnHeaders.init -> void
+Egap.Spreadsheets.PivotTableOptions.ShowColumnStripes.get -> bool
+Egap.Spreadsheets.PivotTableOptions.ShowColumnStripes.init -> void
+Egap.Spreadsheets.PivotTableOptions.ShowRowHeaders.get -> bool
+Egap.Spreadsheets.PivotTableOptions.ShowRowHeaders.init -> void
+Egap.Spreadsheets.PivotTableOptions.ShowRowStripes.get -> bool
+Egap.Spreadsheets.PivotTableOptions.ShowRowStripes.init -> void
+Egap.Spreadsheets.PivotTableOptions.StyleName.get -> string?
+Egap.Spreadsheets.PivotTableOptions.StyleName.init -> void
+Egap.Spreadsheets.PivotTableOptions.Values.get -> System.Collections.Generic.IList<Egap.Spreadsheets.PivotValueField!>!
+Egap.Spreadsheets.PivotTableOptions.ValuesOnRows.get -> bool
+Egap.Spreadsheets.PivotTableOptions.ValuesOnRows.init -> void
+Egap.Spreadsheets.PivotValueField
+Egap.Spreadsheets.PivotValueField.Field.get -> string!
+Egap.Spreadsheets.PivotValueField.Function.get -> Egap.Spreadsheets.PivotFunction
+Egap.Spreadsheets.PivotValueField.Name.get -> string?
+Egap.Spreadsheets.PivotValueField.Name.init -> void
+Egap.Spreadsheets.PivotValueField.NumberFormat.get -> string?
+Egap.Spreadsheets.PivotValueField.NumberFormat.init -> void
+Egap.Spreadsheets.PivotValueField.PivotValueField(string! field, Egap.Spreadsheets.PivotFunction function = Egap.Spreadsheets.PivotFunction.Sum) -> void
 Egap.Spreadsheets.PrintOrientation
 Egap.Spreadsheets.PrintOrientation.Default = 0 -> Egap.Spreadsheets.PrintOrientation
 Egap.Spreadsheets.PrintOrientation.Landscape = 2 -> Egap.Spreadsheets.PrintOrientation
@@ -591,7 +760,26 @@ Egap.Spreadsheets.RangeAddress.RangeAddress(int firstRow, int firstColumn, int l
 Egap.Spreadsheets.RangeAddress.RowCount.get -> int
 Egap.Spreadsheets.RangeAddress.ToString(string? format, System.IFormatProvider? formatProvider) -> string!
 Egap.Spreadsheets.RangeAddress.TryFormat(System.Span<char> destination, out int charsWritten, System.ReadOnlySpan<char> format, System.IFormatProvider? provider) -> bool
+Egap.Spreadsheets.SheetActions
+Egap.Spreadsheets.SheetActions.AutoFilter = 2048 -> Egap.Spreadsheets.SheetActions
+Egap.Spreadsheets.SheetActions.Default = Egap.Spreadsheets.SheetActions.SelectLockedCells | Egap.Spreadsheets.SheetActions.SelectUnlockedCells -> Egap.Spreadsheets.SheetActions
+Egap.Spreadsheets.SheetActions.DeleteColumns = 256 -> Egap.Spreadsheets.SheetActions
+Egap.Spreadsheets.SheetActions.DeleteRows = 512 -> Egap.Spreadsheets.SheetActions
+Egap.Spreadsheets.SheetActions.EditObjects = 8192 -> Egap.Spreadsheets.SheetActions
+Egap.Spreadsheets.SheetActions.EditScenarios = 16384 -> Egap.Spreadsheets.SheetActions
+Egap.Spreadsheets.SheetActions.FormatCells = 4 -> Egap.Spreadsheets.SheetActions
+Egap.Spreadsheets.SheetActions.FormatColumns = 8 -> Egap.Spreadsheets.SheetActions
+Egap.Spreadsheets.SheetActions.FormatRows = 16 -> Egap.Spreadsheets.SheetActions
+Egap.Spreadsheets.SheetActions.InsertColumns = 32 -> Egap.Spreadsheets.SheetActions
+Egap.Spreadsheets.SheetActions.InsertHyperlinks = 128 -> Egap.Spreadsheets.SheetActions
+Egap.Spreadsheets.SheetActions.InsertRows = 64 -> Egap.Spreadsheets.SheetActions
+Egap.Spreadsheets.SheetActions.None = 0 -> Egap.Spreadsheets.SheetActions
+Egap.Spreadsheets.SheetActions.PivotTables = 4096 -> Egap.Spreadsheets.SheetActions
+Egap.Spreadsheets.SheetActions.SelectLockedCells = 1 -> Egap.Spreadsheets.SheetActions
+Egap.Spreadsheets.SheetActions.SelectUnlockedCells = 2 -> Egap.Spreadsheets.SheetActions
+Egap.Spreadsheets.SheetActions.Sort = 1024 -> Egap.Spreadsheets.SheetActions
 Egap.Spreadsheets.SheetColumn
+Egap.Spreadsheets.SheetColumn.AutoFit() -> double?
 Egap.Spreadsheets.SheetColumn.Collapsed.get -> bool
 Egap.Spreadsheets.SheetColumn.Collapsed.set -> void
 Egap.Spreadsheets.SheetColumn.Hidden.get -> bool
@@ -625,6 +813,7 @@ Egap.Spreadsheets.SheetDrawing.Kind.get -> Egap.Spreadsheets.SheetDrawingKind
 Egap.Spreadsheets.SheetDrawing.Name.get -> string!
 Egap.Spreadsheets.SheetDrawing.Name.set -> void
 Egap.Spreadsheets.SheetDrawing.RefreshChart() -> void
+Egap.Spreadsheets.SheetDrawing.Slicer.get -> Egap.Spreadsheets.Slicer?
 Egap.Spreadsheets.SheetDrawing.Text.get -> string?
 Egap.Spreadsheets.SheetDrawing.To.get -> Egap.Spreadsheets.DrawingPosition
 Egap.Spreadsheets.SheetDrawing.To.set -> void
@@ -635,10 +824,11 @@ Egap.Spreadsheets.SheetDrawing.X.set -> void
 Egap.Spreadsheets.SheetDrawing.Y.get -> long
 Egap.Spreadsheets.SheetDrawing.Y.set -> void
 Egap.Spreadsheets.SheetDrawingCollection
-Egap.Spreadsheets.SheetDrawingCollection.AddChart(Egap.Documents.Charts.ChartType type, Egap.Spreadsheets.RangeAddress cells, bool threeD = false) -> Egap.Spreadsheets.SheetDrawing!
-Egap.Spreadsheets.SheetDrawingCollection.AddChart(Egap.Documents.Charts.ChartType type, Egap.Spreadsheets.RangeAddress cells, Egap.Spreadsheets.RangeAddress data, bool threeD = false) -> Egap.Spreadsheets.SheetDrawing!
-Egap.Spreadsheets.SheetDrawingCollection.AddPicture(byte[]! image, Egap.Spreadsheets.CellAddress cell, int width, int height) -> Egap.Spreadsheets.SheetDrawing!
-Egap.Spreadsheets.SheetDrawingCollection.AddPicture(byte[]! image, Egap.Spreadsheets.RangeAddress cells) -> Egap.Spreadsheets.SheetDrawing!
+Egap.Spreadsheets.SheetDrawingCollection.AddChart(Egap.Spreadsheets.RangeAddress cells, Egap.Documents.Charts.ChartType type, bool threeD = false) -> Egap.Spreadsheets.SheetDrawing!
+Egap.Spreadsheets.SheetDrawingCollection.AddChart(Egap.Spreadsheets.RangeAddress cells, Egap.Documents.Charts.ChartType type, Egap.Spreadsheets.RangeAddress data, bool threeD = false) -> Egap.Spreadsheets.SheetDrawing!
+Egap.Spreadsheets.SheetDrawingCollection.AddPicture(Egap.Spreadsheets.CellAddress cell, byte[]! image, int widthInPixels, int heightInPixels) -> Egap.Spreadsheets.SheetDrawing!
+Egap.Spreadsheets.SheetDrawingCollection.AddPicture(Egap.Spreadsheets.RangeAddress cells, byte[]! image) -> Egap.Spreadsheets.SheetDrawing!
+Egap.Spreadsheets.SheetDrawingCollection.AddSlicer(Egap.Spreadsheets.RangeAddress cells, Egap.Spreadsheets.PivotTable! pivotTable, string! field) -> Egap.Spreadsheets.SheetDrawing!
 Egap.Spreadsheets.SheetDrawingCollection.Count.get -> int
 Egap.Spreadsheets.SheetDrawingCollection.GetEnumerator() -> System.Collections.Generic.IEnumerator<Egap.Spreadsheets.SheetDrawing!>!
 Egap.Spreadsheets.SheetDrawingCollection.Remove(Egap.Spreadsheets.SheetDrawing! drawing) -> bool
@@ -649,6 +839,7 @@ Egap.Spreadsheets.SheetDrawingKind.Group = 3 -> Egap.Spreadsheets.SheetDrawingKi
 Egap.Spreadsheets.SheetDrawingKind.Other = 4 -> Egap.Spreadsheets.SheetDrawingKind
 Egap.Spreadsheets.SheetDrawingKind.Picture = 0 -> Egap.Spreadsheets.SheetDrawingKind
 Egap.Spreadsheets.SheetDrawingKind.Shape = 1 -> Egap.Spreadsheets.SheetDrawingKind
+Egap.Spreadsheets.SheetDrawingKind.Slicer = 5 -> Egap.Spreadsheets.SheetDrawingKind
 Egap.Spreadsheets.SheetPage
 Egap.Spreadsheets.SheetPage.Cells.get -> Egap.Spreadsheets.RangeAddress
 Egap.Spreadsheets.SheetPage.Draw(Egami.Drawing.Canvas! canvas) -> void
@@ -665,11 +856,12 @@ Egap.Spreadsheets.SheetPdfOptions.<Clone>$() -> Egap.Spreadsheets.SheetPdfOption
 Egap.Spreadsheets.SheetPdfOptions.Conformance.get -> Egap.Pdf.PdfAConformance
 Egap.Spreadsheets.SheetPdfOptions.Conformance.init -> void
 Egap.Spreadsheets.SheetPdfOptions.Equals(Egap.Spreadsheets.SheetPdfOptions? other) -> bool
-Egap.Spreadsheets.SheetPdfOptions.IsTagged.get -> bool
 Egap.Spreadsheets.SheetPdfOptions.Language.get -> string?
 Egap.Spreadsheets.SheetPdfOptions.Language.init -> void
 Egap.Spreadsheets.SheetPdfOptions.Print.get -> Egap.Spreadsheets.SheetPrintOptions?
 Egap.Spreadsheets.SheetPdfOptions.Print.init -> void
+Egap.Spreadsheets.SheetPdfOptions.Save.get -> Egap.Pdf.PdfSaveOptions?
+Egap.Spreadsheets.SheetPdfOptions.Save.init -> void
 Egap.Spreadsheets.SheetPdfOptions.SheetPdfOptions() -> void
 Egap.Spreadsheets.SheetPdfOptions.Tagged.get -> bool
 Egap.Spreadsheets.SheetPdfOptions.Tagged.init -> void
@@ -693,6 +885,16 @@ Egap.Spreadsheets.SheetPrintOptions.IgnorePrintAreas.init -> void
 Egap.Spreadsheets.SheetPrintOptions.PrintTime.get -> System.DateTime?
 Egap.Spreadsheets.SheetPrintOptions.PrintTime.init -> void
 Egap.Spreadsheets.SheetPrintOptions.SheetPrintOptions() -> void
+Egap.Spreadsheets.SheetProtection
+Egap.Spreadsheets.SheetProtection.AllowedActions.get -> Egap.Spreadsheets.SheetActions
+Egap.Spreadsheets.SheetProtection.AllowedActions.set -> void
+Egap.Spreadsheets.SheetProtection.CanEdit(Egap.Spreadsheets.CellAddress cell) -> bool
+Egap.Spreadsheets.SheetProtection.EditableRanges.get -> Egap.Spreadsheets.EditableRangeCollection!
+Egap.Spreadsheets.SheetProtection.HasPassword.get -> bool
+Egap.Spreadsheets.SheetProtection.IsProtected.get -> bool
+Egap.Spreadsheets.SheetProtection.Protect(string? password = null, Egap.Spreadsheets.SheetActions allowed = Egap.Spreadsheets.SheetActions.Default) -> void
+Egap.Spreadsheets.SheetProtection.Unprotect(string? password = null) -> bool
+Egap.Spreadsheets.SheetProtection.Verify(string? password) -> bool
 Egap.Spreadsheets.SheetReader
 Egap.Spreadsheets.SheetReader.Cells.get -> System.Collections.Generic.IEnumerable<(int Column, Egap.Spreadsheets.CellValue Value)>!
 Egap.Spreadsheets.SheetReader.ColumnCount.get -> int
@@ -709,7 +911,14 @@ Egap.Spreadsheets.SheetReader.SelectSheet(string! name) -> void
 Egap.Spreadsheets.SheetReader.SheetName.get -> string!
 Egap.Spreadsheets.SheetReader.SheetNames.get -> System.Collections.Generic.IReadOnlyList<string!>!
 Egap.Spreadsheets.SheetReader.this[int column].get -> Egap.Spreadsheets.CellValue
+Egap.Spreadsheets.SheetReaderOptions
+Egap.Spreadsheets.SheetReaderOptions.Limits.get -> Egap.Documents.DocumentLimits!
+Egap.Spreadsheets.SheetReaderOptions.Limits.init -> void
+Egap.Spreadsheets.SheetReaderOptions.Password.get -> string?
+Egap.Spreadsheets.SheetReaderOptions.Password.init -> void
+Egap.Spreadsheets.SheetReaderOptions.SheetReaderOptions() -> void
 Egap.Spreadsheets.SheetRow
+Egap.Spreadsheets.SheetRow.AutoFit() -> double
 Egap.Spreadsheets.SheetRow.Collapsed.get -> bool
 Egap.Spreadsheets.SheetRow.Collapsed.set -> void
 Egap.Spreadsheets.SheetRow.Height.get -> double?
@@ -725,7 +934,8 @@ Egap.Spreadsheets.SheetRowCollection
 Egap.Spreadsheets.SheetRowCollection.GetEnumerator() -> System.Collections.Generic.IEnumerator<Egap.Spreadsheets.SheetRow!>!
 Egap.Spreadsheets.SheetRowCollection.this[int index].get -> Egap.Spreadsheets.SheetRow!
 Egap.Spreadsheets.SheetTable
-Egap.Spreadsheets.SheetTable.Columns.get -> System.Collections.Generic.List<Egap.Spreadsheets.SheetTableColumn!>!
+Egap.Spreadsheets.SheetTable.AutoFilter.get -> Egap.Spreadsheets.AutoFilter?
+Egap.Spreadsheets.SheetTable.Columns.get -> System.Collections.Generic.IReadOnlyList<Egap.Spreadsheets.SheetTableColumn!>!
 Egap.Spreadsheets.SheetTable.Name.get -> string!
 Egap.Spreadsheets.SheetTable.Name.set -> void
 Egap.Spreadsheets.SheetTable.Range.get -> Egap.Spreadsheets.RangeAddress
@@ -803,6 +1013,44 @@ Egap.Spreadsheets.SheetWriter.SkipRows(int count) -> void
 Egap.Spreadsheets.SheetWriter.StartSheet(string! name) -> void
 Egap.Spreadsheets.SheetWriter.WriteRow(Egap.Spreadsheets.CellStyle? style, params System.ReadOnlySpan<Egap.Spreadsheets.CellValue> values) -> void
 Egap.Spreadsheets.SheetWriter.WriteRow(params System.ReadOnlySpan<Egap.Spreadsheets.CellValue> values) -> void
+Egap.Spreadsheets.Slicer
+Egap.Spreadsheets.Slicer.Caption.get -> string!
+Egap.Spreadsheets.Slicer.Caption.set -> void
+Egap.Spreadsheets.Slicer.ColumnCount.get -> int
+Egap.Spreadsheets.Slicer.ColumnCount.set -> void
+Egap.Spreadsheets.Slicer.Connect(Egap.Spreadsheets.PivotTable! pivotTable) -> void
+Egap.Spreadsheets.Slicer.Field.get -> string!
+Egap.Spreadsheets.Slicer.Items.get -> System.Collections.Generic.IReadOnlyList<string!>!
+Egap.Spreadsheets.Slicer.Name.get -> string!
+Egap.Spreadsheets.Slicer.PivotTables.get -> System.Collections.Generic.IReadOnlyList<Egap.Spreadsheets.PivotTable!>!
+Egap.Spreadsheets.Slicer.Select(System.Collections.Generic.IEnumerable<string!>! items) -> void
+Egap.Spreadsheets.Slicer.SelectAll() -> void
+Egap.Spreadsheets.Slicer.SelectedItems.get -> System.Collections.Generic.IReadOnlyList<string!>!
+Egap.Spreadsheets.Slicer.ShowHeader.get -> bool
+Egap.Spreadsheets.Slicer.ShowHeader.set -> void
+Egap.Spreadsheets.Slicer.StyleName.get -> string?
+Egap.Spreadsheets.Slicer.StyleName.set -> void
+Egap.Spreadsheets.Slicer.Worksheet.get -> Egap.Spreadsheets.Worksheet!
+Egap.Spreadsheets.SortField
+Egap.Spreadsheets.SortField.Deconstruct(out int Index, out bool Descending) -> void
+Egap.Spreadsheets.SortField.Descending.get -> bool
+Egap.Spreadsheets.SortField.Descending.init -> void
+Egap.Spreadsheets.SortField.Equals(Egap.Spreadsheets.SortField other) -> bool
+Egap.Spreadsheets.SortField.Index.get -> int
+Egap.Spreadsheets.SortField.Index.init -> void
+Egap.Spreadsheets.SortField.SortField() -> void
+Egap.Spreadsheets.SortField.SortField(int Index, bool Descending = false) -> void
+Egap.Spreadsheets.SortOptions
+Egap.Spreadsheets.SortOptions.HasHeader.get -> bool
+Egap.Spreadsheets.SortOptions.HasHeader.init -> void
+Egap.Spreadsheets.SortOptions.MatchCase.get -> bool
+Egap.Spreadsheets.SortOptions.MatchCase.init -> void
+Egap.Spreadsheets.SortOptions.Orientation.get -> Egap.Spreadsheets.SortOrientation
+Egap.Spreadsheets.SortOptions.Orientation.init -> void
+Egap.Spreadsheets.SortOptions.SortOptions() -> void
+Egap.Spreadsheets.SortOrientation
+Egap.Spreadsheets.SortOrientation.Columns = 1 -> Egap.Spreadsheets.SortOrientation
+Egap.Spreadsheets.SortOrientation.Rows = 0 -> Egap.Spreadsheets.SortOrientation
 Egap.Spreadsheets.SpreadsheetFormat
 Egap.Spreadsheets.TableImportOptions
 Egap.Spreadsheets.TableImportOptions.Culture.get -> System.Globalization.CultureInfo!
@@ -834,6 +1082,8 @@ Egap.Spreadsheets.Workbook.Format.get -> Egap.Spreadsheets.WorkbookFormat
 Egap.Spreadsheets.Workbook.Format.set -> void
 Egap.Spreadsheets.Workbook.Names.get -> Egap.Spreadsheets.DefinedNameCollection!
 Egap.Spreadsheets.Workbook.Paginate(Egap.Spreadsheets.SheetPrintOptions? options = null) -> Egap.Spreadsheets.SheetPrintLayout!
+Egap.Spreadsheets.Workbook.Protection.get -> Egap.Spreadsheets.WorkbookProtection!
+Egap.Spreadsheets.Workbook.RefreshPivotTables() -> int
 Egap.Spreadsheets.Workbook.Save(string! path, Egap.Spreadsheets.WorkbookSaveOptions? options = null) -> void
 Egap.Spreadsheets.Workbook.Save(System.IO.Stream! stream, Egap.Spreadsheets.WorkbookSaveOptions? options = null) -> void
 Egap.Spreadsheets.Workbook.SaveAsPdf(string! path, Egap.Spreadsheets.SheetPdfOptions? options = null) -> void
@@ -841,7 +1091,13 @@ Egap.Spreadsheets.Workbook.SaveAsPdf(System.IO.Stream! stream, Egap.Spreadsheets
 Egap.Spreadsheets.Workbook.ToDocument() -> Egap.Documents.Document!
 Egap.Spreadsheets.Workbook.ToDocument(out System.Collections.Generic.IReadOnlyList<Egap.Documents.ConversionWarning!>! warnings) -> Egap.Documents.Document!
 Egap.Spreadsheets.Workbook.Worksheets.get -> Egap.Spreadsheets.WorksheetCollection!
+Egap.Spreadsheets.WorkbookEncryption
+Egap.Spreadsheets.WorkbookEncryption.Agile = 0 -> Egap.Spreadsheets.WorkbookEncryption
+Egap.Spreadsheets.WorkbookEncryption.Standard = 1 -> Egap.Spreadsheets.WorkbookEncryption
 Egap.Spreadsheets.WorkbookFormat
+Egap.Spreadsheets.WorkbookFormat.Fods = 6 -> Egap.Spreadsheets.WorkbookFormat
+Egap.Spreadsheets.WorkbookFormat.Ods = 4 -> Egap.Spreadsheets.WorkbookFormat
+Egap.Spreadsheets.WorkbookFormat.Ots = 5 -> Egap.Spreadsheets.WorkbookFormat
 Egap.Spreadsheets.WorkbookFormat.Xlsm = 1 -> Egap.Spreadsheets.WorkbookFormat
 Egap.Spreadsheets.WorkbookFormat.Xlsx = 0 -> Egap.Spreadsheets.WorkbookFormat
 Egap.Spreadsheets.WorkbookFormat.Xltm = 3 -> Egap.Spreadsheets.WorkbookFormat
@@ -851,14 +1107,31 @@ Egap.Spreadsheets.WorkbookLoadOptions.Csv.get -> Egap.Spreadsheets.CsvOptions?
 Egap.Spreadsheets.WorkbookLoadOptions.Csv.init -> void
 Egap.Spreadsheets.WorkbookLoadOptions.Limits.get -> Egap.Documents.DocumentLimits!
 Egap.Spreadsheets.WorkbookLoadOptions.Limits.init -> void
+Egap.Spreadsheets.WorkbookLoadOptions.Password.get -> string?
+Egap.Spreadsheets.WorkbookLoadOptions.Password.init -> void
 Egap.Spreadsheets.WorkbookLoadOptions.WorkbookLoadOptions() -> void
+Egap.Spreadsheets.WorkbookProtection
+Egap.Spreadsheets.WorkbookProtection.HasPassword.get -> bool
+Egap.Spreadsheets.WorkbookProtection.IsProtected.get -> bool
+Egap.Spreadsheets.WorkbookProtection.LockStructure.get -> bool
+Egap.Spreadsheets.WorkbookProtection.LockStructure.set -> void
+Egap.Spreadsheets.WorkbookProtection.LockWindows.get -> bool
+Egap.Spreadsheets.WorkbookProtection.LockWindows.set -> void
+Egap.Spreadsheets.WorkbookProtection.Protect(string? password = null, bool structure = true, bool windows = false) -> void
+Egap.Spreadsheets.WorkbookProtection.Unprotect(string? password = null) -> bool
+Egap.Spreadsheets.WorkbookProtection.Verify(string? password) -> bool
 Egap.Spreadsheets.WorkbookSaveOptions
 Egap.Spreadsheets.WorkbookSaveOptions.Csv.get -> Egap.Spreadsheets.CsvOptions?
 Egap.Spreadsheets.WorkbookSaveOptions.Csv.init -> void
+Egap.Spreadsheets.WorkbookSaveOptions.Encryption.get -> Egap.Spreadsheets.WorkbookEncryption
+Egap.Spreadsheets.WorkbookSaveOptions.Encryption.init -> void
 Egap.Spreadsheets.WorkbookSaveOptions.Format.get -> Egap.Spreadsheets.WorkbookFormat?
 Egap.Spreadsheets.WorkbookSaveOptions.Format.init -> void
+Egap.Spreadsheets.WorkbookSaveOptions.Password.get -> string?
+Egap.Spreadsheets.WorkbookSaveOptions.Password.init -> void
 Egap.Spreadsheets.WorkbookSaveOptions.WorkbookSaveOptions() -> void
 Egap.Spreadsheets.Worksheet
+Egap.Spreadsheets.Worksheet.AutoFilter.get -> Egap.Spreadsheets.AutoFilter?
 Egap.Spreadsheets.Worksheet.Cells.get -> Egap.Spreadsheets.WorksheetCells!
 Egap.Spreadsheets.Worksheet.Columns.get -> Egap.Spreadsheets.SheetColumnCollection!
 Egap.Spreadsheets.Worksheet.Comments.get -> Egap.Spreadsheets.CellCommentCollection!
@@ -868,23 +1141,33 @@ Egap.Spreadsheets.Worksheet.DefaultColumnWidth.get -> double?
 Egap.Spreadsheets.Worksheet.DefaultColumnWidth.set -> void
 Egap.Spreadsheets.Worksheet.DefaultRowHeight.get -> double?
 Egap.Spreadsheets.Worksheet.DefaultRowHeight.set -> void
+Egap.Spreadsheets.Worksheet.DeleteColumns(int column, int count = 1) -> void
+Egap.Spreadsheets.Worksheet.DeleteColumns(string! column, int count = 1) -> void
+Egap.Spreadsheets.Worksheet.DeleteRows(int row, int count = 1) -> void
 Egap.Spreadsheets.Worksheet.Drawings.get -> Egap.Spreadsheets.SheetDrawingCollection!
 Egap.Spreadsheets.Worksheet.Evaluate(string! formula, Egap.Spreadsheets.CellAddress? cell = null) -> Egap.Spreadsheets.CellValue
+Egap.Spreadsheets.Worksheet.FindAll(string! what, Egap.Spreadsheets.FindOptions? options = null) -> System.Collections.Generic.IReadOnlyList<Egap.Spreadsheets.Cell!>!
 Egap.Spreadsheets.Worksheet.Hyperlinks.get -> Egap.Spreadsheets.HyperlinkCollection!
 Egap.Spreadsheets.Worksheet.Index.get -> int
+Egap.Spreadsheets.Worksheet.InsertColumns(int column, int count = 1) -> void
+Egap.Spreadsheets.Worksheet.InsertColumns(string! column, int count = 1) -> void
+Egap.Spreadsheets.Worksheet.InsertRows(int row, int count = 1) -> void
 Egap.Spreadsheets.Worksheet.MergedCells.get -> Egap.Spreadsheets.MergedCellCollection!
 Egap.Spreadsheets.Worksheet.Name.get -> string!
 Egap.Spreadsheets.Worksheet.Name.set -> void
 Egap.Spreadsheets.Worksheet.PageSetup.get -> Egap.Spreadsheets.PageSetup!
 Egap.Spreadsheets.Worksheet.Paginate(Egap.Spreadsheets.SheetPrintOptions? options = null) -> Egap.Spreadsheets.SheetPrintLayout!
+Egap.Spreadsheets.Worksheet.PivotTables.get -> Egap.Spreadsheets.PivotTableCollection!
+Egap.Spreadsheets.Worksheet.Protection.get -> Egap.Spreadsheets.SheetProtection!
 Egap.Spreadsheets.Worksheet.Range(Egap.Spreadsheets.RangeAddress address) -> Egap.Spreadsheets.CellRange
 Egap.Spreadsheets.Worksheet.Range(int firstRow, int firstColumn, int lastRow, int lastColumn) -> Egap.Spreadsheets.CellRange
 Egap.Spreadsheets.Worksheet.Range(string! address) -> Egap.Spreadsheets.CellRange
+Egap.Spreadsheets.Worksheet.Replace(string! what, string! replacement, Egap.Spreadsheets.FindOptions? options = null) -> int
 Egap.Spreadsheets.Worksheet.Rows.get -> Egap.Spreadsheets.SheetRowCollection!
+Egap.Spreadsheets.Worksheet.SaveAsCsv(string! path, Egap.Spreadsheets.CsvOptions? options = null) -> void
+Egap.Spreadsheets.Worksheet.SaveAsCsv(System.IO.Stream! stream, Egap.Spreadsheets.CsvOptions? options = null) -> void
 Egap.Spreadsheets.Worksheet.SaveAsPdf(string! path, Egap.Spreadsheets.SheetPdfOptions? options = null) -> void
 Egap.Spreadsheets.Worksheet.SaveAsPdf(System.IO.Stream! stream, Egap.Spreadsheets.SheetPdfOptions? options = null) -> void
-Egap.Spreadsheets.Worksheet.SaveCsv(string! path, Egap.Spreadsheets.CsvOptions? options = null) -> void
-Egap.Spreadsheets.Worksheet.SaveCsv(System.IO.Stream! stream, Egap.Spreadsheets.CsvOptions? options = null) -> void
 Egap.Spreadsheets.Worksheet.TabColor.get -> Egap.Spreadsheets.CellColor?
 Egap.Spreadsheets.Worksheet.TabColor.set -> void
 Egap.Spreadsheets.Worksheet.Tables.get -> Egap.Spreadsheets.SheetTableCollection!
@@ -947,9 +1230,12 @@ override Egap.Spreadsheets.CellStyle.ToString() -> string!
 override Egap.Spreadsheets.CellValue.Equals(object? obj) -> bool
 override Egap.Spreadsheets.CellValue.GetHashCode() -> int
 override Egap.Spreadsheets.CellValue.ToString() -> string!
+override Egap.Spreadsheets.ConditionalDataBar.GetHashCode() -> int
+override Egap.Spreadsheets.ConditionalIcon.GetHashCode() -> int
 override Egap.Spreadsheets.DefinedName.ToString() -> string!
 override Egap.Spreadsheets.DrawingPosition.GetHashCode() -> int
 override Egap.Spreadsheets.NumberFormatCode.ToString() -> string!
+override Egap.Spreadsheets.PivotTable.ToString() -> string!
 override Egap.Spreadsheets.RangeAddress.GetHashCode() -> int
 override Egap.Spreadsheets.RangeAddress.ToString() -> string!
 override Egap.Spreadsheets.SheetPdfOptions.Equals(object? obj) -> bool
@@ -958,6 +1244,8 @@ override Egap.Spreadsheets.SheetPdfOptions.ToString() -> string!
 override Egap.Spreadsheets.SheetPrintOptions.Equals(object? obj) -> bool
 override Egap.Spreadsheets.SheetPrintOptions.GetHashCode() -> int
 override Egap.Spreadsheets.SheetPrintOptions.ToString() -> string!
+override Egap.Spreadsheets.Slicer.ToString() -> string!
+override Egap.Spreadsheets.SortField.GetHashCode() -> int
 override Egap.Spreadsheets.Worksheet.ToString() -> string!
 static Egap.Spreadsheets.Cell.operator !=(Egap.Spreadsheets.Cell? left, Egap.Spreadsheets.Cell? right) -> bool
 static Egap.Spreadsheets.Cell.operator ==(Egap.Spreadsheets.Cell? left, Egap.Spreadsheets.Cell? right) -> bool
@@ -1017,12 +1305,17 @@ static Egap.Spreadsheets.CellValue.implicit operator Egap.Spreadsheets.CellValue
 static Egap.Spreadsheets.CellValue.operator !=(Egap.Spreadsheets.CellValue left, Egap.Spreadsheets.CellValue right) -> bool
 static Egap.Spreadsheets.CellValue.operator ==(Egap.Spreadsheets.CellValue left, Egap.Spreadsheets.CellValue right) -> bool
 static Egap.Spreadsheets.CellValue.TryParseError(System.ReadOnlySpan<char> text, out Egap.Spreadsheets.CellError error) -> bool
-static Egap.Spreadsheets.ConditionalFormatRule.CellIs(Egap.Spreadsheets.ComparisonOperator comparison, string! formula1, Egap.Spreadsheets.CellStyle! style, string? formula2 = null) -> Egap.Spreadsheets.ConditionalFormatRule!
+static Egap.Spreadsheets.ConditionalDataBar.operator !=(Egap.Spreadsheets.ConditionalDataBar left, Egap.Spreadsheets.ConditionalDataBar right) -> bool
+static Egap.Spreadsheets.ConditionalDataBar.operator ==(Egap.Spreadsheets.ConditionalDataBar left, Egap.Spreadsheets.ConditionalDataBar right) -> bool
+static Egap.Spreadsheets.ConditionalFormatRule.CellIs(Egap.Spreadsheets.ComparisonOperator comparison, string! formula1, Egap.Spreadsheets.CellStyle! style) -> Egap.Spreadsheets.ConditionalFormatRule!
+static Egap.Spreadsheets.ConditionalFormatRule.CellIs(Egap.Spreadsheets.ComparisonOperator comparison, string! formula1, string? formula2, Egap.Spreadsheets.CellStyle! style) -> Egap.Spreadsheets.ConditionalFormatRule!
 static Egap.Spreadsheets.ConditionalFormatRule.ColorScale(Egap.Spreadsheets.CellColor lowest, Egap.Spreadsheets.CellColor highest) -> Egap.Spreadsheets.ConditionalFormatRule!
 static Egap.Spreadsheets.ConditionalFormatRule.ColorScale(Egap.Spreadsheets.CellColor lowest, Egap.Spreadsheets.CellColor middle, Egap.Spreadsheets.CellColor highest) -> Egap.Spreadsheets.ConditionalFormatRule!
 static Egap.Spreadsheets.ConditionalFormatRule.DataBar(Egap.Spreadsheets.CellColor color) -> Egap.Spreadsheets.ConditionalFormatRule!
 static Egap.Spreadsheets.ConditionalFormatRule.Expression(string! formula, Egap.Spreadsheets.CellStyle! style) -> Egap.Spreadsheets.ConditionalFormatRule!
 static Egap.Spreadsheets.ConditionalFormatRule.IconSet(string! iconSet = "3TrafficLights1") -> Egap.Spreadsheets.ConditionalFormatRule!
+static Egap.Spreadsheets.ConditionalIcon.operator !=(Egap.Spreadsheets.ConditionalIcon left, Egap.Spreadsheets.ConditionalIcon right) -> bool
+static Egap.Spreadsheets.ConditionalIcon.operator ==(Egap.Spreadsheets.ConditionalIcon left, Egap.Spreadsheets.ConditionalIcon right) -> bool
 static Egap.Spreadsheets.DrawingPosition.operator !=(Egap.Spreadsheets.DrawingPosition left, Egap.Spreadsheets.DrawingPosition right) -> bool
 static Egap.Spreadsheets.DrawingPosition.operator ==(Egap.Spreadsheets.DrawingPosition left, Egap.Spreadsheets.DrawingPosition right) -> bool
 static Egap.Spreadsheets.FunctionRegistry.Add(string! name, int minArguments, int maxArguments, System.Func<System.Collections.Generic.IReadOnlyList<Egap.Spreadsheets.FunctionArgument!>!, Egap.Spreadsheets.CellValue>! function) -> void
@@ -1044,12 +1337,16 @@ static Egap.Spreadsheets.SheetPdfOptions.operator ==(Egap.Spreadsheets.SheetPdfO
 static Egap.Spreadsheets.SheetPrintOptions.Default.get -> Egap.Spreadsheets.SheetPrintOptions!
 static Egap.Spreadsheets.SheetPrintOptions.operator !=(Egap.Spreadsheets.SheetPrintOptions? left, Egap.Spreadsheets.SheetPrintOptions? right) -> bool
 static Egap.Spreadsheets.SheetPrintOptions.operator ==(Egap.Spreadsheets.SheetPrintOptions? left, Egap.Spreadsheets.SheetPrintOptions? right) -> bool
-static Egap.Spreadsheets.SheetReader.Open(string! path, Egap.Spreadsheets.WorkbookLoadOptions? options = null) -> Egap.Spreadsheets.SheetReader!
-static Egap.Spreadsheets.SheetReader.Open(System.IO.Stream! stream, Egap.Spreadsheets.WorkbookLoadOptions? options = null) -> Egap.Spreadsheets.SheetReader!
+static Egap.Spreadsheets.SheetReader.Open(string! path, Egap.Spreadsheets.SheetReaderOptions? options = null) -> Egap.Spreadsheets.SheetReader!
+static Egap.Spreadsheets.SheetReader.Open(System.IO.Stream! stream, Egap.Spreadsheets.SheetReaderOptions? options = null) -> Egap.Spreadsheets.SheetReader!
+static Egap.Spreadsheets.SheetReader.OpenCsv(string! path, Egap.Spreadsheets.CsvOptions? options = null) -> Egap.Spreadsheets.SheetReader!
 static Egap.Spreadsheets.SheetReader.OpenCsv(System.IO.Stream! stream, Egap.Spreadsheets.CsvOptions? options = null) -> Egap.Spreadsheets.SheetReader!
-static Egap.Spreadsheets.SheetWriter.Create(string! path, Egap.Spreadsheets.CsvOptions? csvOptions = null) -> Egap.Spreadsheets.SheetWriter!
+static Egap.Spreadsheets.SheetWriter.Create(string! path) -> Egap.Spreadsheets.SheetWriter!
 static Egap.Spreadsheets.SheetWriter.Create(System.IO.Stream! stream) -> Egap.Spreadsheets.SheetWriter!
+static Egap.Spreadsheets.SheetWriter.CreateCsv(string! path, Egap.Spreadsheets.CsvOptions? options = null) -> Egap.Spreadsheets.SheetWriter!
 static Egap.Spreadsheets.SheetWriter.CreateCsv(System.IO.Stream! stream, Egap.Spreadsheets.CsvOptions? options = null) -> Egap.Spreadsheets.SheetWriter!
+static Egap.Spreadsheets.SortField.operator !=(Egap.Spreadsheets.SortField left, Egap.Spreadsheets.SortField right) -> bool
+static Egap.Spreadsheets.SortField.operator ==(Egap.Spreadsheets.SortField left, Egap.Spreadsheets.SortField right) -> bool
 static Egap.Spreadsheets.SpreadsheetFormat.Register() -> void
 static Egap.Spreadsheets.Workbook.Create() -> Egap.Spreadsheets.Workbook!
 static Egap.Spreadsheets.Workbook.CreateEmpty() -> Egap.Spreadsheets.Workbook!
@@ -1064,298 +1361,12 @@ static Egap.Spreadsheets.Workbook.LoadCsv(System.IO.Stream! stream, Egap.Spreads
 ~override Egap.Spreadsheets.CellBorder.Equals(object obj) -> bool
 ~override Egap.Spreadsheets.CellBorder.ToString() -> string
 ~override Egap.Spreadsheets.CellColor.Equals(object obj) -> bool
-~override Egap.Spreadsheets.DrawingPosition.Equals(object obj) -> bool
-~override Egap.Spreadsheets.DrawingPosition.ToString() -> string
-~override Egap.Spreadsheets.RangeAddress.Equals(object obj) -> bool
-Egap.Spreadsheets.Worksheet.DeleteColumns(int column, int count = 1) -> void
-Egap.Spreadsheets.Worksheet.DeleteColumns(string! column, int count = 1) -> void
-Egap.Spreadsheets.Worksheet.DeleteRows(int row, int count = 1) -> void
-Egap.Spreadsheets.Worksheet.InsertColumns(int column, int count = 1) -> void
-Egap.Spreadsheets.Worksheet.InsertColumns(string! column, int count = 1) -> void
-Egap.Spreadsheets.Worksheet.InsertRows(int row, int count = 1) -> void
-Egap.Spreadsheets.CellRange.CopyTo(Egap.Spreadsheets.Cell! destination) -> void
-Egap.Spreadsheets.CellRange.MoveTo(Egap.Spreadsheets.Cell! destination) -> void
-Egap.Spreadsheets.CellRange.AutoFitColumns() -> void
-Egap.Spreadsheets.CellRange.AutoFitRows() -> void
-Egap.Spreadsheets.SheetColumn.AutoFit() -> double?
-Egap.Spreadsheets.SheetRow.AutoFit() -> double
-Egap.Spreadsheets.SortField.Index.get -> int
-Egap.Spreadsheets.SortField.Descending.get -> bool
-Egap.Spreadsheets.SortField.Descending.init -> void
-Egap.Spreadsheets.SortField.Index.init -> void
-Egap.Spreadsheets.SortField
-Egap.Spreadsheets.SortField.SortField() -> void
-~override Egap.Spreadsheets.SortField.ToString() -> string
-static Egap.Spreadsheets.SortField.operator !=(Egap.Spreadsheets.SortField left, Egap.Spreadsheets.SortField right) -> bool
-Egap.Spreadsheets.SortOptions
-static Egap.Spreadsheets.SortField.operator ==(Egap.Spreadsheets.SortField left, Egap.Spreadsheets.SortField right) -> bool
-override Egap.Spreadsheets.SortField.GetHashCode() -> int
-Egap.Spreadsheets.SortOptions.SortOptions() -> void
-~override Egap.Spreadsheets.SortField.Equals(object obj) -> bool
-Egap.Spreadsheets.SortField.Equals(Egap.Spreadsheets.SortField other) -> bool
-Egap.Spreadsheets.SortField.Deconstruct(out int Index, out bool Descending) -> void
-Egap.Spreadsheets.SortOrientation
-Egap.Spreadsheets.SortOrientation.Columns = 1 -> Egap.Spreadsheets.SortOrientation
-Egap.Spreadsheets.SortOrientation.Rows = 0 -> Egap.Spreadsheets.SortOrientation
-Egap.Spreadsheets.CellRange.Sort(params Egap.Spreadsheets.SortField[]! keys) -> void
-Egap.Spreadsheets.CellRange.Sort(Egap.Spreadsheets.SortOptions! options, params Egap.Spreadsheets.SortField[]! keys) -> void
-Egap.Spreadsheets.SortField.SortField(int Index, bool Descending = false) -> void
-Egap.Spreadsheets.SortOptions.MatchCase.init -> void
-Egap.Spreadsheets.SortOptions.MatchCase.get -> bool
-Egap.Spreadsheets.SortOptions.Orientation.get -> Egap.Spreadsheets.SortOrientation
-Egap.Spreadsheets.SortOptions.HasHeader.init -> void
-Egap.Spreadsheets.SortOptions.HasHeader.get -> bool
-Egap.Spreadsheets.SortOptions.Orientation.init -> void
-Egap.Spreadsheets.AutoFilter
-Egap.Spreadsheets.AutoFilter.Range.get -> Egap.Spreadsheets.RangeAddress
-Egap.Spreadsheets.AutoFilter.HasCriteria.get -> bool
-Egap.Spreadsheets.AutoFilter.Apply() -> int
-Egap.Spreadsheets.AutoFilter.ShowAll() -> void
-Egap.Spreadsheets.SheetTable.AutoFilter.get -> Egap.Spreadsheets.AutoFilter?
-Egap.Spreadsheets.Worksheet.AutoFilter.get -> Egap.Spreadsheets.AutoFilter?
-Egap.Spreadsheets.FindLookIn.Values = 1 -> Egap.Spreadsheets.FindLookIn
-Egap.Spreadsheets.FindLookIn.Notes = 2 -> Egap.Spreadsheets.FindLookIn
-Egap.Spreadsheets.FindLookIn.Formulas = 0 -> Egap.Spreadsheets.FindLookIn
-Egap.Spreadsheets.FindOrder.ByRows = 0 -> Egap.Spreadsheets.FindOrder
-Egap.Spreadsheets.FindOrder.ByColumns = 1 -> Egap.Spreadsheets.FindOrder
-Egap.Spreadsheets.FindOrder
-Egap.Spreadsheets.FindOptions
-Egap.Spreadsheets.FindOptions.FindOptions() -> void
-Egap.Spreadsheets.FindLookIn
-Egap.Spreadsheets.CellRange.Find(string! what, Egap.Spreadsheets.FindOptions? options = null) -> System.Collections.Generic.IReadOnlyList<Egap.Spreadsheets.Cell!>!
-Egap.Spreadsheets.CellRange.Replace(string! what, string! replacement, Egap.Spreadsheets.FindOptions? options = null) -> int
-Egap.Spreadsheets.FindOptions.MatchCase.get -> bool
-Egap.Spreadsheets.FindOptions.MatchCase.init -> void
-Egap.Spreadsheets.FindOptions.MatchEntireCell.get -> bool
-Egap.Spreadsheets.FindOptions.LookIn.get -> Egap.Spreadsheets.FindLookIn
-Egap.Spreadsheets.FindOptions.MatchEntireCell.init -> void
-Egap.Spreadsheets.FindOptions.Order.init -> void
-Egap.Spreadsheets.FindOptions.Order.get -> Egap.Spreadsheets.FindOrder
-Egap.Spreadsheets.FindOptions.LookIn.init -> void
-Egap.Spreadsheets.Worksheet.Find(string! what, Egap.Spreadsheets.FindOptions? options = null) -> System.Collections.Generic.IReadOnlyList<Egap.Spreadsheets.Cell!>!
-Egap.Spreadsheets.Worksheet.Replace(string! what, string! replacement, Egap.Spreadsheets.FindOptions? options = null) -> int
-Egap.Spreadsheets.ConditionalCellFormat
-Egap.Spreadsheets.ConditionalCellFormat.DataBar.get -> Egap.Spreadsheets.ConditionalDataBar?
-Egap.Spreadsheets.ConditionalCellFormat.Icon.get -> Egap.Spreadsheets.ConditionalIcon?
-Egap.Spreadsheets.ConditionalCellFormat.Rules.get -> System.Collections.Generic.IReadOnlyList<Egap.Spreadsheets.ConditionalFormatRule!>!
-Egap.Spreadsheets.ConditionalCellFormat.ShowsValue.get -> bool
-Egap.Spreadsheets.ConditionalCellFormat.Style.get -> Egap.Spreadsheets.CellStyle!
-Egap.Spreadsheets.ConditionalDataBar
-Egap.Spreadsheets.ConditionalDataBar.Color.get -> Egap.Spreadsheets.CellColor
-Egap.Spreadsheets.ConditionalDataBar.Color.init -> void
-Egap.Spreadsheets.ConditionalDataBar.ConditionalDataBar() -> void
-Egap.Spreadsheets.ConditionalDataBar.ConditionalDataBar(double Fraction, Egap.Spreadsheets.CellColor Color) -> void
-Egap.Spreadsheets.ConditionalDataBar.Deconstruct(out double Fraction, out Egap.Spreadsheets.CellColor Color) -> void
-Egap.Spreadsheets.ConditionalDataBar.Equals(Egap.Spreadsheets.ConditionalDataBar other) -> bool
-Egap.Spreadsheets.ConditionalDataBar.Fraction.get -> double
-Egap.Spreadsheets.ConditionalDataBar.Fraction.init -> void
-Egap.Spreadsheets.ConditionalFormatCollection.Evaluate() -> Egap.Spreadsheets.ConditionalFormatEvaluation!
-Egap.Spreadsheets.ConditionalFormatCollection.Evaluate(Egap.Spreadsheets.CellAddress cell) -> Egap.Spreadsheets.ConditionalCellFormat!
-Egap.Spreadsheets.ConditionalFormatEvaluation
-Egap.Spreadsheets.ConditionalFormatEvaluation.this[Egap.Spreadsheets.CellAddress cell].get -> Egap.Spreadsheets.ConditionalCellFormat!
-Egap.Spreadsheets.ConditionalFormatEvaluation.this[int row, int column].get -> Egap.Spreadsheets.ConditionalCellFormat!
-Egap.Spreadsheets.ConditionalFormatEvaluation.this[string! cell].get -> Egap.Spreadsheets.ConditionalCellFormat!
-Egap.Spreadsheets.ConditionalIcon
-Egap.Spreadsheets.ConditionalIcon.ConditionalIcon() -> void
-Egap.Spreadsheets.ConditionalIcon.ConditionalIcon(string! IconSet, int Index) -> void
-Egap.Spreadsheets.ConditionalIcon.Deconstruct(out string! IconSet, out int Index) -> void
-Egap.Spreadsheets.ConditionalIcon.Equals(Egap.Spreadsheets.ConditionalIcon other) -> bool
-Egap.Spreadsheets.ConditionalIcon.IconSet.get -> string!
-Egap.Spreadsheets.ConditionalIcon.IconSet.init -> void
-Egap.Spreadsheets.ConditionalIcon.Index.get -> int
-Egap.Spreadsheets.ConditionalIcon.Index.init -> void
-Egap.Spreadsheets.DataValidationCollection.FindInvalid() -> System.Collections.Generic.IReadOnlyList<Egap.Spreadsheets.CellAddress>!
-Egap.Spreadsheets.DataValidationCollection.IsValid(Egap.Spreadsheets.CellAddress cell) -> bool
-Egap.Spreadsheets.DataValidationCollection.IsValid(Egap.Spreadsheets.CellAddress cell, Egap.Spreadsheets.CellValue value) -> bool
-Egap.Spreadsheets.DataValidationCollection.ListItems(Egap.Spreadsheets.CellAddress cell) -> System.Collections.Generic.IReadOnlyList<Egap.Spreadsheets.CellValue>!
-override Egap.Spreadsheets.ConditionalDataBar.GetHashCode() -> int
-override Egap.Spreadsheets.ConditionalIcon.GetHashCode() -> int
-static Egap.Spreadsheets.ConditionalDataBar.operator !=(Egap.Spreadsheets.ConditionalDataBar left, Egap.Spreadsheets.ConditionalDataBar right) -> bool
-static Egap.Spreadsheets.ConditionalDataBar.operator ==(Egap.Spreadsheets.ConditionalDataBar left, Egap.Spreadsheets.ConditionalDataBar right) -> bool
-static Egap.Spreadsheets.ConditionalIcon.operator !=(Egap.Spreadsheets.ConditionalIcon left, Egap.Spreadsheets.ConditionalIcon right) -> bool
-static Egap.Spreadsheets.ConditionalIcon.operator ==(Egap.Spreadsheets.ConditionalIcon left, Egap.Spreadsheets.ConditionalIcon right) -> bool
 ~override Egap.Spreadsheets.ConditionalDataBar.Equals(object obj) -> bool
 ~override Egap.Spreadsheets.ConditionalDataBar.ToString() -> string
 ~override Egap.Spreadsheets.ConditionalIcon.Equals(object obj) -> bool
 ~override Egap.Spreadsheets.ConditionalIcon.ToString() -> string
-Egap.Spreadsheets.Cell.ImportData(System.Data.DataTable! table, Egap.Spreadsheets.DataImportOptions? options = null) -> Egap.Spreadsheets.CellRange
-Egap.Spreadsheets.Cell.ImportData(System.Data.IDataReader! reader, Egap.Spreadsheets.DataImportOptions? options = null) -> Egap.Spreadsheets.CellRange
-Egap.Spreadsheets.Cell.ImportData<T>(System.Collections.Generic.IEnumerable<T>! items, Egap.Spreadsheets.DataImportOptions? options = null) -> Egap.Spreadsheets.CellRange
-Egap.Spreadsheets.CellRange.ToDataTable(Egap.Spreadsheets.DataExportOptions? options = null) -> System.Data.DataTable!
-Egap.Spreadsheets.CellRange.ToList<T>(Egap.Spreadsheets.DataExportOptions? options = null) -> System.Collections.Generic.List<T>!
-Egap.Spreadsheets.DataExportOptions
-Egap.Spreadsheets.DataExportOptions.DataExportOptions() -> void
-Egap.Spreadsheets.DataExportOptions.Header.get -> bool
-Egap.Spreadsheets.DataExportOptions.Header.init -> void
-Egap.Spreadsheets.DataExportOptions.SkipEmptyRows.get -> bool
-Egap.Spreadsheets.DataExportOptions.SkipEmptyRows.init -> void
-Egap.Spreadsheets.DataImportOptions
-Egap.Spreadsheets.DataImportOptions.Columns.get -> System.Collections.Generic.IReadOnlyList<string!>?
-Egap.Spreadsheets.DataImportOptions.Columns.init -> void
-Egap.Spreadsheets.DataImportOptions.DataImportOptions() -> void
-Egap.Spreadsheets.DataImportOptions.DateFormat.get -> string!
-Egap.Spreadsheets.DataImportOptions.DateFormat.init -> void
-Egap.Spreadsheets.DataImportOptions.DateTimeFormat.get -> string!
-Egap.Spreadsheets.DataImportOptions.DateTimeFormat.init -> void
-Egap.Spreadsheets.DataImportOptions.Header.get -> bool
-Egap.Spreadsheets.DataImportOptions.Header.init -> void
-Egap.Spreadsheets.DataImportOptions.TableName.get -> string?
-Egap.Spreadsheets.DataImportOptions.TableName.init -> void
-Egap.Spreadsheets.DataImportOptions.TimeFormat.get -> string!
-Egap.Spreadsheets.DataImportOptions.TimeFormat.init -> void
-Egap.Spreadsheets.EditableRange
-Egap.Spreadsheets.EditableRange.HasPassword.get -> bool
-Egap.Spreadsheets.EditableRange.Name.get -> string!
-Egap.Spreadsheets.EditableRange.Name.set -> void
-Egap.Spreadsheets.EditableRange.Ranges.get -> System.Collections.Generic.List<Egap.Spreadsheets.RangeAddress>!
-Egap.Spreadsheets.EditableRange.SetPassword(string? password) -> void
-Egap.Spreadsheets.EditableRange.Verify(string? password) -> bool
-Egap.Spreadsheets.EditableRangeCollection
-Egap.Spreadsheets.EditableRangeCollection.Add(string! name, Egap.Spreadsheets.RangeAddress range, string? password = null) -> Egap.Spreadsheets.EditableRange!
-Egap.Spreadsheets.EditableRangeCollection.Add(string! name, string! range, string? password = null) -> Egap.Spreadsheets.EditableRange!
-Egap.Spreadsheets.EditableRangeCollection.Clear() -> void
-Egap.Spreadsheets.EditableRangeCollection.Count.get -> int
-Egap.Spreadsheets.EditableRangeCollection.GetEnumerator() -> System.Collections.Generic.IEnumerator<Egap.Spreadsheets.EditableRange!>!
-Egap.Spreadsheets.EditableRangeCollection.Remove(Egap.Spreadsheets.EditableRange! range) -> bool
-Egap.Spreadsheets.EditableRangeCollection.this[int index].get -> Egap.Spreadsheets.EditableRange!
-Egap.Spreadsheets.SheetActions
-Egap.Spreadsheets.SheetActions.AutoFilter = 2048 -> Egap.Spreadsheets.SheetActions
-Egap.Spreadsheets.SheetActions.Default = Egap.Spreadsheets.SheetActions.SelectLockedCells | Egap.Spreadsheets.SheetActions.SelectUnlockedCells -> Egap.Spreadsheets.SheetActions
-Egap.Spreadsheets.SheetActions.DeleteColumns = 256 -> Egap.Spreadsheets.SheetActions
-Egap.Spreadsheets.SheetActions.DeleteRows = 512 -> Egap.Spreadsheets.SheetActions
-Egap.Spreadsheets.SheetActions.EditObjects = 8192 -> Egap.Spreadsheets.SheetActions
-Egap.Spreadsheets.SheetActions.EditScenarios = 16384 -> Egap.Spreadsheets.SheetActions
-Egap.Spreadsheets.SheetActions.FormatCells = 4 -> Egap.Spreadsheets.SheetActions
-Egap.Spreadsheets.SheetActions.FormatColumns = 8 -> Egap.Spreadsheets.SheetActions
-Egap.Spreadsheets.SheetActions.FormatRows = 16 -> Egap.Spreadsheets.SheetActions
-Egap.Spreadsheets.SheetActions.InsertColumns = 32 -> Egap.Spreadsheets.SheetActions
-Egap.Spreadsheets.SheetActions.InsertHyperlinks = 128 -> Egap.Spreadsheets.SheetActions
-Egap.Spreadsheets.SheetActions.InsertRows = 64 -> Egap.Spreadsheets.SheetActions
-Egap.Spreadsheets.SheetActions.None = 0 -> Egap.Spreadsheets.SheetActions
-Egap.Spreadsheets.SheetActions.PivotTables = 4096 -> Egap.Spreadsheets.SheetActions
-Egap.Spreadsheets.SheetActions.SelectLockedCells = 1 -> Egap.Spreadsheets.SheetActions
-Egap.Spreadsheets.SheetActions.SelectUnlockedCells = 2 -> Egap.Spreadsheets.SheetActions
-Egap.Spreadsheets.SheetActions.Sort = 1024 -> Egap.Spreadsheets.SheetActions
-Egap.Spreadsheets.SheetProtection
-Egap.Spreadsheets.SheetProtection.AllowedActions.get -> Egap.Spreadsheets.SheetActions
-Egap.Spreadsheets.SheetProtection.AllowedActions.set -> void
-Egap.Spreadsheets.SheetProtection.CanEdit(Egap.Spreadsheets.CellAddress cell) -> bool
-Egap.Spreadsheets.SheetProtection.EditableRanges.get -> Egap.Spreadsheets.EditableRangeCollection!
-Egap.Spreadsheets.SheetProtection.HasPassword.get -> bool
-Egap.Spreadsheets.SheetProtection.IsProtected.get -> bool
-Egap.Spreadsheets.SheetProtection.Protect(string? password = null, Egap.Spreadsheets.SheetActions allowed = Egap.Spreadsheets.SheetActions.Default) -> void
-Egap.Spreadsheets.SheetProtection.Unprotect(string? password = null) -> bool
-Egap.Spreadsheets.SheetProtection.Verify(string? password) -> bool
-Egap.Spreadsheets.Workbook.Protection.get -> Egap.Spreadsheets.WorkbookProtection!
-Egap.Spreadsheets.WorkbookProtection
-Egap.Spreadsheets.WorkbookProtection.HasPassword.get -> bool
-Egap.Spreadsheets.WorkbookProtection.IsProtected.get -> bool
-Egap.Spreadsheets.WorkbookProtection.LockStructure.get -> bool
-Egap.Spreadsheets.WorkbookProtection.LockStructure.set -> void
-Egap.Spreadsheets.WorkbookProtection.LockWindows.get -> bool
-Egap.Spreadsheets.WorkbookProtection.LockWindows.set -> void
-Egap.Spreadsheets.WorkbookProtection.Protect(string? password = null, bool structure = true, bool windows = false) -> void
-Egap.Spreadsheets.WorkbookProtection.Unprotect(string? password = null) -> bool
-Egap.Spreadsheets.WorkbookProtection.Verify(string? password) -> bool
-Egap.Spreadsheets.Worksheet.Protection.get -> Egap.Spreadsheets.SheetProtection!
-Egap.Spreadsheets.WorkbookFormat.Fods = 6 -> Egap.Spreadsheets.WorkbookFormat
-Egap.Spreadsheets.WorkbookFormat.Ods = 4 -> Egap.Spreadsheets.WorkbookFormat
-Egap.Spreadsheets.WorkbookFormat.Ots = 5 -> Egap.Spreadsheets.WorkbookFormat
-Egap.Spreadsheets.WorkbookLoadOptions.Password.get -> string?
-Egap.Spreadsheets.WorkbookLoadOptions.Password.init -> void
-Egap.Spreadsheets.WorkbookSaveOptions.Password.get -> string?
-Egap.Spreadsheets.WorkbookSaveOptions.Password.init -> void
-Egap.Spreadsheets.WorkbookSaveOptions.Encryption.get -> Egap.Spreadsheets.WorkbookEncryption
-Egap.Spreadsheets.WorkbookSaveOptions.Encryption.init -> void
-Egap.Spreadsheets.WorkbookEncryption
-Egap.Spreadsheets.WorkbookEncryption.Agile = 0 -> Egap.Spreadsheets.WorkbookEncryption
-Egap.Spreadsheets.WorkbookEncryption.Standard = 1 -> Egap.Spreadsheets.WorkbookEncryption
-Egap.Spreadsheets.PivotTable
-Egap.Spreadsheets.PivotTable.CanRefresh.get -> bool
-Egap.Spreadsheets.PivotTable.Name.get -> string!
-Egap.Spreadsheets.PivotTable.Range.get -> Egap.Spreadsheets.RangeAddress
-Egap.Spreadsheets.PivotTable.Refresh() -> void
-Egap.Spreadsheets.PivotTable.Source.get -> string?
-Egap.Spreadsheets.PivotTable.Worksheet.get -> Egap.Spreadsheets.Worksheet!
-Egap.Spreadsheets.Workbook.RefreshPivotTables() -> int
-override Egap.Spreadsheets.PivotTable.ToString() -> string!
-Egap.Spreadsheets.PivotFunction
-Egap.Spreadsheets.PivotFunction.Average = 2 -> Egap.Spreadsheets.PivotFunction
-Egap.Spreadsheets.PivotFunction.Count = 1 -> Egap.Spreadsheets.PivotFunction
-Egap.Spreadsheets.PivotFunction.CountNumbers = 6 -> Egap.Spreadsheets.PivotFunction
-Egap.Spreadsheets.PivotFunction.Max = 3 -> Egap.Spreadsheets.PivotFunction
-Egap.Spreadsheets.PivotFunction.Min = 4 -> Egap.Spreadsheets.PivotFunction
-Egap.Spreadsheets.PivotFunction.Product = 5 -> Egap.Spreadsheets.PivotFunction
-Egap.Spreadsheets.PivotFunction.StandardDeviation = 7 -> Egap.Spreadsheets.PivotFunction
-Egap.Spreadsheets.PivotFunction.StandardDeviationPopulation = 8 -> Egap.Spreadsheets.PivotFunction
-Egap.Spreadsheets.PivotFunction.Sum = 0 -> Egap.Spreadsheets.PivotFunction
-Egap.Spreadsheets.PivotFunction.Variance = 9 -> Egap.Spreadsheets.PivotFunction
-Egap.Spreadsheets.PivotFunction.VariancePopulation = 10 -> Egap.Spreadsheets.PivotFunction
-Egap.Spreadsheets.PivotTableCollection
-Egap.Spreadsheets.PivotTableCollection.Add(Egap.Spreadsheets.CellAddress location, Egap.Spreadsheets.CellRange source, Egap.Spreadsheets.PivotTableOptions! options, string? name = null) -> Egap.Spreadsheets.PivotTable!
-Egap.Spreadsheets.PivotTableCollection.Add(Egap.Spreadsheets.CellAddress location, Egap.Spreadsheets.SheetTable! source, Egap.Spreadsheets.PivotTableOptions! options, string? name = null) -> Egap.Spreadsheets.PivotTable!
-Egap.Spreadsheets.PivotTableCollection.Add(Egap.Spreadsheets.CellAddress location, string! source, Egap.Spreadsheets.PivotTableOptions! options, string? name = null) -> Egap.Spreadsheets.PivotTable!
-Egap.Spreadsheets.PivotTableCollection.Add(string! location, string! source, Egap.Spreadsheets.PivotTableOptions! options, string? name = null) -> Egap.Spreadsheets.PivotTable!
-Egap.Spreadsheets.PivotTableCollection.Count.get -> int
-Egap.Spreadsheets.PivotTableCollection.GetEnumerator() -> System.Collections.Generic.IEnumerator<Egap.Spreadsheets.PivotTable!>!
-Egap.Spreadsheets.PivotTableCollection.this[int index].get -> Egap.Spreadsheets.PivotTable!
-Egap.Spreadsheets.PivotTableCollection.this[string! name].get -> Egap.Spreadsheets.PivotTable!
-Egap.Spreadsheets.PivotTableLayout
-Egap.Spreadsheets.PivotTableLayout.Compact = 0 -> Egap.Spreadsheets.PivotTableLayout
-Egap.Spreadsheets.PivotTableLayout.Outline = 1 -> Egap.Spreadsheets.PivotTableLayout
-Egap.Spreadsheets.PivotTableLayout.Tabular = 2 -> Egap.Spreadsheets.PivotTableLayout
-Egap.Spreadsheets.PivotTableOptions
-Egap.Spreadsheets.PivotTableOptions.Columns.get -> System.Collections.Generic.IList<string!>!
-Egap.Spreadsheets.PivotTableOptions.Filters.get -> System.Collections.Generic.IList<string!>!
-Egap.Spreadsheets.PivotTableOptions.GrandTotalColumn.get -> bool
-Egap.Spreadsheets.PivotTableOptions.GrandTotalColumn.set -> void
-Egap.Spreadsheets.PivotTableOptions.GrandTotalRow.get -> bool
-Egap.Spreadsheets.PivotTableOptions.GrandTotalRow.set -> void
-Egap.Spreadsheets.PivotTableOptions.Layout.get -> Egap.Spreadsheets.PivotTableLayout
-Egap.Spreadsheets.PivotTableOptions.Layout.set -> void
-Egap.Spreadsheets.PivotTableOptions.PivotTableOptions() -> void
-Egap.Spreadsheets.PivotTableOptions.Rows.get -> System.Collections.Generic.IList<string!>!
-Egap.Spreadsheets.PivotTableOptions.ShowColumnHeaders.get -> bool
-Egap.Spreadsheets.PivotTableOptions.ShowColumnHeaders.set -> void
-Egap.Spreadsheets.PivotTableOptions.ShowColumnStripes.get -> bool
-Egap.Spreadsheets.PivotTableOptions.ShowColumnStripes.set -> void
-Egap.Spreadsheets.PivotTableOptions.ShowRowHeaders.get -> bool
-Egap.Spreadsheets.PivotTableOptions.ShowRowHeaders.set -> void
-Egap.Spreadsheets.PivotTableOptions.ShowRowStripes.get -> bool
-Egap.Spreadsheets.PivotTableOptions.ShowRowStripes.set -> void
-Egap.Spreadsheets.PivotTableOptions.StyleName.get -> string?
-Egap.Spreadsheets.PivotTableOptions.StyleName.set -> void
-Egap.Spreadsheets.PivotTableOptions.Values.get -> System.Collections.Generic.IList<Egap.Spreadsheets.PivotValueField!>!
-Egap.Spreadsheets.PivotTableOptions.ValuesOnRows.get -> bool
-Egap.Spreadsheets.PivotTableOptions.ValuesOnRows.set -> void
-Egap.Spreadsheets.PivotValueField
-Egap.Spreadsheets.PivotValueField.Field.get -> string!
-Egap.Spreadsheets.PivotValueField.Function.get -> Egap.Spreadsheets.PivotFunction
-Egap.Spreadsheets.PivotValueField.Name.get -> string?
-Egap.Spreadsheets.PivotValueField.Name.init -> void
-Egap.Spreadsheets.PivotValueField.NumberFormat.get -> string?
-Egap.Spreadsheets.PivotValueField.NumberFormat.init -> void
-Egap.Spreadsheets.PivotValueField.PivotValueField(string! field, Egap.Spreadsheets.PivotFunction function = Egap.Spreadsheets.PivotFunction.Sum) -> void
-Egap.Spreadsheets.Worksheet.PivotTables.get -> Egap.Spreadsheets.PivotTableCollection!
-Egap.Spreadsheets.SheetDrawing.Slicer.get -> Egap.Spreadsheets.Slicer?
-Egap.Spreadsheets.SheetDrawingCollection.AddSlicer(Egap.Spreadsheets.PivotTable! pivotTable, string! field, Egap.Spreadsheets.RangeAddress cells) -> Egap.Spreadsheets.SheetDrawing!
-Egap.Spreadsheets.SheetDrawingKind.Slicer = 5 -> Egap.Spreadsheets.SheetDrawingKind
-Egap.Spreadsheets.Slicer
-Egap.Spreadsheets.Slicer.Caption.get -> string!
-Egap.Spreadsheets.Slicer.Caption.set -> void
-Egap.Spreadsheets.Slicer.ColumnCount.get -> int
-Egap.Spreadsheets.Slicer.ColumnCount.set -> void
-Egap.Spreadsheets.Slicer.Connect(Egap.Spreadsheets.PivotTable! pivotTable) -> void
-Egap.Spreadsheets.Slicer.Field.get -> string!
-Egap.Spreadsheets.Slicer.Items.get -> System.Collections.Generic.IReadOnlyList<string!>!
-Egap.Spreadsheets.Slicer.Name.get -> string!
-Egap.Spreadsheets.Slicer.PivotTables.get -> System.Collections.Generic.IReadOnlyList<Egap.Spreadsheets.PivotTable!>!
-Egap.Spreadsheets.Slicer.Select(System.Collections.Generic.IEnumerable<string!>! items) -> void
-Egap.Spreadsheets.Slicer.SelectAll() -> void
-Egap.Spreadsheets.Slicer.SelectedItems.get -> System.Collections.Generic.IReadOnlyList<string!>!
-Egap.Spreadsheets.Slicer.ShowHeader.get -> bool
-Egap.Spreadsheets.Slicer.ShowHeader.set -> void
-Egap.Spreadsheets.Slicer.StyleName.get -> string?
-Egap.Spreadsheets.Slicer.StyleName.set -> void
-Egap.Spreadsheets.Slicer.Worksheet.get -> Egap.Spreadsheets.Worksheet!
-override Egap.Spreadsheets.Slicer.ToString() -> string!
+~override Egap.Spreadsheets.DrawingPosition.Equals(object obj) -> bool
+~override Egap.Spreadsheets.DrawingPosition.ToString() -> string
+~override Egap.Spreadsheets.RangeAddress.Equals(object obj) -> bool
+~override Egap.Spreadsheets.SortField.Equals(object obj) -> bool
+~override Egap.Spreadsheets.SortField.ToString() -> string

@@ -74,13 +74,18 @@ public sealed class HyperlinkCollection : IReadOnlyList<Hyperlink>
 
     /// <summary>Adds a link to a place in the workbook, such as <c>Sheet2!A1</c> or a defined name.</summary>
     /// <exception cref="ArgumentException">The location is empty.</exception>
-    public Hyperlink AddInternal(RangeAddress range, string location)
+    public Hyperlink AddLocation(RangeAddress range, string location)
     {
         ArgumentException.ThrowIfNullOrEmpty(location);
         Hyperlink link = new(range, null, location);
         links.Add(link);
         return link;
     }
+
+    /// <summary>Adds a link to a place in the workbook; see <see cref="AddLocation(RangeAddress, string)"/>.</summary>
+    /// <exception cref="FormatException">The range is not an A1 reference.</exception>
+    /// <exception cref="ArgumentException">The location is empty.</exception>
+    public Hyperlink AddLocation(string range, string location) => AddLocation(RangeAddress.Parse(range), location);
 
     /// <summary>The first hyperlink on a cell, or null when it has none.</summary>
     public Hyperlink? Find(CellAddress cell) => links.Find(link => link.Range.Contains(cell));

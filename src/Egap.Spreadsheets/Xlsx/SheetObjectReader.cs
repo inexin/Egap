@@ -93,7 +93,7 @@ internal static class SheetObjectReader
         HashSet<CellAddress> visible = VisibleNotes(source.VmlPart);
         foreach (XElement comment in root.Element(ns + "commentList")?.Elements(ns + "comment") ?? [])
         {
-            if (!CellAddress.TryParse((string?)comment.Attribute("ref"), out CellAddress cell) || sheet.Comments[cell] is not null)
+            if (!CellAddress.TryParse((string?)comment.Attribute("ref"), out CellAddress cell) || sheet.Comments.Find(cell) is not null)
             {
                 continue;
             }
@@ -280,7 +280,7 @@ internal static class SheetObjectReader
                 StopIfTrue = XlsxNames.Bool((string?)rule.Attribute("stopIfTrue"), false),
                 Source = rule,
             };
-            read.Formulas.AddRange(rule.Elements(ns + "formula").Select(f => f.Value));
+            read.FormulaList.AddRange(rule.Elements(ns + "formula").Select(f => f.Value));
             if ((string?)rule.Attribute("dxfId") is { } dxf && XlsxNames.Int(dxf, -1) is int index and >= 0)
             {
                 CellStyle? style = index < book.Styles.DifferentialStyles.Count ? book.Styles.DifferentialStyles[index] : null;
@@ -328,7 +328,7 @@ internal static class SheetObjectReader
         };
         foreach (XElement column in root.Element(ns + "tableColumns")?.Elements(ns + "tableColumn") ?? [])
         {
-            table.Columns.Add(new SheetTableColumn(XlsxNames.Decode((string?)column.Attribute("name") ?? ""))
+            table.ColumnList.Add(new SheetTableColumn(XlsxNames.Decode((string?)column.Attribute("name") ?? ""))
             {
                 TotalsRowFunction = TotalsFunction((string?)column.Attribute("totalsRowFunction")),
                 TotalsRowLabel = (string?)column.Attribute("totalsRowLabel"),

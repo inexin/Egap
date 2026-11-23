@@ -96,35 +96,35 @@ public sealed class PivotTableOptions
     public IList<PivotValueField> Values { get; } = new List<PivotValueField>();
 
     /// <summary>How the row fields are laid out; <see cref="PivotTableLayout.Compact"/> by default, as in Excel.</summary>
-    public PivotTableLayout Layout { get; set; }
+    public PivotTableLayout Layout { get; init; }
 
     /// <summary>
     /// Whether two or more value fields go down the rows, each on a row of its own under each row item, rather than across
     /// the columns, where Excel puts them by default.
     /// </summary>
-    public bool ValuesOnRows { get; set; }
+    public bool ValuesOnRows { get; init; }
 
     /// <summary>Whether the table ends with a grand total row; true by default.</summary>
-    public bool GrandTotalRow { get; set; } = true;
+    public bool GrandTotalRow { get; init; } = true;
 
     /// <summary>Whether the table ends with a grand total column; true by default.</summary>
-    public bool GrandTotalColumn { get; set; } = true;
+    public bool GrandTotalColumn { get; init; } = true;
 
     /// <summary>
     /// The pivot table style, a built-in one such as <c>PivotStyleLight16</c>, Excel's default, or <c>PivotStyleMedium9</c>;
     /// null for none.
     /// </summary>
-    public string? StyleName { get; set; } = "PivotStyleLight16";
+    public string? StyleName { get; init; } = "PivotStyleLight16";
 
     /// <summary>Whether the style marks the row headers; true by default.</summary>
-    public bool ShowRowHeaders { get; set; } = true;
+    public bool ShowRowHeaders { get; init; } = true;
 
     /// <summary>Whether the style marks the column headers; true by default.</summary>
-    public bool ShowColumnHeaders { get; set; } = true;
+    public bool ShowColumnHeaders { get; init; } = true;
 
     /// <summary>Whether the style bands the rows.</summary>
-    public bool ShowRowStripes { get; set; }
+    public bool ShowRowStripes { get; init; }
 
     /// <summary>Whether the style bands the columns.</summary>
-    public bool ShowColumnStripes { get; set; }
+    public bool ShowColumnStripes { get; init; }
 }

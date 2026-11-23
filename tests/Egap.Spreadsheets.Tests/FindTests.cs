@@ -38,13 +38,13 @@ public sealed class FindTests
         string[] search = fields[0]["find ".Length..].Split('|');
         FindOptions options = new()
         {
-            LookIn = search[1] switch { "-4163" => FindLookIn.Values, "-4144" => FindLookIn.Notes, _ => FindLookIn.Formulas },
+            LookIn = search[1] switch { "-4163" => FindLookIn.Values, "-4144" => FindLookIn.Comments, _ => FindLookIn.Formulas },
             MatchEntireCell = search[2] == "1",
             Order = search[3] == "2" ? FindOrder.ByColumns : FindOrder.ByRows,
             MatchCase = search[4] == "True",
         };
         Worksheet sheet = Fill();
-        Assert.Equal(fields[1], string.Join(',', sheet.Find(search[0], options).Select(c => c.Address.ToString())));
+        Assert.Equal(fields[1], string.Join(',', sheet.FindAll(search[0], options).Select(c => c.Address.ToString())));
     }
 
     [Theory]
@@ -69,7 +69,7 @@ public sealed class FindTests
             string[] parts = cell.Split('=', 2);
             if (parts[0] == "C1note")
             {
-                Assert.Equal(parts[1], sheet.Comments[CellAddress.Parse("C1")]!.Text);
+                Assert.Equal(parts[1], sheet.Comments.Find(CellAddress.Parse("C1"))!.Text);
                 continue;
             }
 
@@ -82,14 +82,14 @@ public sealed class FindTests
     {
         Worksheet sheet = Fill();
         Assert.Throws<ArgumentException>(() => sheet.Replace("apple", "pear", new FindOptions { LookIn = FindLookIn.Values }));
-        Assert.Throws<ArgumentException>(() => sheet.Find(""));
+        Assert.Throws<ArgumentException>(() => sheet.FindAll(""));
     }
 
     [Fact]
     public void ARangeFindsAndReplacesOnlyInItself()
     {
         Worksheet sheet = Fill();
-        Assert.Equal(["A1", "A2"], sheet.Range("A1:B2").Find("apple").Select(c => c.Address.ToString()));
+        Assert.Equal(["A1", "A2"], sheet.Range("A1:B2").FindAll("apple").Select(c => c.Address.ToString()));
         Assert.Equal(1, sheet.Range("C1:C5").Replace("apple", "pear"));
         Assert.Equal("pear", sheet["C2"].Value.Text);
         Assert.Equal("apple", sheet["A2"].Value.Text);

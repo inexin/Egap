@@ -12,7 +12,7 @@ public sealed class CsvTests
     private static string Save(Worksheet sheet, CsvOptions? options = null)
     {
         MemoryStream stream = new();
-        sheet.SaveCsv(stream, options);
+        sheet.SaveAsCsv(stream, options);
         return (options?.Encoding ?? Encoding.UTF8).GetString(stream.ToArray()).TrimStart('﻿');
     }
 
@@ -112,7 +112,7 @@ public sealed class CsvTests
             Workbook book = Workbook.Create();
             book.Worksheets[0]["A1"].Value = "a,b";
             book.Worksheets[0]["B1"].Value = 2;
-            book.Worksheets[0].SaveCsv(path);
+            book.Worksheets[0].SaveAsCsv(path);
 
             Assert.Equal("a,b\t2\r\n", File.ReadAllText(path));
             Assert.Equal(2, Workbook.LoadCsv(path).Worksheets[0]["B1"].Value);
@@ -216,11 +216,11 @@ public sealed class CsvTests
         Workbook book = Workbook.Create();
         book.Worksheets[0]["A1"].Value = "Ærø";
         MemoryStream utf8 = new();
-        book.Worksheets[0].SaveCsv(utf8);
+        book.Worksheets[0].SaveAsCsv(utf8);
         Assert.Equal([0xEF, 0xBB, 0xBF], utf8.ToArray()[..3]);
 
         MemoryStream unicode = new();
-        book.Worksheets[0].SaveCsv(unicode, new CsvOptions { Encoding = Encoding.Unicode });
+        book.Worksheets[0].SaveAsCsv(unicode, new CsvOptions { Encoding = Encoding.Unicode });
         unicode.Position = 0;
         Assert.Equal("Ærø", Workbook.LoadCsv(unicode).Worksheets[0]["A1"].Value);
 

@@ -38,7 +38,7 @@ one), pictures in a format it does not read, and the headers, footers and drawin
 
 ## Passwords
 
-A DOC file protected with a password to open it is `Encrypted` to `Document.Identify`, and loads with its password.
+A DOC file protected with a password to open it is `Doc` to `Document.Identify` and encrypted to `Document.IsEncrypted`, and loads with its password.
 `DocumentLoadOptions` takes the password, or a callback that asks for one; a missing or wrong password throws a
 `DocumentPasswordException`. The reader opens the three kinds of protection Word 97 and later write: RC4 CryptoAPI
 encryption (the default from Word 2002 on), RC4 encryption ("Office 97/2000 compatible") and XOR obfuscation ("weak

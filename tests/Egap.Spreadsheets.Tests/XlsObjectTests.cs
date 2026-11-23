@@ -30,7 +30,7 @@ public sealed class XlsObjectTests
         Workbook book = Workbook.Load(Path("objects.xls"));
         Worksheet data = book.Worksheets["Data"];
         Assert.Equal(3, data.Comments.Count);
-        Assert.Equal("Two\nlines", data.Comments[CellAddress.Parse("C4")]!.Text.Split(':', 2)[^1].TrimStart('\n'));
+        Assert.Equal("Two\nlines", data.Comments.Find(CellAddress.Parse("C4"))!.Text.Split(':', 2)[^1].TrimStart('\n'));
         Assert.Equal(4, data.Hyperlinks.Count);
         Assert.Contains(data.Hyperlinks, h => h.ToolTip == "Example tip");
         Assert.Contains(data.Hyperlinks, h => h.Location == "Data!A1");

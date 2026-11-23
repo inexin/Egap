@@ -147,7 +147,7 @@ public sealed class ChartTests
     {
         Workbook book = Sample();
         Worksheet sheet = book.Worksheets[0];
-        SheetDrawing drawing = sheet.Drawings.AddChart(ChartType.Column, RangeAddress.Parse("E1:K12"), RangeAddress.Parse("A1:C4"));
+        SheetDrawing drawing = sheet.Drawings.AddChart(RangeAddress.Parse("E1:K12"), ChartType.Column, RangeAddress.Parse("A1:C4"));
         Chart chart = drawing.Chart!;
         Assert.Equal(2, chart.Series.Count);
         Assert.Equal("North", chart.Series[0].Name);
@@ -169,7 +169,7 @@ public sealed class ChartTests
     {
         Workbook book = Sample();
         Worksheet sheet = book.Worksheets[0];
-        sheet.Drawings.AddChart(ChartType.Line, RangeAddress.Parse("E1:K12"), RangeAddress.Parse("A1:B4"));
+        sheet.Drawings.AddChart(RangeAddress.Parse("E1:K12"), ChartType.Line, RangeAddress.Parse("A1:B4"));
         sheet["B3"].Value = 99;
         Chart chart = Reloaded(book).Worksheets[0].Drawings[0].Chart!;
         Assert.Equal(99d, chart.Series[0].Values.Numbers[1]);
@@ -180,7 +180,7 @@ public sealed class ChartTests
     {
         Workbook book = Sample();
         Worksheet sheet = book.Worksheets[0];
-        SheetDrawing drawing = sheet.Drawings.AddChart(ChartType.Column, RangeAddress.Parse("E1:K12"), RangeAddress.Parse("A1:B4"));
+        SheetDrawing drawing = sheet.Drawings.AddChart(RangeAddress.Parse("E1:K12"), ChartType.Column, RangeAddress.Parse("A1:B4"));
         sheet.Rows[2].Hidden = true;
         drawing.RefreshChart();
         Assert.Equal([1d, 3d], drawing.Chart!.Series[0].Values.Numbers);
@@ -195,7 +195,7 @@ public sealed class ChartTests
         Workbook book = Sample();
         Worksheet sheet = book.Worksheets[0];
         book.Names.Add("Picked", "Sheet1!$B$2:$B$3");
-        SheetDrawing drawing = sheet.Drawings.AddChart(ChartType.Column, RangeAddress.Parse("E1:K12"));
+        SheetDrawing drawing = sheet.Drawings.AddChart(RangeAddress.Parse("E1:K12"), ChartType.Column);
         ChartPlot plot = drawing.Chart!.Plots[0];
         ChartSeries areas = plot.Series.Add("(Sheet1!$B$2,Sheet1!$C$4)");
         ChartSeries named = plot.Series.Add("Picked");
@@ -215,7 +215,7 @@ public sealed class ChartTests
         Workbook book = Sample();
         Worksheet sheet = book.Worksheets[0];
         sheet["B3"].Value = "n/a";
-        SheetDrawing drawing = sheet.Drawings.AddChart(ChartType.Column, RangeAddress.Parse("E1:K12"));
+        SheetDrawing drawing = sheet.Drawings.AddChart(RangeAddress.Parse("E1:K12"), ChartType.Column);
         ChartSeries series = drawing.Chart!.Plots[0].Series.Add("Sheet1!$B$2:$B$6");
         drawing.RefreshChart();
         Assert.Equal([1d, 0d, 3d, null, null], series.Values.Numbers);
@@ -225,7 +225,7 @@ public sealed class ChartTests
     public void AHugeReferenceIsCappedAndQuick()
     {
         Workbook book = Sample();
-        SheetDrawing drawing = book.Worksheets[0].Drawings.AddChart(ChartType.Column, RangeAddress.Parse("E1:K12"));
+        SheetDrawing drawing = book.Worksheets[0].Drawings.AddChart(RangeAddress.Parse("E1:K12"), ChartType.Column);
         ChartSeries values = drawing.Chart!.Plots[0].Series.Add("Sheet1!$A$1:$XFC$1048575", "Sheet1!$A$1:$XFC$1048575");
         drawing.RefreshChart();
         Assert.True(values.Values.Count <= 1 << 20);
@@ -255,7 +255,7 @@ public sealed class ChartTests
         sheet["B2"].Value = 5;
         sheet["A3"].Value = "Feb";
         sheet["B3"].Value = 7;
-        sheet.Drawings.AddChart(ChartType.Column, RangeAddress.Parse("E1:K12"), RangeAddress.Parse("A1:B3"));
+        sheet.Drawings.AddChart(RangeAddress.Parse("E1:K12"), ChartType.Column, RangeAddress.Parse("A1:B3"));
 
         ChartSeries series = Reloaded(book).Worksheets[0].Drawings[0].Chart!.Series[0];
         Assert.Equal(written + "!$B$2:$B$3", series.Values.Reference);
@@ -282,7 +282,7 @@ public sealed class ChartTests
         Worksheet sheet = book.Worksheets[0];
         sheet["A6"].Value = "Title cell";
         sheet["A7"].Value = "Axis cell";
-        SheetDrawing drawing = sheet.Drawings.AddChart(ChartType.Column, RangeAddress.Parse("E1:K12"), RangeAddress.Parse("A1:B4"));
+        SheetDrawing drawing = sheet.Drawings.AddChart(RangeAddress.Parse("E1:K12"), ChartType.Column, RangeAddress.Parse("A1:B4"));
         drawing.Chart!.Title.Reference = "Sheet1!$A$6";
         drawing.Chart.Axes[0].Title.Reference = "Sheet1!$A$7";
 
@@ -299,7 +299,7 @@ public sealed class ChartTests
         Workbook book = Sample();
         book.Names.Add("One", "Two");
         book.Names.Add("Two", "One");
-        SheetDrawing drawing = book.Worksheets[0].Drawings.AddChart(ChartType.Column, RangeAddress.Parse("E1:K12"));
+        SheetDrawing drawing = book.Worksheets[0].Drawings.AddChart(RangeAddress.Parse("E1:K12"), ChartType.Column);
         ChartSeries series = drawing.Chart!.Plots[0].Series.Add("One");
         drawing.RefreshChart();
         Assert.Equal(0, series.Values.Count);
@@ -319,7 +319,7 @@ public sealed class ChartTests
             sheet[row, 2].Value = row * 3;
         }
 
-        Chart chart = sheet.Drawings.AddChart(type, RangeAddress.Parse("E1:K12"), RangeAddress.Parse("A1:C3")).Chart!;
+        Chart chart = sheet.Drawings.AddChart(RangeAddress.Parse("E1:K12"), type, RangeAddress.Parse("A1:C3")).Chart!;
         ChartSeries series = chart.Series[0];
         Assert.Equal([0d, 1d, 2d], series.Categories.Numbers);
         Assert.Equal([0d, 2d, 4d], series.Values.Numbers);
@@ -351,7 +351,7 @@ public sealed class ChartTests
     {
         Workbook book = Sample();
         Worksheet sheet = book.Worksheets[0];
-        SheetDrawing drawing = sheet.Drawings.AddChart(ChartType.Column, RangeAddress.Parse("E1:K12"), RangeAddress.Parse("A1:B4"));
+        SheetDrawing drawing = sheet.Drawings.AddChart(RangeAddress.Parse("E1:K12"), ChartType.Column, RangeAddress.Parse("A1:B4"));
         Assert.Single(Reloaded(book).Worksheets[0].Drawings);
         sheet.Drawings.Remove(drawing);
         Assert.DoesNotContain(Saved(book).Keys, k => k.StartsWith("xl/charts/", StringComparison.Ordinal));
@@ -361,7 +361,7 @@ public sealed class ChartTests
     public void OtherObjectsHaveNoChart()
     {
         Workbook book = Sample();
-        SheetDrawing picture = book.Worksheets[0].Drawings.AddPicture([0x89, (byte)'P', (byte)'N', (byte)'G', 13, 10, 26, 10], RangeAddress.Parse("E1:F2"));
+        SheetDrawing picture = book.Worksheets[0].Drawings.AddPicture(RangeAddress.Parse("E1:F2"), [0x89, (byte)'P', (byte)'N', (byte)'G', 13, 10, 26, 10]);
         Assert.Null(picture.Chart);
         Assert.Throws<InvalidOperationException>(picture.RefreshChart);
     }
@@ -381,7 +381,7 @@ public sealed class ChartTests
         sheet["B2"].Value = 1;
         sheet["A3"].Value = "b";
         sheet["B3"].Value = 2;
-        Chart chart = sheet.Drawings.AddChart(ChartType.Column, RangeAddress.Parse("E1:K12"), RangeAddress.Parse("A1:B3")).Chart!;
+        Chart chart = sheet.Drawings.AddChart(RangeAddress.Parse("E1:K12"), ChartType.Column, RangeAddress.Parse("A1:B3")).Chart!;
         Assert.Equal(reference, chart.Series[0].Categories.Reference);
         Assert.Equal([1d, 2d], chart.Series[0].Values.Numbers);
     }

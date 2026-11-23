@@ -37,7 +37,7 @@ internal sealed partial class HtmlWriter
     {
         this.document = document;
         this.options = options;
-        markup = options.RevisionView == Layout.RevisionView.Markup;
+        markup = options.RevisionView == RevisionView.Markup;
     }
 
     public static string Write(Document document, HtmlSaveOptions options, out IReadOnlyList<ConversionWarning> warnings)
@@ -51,7 +51,7 @@ internal sealed partial class HtmlWriter
     /// </summary>
     internal static string Write(Document document, HtmlSaveOptions options, IReadOnlyList<Block>? blocks, string? extraCss, out IReadOnlyList<ConversionWarning> warnings)
     {
-        if (options.RevisionView == Layout.RevisionView.Original && blocks is null && document.Revisions.Count > 0)
+        if (options.RevisionView == RevisionView.Original && blocks is null && document.Revisions.Count > 0)
         {
             // The original is the document with every change rejected: a copy, so the caller's document keeps its changes.
             document = document.Clone();

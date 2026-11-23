@@ -383,7 +383,7 @@ public sealed partial class Worksheet
 
         foreach (DataValidation rule in DataValidations.ToList())
         {
-            if (!MoveAll(rule.Ranges, edit))
+            if (!MoveAll(rule.RangeList, edit))
             {
                 DataValidations.Remove(rule);
             }
@@ -391,7 +391,7 @@ public sealed partial class Worksheet
 
         foreach (ConditionalFormat format in ConditionalFormats.ToList())
         {
-            if (!MoveAll(format.Ranges, edit))
+            if (!MoveAll(format.RangeList, edit))
             {
                 ConditionalFormats.Remove(format);
             }
@@ -399,7 +399,7 @@ public sealed partial class Worksheet
 
         foreach (EditableRange range in Protection.EditableRanges.ToList())
         {
-            if (!MoveAll(range.Ranges, edit))
+            if (!MoveAll(range.RangeList, edit))
             {
                 Protection.EditableRanges.Remove(range);
             }
@@ -513,12 +513,12 @@ public sealed partial class Worksheet
                 for (int i = 0; i < edit.Count; i++)
                 {
                     int n = 1;
-                    while (table.Columns.Exists(c => string.Equals(c.Name, "Column" + n, StringComparison.OrdinalIgnoreCase)))
+                    while (table.ColumnList.Exists(c => string.Equals(c.Name, "Column" + n, StringComparison.OrdinalIgnoreCase)))
                     {
                         n++;
                     }
 
-                    table.Columns.Insert(edit.At - first + i, new SheetTableColumn("Column" + n));
+                    table.ColumnList.Insert(edit.At - first + i, new SheetTableColumn("Column" + n));
                 }
             }
             else if (!edit.Insert)
@@ -527,7 +527,7 @@ public sealed partial class Worksheet
                 {
                     if (first + i >= edit.At && first + i <= edit.End)
                     {
-                        table.Columns.RemoveAt(i);
+                        table.ColumnList.RemoveAt(i);
                     }
                 }
             }

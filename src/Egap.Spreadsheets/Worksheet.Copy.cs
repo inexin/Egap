@@ -540,7 +540,7 @@ public sealed partial class Worksheet
         List<DataValidation> made = [];
         foreach (DataValidation rule in DataValidations)
         {
-            if (Pieces(rule.Ranges, move) is not { } ranges)
+            if (Pieces(rule.RangeList, move) is not { } ranges)
             {
                 continue;
             }
@@ -573,7 +573,7 @@ public sealed partial class Worksheet
         List<ConditionalFormat> made = [];
         foreach (ConditionalFormat format in ConditionalFormats)
         {
-            if (Pieces(format.Ranges, move) is not { } ranges)
+            if (Pieces(format.RangeList, move) is not { } ranges)
             {
                 continue;
             }
@@ -593,7 +593,7 @@ public sealed partial class Worksheet
                     ReadStyle = rule.ReadStyle,
                     Drawing = rule.Drawing is null ? null : new XElement(rule.Drawing),
                 };
-                copied.Formulas.AddRange(rule.Formulas.Select(f => Carried(f, anchor, ranges[0].First, move, moving)!));
+                copied.FormulaList.AddRange(rule.FormulaList.Select(f => Carried(f, anchor, ranges[0].First, move, moving)!));
                 copy.Rules.Add(copied);
             }
 
@@ -653,7 +653,7 @@ public sealed partial class Worksheet
     {
         foreach (DataValidation rule in DataValidations.ToList())
         {
-            if (Trimmed(rule.Ranges, area) is not { } anchor)
+            if (Trimmed(rule.RangeList, area) is not { } anchor)
             {
                 continue;
             }
@@ -670,7 +670,7 @@ public sealed partial class Worksheet
 
         foreach (ConditionalFormat format in formats ? ConditionalFormats.ToList() : [])
         {
-            if (Trimmed(format.Ranges, area) is not { } anchor)
+            if (Trimmed(format.RangeList, area) is not { } anchor)
             {
                 continue;
             }

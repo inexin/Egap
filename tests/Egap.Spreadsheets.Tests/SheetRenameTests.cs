@@ -151,7 +151,7 @@ public sealed class SheetRenameTests
         DataValidation validation = other.DataValidations.Add(RangeAddress.Parse("A1"), DataValidationType.List, "Old!$A$1:$A$3");
         ConditionalFormatRule rule = ConditionalFormatRule.Expression("A1>Old!$A$1", new CellStyle());
         other.ConditionalFormats.Add("A1", rule);
-        Hyperlink link = other.Hyperlinks.AddInternal(RangeAddress.Parse("B1"), "Old!A1");
+        Hyperlink link = other.Hyperlinks.AddLocation(RangeAddress.Parse("B1"), "Old!A1");
         other["E1"].Value = "a";
         other["F1"].Value = "b";
         SheetTable table = other.Tables.Add("E1:F3");
@@ -193,7 +193,7 @@ public sealed class SheetRenameTests
         old["B2"].Value = 1;
         old["A3"].Value = "q";
         old["B3"].Value = 2;
-        old.Drawings.AddChart(ChartType.Column, RangeAddress.Parse("D1:J15"), RangeAddress.Parse("A1:B3"));
+        old.Drawings.AddChart(RangeAddress.Parse("D1:J15"), ChartType.Column, RangeAddress.Parse("A1:B3"));
         Workbook read = RoundTrip(book);
         read.Worksheets["Old"].Name = "My sheet";
         Workbook again = RoundTrip(read);

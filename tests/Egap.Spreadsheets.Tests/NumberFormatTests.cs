@@ -186,7 +186,7 @@ public sealed class NumberFormatTests
         Assert.Equal("123", sheet["A1"].Text);
         Assert.Equal("abc", sheet["B1"].Text);
         MemoryStream stream = new();
-        sheet.SaveCsv(stream);
+        sheet.SaveAsCsv(stream);
         Assert.Equal("123,abc\r\n", System.Text.Encoding.UTF8.GetString(stream.ToArray()).TrimStart('﻿'));
     }
 

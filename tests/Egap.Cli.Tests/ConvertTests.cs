@@ -106,7 +106,7 @@ public sealed class ConvertTests : IDisposable
 
         Assert.Equal(ExitCodes.Usage, _tool.Run("convert", "plain.docx", "-o", "locked.rtf", "--save-password-env", "SAVE").Code);
         Assert.Equal(ExitCodes.Success, _tool.Run("convert", "plain.docx", "-o", "locked.docx", "--save-password-env", "SAVE").Code);
-        Assert.Equal(Egap.Documents.DocumentFormatKind.Encrypted, Egap.Documents.Document.Identify(_tool.PathOf("locked.docx")));
+        Assert.True(Egap.Documents.Document.IsEncrypted(_tool.PathOf("locked.docx")));
         Assert.NotEqual(ExitCodes.Success, _tool.Run("convert", "locked.docx", "-o", "back.rtf").Code);
 
         // The input's password opens it, to a flow format and to PDF; the editing restriction comes through.

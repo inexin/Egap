@@ -227,7 +227,7 @@ public sealed class DocEncryptionTests
 
         Assert.Equal(DocumentFormatKind.Doc, Document.Identify(new MemoryStream(file)));
         Assert.Equal(DocumentFormatKind.Doc, Document.Identify(new OneWayStream(file), "letter.doc"));
-        Assert.Equal(DocumentFormatKind.Encrypted, Document.Identify(new MemoryStream(encrypted)));
+        Assert.True(Document.IsEncrypted(new MemoryStream(encrypted)));
         Assert.Equal("Plain text", Text(Document.Load(new MemoryStream(file))));
         Assert.Equal("Plain text", Text(Document.Load(new MemoryStream(file), new DocumentLoadOptions { Limits = new DocumentLimits() })));
 

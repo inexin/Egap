@@ -20,8 +20,8 @@ public sealed class ProtectionTests
         sheet["A1"].Value = CellValue.FromText("locked");
         sheet["C2"].Value = CellValue.FromNumber(5);
         sheet["C2"].UpdateStyle(s => s with { Protection = s.Protection with { Locked = false } });
-        sheet.Protection.EditableRanges.Add("Inputs", "B2:B5", "range-pw1");
-        sheet.Protection.EditableRanges.Add("Open", "D2:D3");
+        sheet.Protection.EditableRanges.Add("B2:B5", "Inputs", "range-pw1");
+        sheet.Protection.EditableRanges.Add("D2:D3", "Open");
         sheet.Protection.Protect("Egap-pass1", SheetActions.Default | SheetActions.Sort | SheetActions.FormatColumns);
         book.Protection.Protect("book-pw1");
         book.Save(Path.Combine(AppContext.BaseDirectory, "protection.egap.xlsx"));
@@ -161,8 +161,8 @@ public sealed class ProtectionTests
     {
         Worksheet sheet = Workbook.Create().Worksheets[0];
         sheet["B1"].UpdateStyle(s => s with { Protection = s.Protection with { Locked = false } });
-        sheet.Protection.EditableRanges.Add("Free", "C1:C3");
-        sheet.Protection.EditableRanges.Add("Closed", "D1:D3", "pw");
+        sheet.Protection.EditableRanges.Add("C1:C3", "Free");
+        sheet.Protection.EditableRanges.Add("D1:D3", "Closed", "pw");
 
         Assert.True(sheet.Protection.CanEdit(CellAddress.Parse("A1")));
         sheet.Protection.Protect("x");
@@ -176,8 +176,8 @@ public sealed class ProtectionTests
     public void EditableRangesMoveWithInsertedRows()
     {
         Worksheet sheet = Workbook.Create().Worksheets[0];
-        EditableRange range = sheet.Protection.EditableRanges.Add("R", "B3:C4");
-        sheet.Protection.EditableRanges.Add("Gone", "A1:A1");
+        EditableRange range = sheet.Protection.EditableRanges.Add("B3:C4", "R");
+        sheet.Protection.EditableRanges.Add("A1:A1", "Gone");
 
         sheet.InsertRows(0, 2);
         Assert.Equal("B5:C6", range.Ranges.Single().ToString());

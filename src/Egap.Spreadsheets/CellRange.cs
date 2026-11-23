@@ -334,7 +334,7 @@ public readonly struct CellRange : IEnumerable<Cell>, IEquatable<CellRange>
 
     /// <summary>
     /// Finds the cells of the range whose text matches, as Excel's Find All does with the range selected; see
-    /// <see cref="Worksheet.Find(string, FindOptions?)"/>.
+    /// <see cref="Worksheet.FindAll(string, FindOptions?)"/>.
     /// </summary>
     /// <param name="what">The text to find; <c>*</c>, <c>?</c> and <c>~</c> are Excel's wildcards.</param>
     /// <param name="options">How to match; null for Excel's defaults.</param>
@@ -345,7 +345,7 @@ public readonly struct CellRange : IEnumerable<Cell>, IEquatable<CellRange>
     /// IReadOnlyList&lt;Cell&gt; found = sheet.Range("A1:D100").Find("apple");
     /// </code>
     /// </example>
-    public IReadOnlyList<Cell> Find(string what, FindOptions? options = null) => sheet.FindCells(Address, what, options ?? new FindOptions());
+    public IReadOnlyList<Cell> FindAll(string what, FindOptions? options = null) => sheet.FindCells(Address, what, options ?? new FindOptions());
 
     /// <summary>
     /// Replaces matching text in the range's formulas and values, as Excel's Replace All does with the range selected, and
