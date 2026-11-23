@@ -126,3 +126,7 @@ static Egap.Documents.HtmlFormat.SaveMhtml(Egap.Documents.Document! document, st
 static Egap.Documents.HtmlFormat.SaveMhtml(Egap.Documents.Document! document, System.IO.Stream! stream, Egap.Documents.HtmlSaveOptions? options = null) -> System.Collections.Generic.IReadOnlyList<Egap.Documents.ConversionWarning!>!
 static Egap.Documents.HtmlFormat.ToMhtml(this Egap.Documents.Document! document, Egap.Documents.HtmlSaveOptions? options = null) -> string!
 static Egap.Documents.HtmlFormat.ToMhtml(this Egap.Documents.Document! document, out System.Collections.Generic.IReadOnlyList<Egap.Documents.ConversionWarning!>! warnings, Egap.Documents.HtmlSaveOptions? options = null) -> string!
+Egap.Documents.EpubSaveOptions.RevisionView.get -> Egap.Documents.RevisionView
+Egap.Documents.EpubSaveOptions.RevisionView.init -> void
+Egap.Documents.HtmlSaveOptions.RevisionView.get -> Egap.Documents.RevisionView
+Egap.Documents.HtmlSaveOptions.RevisionView.init -> void

@@ -7,9 +7,7 @@ workbooks (XLS). The types are in
 `Egap.Spreadsheets`.
 
 > [!NOTE]
-> Egap.Spreadsheets is a preview, 2.3.0-preview.1, and its API may still change before the stable 2.3.0. Install it with
-> `dotnet add package Egap.Spreadsheets --prerelease`; it brings a preview of Egap.Documents with it.
-> [Known limits](#known-limits) lists what it does not do yet.
+> [Known limits](#known-limits) lists what Egap.Spreadsheets does not do yet.
 
 ```csharp
 using Egap.Spreadsheets;
