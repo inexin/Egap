@@ -124,7 +124,13 @@ internal sealed partial class HtmlWriter
         // The style classes carry everything; the browser's own heading and paragraph defaults are reset.
         css.Append("p, h1, h2, h3, h4, h5, h6, li, pre { margin: 0; }\nh1, h2, h3, h4, h5, h6 { font-size: inherit; font-weight: inherit; }\n");
         css.Append("ul, ol { margin: 0; }\ntable { border-collapse: collapse; }\ntd, th { vertical-align: top; text-align: inherit; font-weight: inherit; }\n");
-        css.Append("body {").Append(Declarations(RunCss(document.Styles.DefaultRunFormat, null))).Append(" }\n");
+        List<(string, string)> body = RunCss(document.Styles.DefaultRunFormat, null);
+        if (document.Settings.AutoHyphenation)
+        {
+            body.Add(("hyphens", "auto"));
+        }
+
+        css.Append("body {").Append(Declarations(body)).Append(" }\n");
         if (authorsUsed is not null)
         {
             css.Append(".egap-format-change { text-decoration: underline dotted; }\n");
@@ -1050,6 +1056,25 @@ internal sealed partial class HtmlWriter
 
     // ---- CSS ----------------------------------------------------------------------------------------------------------
 
+    /// <summary>Text as a CSS string: in double quotes, with quotes, backslashes and control characters escaped.</summary>
+    private static string CssQuote(string text)
+    {
+        StringBuilder quoted = new("\"");
+        foreach (char c in text)
+        {
+            if (c is '"' or '\\' || char.IsControl(c))
+            {
+                quoted.Append('\\').Append(((int)c).ToString("x", Invariant)).Append(' ');
+            }
+            else
+            {
+                quoted.Append(c);
+            }
+        }
+
+        return quoted.Append('"').ToString();
+    }
+
     private List<(string, string)> RunCss(RunFormat format, CharacterStyle? style)
     {
         _ = style;
@@ -1215,6 +1240,33 @@ internal sealed partial class HtmlWriter
             css.Add(("-webkit-box-orient", "vertical"));
             css.Add(("-webkit-line-clamp", maxLines.ToString(Invariant)));
             css.Add(("overflow", "hidden"));
+        }
+
+        // Hyphenation: on for the document (on the body) unless the paragraph suppresses it.
+        if (document.Settings.AutoHyphenation && format.SuppressAutoHyphens is bool suppress)
+        {
+            css.Add(("hyphens", suppress ? "manual" : "auto"));
+        }
+
+        if (format.HyphenCharacter is { } hyphen)
+        {
+            css.Add(("hyphenate-character", CssQuote(hyphen)));
+        }
+
+        if (format.HyphenationMinWordLength is not null || format.HyphenationMinBefore is not null || format.HyphenationMinAfter is not null)
+        {
+            static string Limit(int? value) => value?.ToString(Invariant) ?? "auto";
+            css.Add(("hyphenate-limit-chars", $"{Limit(format.HyphenationMinWordLength)} {Limit(format.HyphenationMinBefore)} {Limit(format.HyphenationMinAfter)}"));
+        }
+
+        switch (format.LineFill)
+        {
+            case Egami.Fonts.Layout.LineFill.Optimal:
+                css.Add(("text-wrap", "pretty"));
+                break;
+            case Egami.Fonts.Layout.LineFill.Balanced:
+                css.Add(("text-wrap", "balance"));
+                break;
         }
 
         switch (format.WordBreak)

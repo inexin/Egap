@@ -61,6 +61,12 @@ Besides fonts, colours, spacing, borders, lists and tables, these read into the 
   their values, as Word's are, so they keep their place in the text and a PDF export can turn them into form fields.
 - `word-spacing`, `text-decoration: overline`, `font-feature-settings`, `font-variant-ligatures`, `font-variant-numeric`,
   `word-break` and `overflow-wrap` set the [text options](../guides/flow-documents.md#text-options).
+- `hyphens: auto` turns the document's automatic hyphenation on for the paragraphs that ask for it, with no hyphenation
+  zone (browsers have none); the others suppress it. `hyphenate-character` and `hyphenate-limit-chars` set the
+  paragraph's `HyphenCharacter` and `HyphenationMinWordLength`, `HyphenationMinBefore` and `HyphenationMinAfter`.
+  `text-wrap: pretty` gives the paragraph optimal line filling (`ParagraphFormat.LineFill`), `text-wrap: balance`
+  balanced lines. Each run's language, from `lang`, picks the hyphenation dictionary
+  (see [Page layout](../guides/flow-documents.md#page-layout)). The writer writes them all back.
 - `break-inside: avoid` on a box of several blocks makes a group that is kept on one page, and `-webkit-line-clamp`
   clamps a paragraph to a number of lines (see [Page layout](../guides/flow-documents.md#page-layout)).
 - `@page` margin box rules such as `@top-left` and `@bottom-center`, with `counter(page)` and `counter(pages)`, become

@@ -80,6 +80,9 @@ internal sealed partial class HtmlReader
 
     private bool quirks;
 
+    /// <summary>The paragraphs read, each with whether CSS hyphenates it automatically.</summary>
+    private readonly List<(Paragraph Paragraph, bool Auto)> hyphenated = [];
+
     private void Build(HtmlDocument dom)
     {
         Section section = document.AddSection();
@@ -104,6 +107,81 @@ internal sealed partial class HtmlReader
 
         // After the body, so the running elements the margin boxes show are known.
         ReadMarginBoxes(section, pageName, rootStyle);
+        FinishHyphenation();
+    }
+
+    /// <summary>
+    /// CSS turns hyphenation on per element (<c>hyphens: auto</c>), Word for the document with paragraphs that suppress it:
+    /// when a paragraph asks for it, the document hyphenates, with no hyphenation zone (browsers have none), and every other
+    /// paragraph read suppresses it, as do paragraphs already in the document (EPUB's earlier chapters) that say nothing.
+    /// </summary>
+    private void FinishHyphenation()
+    {
+        if (!hyphenated.Exists(p => p.Auto))
+        {
+            return;
+        }
+
+        if (!document.Settings.AutoHyphenation)
+        {
+            HashSet<Paragraph> read = new(hyphenated.Select(p => p.Paragraph), ReferenceEqualityComparer.Instance);
+            foreach (Paragraph earlier in document.Descendants<Paragraph>())
+            {
+                if (!read.Contains(earlier) && earlier.Format.SuppressAutoHyphens is null)
+                {
+                    earlier.Format.SuppressAutoHyphens = true;
+                }
+            }
+
+            document.Settings.AutoHyphenation = true;
+            document.Settings.HyphenationZone = 0;
+        }
+
+        foreach ((Paragraph paragraph, bool auto) in hyphenated)
+        {
+            paragraph.Format.SuppressAutoHyphens = !auto;
+        }
+    }
+
+    /// <summary>A paragraph's CSS hyphenation: <c>hyphens</c>, <c>hyphenate-character</c> and <c>hyphenate-limit-chars</c>.</summary>
+    private void ReadHyphenation(Paragraph paragraph, HtmlStyle style)
+    {
+        ParagraphFormat format = paragraph.Format;
+        string? hyphens = style.Keyword("hyphens") ?? style.Keyword("-webkit-hyphens");
+        hyphenated.Add((paragraph, hyphens == "auto"));
+
+        // hyphenate-character: auto, or a string such as "0".
+        if ((CssString(style, "hyphenate-character") ?? CssString(style, "-webkit-hyphenate-character")) is { Length: > 0 } hyphen)
+        {
+            format.HyphenCharacter = hyphen;
+        }
+
+        // hyphenate-limit-chars: up to three integers or auto, for the word, the letters before and the letters after.
+        if (style.Text("hyphenate-limit-chars") is { } limits)
+        {
+            string[] parts = limits.Split((char[]?)null, StringSplitOptions.RemoveEmptyEntries);
+            int? Part(int i) => i < parts.Length && int.TryParse(parts[i], System.Globalization.NumberStyles.None, System.Globalization.CultureInfo.InvariantCulture, out int n) && n > 0 ? n : null;
+            if (parts.Length is >= 1 and <= 3)
+            {
+                format.HyphenationMinWordLength = Part(0);
+
+                // A missing third value is the second's (CSS Text 4).
+                format.HyphenationMinBefore = Part(1);
+                format.HyphenationMinAfter = parts.Length == 2 ? Part(1) : Part(2);
+            }
+        }
+    }
+
+    /// <summary>A property's value when it is one CSS string, unquoted; null otherwise (auto, none or nothing).</summary>
+    private static string? CssString(HtmlStyle style, string property)
+    {
+        if (!style.Computed.TryGetValue(property, out IReadOnlyList<CssComponentValue>? value))
+        {
+            return null;
+        }
+
+        CssComponentValue? first = value.FirstOrDefault(v => v is not CssTokenValue { Token.Kind: CssTokenKind.Whitespace });
+        return first is CssTokenValue { Token.Kind: CssTokenKind.String } text ? text.Token.Value : null;
     }
 
     /// <summary>The title and author in the head, as the writer puts them there.</summary>
@@ -815,6 +893,20 @@ internal sealed partial class HtmlReader
         if (wordBreak is not null)
         {
             format.WordBreak = wordBreak;
+        }
+
+        ReadHyphenation(paragraph, style);
+
+        // text-wrap: pretty (or text-wrap-style) is optimal line filling, balance balanced lines.
+        Egami.Fonts.Layout.LineFill? fill = (style.Keywords("text-wrap-style") is { Count: > 0 } wrapStyle ? wrapStyle : style.Keywords("text-wrap")) switch
+        {
+            var k when k.Contains("pretty") => Egami.Fonts.Layout.LineFill.Optimal,
+            var k when k.Contains("balance") => Egami.Fonts.Layout.LineFill.Balanced,
+            _ => null,
+        };
+        if (fill is not null)
+        {
+            format.LineFill = fill;
         }
 
         if ((style.Text("-webkit-line-clamp") ?? style.Text("line-clamp")) is { } clamp && int.TryParse(clamp.Trim(), System.Globalization.NumberStyles.None, System.Globalization.CultureInfo.InvariantCulture, out int maxLines) && maxLines > 0)

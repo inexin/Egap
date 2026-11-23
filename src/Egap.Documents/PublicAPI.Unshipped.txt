@@ -783,6 +783,16 @@ Egap.Documents.OdtSaveOptions.Password.get -> string?
 Egap.Documents.OdtSaveOptions.Password.init -> void
 Egap.Documents.OdtSaveOptions.Version.get -> Egap.Documents.OdfVersion
 Egap.Documents.OdtSaveOptions.Version.init -> void
+Egap.Documents.ParagraphFormat.HyphenationMinAfter.get -> int?
+Egap.Documents.ParagraphFormat.HyphenationMinAfter.set -> void
+Egap.Documents.ParagraphFormat.HyphenationMinBefore.get -> int?
+Egap.Documents.ParagraphFormat.HyphenationMinBefore.set -> void
+Egap.Documents.ParagraphFormat.HyphenationMinWordLength.get -> int?
+Egap.Documents.ParagraphFormat.HyphenationMinWordLength.set -> void
+Egap.Documents.ParagraphFormat.HyphenCharacter.get -> string?
+Egap.Documents.ParagraphFormat.HyphenCharacter.set -> void
+Egap.Documents.ParagraphFormat.LineFill.get -> Egami.Fonts.Layout.LineFill?
+Egap.Documents.ParagraphFormat.LineFill.set -> void
 Egap.Documents.Pdf.PdfConvertOptions.Password.get -> string?
 Egap.Documents.Pdf.PdfConvertOptions.Password.init -> void
 Egap.Documents.Pdf.PdfExportOptions.RevisionView.get -> Egap.Documents.RevisionView
@@ -793,6 +803,11 @@ Egap.Documents.ProtectionKind.Forms = 4 -> Egap.Documents.ProtectionKind
 Egap.Documents.ProtectionKind.None = 0 -> Egap.Documents.ProtectionKind
 Egap.Documents.ProtectionKind.ReadOnly = 1 -> Egap.Documents.ProtectionKind
 Egap.Documents.ProtectionKind.TrackedChanges = 3 -> Egap.Documents.ProtectionKind
+Egap.Documents.ResolvedParagraphFormat.HyphenationMinAfter.get -> int?
+Egap.Documents.ResolvedParagraphFormat.HyphenationMinBefore.get -> int?
+Egap.Documents.ResolvedParagraphFormat.HyphenationMinWordLength.get -> int?
+Egap.Documents.ResolvedParagraphFormat.HyphenCharacter.get -> string?
+Egap.Documents.ResolvedParagraphFormat.LineFill.get -> Egami.Fonts.Layout.LineFill?
 Egap.Documents.Revision.MoveName.get -> string?
 Egap.Documents.Revision.MoveName.init -> void
 Egap.Documents.RevisionView

@@ -35,6 +35,21 @@ internal sealed partial class HtmlReader
         "table { font-weight: initial; font-style: initial; font-variant: initial; font-size: initial; line-height: initial; white-space: initial; text-align: initial; }" +
         "img[align=left i] { margin-right: 3px; } img[align=right i] { margin-left: 3px; }"));
 
+    /// <summary>
+    /// The cascade's properties: CSS's own, and the inherited text properties the reader takes that the default registry does
+    /// not know (hyphenation and text-wrap), so that a value set on the body reaches its paragraphs.
+    /// </summary>
+    private static readonly Lazy<CssPropertyRegistry> Registry = new(() =>
+    {
+        CssPropertyRegistry registry = CssPropertyRegistry.CreateDefault();
+        foreach (string name in (ReadOnlySpan<string>)["hyphens", "-webkit-hyphens", "hyphenate-character", "-webkit-hyphenate-character", "hyphenate-limit-chars", "text-wrap", "text-wrap-style"])
+        {
+            registry.Register(new CssPropertyDefinition(name, true, null));
+        }
+
+        return registry;
+    });
+
     private readonly Document document;
     private readonly HtmlLoadOptions options;
     private readonly CssCascade cascade;
@@ -95,6 +110,7 @@ internal sealed partial class HtmlReader
         CssCascade cascade = new(sheets, new CssCascadeOptions
         {
             Media = new CssMediaContext { MediaType = options.Media, Width = 816, Height = 1056 },
+            Registry = Registry.Value,
         });
         reader = new HtmlReader(options, cascade, into);
         foreach (string href in notLoaded)

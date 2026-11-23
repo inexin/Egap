@@ -757,6 +757,22 @@ internal sealed class ParagraphBridge(FontProvider fonts, Document document, Rev
         return options;
     }
 
+    /// <summary>The document's hyphenation options with a paragraph's own limits (CSS hyphenate-limit-chars), when it has any.</summary>
+    private static HyphenationOptions WithLimits(HyphenationOptions options, ResolvedParagraphFormat format)
+    {
+        if (format.HyphenationMinWordLength is null && format.HyphenationMinBefore is null && format.HyphenationMinAfter is null)
+        {
+            return options;
+        }
+
+        return options with
+        {
+            MinWordLength = format.HyphenationMinWordLength ?? options.MinWordLength,
+            MinBefore = format.HyphenationMinBefore is int before ? Math.Min(before, 255) : options.MinBefore,
+            MinAfter = format.HyphenationMinAfter is int after ? Math.Min(after, 255) : options.MinAfter,
+        };
+    }
+
     private EgamiParagraphStyle ParagraphStyleOf(ResolvedParagraphFormat format, TextStyle? defaultStyle, bool labelled = false)
     {
         double lineStart = format.LeftIndent + format.FirstLineIndent;
@@ -838,13 +854,13 @@ internal sealed class ParagraphBridge(FontProvider fonts, Document document, Rev
             TabStops = stops,
             // An optional hyphen (U+00AD: Word's w:softHyphen, RTF's \-, DOC's 0x1F) that ends a line shows as a hyphen-minus, as
             // Word 16 draws it; LibreOffice and browsers draw one there too.
-            Hyphen = "-",
+            Hyphen = format.HyphenCharacter ?? "-",
 
             // Word hyphenates automatically where the settings ask for it and the paragraph does not suppress it, with the
             // settings' limit of lines in a row, zone and capitals switch.
             Hyphens = autoHyphens ? Hyphens.Auto : Hyphens.Manual,
-            Hyphenation = autoHyphens ? HyphenationOf(document.Settings) : null,
-            LineFill = lineFill,
+            Hyphenation = autoHyphens ? WithLimits(HyphenationOf(document.Settings), format) : null,
+            LineFill = format.LineFill ?? lineFill,
             Fallback = fonts.Fallback,
             MaxLines = format.MaxLines > 0 ? format.MaxLines : null,
             Ellipsis = format.MaxLines > 0 ? "\u2026" : null,

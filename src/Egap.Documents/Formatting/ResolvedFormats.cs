@@ -296,6 +296,21 @@ public sealed class ResolvedParagraphFormat
     /// <summary>How far justified Arabic lines are stretched with tatweels; <see cref="KashidaLevel.None"/> for word spaces only.</summary>
     public KashidaLevel Kashida => Value(ParagraphFormat.KashidaId, KashidaLevel.None);
 
+    /// <summary>The text drawn where a line ends at a hyphenation point, or null for a hyphen-minus.</summary>
+    public string? HyphenCharacter => values[ParagraphFormat.HyphenCharacterId] as string;
+
+    /// <summary>The fewest letters a word needs to be hyphenated automatically, or null for 5.</summary>
+    public int? HyphenationMinWordLength => values[ParagraphFormat.HyphenationMinWordLengthId] as int?;
+
+    /// <summary>The fewest letters kept before an automatic hyphen, or null for the dictionary's own.</summary>
+    public int? HyphenationMinBefore => values[ParagraphFormat.HyphenationMinBeforeId] as int?;
+
+    /// <summary>The fewest letters carried after an automatic hyphen, or null for the dictionary's own.</summary>
+    public int? HyphenationMinAfter => values[ParagraphFormat.HyphenationMinAfterId] as int?;
+
+    /// <summary>How the paragraph's lines are filled, or null for <see cref="Layout.LayoutOptions.LineFill"/>.</summary>
+    public Egami.Fonts.Layout.LineFill? LineFill => values[ParagraphFormat.LineFillId] as Egami.Fonts.Layout.LineFill?;
+
     /// <summary>The paragraph's text frame, or null for a paragraph in the text.</summary>
     public FramePosition? Frame => values[ParagraphFormat.FrameId] as FramePosition;
 

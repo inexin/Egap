@@ -4,7 +4,7 @@ namespace Egap.Documents;
 /// <summary>Paragraph formatting: alignment, indents, spacing, keep rules, tabs, borders and shading (Word's paragraph properties). Every property is nullable: null means not set here.</summary>
 public sealed partial class ParagraphFormat : FormatBase
 {
-    internal const int Count = 35;
+    internal const int Count = 40;
 
     internal const int AlignmentId = 0;
     internal const int LeftIndentId = 1;
@@ -41,6 +41,11 @@ public sealed partial class ParagraphFormat : FormatBase
     internal const int MaxLinesId = 32;
     internal const int KashidaId = 33;
     internal const int FrameId = 34;
+    internal const int HyphenCharacterId = 35;
+    internal const int HyphenationMinWordLengthId = 36;
+    internal const int HyphenationMinBeforeId = 37;
+    internal const int HyphenationMinAfterId = 38;
+    internal const int LineFillId = 39;
 
     internal override int PropertyCount => Count;
 
@@ -289,6 +294,41 @@ public sealed partial class ParagraphFormat : FormatBase
         set => SetRaw(34, value);
     }
 
+    /// <summary>The text drawn where a line ends at a hyphenation point, such as U+2010; a hyphen-minus when not set (CSS hyphenate-character). Word has no such setting.</summary>
+    public string? HyphenCharacter
+    {
+        get => GetRef<string>(35);
+        set => SetRaw(35, value);
+    }
+
+    /// <summary>The fewest letters a word needs to be hyphenated automatically; 5 when not set (CSS hyphenate-limit-chars). Word has no such setting.</summary>
+    public int? HyphenationMinWordLength
+    {
+        get => Get<int>(36);
+        set => SetRaw(36, value is null or > 0 ? value : throw new ArgumentOutOfRangeException(nameof(value)));
+    }
+
+    /// <summary>The fewest letters automatic hyphenation keeps before a hyphen; the dictionary's own when not set (CSS hyphenate-limit-chars). Word has no such setting.</summary>
+    public int? HyphenationMinBefore
+    {
+        get => Get<int>(37);
+        set => SetRaw(37, value is null or > 0 ? value : throw new ArgumentOutOfRangeException(nameof(value)));
+    }
+
+    /// <summary>The fewest letters automatic hyphenation carries to the next line; the dictionary's own when not set (CSS hyphenate-limit-chars). Word has no such setting.</summary>
+    public int? HyphenationMinAfter
+    {
+        get => Get<int>(38);
+        set => SetRaw(38, value is null or > 0 ? value : throw new ArgumentOutOfRangeException(nameof(value)));
+    }
+
+    /// <summary>How the paragraph's lines are filled; LayoutOptions.LineFill when not set (CSS text-wrap: pretty and balance). Word has no such setting.</summary>
+    public Egami.Fonts.Layout.LineFill? LineFill
+    {
+        get => Get<Egami.Fonts.Layout.LineFill>(39);
+        set => SetEnum(39, value);
+    }
+
     internal override string PropertyName(int id)
     {
         return id switch
@@ -328,6 +368,11 @@ public sealed partial class ParagraphFormat : FormatBase
             32 => nameof(MaxLines),
             33 => nameof(Kashida),
             34 => nameof(Frame),
+            35 => nameof(HyphenCharacter),
+            36 => nameof(HyphenationMinWordLength),
+            37 => nameof(HyphenationMinBefore),
+            38 => nameof(HyphenationMinAfter),
+            39 => nameof(LineFill),
             _ => throw new ArgumentOutOfRangeException(nameof(id)),
         };
     }

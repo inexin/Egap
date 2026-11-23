@@ -174,6 +174,11 @@ follows with the rest of Egap. Install it with `dotnet tool install -g Egap.Cli 
   without one is not hyphenated, and a `LayoutWarningKind.HyphenationDictionaryMissing` warning names each such
   language once. In PDFs an automatic hyphen is marked as a soft hyphen (`/ActualText`), so extracted text reads the
   word whole.
+- `ParagraphFormat` has the hyphenation and line filling settings CSS gives a paragraph and Word does not:
+  `HyphenCharacter` (drawn where a line ends at a hyphenation point; a hyphen-minus when not set),
+  `HyphenationMinWordLength`, `HyphenationMinBefore` and `HyphenationMinAfter` (the shortest word hyphenated and the
+  fewest letters before and after a hyphen), and `LineFill`, which overrides `LayoutOptions.LineFill` for the
+  paragraph. HTML reads and writes them; the other formats keep them only in the model.
 - `LayoutOptions.LineFill` chooses how lines are filled: `Greedy`, the default and Word's way, or `Optimal`, the breaks
   that suit the whole paragraph best (Knuth and Plass), for more even spacing.
 
@@ -343,6 +348,14 @@ Egap.Documents.Html, Egap.Documents.Markdown and Egap.Preview 2.2.0 work with it
   rejected (`Original`). MHTML follows `HtmlSaveOptions`.
 - MathML `<math>` elements read as equations that lay out as math, and every equation (from Word, RTF, OpenDocument or
   HTML) is written as MathML Core; before, MathML was left out and equations were written as their text.
+- CSS hyphenation reads and writes: `hyphens: auto` (and `-webkit-hyphens`) turns the document's automatic
+  hyphenation on, with no hyphenation zone, as browsers have none, and every paragraph without it (`manual` or `none`)
+  suppresses it; `hyphenate-character` sets the paragraph's `HyphenCharacter`, and `hyphenate-limit-chars` its
+  `HyphenationMinWordLength`, `HyphenationMinBefore` and `HyphenationMinAfter`. The writer puts `hyphens: auto` on the
+  body of a document that hyphenates, and `hyphens: manual` on the paragraphs that suppress it. The hyphenation
+  properties inherit, as in CSS.
+- `text-wrap: pretty` (or `text-wrap-style: pretty`) gives the paragraph optimal line filling (`ParagraphFormat.LineFill`),
+  and `text-wrap: balance` balanced lines; both are written back.
 - Built on AngleSharp 1.9.1. AngleSharp's new nesting limit is turned off, so deeply nested tables still read in full;
   Egap's own guard keeps hostile nesting bounded as before.
 
