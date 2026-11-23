@@ -169,7 +169,8 @@ follows with the rest of Egap. Install it with `dotnet tool install -g Egap.Cli 
     of the file it was saved to.
 - Layout hyphenates words automatically where the document asks for it (`DocumentSettings.AutoHyphenation`), as Word
   does: with its limit of lines in a row, its hyphenation zone (Word's 18 points by default, applied to justified lines
-  too) and its capitals setting, and not in paragraphs with `SuppressAutoHyphens`. Each run's language picks the
+  too) and its capitals setting, and not in paragraphs with `SuppressAutoHyphens`. As Word does, at least three letters
+  go to the next line, whatever a language's patterns allow. Each run's language picks the
   dictionary from the new `LayoutOptions.Hyphenation`, Egami.Fonts' built-in patterns by default; text in a language
   without one is not hyphenated, and a `LayoutWarningKind.HyphenationDictionaryMissing` warning names each such
   language once. In PDFs an automatic hyphen is marked as a soft hyphen (`/ActualText`), so extracted text reads the
