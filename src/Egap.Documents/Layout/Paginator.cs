@@ -67,16 +67,19 @@ internal sealed partial class Paginator
         // A second layout with the same font settings reuses the fonts and every paragraph that did not change.
         // Another revision view keeps the fonts but needs paragraphs built again.
         view = options?.RevisionView == RevisionView.Markup ? RevisionView.Markup : RevisionView.Final;
+        // Other hyphenation dictionaries or line filling need them built again too.
+        HyphenationDictionaries? dictionaries = options is null ? HyphenationDictionaries.BuiltIn : options.Hyphenation;
+        LineFill fill = options?.LineFill ?? LineFill.Greedy;
         if (!Caches.TryGetValue(document, out LayoutCache? cache) || !ReferenceEquals(cache.Settings, options?.Fonts))
         {
             FontProvider provider = new(document, options?.Fonts);
             PageDrawing.RememberFonts(document, provider);
-            cache = new LayoutCache(options?.Fonts, provider, new ParagraphBridge(provider, document, view));
+            cache = new LayoutCache(options?.Fonts, provider, new ParagraphBridge(provider, document, view, dictionaries, fill));
             Caches.AddOrUpdate(document, cache);
         }
-        else if (cache.Bridge.View != view)
+        else if (cache.Bridge.View != view || !ReferenceEquals(cache.Bridge.Dictionaries, dictionaries) || cache.Bridge.LineFill != fill)
         {
-            cache = new LayoutCache(cache.Settings, cache.Fonts, new ParagraphBridge(cache.Fonts, document, view));
+            cache = new LayoutCache(cache.Settings, cache.Fonts, new ParagraphBridge(cache.Fonts, document, view, dictionaries, fill));
             Caches.AddOrUpdate(document, cache);
         }
 
@@ -640,6 +643,12 @@ internal sealed partial class Paginator
         }
 
         LineFlow flow = content.Text.CreateFlow();
+        if (first != 0 && content.Text.Style.LineFill == LineFill.Optimal)
+        {
+            // Optimal filling plans the whole paragraph from its first line: the lines after it lose the first-line indent.
+            flow.FollowingWidth = (float)Math.Max(1, width - left - right);
+        }
+
         while (true)
         {
             double indent = lines.Count == 0 ? left + first : left;

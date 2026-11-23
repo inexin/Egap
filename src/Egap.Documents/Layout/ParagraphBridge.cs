@@ -70,6 +70,12 @@ internal sealed class ParagraphContent
     /// <summary>The text ranges with tracked changes, for change bars; null unless changes are shown (<see cref="RevisionView.Markup"/>).</summary>
     public IReadOnlyList<(int Start, int Length)>? Changes { get; init; }
 
+    /// <summary>
+    /// The languages of words the paragraph would hyphenate automatically that have no hyphenation dictionary, or null; for
+    /// <see cref="LayoutWarningKind.HyphenationDictionaryMissing"/>.
+    /// </summary>
+    public IReadOnlyList<string>? MissingDictionaries { get; init; }
+
     /// <summary>The lines last broken for this content, at the width they were broken for; layout keeps them here.</summary>
     internal (double Width, object Lines)? Broken { get; set; }
 
@@ -91,7 +97,13 @@ internal sealed class ParagraphContent
 }
 
 /// <summary>Builds <see cref="ParagraphContent"/> from model paragraphs with one <see cref="FontProvider"/>.</summary>
-internal sealed class ParagraphBridge(FontProvider fonts, Document document, RevisionView view = RevisionView.Final)
+/// <param name="fonts">The fonts.</param>
+/// <param name="document">The document.</param>
+/// <param name="view">How tracked changes show.</param>
+/// <param name="dictionaries">The hyphenation dictionaries (<see cref="LayoutOptions.Hyphenation"/>), or null for none.</param>
+/// <param name="lineFill">How lines are filled (<see cref="LayoutOptions.LineFill"/>).</param>
+internal sealed class ParagraphBridge(FontProvider fonts, Document document, RevisionView view = RevisionView.Final,
+    HyphenationDictionaries? dictionaries = null, LineFill lineFill = LineFill.Greedy)
 {
     /// <summary>The authors' colours in order: the first author of the document's changes gets the first.</summary>
     internal static readonly Rgba8[] AuthorColors =
@@ -103,8 +115,18 @@ internal sealed class ParagraphBridge(FontProvider fonts, Document document, Rev
     private readonly Dictionary<string, IReadOnlyList<FontFamily>> families = new(StringComparer.OrdinalIgnoreCase);
     private Dictionary<string, int>? authors;
 
+    /// <summary>The document's hyphenation settings as Egami's options, with the <see cref="DocumentSettings"/> version they
+    /// were made for.</summary>
+    private (long Version, HyphenationOptions Options)? hyphenation;
+
     /// <summary>How tracked changes show: <see cref="RevisionView.Final"/> or <see cref="RevisionView.Markup"/>.</summary>
     public RevisionView View => view;
+
+    /// <summary>The hyphenation dictionaries, or null for none.</summary>
+    public HyphenationDictionaries? Dictionaries => dictionaries;
+
+    /// <summary>How lines are filled.</summary>
+    public LineFill LineFill => lineFill;
 
     /// <param name="paragraph">The paragraph.</param>
     /// <param name="pageField">The text of a page field (PAGE, NUMPAGES, SECTIONPAGES, PAGEREF) on the page being laid out, or null to show its stored result.</param>
@@ -181,6 +203,7 @@ internal sealed class ParagraphBridge(FontProvider fonts, Document document, Rev
         RichText rich = text.ToRichText();
         // Text outside every span (a placeholder's character) takes the default style, which must name fonts.
         EgamiParagraphStyle paragraphStyle = ParagraphStyleOf(format, Mark(), labelLength > 0);
+        IReadOnlyList<string>? unhyphenated = paragraphStyle.Hyphens == Hyphens.Auto ? MissingDictionaries(rich, labelLength) : null;
         return new ParagraphContent
         {
             Source = paragraph,
@@ -195,6 +218,7 @@ internal sealed class ParagraphBridge(FontProvider fonts, Document document, Rev
             MaxFontSize = maxSize,
             HasRevisions = hasRevisions,
             Changes = changes,
+            MissingDictionaries = unhyphenated,
         };
 
         // The mark's style, resolved once for the paragraph.
@@ -687,6 +711,52 @@ internal sealed class ParagraphBridge(FontProvider fonts, Document document, Rev
         return list;
     }
 
+    /// <summary>
+    /// The languages of the paragraph's words that <see cref="Dictionaries"/> has no hyphenator for, each once, or null when
+    /// it has one for every language (text with no language is not hyphenated and not counted).
+    /// </summary>
+    private List<string>? MissingDictionaries(RichText rich, int labelLength)
+    {
+        List<string>? missing = null;
+        string text = rich.Text;
+        foreach (StyleSpan span in rich.Spans)
+        {
+            if (span.End <= labelLength || span.Style.Language is not { Length: > 0 } language
+                || (missing is not null && missing.Contains(language, StringComparer.OrdinalIgnoreCase))
+                || !text.AsSpan(Math.Max(span.Start, labelLength), span.End - Math.Max(span.Start, labelLength)).ContainsAnyExcept(NotWords)
+                || dictionaries!.TryGet(language, out _))
+            {
+                continue;
+            }
+
+            (missing ??= []).Add(language);
+        }
+
+        return missing;
+    }
+
+    /// <summary>Text with no word to hyphenate: spaces, tabs, digits and common punctuation.</summary>
+    private static readonly System.Buffers.SearchValues<char> NotWords = System.Buffers.SearchValues.Create(" 	 ​0123456789.,;:!?-()[]\"'–—‘’“”");
+
+    /// <summary>The document's hyphenation settings as Egami's options, made again when the settings change.</summary>
+    private HyphenationOptions HyphenationOf(DocumentSettings settings)
+    {
+        if (hyphenation is { } made && made.Version == document.FormattingVersion)
+        {
+            return made.Options;
+        }
+
+        HyphenationOptions options = new()
+        {
+            Dictionaries = dictionaries!,
+            MaxConsecutiveLines = settings.ConsecutiveHyphenLimit,
+            Zone = (float)settings.HyphenationZone,
+            HyphenateCapitalized = settings.HyphenateCapitals,
+        };
+        hyphenation = (document.FormattingVersion, options);
+        return options;
+    }
+
     private EgamiParagraphStyle ParagraphStyleOf(ResolvedParagraphFormat format, TextStyle? defaultStyle, bool labelled = false)
     {
         double lineStart = format.LeftIndent + format.FirstLineIndent;
@@ -744,6 +814,7 @@ internal sealed class ParagraphBridge(FontProvider fonts, Document document, Rev
             }
         }
 
+        bool autoHyphens = dictionaries is not null && document.Settings.AutoHyphenation && !format.SuppressAutoHyphens;
         return new EgamiParagraphStyle
         {
             DefaultStyle = defaultStyle ?? new TextStyle(),
@@ -768,6 +839,12 @@ internal sealed class ParagraphBridge(FontProvider fonts, Document document, Rev
             // An optional hyphen (U+00AD: Word's w:softHyphen, RTF's \-, DOC's 0x1F) that ends a line shows as a hyphen-minus, as
             // Word 16 draws it; LibreOffice and browsers draw one there too.
             Hyphen = "-",
+
+            // Word hyphenates automatically where the settings ask for it and the paragraph does not suppress it, with the
+            // settings' limit of lines in a row, zone and capitals switch.
+            Hyphens = autoHyphens ? Hyphens.Auto : Hyphens.Manual,
+            Hyphenation = autoHyphens ? HyphenationOf(document.Settings) : null,
+            LineFill = lineFill,
             Fallback = fonts.Fallback,
             MaxLines = format.MaxLines > 0 ? format.MaxLines : null,
             Ellipsis = format.MaxLines > 0 ? "\u2026" : null,

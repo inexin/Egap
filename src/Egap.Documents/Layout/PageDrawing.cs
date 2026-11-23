@@ -231,6 +231,25 @@ internal static class PageDrawing
         return GlyphRun.Create(glyphs.Font, glyphs.Glyphs, glyphs.Positions, text.Substring(start, length), clusters);
     }
 
+    /// <summary>
+    /// The number of hyphen glyphs automatic hyphenation added at the end of a line's last run (left to right), or 0: the line
+    /// ends inside a word, not at an optional hyphen, and the run ends in the hyphen-minus glyph the paragraph style draws
+    /// there, which the word's own last letter cannot be.
+    /// </summary>
+    private static int AutoHyphenGlyphs(TextLine line, LayoutRun run, GlyphRun glyphs, string text)
+    {
+        int end = line.Start + line.Length;
+        if (run.Start + run.Length != end || (run.BidiLevel & 1) != 0 || end <= 0 || end >= text.Length
+            || !char.IsLetter(text[end - 1]) || !char.IsLetter(text[end]) || glyphs.Count < 2
+            || !glyphs.Transforms.IsEmpty || glyphs.Clusters.Length != glyphs.Count)
+        {
+            return 0;
+        }
+
+        ushort hyphen = glyphs.Font.Typeface.GetGlyph('-');
+        return hyphen != 0 && glyphs.Glyphs[^1] == hyphen && glyphs.Clusters[^1] >= end - 1 ? 1 : 0;
+    }
+
     private static void DrawLine(LineBox line, Canvas canvas)
     {
         TextLine text = line.Line;
@@ -255,7 +274,22 @@ internal static class PageDrawing
             }
 
             TextStyle style = paragraph.GetStyle(run.StyleIndex);
-            canvas.DrawGlyphRun(OwnText(glyphs, run), origin, style.Color ?? Black);
+            Rgba8 color = style.Color ?? Black;
+            if (AutoHyphenGlyphs(text, run, glyphs, paragraph.Text) is > 0 and int hyphen)
+            {
+                // The hyphen automatic hyphenation adds stands for no text: it is marked as a soft hyphen (U+00AD), as the
+                // PDF standard asks (ISO 32000-2, 14.8.2.2.3), so the word reads whole when text is extracted or searched.
+                int body = glyphs.Count - hyphen;
+                canvas.DrawGlyphRun(OwnText(GlyphRun.Create(glyphs.Font, glyphs.Glyphs[..body], glyphs.Positions[..body], glyphs.Text, glyphs.Clusters[..body]), run), origin, color);
+                canvas.BeginMarkedContent(new MarkedContent("Span") { ActualText = "­" });
+                canvas.DrawGlyphRun(GlyphRun.Create(glyphs.Font, glyphs.Glyphs[body..], glyphs.Positions[body..]), origin, color);
+                canvas.EndMarkedContent();
+            }
+            else
+            {
+                canvas.DrawGlyphRun(OwnText(glyphs, run), origin, color);
+            }
+
             if (style.Decoration is { } decoration && run.Advance > 0)
             {
                 DrawDecoration(canvas, decoration, style, origin.X + run.X, run.Advance, (float)line.Baseline - (style.BaselineShift ?? 0));

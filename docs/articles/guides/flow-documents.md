@@ -218,6 +218,38 @@ builder.InsertField("NUMPAGES");
 builder.MoveToMarginBox(MarginBoxPosition.TopLeft, firstPage: true);   // an empty box: no title on the cover
 ```
 
+Layout hyphenates words at line ends where the document asks for it, as Word does: `DocumentSettings.AutoHyphenation`
+turns it on, `ConsecutiveHyphenLimit` limits the lines in a row that end in a hyphen, `HyphenationZone` (Word's 18
+points by default) keeps short words whole when the line would leave less room than that, in justified paragraphs too,
+and `HyphenateCapitals` says whether words in capitals break. A paragraph with `SuppressAutoHyphens` is not hyphenated.
+Each run's language picks the dictionary from `LayoutOptions.Hyphenation`, Egami's built-in patterns for some 35
+languages by default; text in a language with no dictionary is not hyphenated, and a `HyphenationDictionaryMissing`
+warning names the language. In a PDF, an automatic hyphen is marked as a soft hyphen, so copied and searched text reads
+the word whole. `LayoutOptions.LineFill = LineFill.Optimal` chooses the line breaks that suit each paragraph as a whole,
+as TeX does, for more even spacing; the default fills each line as far as it goes, as Word does.
+
+```csharp
+using Egap.Documents;
+using Egap.Documents.Layout;
+
+Document doc = Document.Load("report.docx");
+doc.Settings.AutoHyphenation = true;
+doc.Settings.ConsecutiveHyphenLimit = 2;
+
+// Egami.Fonts.Layout's types: the built-in dictionaries plus one for a language Egami does not ship.
+Egami.Fonts.Layout.HyphenationDictionaries dictionaries = new(Egami.Fonts.Layout.HyphenationDictionaries.BuiltIn);
+using (FileStream patterns = File.OpenRead("hyph-sv.tex"))
+{
+    dictionaries.Add("sv", Egami.Fonts.Layout.Hyphenator.Load(patterns));
+}
+
+DocumentLayout pages = doc.Layout(new LayoutOptions { Hyphenation = dictionaries, LineFill = Egami.Fonts.Layout.LineFill.Optimal });
+foreach (LayoutWarning warning in pages.Warnings)
+{
+    Console.WriteLine(warning);                                     // e.g. no dictionary for a language
+}
+```
+
 A table with a `TableFormat.Position` floats: it sits where its anchors and alignment or offsets put it (the text, the
 margins or the page), text after it wraps on the side with more room, and when it does not fit it goes on at the top of
 the next page's body with its header rows repeated. The text after a table that breaks follows it on the page where it

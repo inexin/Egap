@@ -1,3 +1,5 @@
+using Egami.Fonts.Layout;
+
 namespace Egap.Documents.Layout;
 
 /// <summary>How <see cref="Document.Layout(LayoutOptions?)"/> lays a document out.</summary>
@@ -26,6 +28,25 @@ public sealed class LayoutOptions
     /// that copy's.
     /// </summary>
     public RevisionView RevisionView { get; init; }
+
+    /// <summary>
+    /// The hyphenation dictionaries automatic hyphenation looks words up in, by each run's language;
+    /// <see cref="HyphenationDictionaries.BuiltIn"/> by default. Words are hyphenated only where the document asks for it
+    /// (<see cref="DocumentSettings.AutoHyphenation"/>, and not in paragraphs with
+    /// <see cref="ParagraphFormat.SuppressAutoHyphens"/>), with its limit of lines in a row, hyphenation zone and capitals
+    /// setting. Text in a language without a dictionary is not hyphenated, and a <see cref="LayoutWarning"/> of kind
+    /// <see cref="LayoutWarningKind.HyphenationDictionaryMissing"/> names the language. Null hyphenates only at optional
+    /// hyphens (U+00AD) in the text.
+    /// </summary>
+    public HyphenationDictionaries? Hyphenation { get; init; } = HyphenationDictionaries.BuiltIn;
+
+    /// <summary>
+    /// How paragraphs are broken into lines: <see cref="LineFill.Greedy"/> (the default) fills each line as far as it goes,
+    /// as Word does; <see cref="LineFill.Optimal"/> chooses the breaks that suit the whole paragraph best, as TeX does, for
+    /// more even spacing in justified text at some cost in speed, and with lines that differ from Word's.
+    /// <see cref="LineFill.Balanced"/> evens out the lines of paragraphs of up to 6 lines, such as headings.
+    /// </summary>
+    public LineFill LineFill { get; init; }
 }
 
 /// <summary>

@@ -167,6 +167,15 @@ follows with the rest of Egap. Install it with `dotnet tool install -g Egap.Cli 
   - Kept markup from another DOCX, such as a VML group a compare or `Document.Import` brought over, gets copies of the
     parts it points at, such as its images. Before, it kept the other file's relationship ids, which named other parts
     of the file it was saved to.
+- Layout hyphenates words automatically where the document asks for it (`DocumentSettings.AutoHyphenation`), as Word
+  does: with its limit of lines in a row, its hyphenation zone (Word's 18 points by default, applied to justified lines
+  too) and its capitals setting, and not in paragraphs with `SuppressAutoHyphens`. Each run's language picks the
+  dictionary from the new `LayoutOptions.Hyphenation`, Egami.Fonts' built-in patterns by default; text in a language
+  without one is not hyphenated, and a `LayoutWarningKind.HyphenationDictionaryMissing` warning names each such
+  language once. In PDFs an automatic hyphen is marked as a soft hyphen (`/ActualText`), so extracted text reads the
+  word whole.
+- `LayoutOptions.LineFill` chooses how lines are filled: `Greedy`, the default and Word's way, or `Optimal`, the breaks
+  that suit the whole paragraph best (Knuth and Plass), for more even spacing.
 
 - API changes since 2.3.0-preview.1, made before the API is frozen:
   - `Document.IsEncrypted` tells whether a file needs a password, and `Document.Identify` gives an encrypted file's own
@@ -188,6 +197,7 @@ Behaviour that differs from 2.2.0, all in the notes above or below:
 - A SmartArt diagram's `Island.Text` holds its points, one per line.
 - A chart island draws the chart on pages and in PDFs; before, it showed the picture saved with it.
 - An optional hyphen that ends a line draws a hyphen; before, the line broke there with no hyphen.
+- Documents with automatic hyphenation on are hyphenated, so their lines break differently than before.
 
 ## Egap.Documents 2.3.0-preview.1 (2026-11-13)
 
@@ -199,7 +209,6 @@ Egap.Documents.Html, Egap.Documents.Markdown and Egap.Preview 2.2.0 work with it
   `HyphenateCapitals`. They are read from DOCX, DOC and RTF files and saved to DOCX and RTF. ODT files switch hyphenation
   on per style: the reader turns `AutoHyphenation` on when a style hyphenates, and the paragraphs of styles that do not
   hyphenate suppress it. The ODT writer puts the settings on the default paragraph style, where LibreOffice reads them.
-  Layout does not hyphenate yet.
 - An optional hyphen (DOCX `w:softHyphen`, RTF `\-`, a soft hyphen in DOC, ODT or HTML) that ends a line now draws a
   hyphen, as Word, LibreOffice and browsers draw it. Before, the line broke there with no hyphen.
 - Word shapes of all 187 DrawingML preset geometries, and custom geometries, draw on pages and in PDFs as Word draws them:

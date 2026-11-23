@@ -71,10 +71,22 @@ internal sealed partial class Paginator
         }
 
         bool changesSeen = view != RevisionView.Final;
+        HashSet<string>? languages = null;
         foreach (PageLayout page in layout.Pages)
         {
             foreach (LayoutBox box in page.Boxes.SelectMany(b => b.Descendants()))
             {
+                if (box is ParagraphBox { Lines: [{ Content.MissingDictionaries: { } missing }, ..] } hyphenated)
+                {
+                    foreach (string language in missing)
+                    {
+                        if ((languages ??= new(StringComparer.OrdinalIgnoreCase)).Add(language))
+                        {
+                            warnings.Add(new LayoutWarning(LayoutWarningKind.HyphenationDictionaryMissing, $"There is no hyphenation dictionary for the language {language}, so its text is not hyphenated.", hyphenated.Paragraph, page.Index));
+                        }
+                    }
+                }
+
                 if (box is ObjectBox { Node: Island island } && Docx.DocxDrawings.DrawsAsList(island))
                 {
                     warnings.Add(new LayoutWarning(LayoutWarningKind.SmartArtDrawnAsList, "A SmartArt diagram has no stored drawing and is drawn as a list of its text.", island, page.Index));

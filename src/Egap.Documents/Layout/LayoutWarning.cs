@@ -20,6 +20,13 @@ public enum LayoutWarningKind
     /// first paragraph with a change. <see cref="LayoutOptions.RevisionView"/> shows them or the original instead.
     /// </summary>
     ChangesAccepted,
+
+    /// <summary>
+    /// The document asks for automatic hyphenation, but <see cref="LayoutOptions.Hyphenation"/> has no dictionary for a
+    /// language its text is in, so that text is not hyphenated; one warning for each such language names the first paragraph
+    /// in it.
+    /// </summary>
+    HyphenationDictionaryMissing,
 }
 
 /// <summary>Something a layout laid out differently from what the document asks for, with the node and page it is on.</summary>

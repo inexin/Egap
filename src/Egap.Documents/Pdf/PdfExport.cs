@@ -40,7 +40,15 @@ public static class PdfExport
         if (options is { RevisionView: not RevisionView.Final } && layout?.RevisionView != options.RevisionView)
         {
             layout ??= document.DefaultLayoutOptions;
-            layout = new LayoutOptions { Fonts = layout?.Fonts, Strict = layout?.Strict ?? false, OnWarning = layout?.OnWarning, RevisionView = options.RevisionView };
+            layout = new LayoutOptions
+            {
+                Fonts = layout?.Fonts,
+                Strict = layout?.Strict ?? false,
+                OnWarning = layout?.OnWarning,
+                RevisionView = options.RevisionView,
+                Hyphenation = layout is null ? Egami.Fonts.Layout.HyphenationDictionaries.BuiltIn : layout.Hyphenation,
+                LineFill = layout?.LineFill ?? default,
+            };
         }
 
         return document.Layout(layout).ToPdf(options);
