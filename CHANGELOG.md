@@ -4,7 +4,7 @@ What each Egap package adds, newest first. From 2.1.0 all Egap packages share on
 may go out ahead of the others on its own tag, as Egap.Documents, Egap.Spreadsheets and Egap.Cli 2.3.0-preview.1 did. Nothing before the first release below was published; those versions were
 internal milestones whose public API was frozen and reviewed, and they are listed so the version numbers make sense.
 
-## Egap.Cli 2.3.0 (unreleased)
+## Egap.Cli 2.3.0 (2026-11-23)
 
 - `compare` compares documents: two files of any format egap reads, also of two different formats, become one document
   with the differences as tracked changes. `--output` writes it as DOCX, RTF or ODT, and `--redline` writes it with the
@@ -40,7 +40,7 @@ internal milestones whose public API was frozen and reviewed, and they are liste
   memory only.
 - Built on System.CommandLine 2.0.14 and Egami.Cli.Host 1.4.0.
 
-## Egap.Documents 2.3.0 (unreleased)
+## Egap.Documents 2.3.0 (2026-11-23)
 
 - Built on Egami 1.5.0 and Egami.Fonts.Substitutes 1.1.0, whose fonts read the OpenType MATH table that
   equations are set with, and on Egami.Metafiles 1.0.2 and Egami.Barcodes 1.0.1.
@@ -327,7 +327,7 @@ Behaviour that differs from 2.2.0, all in the notes above:
 - An optional hyphen that ends a line draws a hyphen; before, the line broke there with no hyphen.
 - Documents with automatic hyphenation on are hyphenated, so their lines break differently than before.
 
-## Egap.Documents.Html 2.3.0 (unreleased)
+## Egap.Documents.Html 2.3.0 (2026-11-23)
 
 - `HtmlSaveOptions.RevisionView` and `EpubSaveOptions.RevisionView` write tracked changes as if accepted (`Final`, the
   default, as before), as a redline (`Markup`: `<ins>` and `<del>` with `data-author` and `datetime`, coloured per author
@@ -346,7 +346,7 @@ Behaviour that differs from 2.2.0, all in the notes above:
 - Built on AngleSharp 1.9.1. AngleSharp's new nesting limit is turned off, so deeply nested tables still read in full;
   Egap's own guard keeps hostile nesting bounded as before.
 
-## Egap.Documents.Markdown 2.3.0 (unreleased)
+## Egap.Documents.Markdown 2.3.0 (2026-11-23)
 
 - `MarkdownSaveOptions.RevisionView` writes tracked changes as if accepted (`Final`, the default, as before), marked
   (`Markup`), or as if rejected (`Original`). `MarkdownSaveOptions.RevisionStyle` picks the marks: inline `<ins>` and
@@ -354,7 +354,7 @@ Behaviour that differs from 2.2.0, all in the notes above:
 - Built on Markdig 1.5.1, which fixes tabs after block quote markers and in fenced code, a thematic break inside a list
   item closing the list, and autolink schemes of 2 to 32 characters.
 
-## Egap.Spreadsheets 2.3.0 (unreleased)
+## Egap.Spreadsheets 2.3.0 (2026-11-23)
 
 The first stable release of Egap.Spreadsheets, after 2.3.0-preview.1 (2026-11-13). The spreadsheets guide lists
 what it does not do yet.
@@ -628,11 +628,11 @@ API changes made before the API was frozen:
 - `FindLookIn.Notes` is `FindLookIn.Comments`, as the API calls a cell's note a comment.
 - `FunctionRegistry` says that it is one registry for the whole process and that it is thread-safe.
 
-## Egap.Pdf 2.3.0 (unreleased)
+## Egap.Pdf 2.3.0 (2026-11-23)
 
 - Built on Egami 1.5.0, Egami.Barcodes 1.0.1 and System.Security.Cryptography.Pkcs 10.0.14.
 
-## Egap.Preview 2.3.0 (unreleased)
+## Egap.Preview 2.3.0 (2026-11-23)
 
 - Built on Egap.Documents 2.3.0 and Egami 1.5.0.
 
