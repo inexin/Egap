@@ -172,6 +172,12 @@ Document page = HtmlFormat.Load(&quot;invoice.html&quot;, new HtmlLoadOptions
 their values, as Word's are, so they keep their place in the text and a PDF export can turn them into form fields.</li>
 <li><code>word-spacing</code>, <code>text-decoration: overline</code>, <code>font-feature-settings</code>, <code>font-variant-ligatures</code>, <code>font-variant-numeric</code>,
 <code>word-break</code> and <code>overflow-wrap</code> set the <a href="../guides/flow-documents.html#text-options">text options</a>.</li>
+<li><code>hyphens: auto</code> turns the document's automatic hyphenation on for the paragraphs that ask for it, with no hyphenation
+zone (browsers have none); the others suppress it. <code>hyphenate-character</code> and <code>hyphenate-limit-chars</code> set the
+paragraph's <code>HyphenCharacter</code> and <code>HyphenationMinWordLength</code>, <code>HyphenationMinBefore</code> and <code>HyphenationMinAfter</code>.
+<code>text-wrap: pretty</code> gives the paragraph optimal line filling (<code>ParagraphFormat.LineFill</code>), <code>text-wrap: balance</code>
+balanced lines. Each run's language, from <code>lang</code>, picks the hyphenation dictionary
+(see <a href="../guides/flow-documents.html#page-layout">Page layout</a>). The writer writes them all back.</li>
 <li><code>break-inside: avoid</code> on a box of several blocks makes a group that is kept on one page, and <code>-webkit-line-clamp</code>
 clamps a paragraph to a number of lines (see <a href="../guides/flow-documents.html#page-layout">Page layout</a>).</li>
 <li><code>@page</code> margin box rules such as <code>@top-left</code> and <code>@bottom-center</code>, with <code>counter(page)</code> and <code>counter(pages)</code>, become

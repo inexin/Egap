@@ -20485,6 +20485,58 @@ references:
   isSpec: "True"
   fullName: Egap.Documents.ParagraphFormat.Frame
   nameWithType: ParagraphFormat.Frame
+- uid: Egap.Documents.ParagraphFormat.HyphenCharacter
+  name: HyphenCharacter
+  href: api/Egap.Documents.ParagraphFormat.html#Egap_Documents_ParagraphFormat_HyphenCharacter
+  commentId: P:Egap.Documents.ParagraphFormat.HyphenCharacter
+  fullName: Egap.Documents.ParagraphFormat.HyphenCharacter
+  nameWithType: ParagraphFormat.HyphenCharacter
+- uid: Egap.Documents.ParagraphFormat.HyphenCharacter*
+  name: HyphenCharacter
+  href: api/Egap.Documents.ParagraphFormat.html#Egap_Documents_ParagraphFormat_HyphenCharacter_
+  commentId: Overload:Egap.Documents.ParagraphFormat.HyphenCharacter
+  isSpec: "True"
+  fullName: Egap.Documents.ParagraphFormat.HyphenCharacter
+  nameWithType: ParagraphFormat.HyphenCharacter
+- uid: Egap.Documents.ParagraphFormat.HyphenationMinAfter
+  name: HyphenationMinAfter
+  href: api/Egap.Documents.ParagraphFormat.html#Egap_Documents_ParagraphFormat_HyphenationMinAfter
+  commentId: P:Egap.Documents.ParagraphFormat.HyphenationMinAfter
+  fullName: Egap.Documents.ParagraphFormat.HyphenationMinAfter
+  nameWithType: ParagraphFormat.HyphenationMinAfter
+- uid: Egap.Documents.ParagraphFormat.HyphenationMinAfter*
+  name: HyphenationMinAfter
+  href: api/Egap.Documents.ParagraphFormat.html#Egap_Documents_ParagraphFormat_HyphenationMinAfter_
+  commentId: Overload:Egap.Documents.ParagraphFormat.HyphenationMinAfter
+  isSpec: "True"
+  fullName: Egap.Documents.ParagraphFormat.HyphenationMinAfter
+  nameWithType: ParagraphFormat.HyphenationMinAfter
+- uid: Egap.Documents.ParagraphFormat.HyphenationMinBefore
+  name: HyphenationMinBefore
+  href: api/Egap.Documents.ParagraphFormat.html#Egap_Documents_ParagraphFormat_HyphenationMinBefore
+  commentId: P:Egap.Documents.ParagraphFormat.HyphenationMinBefore
+  fullName: Egap.Documents.ParagraphFormat.HyphenationMinBefore
+  nameWithType: ParagraphFormat.HyphenationMinBefore
+- uid: Egap.Documents.ParagraphFormat.HyphenationMinBefore*
+  name: HyphenationMinBefore
+  href: api/Egap.Documents.ParagraphFormat.html#Egap_Documents_ParagraphFormat_HyphenationMinBefore_
+  commentId: Overload:Egap.Documents.ParagraphFormat.HyphenationMinBefore
+  isSpec: "True"
+  fullName: Egap.Documents.ParagraphFormat.HyphenationMinBefore
+  nameWithType: ParagraphFormat.HyphenationMinBefore
+- uid: Egap.Documents.ParagraphFormat.HyphenationMinWordLength
+  name: HyphenationMinWordLength
+  href: api/Egap.Documents.ParagraphFormat.html#Egap_Documents_ParagraphFormat_HyphenationMinWordLength
+  commentId: P:Egap.Documents.ParagraphFormat.HyphenationMinWordLength
+  fullName: Egap.Documents.ParagraphFormat.HyphenationMinWordLength
+  nameWithType: ParagraphFormat.HyphenationMinWordLength
+- uid: Egap.Documents.ParagraphFormat.HyphenationMinWordLength*
+  name: HyphenationMinWordLength
+  href: api/Egap.Documents.ParagraphFormat.html#Egap_Documents_ParagraphFormat_HyphenationMinWordLength_
+  commentId: Overload:Egap.Documents.ParagraphFormat.HyphenationMinWordLength
+  isSpec: "True"
+  fullName: Egap.Documents.ParagraphFormat.HyphenationMinWordLength
+  nameWithType: ParagraphFormat.HyphenationMinWordLength
 - uid: Egap.Documents.ParagraphFormat.Kashida
   name: Kashida
   href: api/Egap.Documents.ParagraphFormat.html#Egap_Documents_ParagraphFormat_Kashida
@@ -20537,6 +20589,19 @@ references:
   isSpec: "True"
   fullName: Egap.Documents.ParagraphFormat.LeftIndent
   nameWithType: ParagraphFormat.LeftIndent
+- uid: Egap.Documents.ParagraphFormat.LineFill
+  name: LineFill
+  href: api/Egap.Documents.ParagraphFormat.html#Egap_Documents_ParagraphFormat_LineFill
+  commentId: P:Egap.Documents.ParagraphFormat.LineFill
+  fullName: Egap.Documents.ParagraphFormat.LineFill
+  nameWithType: ParagraphFormat.LineFill
+- uid: Egap.Documents.ParagraphFormat.LineFill*
+  name: LineFill
+  href: api/Egap.Documents.ParagraphFormat.html#Egap_Documents_ParagraphFormat_LineFill_
+  commentId: Overload:Egap.Documents.ParagraphFormat.LineFill
+  isSpec: "True"
+  fullName: Egap.Documents.ParagraphFormat.LineFill
+  nameWithType: ParagraphFormat.LineFill
 - uid: Egap.Documents.ParagraphFormat.LineSpacing
   name: LineSpacing
   href: api/Egap.Documents.ParagraphFormat.html#Egap_Documents_ParagraphFormat_LineSpacing
@@ -25803,6 +25868,58 @@ references:
   isSpec: "True"
   fullName: Egap.Documents.ResolvedParagraphFormat.Frame
   nameWithType: ResolvedParagraphFormat.Frame
+- uid: Egap.Documents.ResolvedParagraphFormat.HyphenCharacter
+  name: HyphenCharacter
+  href: api/Egap.Documents.ResolvedParagraphFormat.html#Egap_Documents_ResolvedParagraphFormat_HyphenCharacter
+  commentId: P:Egap.Documents.ResolvedParagraphFormat.HyphenCharacter
+  fullName: Egap.Documents.ResolvedParagraphFormat.HyphenCharacter
+  nameWithType: ResolvedParagraphFormat.HyphenCharacter
+- uid: Egap.Documents.ResolvedParagraphFormat.HyphenCharacter*
+  name: HyphenCharacter
+  href: api/Egap.Documents.ResolvedParagraphFormat.html#Egap_Documents_ResolvedParagraphFormat_HyphenCharacter_
+  commentId: Overload:Egap.Documents.ResolvedParagraphFormat.HyphenCharacter
+  isSpec: "True"
+  fullName: Egap.Documents.ResolvedParagraphFormat.HyphenCharacter
+  nameWithType: ResolvedParagraphFormat.HyphenCharacter
+- uid: Egap.Documents.ResolvedParagraphFormat.HyphenationMinAfter
+  name: HyphenationMinAfter
+  href: api/Egap.Documents.ResolvedParagraphFormat.html#Egap_Documents_ResolvedParagraphFormat_HyphenationMinAfter
+  commentId: P:Egap.Documents.ResolvedParagraphFormat.HyphenationMinAfter
+  fullName: Egap.Documents.ResolvedParagraphFormat.HyphenationMinAfter
+  nameWithType: ResolvedParagraphFormat.HyphenationMinAfter
+- uid: Egap.Documents.ResolvedParagraphFormat.HyphenationMinAfter*
+  name: HyphenationMinAfter
+  href: api/Egap.Documents.ResolvedParagraphFormat.html#Egap_Documents_ResolvedParagraphFormat_HyphenationMinAfter_
+  commentId: Overload:Egap.Documents.ResolvedParagraphFormat.HyphenationMinAfter
+  isSpec: "True"
+  fullName: Egap.Documents.ResolvedParagraphFormat.HyphenationMinAfter
+  nameWithType: ResolvedParagraphFormat.HyphenationMinAfter
+- uid: Egap.Documents.ResolvedParagraphFormat.HyphenationMinBefore
+  name: HyphenationMinBefore
+  href: api/Egap.Documents.ResolvedParagraphFormat.html#Egap_Documents_ResolvedParagraphFormat_HyphenationMinBefore
+  commentId: P:Egap.Documents.ResolvedParagraphFormat.HyphenationMinBefore
+  fullName: Egap.Documents.ResolvedParagraphFormat.HyphenationMinBefore
+  nameWithType: ResolvedParagraphFormat.HyphenationMinBefore
+- uid: Egap.Documents.ResolvedParagraphFormat.HyphenationMinBefore*
+  name: HyphenationMinBefore
+  href: api/Egap.Documents.ResolvedParagraphFormat.html#Egap_Documents_ResolvedParagraphFormat_HyphenationMinBefore_
+  commentId: Overload:Egap.Documents.ResolvedParagraphFormat.HyphenationMinBefore
+  isSpec: "True"
+  fullName: Egap.Documents.ResolvedParagraphFormat.HyphenationMinBefore
+  nameWithType: ResolvedParagraphFormat.HyphenationMinBefore
+- uid: Egap.Documents.ResolvedParagraphFormat.HyphenationMinWordLength
+  name: HyphenationMinWordLength
+  href: api/Egap.Documents.ResolvedParagraphFormat.html#Egap_Documents_ResolvedParagraphFormat_HyphenationMinWordLength
+  commentId: P:Egap.Documents.ResolvedParagraphFormat.HyphenationMinWordLength
+  fullName: Egap.Documents.ResolvedParagraphFormat.HyphenationMinWordLength
+  nameWithType: ResolvedParagraphFormat.HyphenationMinWordLength
+- uid: Egap.Documents.ResolvedParagraphFormat.HyphenationMinWordLength*
+  name: HyphenationMinWordLength
+  href: api/Egap.Documents.ResolvedParagraphFormat.html#Egap_Documents_ResolvedParagraphFormat_HyphenationMinWordLength_
+  commentId: Overload:Egap.Documents.ResolvedParagraphFormat.HyphenationMinWordLength
+  isSpec: "True"
+  fullName: Egap.Documents.ResolvedParagraphFormat.HyphenationMinWordLength
+  nameWithType: ResolvedParagraphFormat.HyphenationMinWordLength
 - uid: Egap.Documents.ResolvedParagraphFormat.Kashida
   name: Kashida
   href: api/Egap.Documents.ResolvedParagraphFormat.html#Egap_Documents_ResolvedParagraphFormat_Kashida
@@ -25855,6 +25972,19 @@ references:
   isSpec: "True"
   fullName: Egap.Documents.ResolvedParagraphFormat.LeftIndent
   nameWithType: ResolvedParagraphFormat.LeftIndent
+- uid: Egap.Documents.ResolvedParagraphFormat.LineFill
+  name: LineFill
+  href: api/Egap.Documents.ResolvedParagraphFormat.html#Egap_Documents_ResolvedParagraphFormat_LineFill
+  commentId: P:Egap.Documents.ResolvedParagraphFormat.LineFill
+  fullName: Egap.Documents.ResolvedParagraphFormat.LineFill
+  nameWithType: ResolvedParagraphFormat.LineFill
+- uid: Egap.Documents.ResolvedParagraphFormat.LineFill*
+  name: LineFill
+  href: api/Egap.Documents.ResolvedParagraphFormat.html#Egap_Documents_ResolvedParagraphFormat_LineFill_
+  commentId: Overload:Egap.Documents.ResolvedParagraphFormat.LineFill
+  isSpec: "True"
+  fullName: Egap.Documents.ResolvedParagraphFormat.LineFill
+  nameWithType: ResolvedParagraphFormat.LineFill
 - uid: Egap.Documents.ResolvedParagraphFormat.LineSpacing
   name: LineSpacing
   href: api/Egap.Documents.ResolvedParagraphFormat.html#Egap_Documents_ResolvedParagraphFormat_LineSpacing

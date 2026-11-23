@@ -475,7 +475,7 @@ and defaults applied, tab stops added up. Where neither the document nor Word gi
 
   <h3 id="Egap_Documents_ResolvedParagraphFormat_Frame" data-uid="Egap.Documents.ResolvedParagraphFormat.Frame">
   Frame
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Formatting/ResolvedFormats.cs/#L300"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Formatting/ResolvedFormats.cs/#L315"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>The paragraph's text frame, or null for a paragraph in the text.</p>
@@ -493,6 +493,134 @@ and defaults applied, tab stops added up. Where neither the document nor Word gi
   <h4 class="section">Property Value</h4>
   <dl class="parameters">
     <dt><a class="xref" href="Egap.Documents.FramePosition.html">FramePosition</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Egap_Documents_ResolvedParagraphFormat_HyphenCharacter_" data-uid="Egap.Documents.ResolvedParagraphFormat.HyphenCharacter*"></a>
+
+  <h3 id="Egap_Documents_ResolvedParagraphFormat_HyphenCharacter" data-uid="Egap.Documents.ResolvedParagraphFormat.HyphenCharacter">
+  HyphenCharacter
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Formatting/ResolvedFormats.cs/#L300"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>The text drawn where a line ends at a hyphenation point, or null for a hyphen-minus.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public string? HyphenCharacter { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Egap_Documents_ResolvedParagraphFormat_HyphenationMinAfter_" data-uid="Egap.Documents.ResolvedParagraphFormat.HyphenationMinAfter*"></a>
+
+  <h3 id="Egap_Documents_ResolvedParagraphFormat_HyphenationMinAfter" data-uid="Egap.Documents.ResolvedParagraphFormat.HyphenationMinAfter">
+  HyphenationMinAfter
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Formatting/ResolvedFormats.cs/#L309"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>The fewest letters carried after an automatic hyphen, or null for the dictionary's own.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public int? HyphenationMinAfter { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a>?</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Egap_Documents_ResolvedParagraphFormat_HyphenationMinBefore_" data-uid="Egap.Documents.ResolvedParagraphFormat.HyphenationMinBefore*"></a>
+
+  <h3 id="Egap_Documents_ResolvedParagraphFormat_HyphenationMinBefore" data-uid="Egap.Documents.ResolvedParagraphFormat.HyphenationMinBefore">
+  HyphenationMinBefore
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Formatting/ResolvedFormats.cs/#L306"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>The fewest letters kept before an automatic hyphen, or null for the dictionary's own.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public int? HyphenationMinBefore { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a>?</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Egap_Documents_ResolvedParagraphFormat_HyphenationMinWordLength_" data-uid="Egap.Documents.ResolvedParagraphFormat.HyphenationMinWordLength*"></a>
+
+  <h3 id="Egap_Documents_ResolvedParagraphFormat_HyphenationMinWordLength" data-uid="Egap.Documents.ResolvedParagraphFormat.HyphenationMinWordLength">
+  HyphenationMinWordLength
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Formatting/ResolvedFormats.cs/#L303"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>The fewest letters a word needs to be hyphenated automatically, or null for 5.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public int? HyphenationMinWordLength { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a>?</dt>
     <dd></dd>
   </dl>
 
@@ -621,6 +749,38 @@ and defaults applied, tab stops added up. Where neither the document nor Word gi
   <h4 class="section">Property Value</h4>
   <dl class="parameters">
     <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.double">double</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Egap_Documents_ResolvedParagraphFormat_LineFill_" data-uid="Egap.Documents.ResolvedParagraphFormat.LineFill*"></a>
+
+  <h3 id="Egap_Documents_ResolvedParagraphFormat_LineFill" data-uid="Egap.Documents.ResolvedParagraphFormat.LineFill">
+  LineFill
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Formatting/ResolvedFormats.cs/#L312"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>How the paragraph's lines are filled, or null for <a class="xref" href="Egap.Documents.Layout.LayoutOptions.html#Egap_Documents_Layout_LayoutOptions_LineFill">LineFill</a>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public LineFill? LineFill { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">LineFill</span>?</dt>
     <dd></dd>
   </dl>
 
@@ -1279,7 +1439,7 @@ and defaults applied, tab stops added up. Where neither the document nor Word gi
 
   <h3 id="Egap_Documents_ResolvedParagraphFormat_ToParagraphFormat" data-uid="Egap.Documents.ResolvedParagraphFormat.ToParagraphFormat">
   ToParagraphFormat()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Formatting/ResolvedFormats.cs/#L303"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Formatting/ResolvedFormats.cs/#L318"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>The effective values as a stand-alone <a class="xref" href="Egap.Documents.ParagraphFormat.html">ParagraphFormat</a>.</p>
