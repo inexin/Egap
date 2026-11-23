@@ -328,7 +328,127 @@ internal sealed partial class RtfReader
             fields.Pop();
         }
 
-        AddInline(new FieldEnd(document));
+        FieldEnd end = AddInline(new FieldEnd(document));
+        InlineOfField(start, end);
+    }
+
+    /// <summary>
+    /// Reads the fields RTF writes for what it has no word of its own for as those things, as Word does: a <c>HYPERLINK</c>
+    /// field as a <see cref="Hyperlink"/>, and a <c>SYMBOL</c> field as its character. So a hyperlink or a symbol saved to
+    /// RTF reads back as one, and compares equal to a DOCX, ODT or HTML one. Only a field within one paragraph whose
+    /// start, code and end carry the same change, if any, and whose result is plain text is turned; the result keeps its
+    /// changes.
+    /// </summary>
+    private static void InlineOfField(FieldStart start, FieldEnd end)
+    {
+        if (start.Paragraph is not Paragraph paragraph || end.Paragraph != paragraph || end.Revision != start.Revision)
+        {
+            return;
+        }
+
+        NodeCollection<Inline> inlines = paragraph.Inlines;
+        int first = inlines.IndexOf(start), last = inlines.IndexOf(end), separator = -1;
+        System.Text.StringBuilder code = new();
+        for (int k = first + 1; k < last; k++)
+        {
+            Inline inline = inlines[k];
+            if (inline is FieldSeparator)
+            {
+                separator = k;
+                break;
+            }
+
+            if (inline is not Documents.Run run || run.Revision != start.Revision)
+            {
+                return;
+            }
+
+            code.Append(run.Text);
+        }
+
+        if (separator < 0 || Enumerable.Range(separator + 1, last - separator - 1).Any(k => inlines[k] is not (Documents.Run or Tab or Break or BookmarkStart or BookmarkEnd)))
+        {
+            return;
+        }
+
+        FieldCode parsed = FieldCode.Parse(code.ToString());
+        if (parsed.Instruction == "SYMBOL")
+        {
+            SymbolOfField(inlines, first, last, parsed);
+            return;
+        }
+
+        string? address = parsed.Arguments.FirstOrDefault(), anchor = parsed.Switch("\\L");
+        if (parsed.Instruction != "HYPERLINK" || (string.IsNullOrEmpty(address) && string.IsNullOrEmpty(anchor)))
+        {
+            return;
+        }
+
+        Hyperlink link = new(paragraph.Document)
+        {
+            Address = string.IsNullOrEmpty(address) ? null : address,
+            Anchor = string.IsNullOrEmpty(anchor) ? null : anchor,
+            Tooltip = parsed.Switch("\\O") is { Length: > 0 } tooltip ? tooltip : null,
+            Target = parsed.Switch("\\T") is { Length: > 0 } target ? target : null,
+        };
+        List<Inline> result = [.. Enumerable.Range(separator + 1, last - separator - 1).Select(k => inlines[k])];
+        for (int k = last; k >= first; k--)
+        {
+            inlines.RemoveAt(k);
+        }
+
+        // A link inserted or deleted whole carries the change itself, as one read from DOCX does.
+        bool whole = start.Revision is not null && result.All(i => i.Revision == start.Revision);
+        link.Revision = whole ? start.Revision : null;
+        foreach (Inline inline in result)
+        {
+            if (whole)
+            {
+                inline.Revision = null;
+            }
+
+            link.Inlines.Add(inline);
+        }
+
+        inlines.Insert(first, link);
+    }
+
+    /// <summary>
+    /// Makes a <c>SYMBOL</c> field its character, as Word reads one: the first run of its code keeps its look and takes the
+    /// character, in the font of the field's <c>\f</c> switch. A code under 256 in Symbol, Wingdings or Webdings is
+    /// the character Word keeps for it, U+F000 above it.
+    /// </summary>
+    private static void SymbolOfField(NodeCollection<Inline> inlines, int first, int last, FieldCode parsed)
+    {
+        string? font = parsed.Switch("\\F");
+        if (parsed.Arguments.FirstOrDefault() is not string number || inlines[first + 1] is not Documents.Run run)
+        {
+            return;
+        }
+
+        bool hex = number.StartsWith("0x", StringComparison.OrdinalIgnoreCase);
+        if (!int.TryParse(hex ? number[2..] : number, hex ? NumberStyles.HexNumber : NumberStyles.Integer, CultureInfo.InvariantCulture, out int value)
+            || value is <= 0 or > 0xFFFF || char.IsSurrogate((char)value))
+        {
+            return;
+        }
+
+        bool symbolFont = font is not null && (font.StartsWith("Symbol", StringComparison.OrdinalIgnoreCase) || font.StartsWith("Wingdings", StringComparison.OrdinalIgnoreCase) || font.StartsWith("Webdings", StringComparison.OrdinalIgnoreCase))
+            && parsed.Switch("\\U") is null && value is >= 0x20 and < 0x100;
+        run.Text = ((char)(symbolFont ? 0xF000 + value : value)).ToString();
+        if (!string.IsNullOrEmpty(font))
+        {
+            run.Format.FontAscii = font;
+            run.Format.FontHighAnsi = font;
+        }
+
+        for (int k = last; k >= first; k--)
+        {
+            if (k != first + 1)
+            {
+                inlines.RemoveAt(k);
+            }
+        }
     }
 
     // ---- Notes, headers and footers, comments ----

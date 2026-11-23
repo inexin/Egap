@@ -369,6 +369,12 @@ internal sealed partial class HtmlReader
         string display = style.Keyword("display") ?? "inline";
         if (display == "none")
         {
+            if (IsHiddenText(element))
+            {
+                // Text hidden in a line, as Word writes its hidden text: kept as hidden text, as Word reads it.
+                InlineElement(element, style, flow, frame);
+            }
+
             return;
         }
 
@@ -473,6 +479,23 @@ internal sealed partial class HtmlReader
 
         blocks.Add(group);
     }
+
+    /// <summary>
+    /// Whether a hidden element is text in a line: a phrasing element such as a span, in a paragraph or another phrasing
+    /// element, holding only text and phrasing elements.
+    /// </summary>
+    private static bool IsHiddenText(HtmlElement element)
+    {
+        return element.NamespaceUri == HtmlElement.HtmlNamespace && HiddenTextElements.Contains(element.LocalName)
+            && element.Parent is HtmlElement { LocalName: var parent } && (HiddenTextElements.Contains(parent) || HiddenTextParents.Contains(parent))
+            && element.Descendants().All(d => d is HtmlText || (d is HtmlElement e && e.NamespaceUri == HtmlElement.HtmlNamespace && HiddenTextElements.Contains(e.LocalName)));
+    }
+
+    private static readonly HashSet<string> HiddenTextElements =
+        ["span", "font", "a", "b", "i", "u", "s", "em", "strong", "small", "sub", "sup", "code", "mark", "ins", "del"];
+
+    private static readonly HashSet<string> HiddenTextParents =
+        ["p", "li", "h1", "h2", "h3", "h4", "h5", "h6", "dt", "dd", "td", "th", "pre", "caption"];
 
     private static bool IsBlockDisplay(string display)
     {
@@ -907,6 +930,14 @@ internal sealed partial class HtmlReader
 
         TrimEnd(paragraph.Inlines);
         BrowserNormalLineHeight(paragraph);
+        if (paragraph.Inlines is [Run { Text: " " } space] && space.Format.Hidden != true)
+        {
+            // A paragraph of one no-break space is how Word and others write an empty paragraph, as an empty one would take no
+            // room in a browser: read as the empty paragraph, its look kept on the mark.
+            paragraph.MarkFormat.CopyRaw(space.Format);
+            space.Remove();
+        }
+
         flow.Current = null;
         flow.Target = null;
         flow.TargetLink = null;

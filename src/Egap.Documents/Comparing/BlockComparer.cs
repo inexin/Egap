@@ -368,32 +368,70 @@ internal sealed partial class BlockComparer
     }
 
     /// <summary>
-    /// A changed stretch with moved paragraphs in it: the moved ones are marked as moved where they stand, the rest compared
-    /// in the pieces between them, so each document's blocks keep their order.
+    /// A changed stretch with moved paragraphs in it: the moved ones are marked as moved where they stand, and the rest of
+    /// both sides is compared as one stretch, so a paragraph still pairs with its edited copy across a paragraph moved in
+    /// between. Each document's blocks keep their order.
     /// </summary>
     private void CompareStretch(IReadOnlyList<Block> a, int i, int deleted, int[] movesA, IReadOnlyList<Block> b, int j, int inserted, int[] movesB, Action<Block, bool> emit)
     {
-        int x = i, y = j, endA = i + deleted, endB = j + inserted;
-        while (x < endA || y < endB)
+        int endA = i + deleted, endB = j + inserted;
+        List<int> atA = [.. Enumerable.Range(i, deleted).Where(k => movesA[k] == 0)];
+        List<int> atB = [.. Enumerable.Range(j, inserted).Where(k => movesB[k] == 0)];
+        List<Block> restA = [.. atA.Select(k => a[k])], restB = [.. atB.Select(k => b[k])];
+        int x = i, y = j, ra = 0, rb = 0;
+        foreach (Group group in Groups(restA, restB).Append(new Group(restA.Count, 0, restB.Count, 0)))
         {
-            List<Block> pieceA = [], pieceB = [];
-            for (; x < endA && movesA[x] == 0; x++)
+            // A group whose blocks a move parts is not taken as one: its blocks go one by one.
+            bool whole = group.CountA > 0 && atA[group.A + group.CountA - 1] - atA[group.A] == group.CountA - 1
+                && atB[group.B + group.CountB - 1] - atB[group.B] == group.CountB - 1;
+            int toA = whole ? group.A : group.A + group.CountA, toB = whole ? group.B : group.B + group.CountB;
+            for (; ra < toA; ra++)
             {
-                pieceA.Add(a[x]);
+                MovedA(atA[ra]);
+                Whole(a[x++], fromA: true, emit);
             }
 
-            for (; y < endB && movesB[y] == 0; y++)
+            for (; rb < toB; rb++)
             {
-                pieceB.Add(b[y]);
+                MovedB(atB[rb]);
+                Whole(b[y++], fromA: false, emit);
             }
 
-            CompareStretch(pieceA, pieceB, emit);
-            for (; x < endA && movesA[x] != 0; x++)
+            if (!whole)
+            {
+                continue;
+            }
+
+            MovedA(atA[group.A]);
+            MovedB(atB[group.B]);
+            if (group.CountA == 1 && group.CountB == 1)
+            {
+                Paired(a[x], b[y], emit);
+            }
+            else
+            {
+                SplitOrJoin([.. restA.GetRange(group.A, group.CountA).Cast<Paragraph>()], [.. restB.GetRange(group.B, group.CountB).Cast<Paragraph>()], emit);
+            }
+
+            (ra, rb) = (group.A + group.CountA, group.B + group.CountB);
+            (x, y) = (x + group.CountA, y + group.CountB);
+        }
+
+        MovedA(endA);
+        MovedB(endB);
+
+        // The moved blocks of each side up to (not including) the given one.
+        void MovedA(int until)
+        {
+            for (; x < until; x++)
             {
                 Whole(a[x], fromA: true, emit, moves[movesA[x] - 1]);
             }
+        }
 
-            for (; y < endB && movesB[y] != 0; y++)
+        void MovedB(int until)
+        {
+            for (; y < until; y++)
             {
                 Whole(b[y], fromA: false, emit, moves[movesB[y] - 1]);
             }

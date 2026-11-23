@@ -87,6 +87,25 @@ public sealed class TextMoveCompareTests
     [Theory]
     [InlineData(CompareBase.Revised)]
     [InlineData(CompareBase.Original)]
+    public void AnEditedParagraphStillPairsAcrossAParagraphMovedBeforeIt(CompareBase baseDocument)
+    {
+        const string Service = "The service runs many parks across the country and its staff of rangers keeps them open all year.";
+        const string Objects = "More than one hundred million objects in collections.";
+        Document original = DocumentCompareTests.Make("Alpha stays.", Service, "Bravo stays.", "Charlie stays.", Objects, "Delta stays.");
+        Document revised = DocumentCompareTests.Make("Alpha stays.", Objects, Service.Replace("rangers", "wardens", StringComparison.Ordinal), "Bravo stays.", "Charlie stays.", "Delta stays.");
+
+        DocumentComparison comparison = RoundTrip.Check(original, revised, new DocumentCompareOptions { Base = baseDocument });
+
+        // As Word marks it: the moved paragraph is a move, and the edited one keeps its place with one word replaced.
+        DocumentChange move = Assert.Single(comparison.Changes, c => c.Kind == CompareChangeKind.Moved);
+        Assert.Equal(Objects, move.OldText.TrimEnd('\r'));
+        DocumentChange edit = Assert.Single(comparison.Changes, c => c.Kind != CompareChangeKind.Moved);
+        Assert.Equal((CompareChangeKind.Replaced, "rangers", "wardens"), (edit.Kind, edit.OldText, edit.NewText));
+    }
+
+    [Theory]
+    [InlineData(CompareBase.Revised)]
+    [InlineData(CompareBase.Original)]
     public void TheRestOfARunCutForAMoveStaysInItsChange(CompareBase baseDocument)
     {
         Document original = DocumentCompareTests.Make(
@@ -241,6 +260,84 @@ public sealed class TextMoveCompareTests
         {
             WriterRoundTripTests.Check(original, revised, comparison.Document, format);
         }
+    }
+
+    [Theory]
+    [InlineData(CompareBase.Revised)]
+    [InlineData(CompareBase.Original)]
+    public void AHyperlinkEqualsTheSameLinkReadFromRtf(CompareBase baseDocument)
+    {
+        Document withLink = DocumentCompareTests.Make("Write to ");
+        withLink.Sections[0].Body.Paragraphs.First().AddHyperlink("our office", "mailto:office@example.com");
+        Document withField = DocumentCompareTests.Make("Write to ");
+        withField.Sections[0].Body.Paragraphs.First().AddField("HYPERLINK \"mailto:office@example.com\" \\o \"Mail us\"", "our office");
+        Document original = Loaded(withLink, "docx");
+        Document revised = Loaded(withField, "rtf");
+
+        DocumentComparison comparison = RoundTrip.Check(original, revised, new DocumentCompareOptions { Base = baseDocument });
+
+        // RTF keeps links as HYPERLINK fields, which read back as hyperlinks: the same link, so nothing changes.
+        Assert.Empty(comparison.Changes);
+        foreach (string format in (string[])["docx", "rtf", "odt"])
+        {
+            WriterRoundTripTests.Check(original, revised, comparison.Document, format);
+        }
+    }
+
+    [Theory]
+    [InlineData("rtf")]
+    [InlineData("odt")]
+    [InlineData("docx")]
+    public void ChangedHyperlinksRoundTrip(string format)
+    {
+        Document original = DocumentCompareTests.Make("Write to ", "Old line.", "Kept line.");
+        original.Sections[0].Body.Paragraphs.First().AddHyperlink("our main office", "mailto:office@example.com");
+        original.Sections[0].Body.Paragraphs.ElementAt(1).AddHyperlink("the old site", "https://old.example.com/");
+        Document revised = DocumentCompareTests.Make("Write to ", "Old line.", "Kept line.");
+        revised.Sections[0].Body.Paragraphs.First().AddHyperlink("our new office", "mailto:office@example.com");
+        revised.Sections[0].Body.Paragraphs.ElementAt(2).AddHyperlink("the new site", "https://new.example.com/");
+
+        // A link whose text changed, a link deleted whole and a link inserted whole: each keeps its changes through the
+        // format, a link RTF writes as a field reading back as a link.
+        DocumentComparison comparison = DocumentCompare.Run(original, revised);
+
+        WriterRoundTripTests.Check(original, revised, comparison.Document, format);
+        Document back = WriterRoundTripTests.Through(comparison.Document, format);
+        Assert.Empty(back.Descendants<FieldStart>());
+        Assert.Equal(comparison.Document.Descendants<Hyperlink>().Count(), back.Descendants<Hyperlink>().Count());
+    }
+
+    [Theory]
+    [InlineData(IslandKind.ShapeGroup, true)]
+    [InlineData(IslandKind.OleObject, true)]
+    [InlineData(IslandKind.Math, false)]
+    public void AcrossFormatsAKeptDrawingEqualsTheOtherFormatsDrawing(IslandKind kind, bool same)
+    {
+        // DOCX keeps a shape group as a VML island where RTF keeps a group of its own, each in its own markup.
+        Document original = DocumentCompareTests.Make("Figure ");
+        original.Sections[0].Body.Paragraphs.First().Inlines.Add(new Island(original, IslandKind.Vml, "docx", "<v:group />"));
+        original.SourceFormat = DocumentFormatKind.Docx;
+        Document revised = DocumentCompareTests.Make("Figure ");
+        revised.Sections[0].Body.Paragraphs.First().Inlines.Add(new Island(revised, kind, "rtf", @"{\shp}") { Text = "Group 334" });
+        revised.SourceFormat = DocumentFormatKind.Rtf;
+
+        DocumentComparison comparison = DocumentCompare.Run(original, revised);
+
+        Assert.Equal(same, comparison.Changes.Count == 0);
+    }
+
+    [Fact]
+    public void AcrossFormatsALinkIsTheSameWithoutItsTrailingSpace()
+    {
+        // HTML drops the white space at a line's end, a table of contents entry's included.
+        Document original = DocumentCompareTests.Make("");
+        original.Sections[0].Body.Paragraphs.First().AddHyperlink("Executive  Summary ", "#executive");
+        original.SourceFormat = DocumentFormatKind.Docx;
+        Document revised = DocumentCompareTests.Make("");
+        revised.Sections[0].Body.Paragraphs.First().AddHyperlink("Executive Summary", "#executive");
+        revised.SourceFormat = DocumentFormatKind.Html;
+
+        Assert.Empty(DocumentCompare.Run(original, revised).Changes);
     }
 
     [Fact]

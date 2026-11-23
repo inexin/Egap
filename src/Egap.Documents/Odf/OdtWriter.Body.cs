@@ -373,6 +373,12 @@ internal sealed partial class OdtWriter
             {
                 if (flat[i] is Paragraph { MarkRevision: { } mark } paragraph && (i + 1 == flat.Count || flat[i + 1] is not Paragraph))
                 {
+                    if (i + 1 == flat.Count && paragraph.Parent is Body { Parent: Section section } && section != document.Sections[^1])
+                    {
+                        // LibreOffice writes such a break the same way: it has no tracked section breaks either.
+                        warnings.Add(ConversionWarningKind.ChangesAccepted, "Tracked section breaks were written as section breaks: OpenDocument tracks no section breaks.");
+                    }
+
                     ShiftEndMark(flat, i, paragraph, mark);
                 }
             }
@@ -399,7 +405,7 @@ internal sealed partial class OdtWriter
                         break;
                     }
 
-                    if (TocEnd(paragraph, flat, i) is int end && !TocTracked(flat, i, end))
+                    if (TocEnd(paragraph, flat, i) is int end && !TocFlattened(flat, i, end))
                     {
                         CloseLists(target);
                         WriteToc(paragraph, flat, i, end, target);
@@ -800,7 +806,7 @@ internal sealed partial class OdtWriter
 
             if (field.End.Paragraph == p)
             {
-                return i;
+                return MovedEnd(field.End, flat, i) ?? i;
             }
         }
 
@@ -808,28 +814,98 @@ internal sealed partial class OdtWriter
     }
 
     /// <summary>
-    /// True when the table of contents holds tracked changes: an ODF index holds none, so its paragraphs are written as
-    /// text with their changes, and the field is left out.
+    /// Where a table of contents whose end a comparison moved ends: the end deleted at one entry and inserted at a later
+    /// one, when entries were added or taken away at its end. Null when its end is where it was.
+    /// </summary>
+    private static int? MovedEnd(FieldEnd end, List<Block> flat, int index)
+    {
+        if (end.Revision is not { } change)
+        {
+            return null;
+        }
+
+        int depth = 0;
+        for (int i = index; i < flat.Count && flat[i] is Paragraph paragraph; i++)
+        {
+            for (Node? node = i == index ? end.NextSibling : (paragraph.Inlines.Count > 0 ? paragraph.Inlines[0] : null); node is Inline inline; node = node.NextSibling)
+            {
+                if (inline is FieldStart)
+                {
+                    depth++;
+                }
+                else if (inline is FieldEnd other && depth-- == 0)
+                {
+                    return other.Revision is { } otherChange && otherChange.Removes != change.Removes ? i : null;
+                }
+            }
+        }
+
+        return null;
+    }
+
+    /// <summary>
+    /// True when the table of contents' own field or its edges carry tracked changes: its code, which the index's settings
+    /// stand for, or a paragraph mark that joins it to what is around it. Its paragraphs are then written as text with their
+    /// changes, and the field is left out. Changes to its entries are kept in the index, as they are in LibreOffice's.
     /// </summary>
     [MethodImpl(MethodImplOptions.NoInlining)]
-    private bool TocTracked(List<Block> flat, int start, int end)
+    private bool TocFlattened(List<Block> flat, int start, int end)
     {
         if (!allowChanges)
         {
             return false;
         }
 
-        for (int i = start; i <= end; i++)
+        Paragraph first = (Paragraph)flat[start];
+        FieldStart field = (FieldStart)first.Inlines.First(i => i is FieldStart);
+        FieldEnd tocEnd = field.GetField()!.End;
+        bool endMoved = MovedEnd(tocEnd, flat, flat.IndexOf(tocEnd.Paragraph!, start)) is not null;
+        bool codeChanged = field.Revision is not null || !EndMarkInside(flat, start, end)
+            || (start > 0 && flat[start - 1] is Paragraph { MarkRevision: not null });
+        bool separated = false;
+        for (Node? node = field.NextSibling; node is Inline inline && !codeChanged; node = node.NextSibling)
         {
-            Paragraph paragraph = (Paragraph)flat[i];
-            if ((i < end && paragraph.MarkRevision is not null) || paragraph.Descendants<Inline>().Any(inline => inline.Revision is not null))
+            if (inline is FieldSeparator)
             {
-                warnings.Add(ConversionWarningKind.FieldsFlattened, "A table of contents with tracked changes was written as its text: an OpenDocument index holds no changes.");
-                return true;
+                separated = true;
+                codeChanged = inline.Revision is not null;
+                break;
             }
+
+            codeChanged = inline.Revision is not null;
         }
 
-        return false;
+        if (!codeChanged && separated && (tocEnd.Revision is null || endMoved))
+        {
+            return false;
+        }
+
+        warnings.Add(ConversionWarningKind.FieldsFlattened, "A table of contents whose code changed was written as its text: an OpenDocument index holds its settings, not its code.");
+        return true;
+    }
+
+    /// <summary>
+    /// Whether the last entry's paragraph mark keeps its change inside the index: unchanged, or the mark of an entry inserted
+    /// or deleted whole at the end, whose change then moves to the mark before it, the same text either way.
+    /// </summary>
+    private bool EndMarkInside(List<Block> flat, int start, int end)
+    {
+        Paragraph last = (Paragraph)flat[end];
+        if (last.MarkRevision is not { } mark)
+        {
+            return true;
+        }
+
+        if (end == start || flat[end - 1] is not Paragraph { MarkRevision: null } previous
+            || last.Inlines.Any(i => i is not (BookmarkStart or BookmarkEnd) && i.Revision?.Removes != mark.Removes))
+        {
+            return false;
+        }
+
+        shiftedMarks ??= new(ReferenceEqualityComparer.Instance);
+        shiftedMarks[last] = null;
+        shiftedMarks[previous] = mark;
+        return true;
     }
 
     private static bool IsToc(string code)
@@ -886,7 +962,15 @@ internal sealed partial class OdtWriter
         story.TocField = field;
         for (int i = start; i <= end; i++)
         {
-            WriteParagraph([(Paragraph)flat[i]], entries);
+            // An entry's deleted paragraph mark joins it to the next entry, as in the body.
+            int last = i;
+            while (last < end && allowChanges && flat[last] is Paragraph mark && (MarkOf(mark) is { Removes: true } || joinedMarks?.Contains(mark) == true))
+            {
+                last++;
+            }
+
+            WriteParagraph([.. flat.Skip(i).Take(last - i + 1).Cast<Paragraph>()], entries);
+            i = last;
         }
 
         story.TocField = null;

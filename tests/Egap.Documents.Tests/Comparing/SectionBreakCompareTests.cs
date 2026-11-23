@@ -121,6 +121,21 @@ public sealed class SectionBreakCompareTests
         Assert.Equal(2, rejected.Sections.Count);
     }
 
+    [Fact]
+    public void OdtWarnsThatItKeepsATrackedSectionBreak()
+    {
+        Document original = TwoSections("Introduction to the report.", "The findings follow here.", null);
+        Document revised = DocumentCompareTests.Make("Introduction to the report.", "The findings follow here.");
+
+        DocumentComparison comparison = DocumentCompare.Run(original, revised);
+
+        // OpenDocument, LibreOffice's included, tracks no section breaks: the break is written as it stands, and said so.
+        using MemoryStream stream = new();
+        IReadOnlyList<ConversionWarning> warnings = OdtFormat.Save(comparison.Document, stream);
+        Assert.Contains(warnings, w => w.Kind == ConversionWarningKind.ChangesAccepted && w.Message.Contains("section breaks", StringComparison.Ordinal));
+        Assert.Equal(2, OdtFormat.Load(new MemoryStream(stream.ToArray())).Sections.Count);
+    }
+
     private static Document TwoSections(string first, string second, string? header)
     {
         Document document = DocumentCompareTests.Make(first);

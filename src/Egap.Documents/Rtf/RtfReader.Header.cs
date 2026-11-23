@@ -29,6 +29,12 @@ internal sealed partial class RtfReader
     /// <summary>A font table entry: the name, the character set its text is in, and Word's hints for substituting it.</summary>
     private sealed record FontEntry(string Name, int Charset, int CodePage, string? AltName, string? Family);
 
+    /// <summary>Whether font <paramref name="index"/> is in the symbol character set (<c>\fcharset2</c>) with no code page of its own.</summary>
+    private bool IsSymbolCharset(int index)
+    {
+        return fonts.TryGetValue(index < 0 ? defaultFont : index, out FontEntry? font) && font.Charset == 2 && font.CodePage <= 0;
+    }
+
     /// <summary>The text encoding of font <paramref name="index"/>'s character set; the document's code page for -1.</summary>
     private Encoding EncodingOf(int index)
     {

@@ -184,4 +184,21 @@ public sealed class SplitJoinCompareTests
     {
         return string.Concat(paragraph.Runs.Where(r => r.Revision?.Kind == kind).Select(r => r.Text)).Trim();
     }
+
+    [Theory]
+    [InlineData(CompareBase.Revised)]
+    [InlineData(CompareBase.Original)]
+    public void ShortParagraphsJoinedWithWordsDeletedAreAJoin(CompareBase baseDocument)
+    {
+        Document a = DocumentCompareTests.Make("One.", "Three.", "Four.", "Five six.", "Seven eight.", "Nine.");
+        Document b = DocumentCompareTests.Make("One.", "Three.", "Four.Five eight.", "Nine.");
+
+        DocumentComparison comparison = RoundTrip.Check(a, b, new DocumentCompareOptions { Base = baseDocument });
+
+        // As Word marks it: the three paragraphs join, and only "six." and "Seven " go.
+        DocumentChange change = Assert.Single(comparison.Changes, c => c.OldText.Trim().Length > 0);
+        Assert.Equal("six.Seven ", change.OldText.Replace("\r", "", StringComparison.Ordinal));
+        Assert.Equal(0, comparison.Statistics.InsertedWords);
+        Assert.Equal(2, comparison.Statistics.DeletedWords);
+    }
 }

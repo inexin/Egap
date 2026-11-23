@@ -94,14 +94,69 @@ public sealed class WriterRoundTripTests
             foreach (CompareBase baseDocument in (CompareBase[])[CompareBase.Revised, CompareBase.Original])
             {
                 Document result = DocumentCompare.Run(original, revised, new DocumentCompareOptions { Base = baseDocument }).Document;
-                if (format == "odt" && TrackedToc(result))
+                if (format == "odt" && (SplitToc(result) || FlattenedToc(result)))
                 {
-                    // An OpenDocument index holds no changes: a changed table of contents is written as its text.
+                    // An OpenDocument index is a run of body paragraphs that holds its settings, not a code: a table of
+                    // contents the mutator ended in a table cell, or whose code or edges it changed, is written as its text.
                     continue;
                 }
 
                 Check(original, revised, result, format);
             }
+        }
+    }
+
+    [Theory]
+    [InlineData(CompareBase.Revised, "Introduction|Methods|Results", "Introduction|Method and scope|Results")]
+    [InlineData(CompareBase.Original, "Introduction|Methods|Results", "Introduction|Method and scope|Results")]
+    [InlineData(CompareBase.Revised, "Introduction|Methods|Results", "Introduction|Methods|Results|Appendix")]
+    [InlineData(CompareBase.Original, "Introduction|Methods|Results|Appendix", "Introduction|Methods|Results")]
+    [InlineData(CompareBase.Revised, "Introduction|Methods~2|Results|Appendix", "Introduction|Methods~pending|Results")]
+    public void ATableOfContentsWithChangedEntriesKeepsItsCodeThroughOdt(CompareBase baseDocument, string before, string after)
+    {
+        Document original = Toc(before.Split('|'));
+        Document revised = Toc(after.Split('|'));
+
+        Document result = DocumentCompare.Run(original, revised, new DocumentCompareOptions { Base = baseDocument }).Document;
+
+        // As LibreOffice writes it: the changes inside the index, its code kept as the index's settings.
+        Check(original, revised, result, "odt");
+        Document back = Through(result, "odt", out IReadOnlyList<ConversionWarning> warnings);
+        Assert.DoesNotContain(warnings, w => w.Kind == ConversionWarningKind.FieldsFlattened);
+        Assert.Contains(back.Descendants<FieldStart>(), start => start.GetField()?.Code.TrimStart().StartsWith("TOC", StringComparison.Ordinal) == true);
+        Assert.Contains(back.Descendants<Inline>(), inline => inline.Revision is not null);
+
+        static Document Toc(params string[] headings)
+        {
+            Document document = DocumentCompareTests.Make("Contents");
+            Body body = document.Sections[0].Body;
+            for (int i = 0; i < headings.Length; i++)
+            {
+                Paragraph entry = body.AddParagraph();
+                if (i == 0)
+                {
+                    entry.Inlines.Add(new FieldStart(document));
+                    entry.AddRun(" TOC \\o \"1-3\" \\h ");
+                    entry.Inlines.Add(new FieldSeparator(document));
+                }
+
+                // Entries as Word writes them: links to their headings.
+                string page = (i + 1).ToString(System.Globalization.CultureInfo.InvariantCulture);
+                string[] parts = headings[i].Split('~');
+                entry.AddHyperlink(parts[0] + "\t" + page, "").Anchor = "_Toc" + page;
+                if (parts.Length > 1)
+                {
+                    entry.AddRun(parts[1]);
+                }
+
+                if (i == headings.Length - 1)
+                {
+                    entry.Inlines.Add(new FieldEnd(document));
+                }
+            }
+
+            document.Sections[0].Body.AddParagraph("Body text.");
+            return document;
         }
     }
 
@@ -291,11 +346,31 @@ public sealed class WriterRoundTripTests
         return count;
     }
 
-    private static bool TrackedToc(Document document)
+    /// <summary>A table of contents whose field, code or edges changed, which OpenDocument writes as its text.</summary>
+    private static bool FlattenedToc(Document document)
     {
         return document.Descendants<FieldStart>().Any(start => start.GetField() is { } field && field.Code.TrimStart().StartsWith("TOC", StringComparison.OrdinalIgnoreCase)
-            && document.Descendants<Paragraph>().SkipWhile(p => p != start.Paragraph).TakeWhile(p => p != field.End.Paragraph).Append(field.End.Paragraph!)
-                .Any(p => p.MarkRevision is not null || p.Descendants<Inline>().Any(i => i.Revision is not null)));
+            && (start.Revision is not null || field.End.Revision is not null || field.End.Paragraph?.MarkRevision is not null
+                || start.Paragraph?.PreviousSibling is Paragraph { MarkRevision: not null }
+                || CodeOf(start).Any(inline => inline.Revision is not null)));
+
+        static IEnumerable<Inline> CodeOf(FieldStart start)
+        {
+            for (Node? node = start.NextSibling; node is Inline inline; node = node.NextSibling)
+            {
+                yield return inline;
+                if (inline is FieldSeparator)
+                {
+                    yield break;
+                }
+            }
+        }
+    }
+
+    private static bool SplitToc(Document document)
+    {
+        return document.Descendants<FieldStart>().Any(start => start.GetField() is { } field && field.Code.TrimStart().StartsWith("TOC", StringComparison.OrdinalIgnoreCase)
+            && field.End.Paragraph?.Parent != start.Paragraph?.Parent);
     }
 
     /// <summary>True when every field starts and ends in the same table cell or story, nested properly.</summary>

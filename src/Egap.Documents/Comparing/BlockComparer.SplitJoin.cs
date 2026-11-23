@@ -21,6 +21,13 @@ internal sealed partial class BlockComparer
     /// <summary>How much the pieces' words together may differ in number from the one paragraph's, as a share of the larger.</summary>
     private const double GroupSizeSlack = 0.25;
 
+    /// <summary>
+    /// How many words the pieces together may differ by from the one paragraph's in any case, so short paragraphs joined
+    /// with a word or two deleted (as "Four." and "Five six." into "Four.Five") still count; the share of common words
+    /// still has to reach <see cref="GroupThreshold"/>.
+    /// </summary>
+    private const int GroupSizeWords = 2;
+
     // The pieces' word sets while DiceOfPieces counts them.
     private readonly int[][] pieceWords = new int[MostParts][];
 
@@ -125,6 +132,9 @@ internal sealed partial class BlockComparer
         }
     }
 
+    /// <summary>Whether <paramref name="larger"/> words are more than the slack above <paramref name="smaller"/>.</summary>
+    private static bool FarApart(int larger, int smaller) => larger - smaller > Math.Max(GroupSizeSlack * larger, GroupSizeWords);
+
     /// <summary>The number of words of each paragraph of a stretch; -1 for a block that is not a paragraph.</summary>
     private int[] Sizes(List<Block> blocks)
     {
@@ -156,14 +166,14 @@ internal sealed partial class BlockComparer
         {
             size += sizes[start + count - 1];
             rest += sizes[start + count - 1];
-            if (size * (1 - GroupSizeSlack) > one)
+            if (FarApart(size, one))
             {
                 // The pieces have far more words than the paragraph, and more pieces only add to them.
                 return;
             }
 
             // At best every word of the later pieces is common.
-            if (one * (1 - GroupSizeSlack) > size || 2 * (firstCommon + rest) / (one + size) < GroupThreshold)
+            if (FarApart(one, size) || 2 * (firstCommon + rest) / (one + size) < GroupThreshold)
             {
                 continue;
             }

@@ -287,6 +287,29 @@ internal sealed partial class OdtWriter
             lastSpan = null;
         }
 
+        /// <summary>
+        /// Opens <paramref name="wrapper"/> inside the deletion open now, so that what follows goes into it; returns what
+        /// <see cref="CloseDeletedWrapper"/> takes to close it.
+        /// </summary>
+        public XElement OpenDeletedWrapper(XElement wrapper)
+        {
+            (Revision revision, XElement change, XElement paragraph) = deletion!.Value;
+            paragraph.Add(wrapper);
+            deletion = (revision, change, wrapper);
+            lastSpan = null;
+            return paragraph;
+        }
+
+        /// <summary>Closes a wrapper <see cref="OpenDeletedWrapper"/> opened, if the deletion is still open in it.</summary>
+        public void CloseDeletedWrapper(XElement wrapper, XElement paragraph)
+        {
+            if (deletion is { } open && open.Paragraph == wrapper)
+            {
+                deletion = (open.Revision, open.Change, paragraph);
+                lastSpan = null;
+            }
+        }
+
         public void LeaveDeletion()
         {
             if (deletion is not null)
@@ -598,14 +621,16 @@ internal sealed partial class OdtWriter
         string? href = link.Address is { Length: > 0 } address
             ? address + (link.Anchor is { Length: > 0 } a ? "#" + a : "")
             : link.Anchor is { Length: > 0 } anchor ? "#" + anchor : null;
-        if (revision is { Removes: false } || (revision is null && (story.Insertion is not null || writer.InDeletion)))
+        if (revision is not null || story.Insertion is not null || writer.InDeletion)
         {
-            // The link starts inside or outside an insertion as the link itself is: a reader gives the link the change open
-            // where it starts.
+            // The link starts inside or outside a change as the link itself is: a reader gives the link the change open
+            // where it starts, and a deleted link's change mark stands outside it, so that a paragraph end the deletion
+            // also holds is not inside a link.
             Track(revision, writer);
         }
 
-        if (href is null || writer.InLink || writer.InDeletion)
+        bool deleted = writer.InDeletion && revision is { Removes: true } && !inBlockDeletion;
+        if (href is null || writer.InLink || (writer.InDeletion && !deleted))
         {
             foreach (Inline child in link.Inlines)
             {
@@ -624,6 +649,19 @@ internal sealed partial class OdtWriter
         if (link.Target is { Length: > 0 } frame)
         {
             element.Add(new XAttribute(OfficeNs + "target-frame-name", Clean(frame)));
+        }
+
+        if (deleted)
+        {
+            // A deleted link is a link in the deletion's content.
+            XElement paragraph = writer.OpenDeletedWrapper(element);
+            foreach (Inline child in link.Inlines)
+            {
+                WriteInline(child, writer, revision);
+            }
+
+            writer.CloseDeletedWrapper(element, paragraph);
+            return;
         }
 
         int depth = writer.Depth;

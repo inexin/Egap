@@ -292,6 +292,20 @@ internal sealed partial class HtmlReader
     }
 
     /// <summary>The direct formatting an element's computed style gives its text.</summary>
+    /// <summary>Whether the style or one it inherits from hides its element: text kept as hidden text.</summary>
+    private static bool HiddenByDisplay(HtmlStyle style)
+    {
+        for (HtmlStyle? at = style; at is not null; at = at.Parent)
+        {
+            if (at.Keyword("display") == "none")
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     private RunFormat RunFormatOf(HtmlStyle style)
     {
         if (runFormats.TryGetValue(style, out RunFormat? cached))
@@ -386,7 +400,7 @@ internal sealed partial class HtmlReader
             format.Spacing = spacing;
         }
 
-        if (style.Keyword("visibility") == "hidden")
+        if (style.Keyword("visibility") == "hidden" || HiddenByDisplay(style))
         {
             format.Hidden = true;
         }

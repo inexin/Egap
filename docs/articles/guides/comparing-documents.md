@@ -170,8 +170,11 @@ egap compare contract-v1.docx contract-v2.docx --redline contract-redline.pdf --
 - Cells inserted into or deleted from a row are not tracked changes, as the model tracks whole rows only. A table with no
   row in common is replaced whole.
 - A resized picture is deleted and inserted, as Word does not track picture resizing.
-- In ODT, a table of contents with changes is written as its text, as an OpenDocument index holds no changes.
-- ODT has no tracked section breaks: a section break only in one document is kept in both views of an ODT file.
+- In ODT, a table of contents keeps its changed entries inside the index, as LibreOffice writes them. One whose own
+  code or edges changed is written as its text, with the warning `FieldsFlattened`, as an OpenDocument index holds its
+  settings, not its code.
+- ODT has no tracked section breaks, and LibreOffice has none either: a section break only in one document is kept in
+  both views of an ODT file, with the warning `ChangesAccepted`.
 - A section break only in one document after a table, or after a paragraph whose mark is already a change, is tracked
   on an empty paragraph of its own, which stays when the break is rejected.
 - Content that cannot be a tracked change, such as a content control that could not be matched, is kept as in the base
