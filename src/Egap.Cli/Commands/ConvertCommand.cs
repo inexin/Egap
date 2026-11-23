@@ -227,7 +227,15 @@ internal static class ConvertCommand
         {
             Export = export with
             {
-                Layout = new LayoutOptions { Fonts = layout.Fonts, Strict = layout.Strict, OnWarning = warning => session.Warn($"{input}: {warning}") },
+                Layout = new LayoutOptions
+                {
+                    Fonts = layout.Fonts,
+                    Strict = layout.Strict,
+                    RevisionView = layout.RevisionView,
+                    Hyphenation = layout.Hyphenation,
+                    LineFill = layout.LineFill,
+                    OnWarning = warning => session.Warn($"{input}: {warning}"),
+                },
             },
         };
     }

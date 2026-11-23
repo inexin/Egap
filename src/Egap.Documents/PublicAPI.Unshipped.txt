@@ -724,6 +724,10 @@ Egap.Documents.FormatRevision.StyleChanged.init -> void
 Egap.Documents.Island.Chart.get -> Egap.Documents.Charts.Chart?
 Egap.Documents.Island.Island(Egap.Documents.Document! document, Egap.Documents.Charts.Chart! chart, double width, double height) -> void
 Egap.Documents.Layout.DocumentLayout.Warnings.get -> System.Collections.Generic.IReadOnlyList<Egap.Documents.Layout.LayoutWarning!>!
+Egap.Documents.Layout.LayoutOptions.Hyphenation.get -> Egami.Fonts.Layout.HyphenationDictionaries?
+Egap.Documents.Layout.LayoutOptions.Hyphenation.init -> void
+Egap.Documents.Layout.LayoutOptions.LineFill.get -> Egami.Fonts.Layout.LineFill
+Egap.Documents.Layout.LayoutOptions.LineFill.init -> void
 Egap.Documents.Layout.LayoutOptions.OnWarning.get -> System.Action<Egap.Documents.Layout.LayoutWarning!>?
 Egap.Documents.Layout.LayoutOptions.OnWarning.init -> void
 Egap.Documents.Layout.LayoutOptions.RevisionView.get -> Egap.Documents.RevisionView
@@ -744,6 +748,7 @@ Egap.Documents.Layout.LayoutWarning.PageIndex.init -> void
 Egap.Documents.Layout.LayoutWarningKind
 Egap.Documents.Layout.LayoutWarningKind.ChangesAccepted = 2 -> Egap.Documents.Layout.LayoutWarningKind
 Egap.Documents.Layout.LayoutWarningKind.FloatLaidOutInline = 0 -> Egap.Documents.Layout.LayoutWarningKind
+Egap.Documents.Layout.LayoutWarningKind.HyphenationDictionaryMissing = 3 -> Egap.Documents.Layout.LayoutWarningKind
 Egap.Documents.Layout.LayoutWarningKind.SmartArtDrawnAsList = 1 -> Egap.Documents.Layout.LayoutWarningKind
 Egap.Documents.OdfVersion
 Egap.Documents.OdfVersion.Odf12 = 0 -> Egap.Documents.OdfVersion

@@ -234,6 +234,13 @@ internal sealed partial class Paginator
                 continue;
             }
 
+            if (content.Text.Style.LineFill == LineFill.Optimal)
+            {
+                // Optimal filling plans the rest of the paragraph: the lines after this one beside the same floats, less a
+                // first-line indent. A width it did not expect plans again.
+                flow.FollowingWidth = (float)Math.Max(1, firstLine ? room + format.FirstLineIndent : room);
+            }
+
             int start = flow.Position;
             TextLine? line = flow.NextLine((float)Math.Max(1, room));
             if (line is null)
