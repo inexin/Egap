@@ -262,6 +262,35 @@ builder.Write(&quot; of &quot;);
 builder.InsertField(&quot;NUMPAGES&quot;);
 builder.MoveToMarginBox(MarginBoxPosition.TopLeft, firstPage: true);   // an empty box: no title on the cover
 </code></pre>
+<p>Layout hyphenates words at line ends where the document asks for it, as Word does: <code>DocumentSettings.AutoHyphenation</code>
+turns it on, <code>ConsecutiveHyphenLimit</code> limits the lines in a row that end in a hyphen, <code>HyphenationZone</code> (Word's 18
+points by default) keeps short words whole when the line would leave less room than that, in justified paragraphs too,
+and <code>HyphenateCapitals</code> says whether words in capitals break. A paragraph with <code>SuppressAutoHyphens</code> is not hyphenated.
+Each run's language picks the dictionary from <code>LayoutOptions.Hyphenation</code>, Egami's built-in patterns for some 35
+languages by default; text in a language with no dictionary is not hyphenated, and a <code>HyphenationDictionaryMissing</code>
+warning names the language. In a PDF, an automatic hyphen is marked as a soft hyphen, so copied and searched text reads
+the word whole. <code>LayoutOptions.LineFill = LineFill.Optimal</code> chooses the line breaks that suit each paragraph as a whole,
+as TeX does, for more even spacing; the default fills each line as far as it goes, as Word does.</p>
+<pre><code class="lang-csharp">using Egap.Documents;
+using Egap.Documents.Layout;
+
+Document doc = Document.Load(&quot;report.docx&quot;);
+doc.Settings.AutoHyphenation = true;
+doc.Settings.ConsecutiveHyphenLimit = 2;
+
+// Egami.Fonts.Layout's types: the built-in dictionaries plus one for a language Egami does not ship.
+Egami.Fonts.Layout.HyphenationDictionaries dictionaries = new(Egami.Fonts.Layout.HyphenationDictionaries.BuiltIn);
+using (FileStream patterns = File.OpenRead(&quot;hyph-sv.tex&quot;))
+{
+    dictionaries.Add(&quot;sv&quot;, Egami.Fonts.Layout.Hyphenator.Load(patterns));
+}
+
+DocumentLayout pages = doc.Layout(new LayoutOptions { Hyphenation = dictionaries, LineFill = Egami.Fonts.Layout.LineFill.Optimal });
+foreach (LayoutWarning warning in pages.Warnings)
+{
+    Console.WriteLine(warning);                                     // e.g. no dictionary for a language
+}
+</code></pre>
 <p>A table with a <code>TableFormat.Position</code> floats: it sits where its anchors and alignment or offsets put it (the text, the
 margins or the page), text after it wraps on the side with more room, and when it does not fit it goes on at the top of
 the next page's body with its header rows repeated. The text after a table that breaks follows it on the page where it

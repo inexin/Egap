@@ -16467,6 +16467,32 @@ references:
   isSpec: "True"
   fullName: Egap.Documents.Layout.LayoutOptions.Fonts
   nameWithType: LayoutOptions.Fonts
+- uid: Egap.Documents.Layout.LayoutOptions.Hyphenation
+  name: Hyphenation
+  href: api/Egap.Documents.Layout.LayoutOptions.html#Egap_Documents_Layout_LayoutOptions_Hyphenation
+  commentId: P:Egap.Documents.Layout.LayoutOptions.Hyphenation
+  fullName: Egap.Documents.Layout.LayoutOptions.Hyphenation
+  nameWithType: LayoutOptions.Hyphenation
+- uid: Egap.Documents.Layout.LayoutOptions.Hyphenation*
+  name: Hyphenation
+  href: api/Egap.Documents.Layout.LayoutOptions.html#Egap_Documents_Layout_LayoutOptions_Hyphenation_
+  commentId: Overload:Egap.Documents.Layout.LayoutOptions.Hyphenation
+  isSpec: "True"
+  fullName: Egap.Documents.Layout.LayoutOptions.Hyphenation
+  nameWithType: LayoutOptions.Hyphenation
+- uid: Egap.Documents.Layout.LayoutOptions.LineFill
+  name: LineFill
+  href: api/Egap.Documents.Layout.LayoutOptions.html#Egap_Documents_Layout_LayoutOptions_LineFill
+  commentId: P:Egap.Documents.Layout.LayoutOptions.LineFill
+  fullName: Egap.Documents.Layout.LayoutOptions.LineFill
+  nameWithType: LayoutOptions.LineFill
+- uid: Egap.Documents.Layout.LayoutOptions.LineFill*
+  name: LineFill
+  href: api/Egap.Documents.Layout.LayoutOptions.html#Egap_Documents_Layout_LayoutOptions_LineFill_
+  commentId: Overload:Egap.Documents.Layout.LayoutOptions.LineFill
+  isSpec: "True"
+  fullName: Egap.Documents.Layout.LayoutOptions.LineFill
+  nameWithType: LayoutOptions.LineFill
 - uid: Egap.Documents.Layout.LayoutOptions.OnWarning
   name: OnWarning
   href: api/Egap.Documents.Layout.LayoutOptions.html#Egap_Documents_Layout_LayoutOptions_OnWarning
@@ -16763,6 +16789,12 @@ references:
   commentId: F:Egap.Documents.Layout.LayoutWarningKind.FloatLaidOutInline
   fullName: Egap.Documents.Layout.LayoutWarningKind.FloatLaidOutInline
   nameWithType: LayoutWarningKind.FloatLaidOutInline
+- uid: Egap.Documents.Layout.LayoutWarningKind.HyphenationDictionaryMissing
+  name: HyphenationDictionaryMissing
+  href: api/Egap.Documents.Layout.LayoutWarningKind.html#Egap_Documents_Layout_LayoutWarningKind_HyphenationDictionaryMissing
+  commentId: F:Egap.Documents.Layout.LayoutWarningKind.HyphenationDictionaryMissing
+  fullName: Egap.Documents.Layout.LayoutWarningKind.HyphenationDictionaryMissing
+  nameWithType: LayoutWarningKind.HyphenationDictionaryMissing
 - uid: Egap.Documents.Layout.LayoutWarningKind.SmartArtDrawnAsList
   name: SmartArtDrawnAsList
   href: api/Egap.Documents.Layout.LayoutWarningKind.html#Egap_Documents_Layout_LayoutWarningKind_SmartArtDrawnAsList

@@ -89,7 +89,7 @@
 
 
   <h1 id="Egap_Documents_Layout_LayoutOptions" data-uid="Egap.Documents.Layout.LayoutOptions" class="text-break">
-Class LayoutOptions  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Layout/DocumentLayout.cs/#L4"><i class="bi bi-code-slash"></i></a>
+Class LayoutOptions  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Layout/DocumentLayout.cs/#L6"><i class="bi bi-code-slash"></i></a>
   </h1>
 
   <div class="facts text-secondary">
@@ -154,7 +154,7 @@ Class LayoutOptions  <a class="header-action link-secondary" title="View source"
 
   <h3 id="Egap_Documents_Layout_LayoutOptions_Fonts" data-uid="Egap.Documents.Layout.LayoutOptions.Fonts">
   Fonts
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Layout/DocumentLayout.cs/#L7"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Layout/DocumentLayout.cs/#L9"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Where fonts come from; <a class="xref" href="Egap.Documents.Layout.FontSettings.html#Egap_Documents_Layout_FontSettings_Default">Default</a> when null.</p>
@@ -182,11 +182,84 @@ Class LayoutOptions  <a class="header-action link-secondary" title="View source"
 
 
 
+  <a id="Egap_Documents_Layout_LayoutOptions_Hyphenation_" data-uid="Egap.Documents.Layout.LayoutOptions.Hyphenation*"></a>
+
+  <h3 id="Egap_Documents_Layout_LayoutOptions_Hyphenation" data-uid="Egap.Documents.Layout.LayoutOptions.Hyphenation">
+  Hyphenation
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Layout/DocumentLayout.cs/#L41"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>The hyphenation dictionaries automatic hyphenation looks words up in, by each run's language;
+<span class="xref">Egami.Fonts.Layout.HyphenationDictionaries.BuiltIn</span> by default. Words are hyphenated only where the document asks for it
+(<a class="xref" href="Egap.Documents.DocumentSettings.html#Egap_Documents_DocumentSettings_AutoHyphenation">AutoHyphenation</a>, and not in paragraphs with
+<a class="xref" href="Egap.Documents.ParagraphFormat.html#Egap_Documents_ParagraphFormat_SuppressAutoHyphens">SuppressAutoHyphens</a>), with its limit of lines in a row, hyphenation zone and capitals
+setting. Text in a language without a dictionary is not hyphenated, and a <a class="xref" href="Egap.Documents.Layout.LayoutWarning.html">LayoutWarning</a> of kind
+<a class="xref" href="Egap.Documents.Layout.LayoutWarningKind.html#Egap_Documents_Layout_LayoutWarningKind_HyphenationDictionaryMissing">HyphenationDictionaryMissing</a> names the language. Null hyphenates only at optional
+hyphens (U+00AD) in the text.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public HyphenationDictionaries? Hyphenation { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">HyphenationDictionaries</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Egap_Documents_Layout_LayoutOptions_LineFill_" data-uid="Egap.Documents.Layout.LayoutOptions.LineFill*"></a>
+
+  <h3 id="Egap_Documents_Layout_LayoutOptions_LineFill" data-uid="Egap.Documents.Layout.LayoutOptions.LineFill">
+  LineFill
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Layout/DocumentLayout.cs/#L49"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>How paragraphs are broken into lines: <span class="xref">Egami.Fonts.Layout.LineFill.Greedy</span> (the default) fills each line as far as it goes,
+as Word does; <span class="xref">Egami.Fonts.Layout.LineFill.Optimal</span> chooses the breaks that suit the whole paragraph best, as TeX does, for
+more even spacing in justified text at some cost in speed, and with lines that differ from Word's.
+<span class="xref">Egami.Fonts.Layout.LineFill.Balanced</span> evens out the lines of paragraphs of up to 6 lines, such as headings.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public LineFill LineFill { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">LineFill</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
   <a id="Egap_Documents_Layout_LayoutOptions_OnWarning_" data-uid="Egap.Documents.Layout.LayoutOptions.OnWarning*"></a>
 
   <h3 id="Egap_Documents_Layout_LayoutOptions_OnWarning" data-uid="Egap.Documents.Layout.LayoutOptions.OnWarning">
   OnWarning
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Layout/DocumentLayout.cs/#L21"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Layout/DocumentLayout.cs/#L23"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Called once for each <a class="xref" href="Egap.Documents.Layout.LayoutWarning.html">LayoutWarning</a> when the layout is done, as <a class="xref" href="Egap.Documents.Layout.DocumentLayout.html#Egap_Documents_Layout_DocumentLayout_Warnings">Warnings</a>
@@ -219,7 +292,7 @@ lists them: the way to hear of them when the layout is not kept, as when a docum
 
   <h3 id="Egap_Documents_Layout_LayoutOptions_RevisionView" data-uid="Egap.Documents.Layout.LayoutOptions.RevisionView">
   RevisionView
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Layout/DocumentLayout.cs/#L28"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Layout/DocumentLayout.cs/#L30"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>How tracked changes show; <a class="xref" href="Egap.Documents.RevisionView.html#Egap_Documents_RevisionView_Final">Final</a> by default. <a class="xref" href="Egap.Documents.RevisionView.html#Egap_Documents_RevisionView_Original">Original</a> lays out a
@@ -253,7 +326,7 @@ that copy's.</p>
 
   <h3 id="Egap_Documents_Layout_LayoutOptions_Strict" data-uid="Egap.Documents.Layout.LayoutOptions.Strict">
   Strict
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Layout/DocumentLayout.cs/#L15"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Layout/DocumentLayout.cs/#L17"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Whether layout fails loudly instead of degrading: a <a class="xref" href="Egap.Documents.Layout.LayoutException.html">LayoutException</a> naming the node is thrown when text
@@ -288,7 +361,7 @@ else's file never fails on its content.</p>
 </article>
 
         <div class="contribution d-print-none">
-          <a href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Layout/DocumentLayout.cs/#L4" class="edit-link">Edit this page</a>
+          <a href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/Layout/DocumentLayout.cs/#L6" class="edit-link">Edit this page</a>
         </div>
 
 
