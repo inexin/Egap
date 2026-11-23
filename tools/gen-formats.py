@@ -86,6 +86,11 @@ PARA = [
     ("WordBreak", "WordBreak", "enum", "Where lines may break inside words.", ""),
     ("MaxLines", "int", "posint", "The most lines shown; the last ends in an ellipsis where text is cut. Word has no such setting.", ""),
     ("Kashida", "KashidaLevel", "enum", "How far justified Arabic lines are stretched with tatweels (Word's low, medium and high kashida); None for word spaces only.", ""),    ("Frame", "FramePosition", "ref", "An old-style text frame: the paragraph is placed as a float by the frame's anchors (Word's framePr); null for none.", ""),
+    ("HyphenCharacter", "string", "ref", "The text drawn where a line ends at a hyphenation point, such as U+2010; a hyphen-minus when not set (CSS hyphenate-character). Word has no such setting.", ""),
+    ("HyphenationMinWordLength", "int", "posint", "The fewest letters a word needs to be hyphenated automatically; 5 when not set (CSS hyphenate-limit-chars). Word has no such setting.", ""),
+    ("HyphenationMinBefore", "int", "posint", "The fewest letters automatic hyphenation keeps before a hyphen; the dictionary's own when not set (CSS hyphenate-limit-chars). Word has no such setting.", ""),
+    ("HyphenationMinAfter", "int", "posint", "The fewest letters automatic hyphenation carries to the next line; the dictionary's own when not set (CSS hyphenate-limit-chars). Word has no such setting.", ""),
+    ("LineFill", "Egami.Fonts.Layout.LineFill", "enum", "How the paragraph's lines are filled; LayoutOptions.LineFill when not set (CSS text-wrap: pretty and balance). Word has no such setting.", ""),
 ]
 
 TABLE = [
