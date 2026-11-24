@@ -12,6 +12,76 @@
       }
     },
     {
+      "type": "Resource",
+      "source_relative_path": "agents/Egap.Cli.md",
+      "output": {
+        "resource": {
+          "relative_path": "agents/Egap.Cli.md"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Resource",
+      "source_relative_path": "agents/Egap.Documents.Html.md",
+      "output": {
+        "resource": {
+          "relative_path": "agents/Egap.Documents.Html.md"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Resource",
+      "source_relative_path": "agents/Egap.Documents.Markdown.md",
+      "output": {
+        "resource": {
+          "relative_path": "agents/Egap.Documents.Markdown.md"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Resource",
+      "source_relative_path": "agents/Egap.Documents.md",
+      "output": {
+        "resource": {
+          "relative_path": "agents/Egap.Documents.md"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Resource",
+      "source_relative_path": "agents/Egap.Pdf.md",
+      "output": {
+        "resource": {
+          "relative_path": "agents/Egap.Pdf.md"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Resource",
+      "source_relative_path": "agents/Egap.Preview.md",
+      "output": {
+        "resource": {
+          "relative_path": "agents/Egap.Preview.md"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Resource",
+      "source_relative_path": "agents/Egap.Spreadsheets.md",
+      "output": {
+        "resource": {
+          "relative_path": "agents/Egap.Spreadsheets.md"
+        }
+      },
+      "version": ""
+    },
+    {
       "type": "ManagedReference",
       "source_relative_path": "api/Egap.Documents.Block.yml",
       "output": {
@@ -10193,11 +10263,11 @@
       "type": "Toc",
       "source_relative_path": "api/toc.yml",
       "output": {
-        ".json": {
-          "relative_path": "api/toc.json"
-        },
         ".html": {
           "relative_path": "api/toc.html"
+        },
+        ".json": {
+          "relative_path": "api/toc.json"
         }
       },
       "version": ""
@@ -10546,11 +10616,11 @@
       "type": "Toc",
       "source_relative_path": "articles/toc.yml",
       "output": {
-        ".json": {
-          "relative_path": "articles/toc.json"
-        },
         ".html": {
           "relative_path": "articles/toc.html"
+        },
+        ".json": {
+          "relative_path": "articles/toc.json"
         }
       },
       "version": ""
@@ -10586,14 +10656,24 @@
       "version": ""
     },
     {
+      "type": "Resource",
+      "source_relative_path": "llms.txt",
+      "output": {
+        "resource": {
+          "relative_path": "llms.txt"
+        }
+      },
+      "version": ""
+    },
+    {
       "type": "Toc",
       "source_relative_path": "toc.yml",
       "output": {
-        ".json": {
-          "relative_path": "toc.json"
-        },
         ".html": {
           "relative_path": "toc.html"
+        },
+        ".json": {
+          "relative_path": "toc.json"
         }
       },
       "version": ""
