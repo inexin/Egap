@@ -201,7 +201,10 @@ public sealed class WordCompatibility
         if (explicitValues[id] != value)
         {
             explicitValues[id] = value;
-            document.NotifyFormattingChanged("Settings.WordCompatibility." + property);
+            document.NotifyFormattingChanged(ChangeNames[id] ??= "Settings.WordCompatibility." + property);
         }
     }
+
+    // The change names, built once each, so readers that set a flag on every document allocate nothing for it.
+    private static readonly string?[] ChangeNames = new string?[Flags.Length];
 }
