@@ -10,7 +10,8 @@ internal milestones whose public API was frozen and reviewed, and they are liste
   spaces can shrink to fit it, by up to a quarter of their width in all and each by no more than half of what it would
   stretch had the line ended a word earlier. This changes line breaks, and so page breaks, in justified text from Word
   documents in compatibility mode 15 (DOCX from Word 2013 and later, RTF and documents made in code): it often takes fewer
-  lines, as it does in Word. The new `WordCompatibility.ShrinkJustifiedSpaces` turns it off. It is off below mode 15 (Word
+  lines, as it does in Word. Automatic hyphenation of such lines no longer keeps to `DocumentSettings.HyphenationZone`,
+  which Word ignores there too. The new `WordCompatibility.ShrinkJustifiedSpaces` turns it off. It is off below mode 15 (Word
   2010 and older, DOC files) and for ODT documents, and it is not saved to DOCX, since Word has no setting for it.
 - Needs Egami.Fonts 1.6.0 (`ParagraphStyle.SpaceShrink`).
 

@@ -134,7 +134,9 @@ public sealed class WordCompatibility
     /// <summary>
     /// A justified line takes one more word when its spaces can shrink to fit it, as Word 2013 and later lay justified
     /// paragraphs out: by up to a quarter of their width in all, and each by no more than half of what it would stretch had the
-    /// line ended a word earlier. When off, as in Word 2010 and older, justified lines only stretch. Word has no setting of its
+    /// line ended a word earlier. Such lines are hyphenated whatever room they leave, without
+    /// <see cref="DocumentSettings.HyphenationZone"/>, as Word does. When off, as in Word 2010 and older, justified lines only
+    /// stretch. Word has no setting of its
     /// own for this: it is on in compatibility mode 15 (Word 2013) and off below, and a value set here is not saved to DOCX.
     /// Documents read from ODT, HTML and Markdown have it off, as their own applications only stretch justified lines.
     /// </summary>

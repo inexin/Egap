@@ -70,7 +70,8 @@ tabular or old-style figures and stylistic sets. Paragraphs choose where lines m
 and spacing, stylistic sets, contextual alternates); Word has no word spacing or overline.
 
 Justified and distributed paragraphs break lines as Word 2013 and later do: a line takes one more word when its spaces
-can shrink to fit it, by up to a quarter of their width, so justified text often takes fewer lines than in a browser.
+can shrink to fit it, by up to a quarter of their width, so justified text often takes fewer lines than in a browser, and
+they hyphenate without the hyphenation zone, as Word does.
 `DocumentSettings.WordCompatibility.ShrinkJustifiedSpaces` turns this off. It follows the compatibility mode: on in
 mode 15, off for files from Word 2010 and older, and off for documents read from ODT, HTML, EPUB and Markdown, whose own
 applications only stretch justified lines.
