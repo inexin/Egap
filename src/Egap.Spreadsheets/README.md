@@ -18,7 +18,7 @@ sheet.Range("A1:B1").UpdateStyle(s => s with { Font = s.Font with { Bold = true 
 sheet["B2"].NumberFormat = "#,##0.00";
 string shown = sheet["B2"].Text;                     // "1,250.50", as Excel shows it
 book.Save("sales.xlsx");
-sheet.SaveCsv("sales.csv");
+sheet.SaveAsCsv("sales.csv");
 
 Workbook loaded = Workbook.Load("sales.xlsx");
 ```

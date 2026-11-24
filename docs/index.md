@@ -23,3 +23,6 @@ pdf.Save("out.pdf");                                             // incremental:
 
 Start with [Getting started](articles/getting-started.md), browse the [guides](articles/guides/index.md) and the
 [document formats](articles/formats/index.md), or look anything up in the [API reference](api/Egap.Pdf.yml).
+
+AI coding assistants can start from [llms.txt](llms.txt), a list of every page, and from each package's guide for
+agents under `agents/`, which the NuGet package also carries as `AGENTS.md`.

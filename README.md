@@ -59,6 +59,10 @@ The documentation is at [inexin.github.io/Egap](https://inexin.github.io/Egap/),
 
 Each package also has a short README with an example. What each version adds is in the [changelog](CHANGELOG.md).
 
+For AI coding assistants, each package carries an `AGENTS.md` with its names, entry points, samples and common mistakes,
+and the site has [llms.txt](https://inexin.github.io/Egap/v2/llms.txt), a list of every page. Both are written by
+`tools/make-llms-txt.py` from `tools/agent-guides` and the guides' tested samples.
+
 ## Building
 
 You need the .NET 10 SDK. Egap draws, decodes images and reads fonts through [Egami](https://github.com/inexin/Egami),

@@ -4,6 +4,48 @@ What each Egap package adds, newest first. From 2.1.0 all Egap packages share on
 may go out ahead of the others on its own tag, as Egap.Documents, Egap.Spreadsheets and Egap.Cli 2.3.0-preview.1 did. Nothing before the first release below was published; those versions were
 internal milestones whose public API was frozen and reviewed, and they are listed so the version numbers make sense.
 
+## Egap.Cli 2.4.0 (unreleased)
+
+- The package carries `AGENTS.md`, a guide for AI coding assistants with the package's own names, entry points,
+  samples and common mistakes. The docs site publishes the same guides under `agents/`, and `llms.txt`, a list of every
+  page for AI assistants.
+
+## Egap.Documents 2.4.0 (unreleased)
+
+- The package carries `AGENTS.md`, a guide for AI coding assistants with the package's own names, entry points,
+  samples and common mistakes. The docs site publishes the same guides under `agents/`, and `llms.txt`, a list of every
+  page for AI assistants.
+
+## Egap.Documents.Html 2.4.0 (unreleased)
+
+- The package carries `AGENTS.md`, a guide for AI coding assistants with the package's own names, entry points,
+  samples and common mistakes. The docs site publishes the same guides under `agents/`, and `llms.txt`, a list of every
+  page for AI assistants.
+
+## Egap.Documents.Markdown 2.4.0 (unreleased)
+
+- The package carries `AGENTS.md`, a guide for AI coding assistants with the package's own names, entry points,
+  samples and common mistakes. The docs site publishes the same guides under `agents/`, and `llms.txt`, a list of every
+  page for AI assistants.
+
+## Egap.Spreadsheets 2.4.0 (unreleased)
+
+- The package carries `AGENTS.md`, a guide for AI coding assistants with the package's own names, entry points,
+  samples and common mistakes. The docs site publishes the same guides under `agents/`, and `llms.txt`, a list of every
+  page for AI assistants.
+
+## Egap.Pdf 2.4.0 (unreleased)
+
+- The package carries `AGENTS.md`, a guide for AI coding assistants with the package's own names, entry points,
+  samples and common mistakes. The docs site publishes the same guides under `agents/`, and `llms.txt`, a list of every
+  page for AI assistants.
+
+## Egap.Preview 2.4.0 (unreleased)
+
+- The package carries `AGENTS.md`, a guide for AI coding assistants with the package's own names, entry points,
+  samples and common mistakes. The docs site publishes the same guides under `agents/`, and `llms.txt`, a list of every
+  page for AI assistants.
+
 ## Egap.Cli 2.3.0 (2026-11-23)
 
 - `compare` compares documents: two files of any format egap reads, also of two different formats, become one document
