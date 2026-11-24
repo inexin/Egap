@@ -4,6 +4,26 @@ What each Egap package adds, newest first. From 2.1.0 all Egap packages share on
 may go out ahead of the others on its own tag, as Egap.Documents, Egap.Spreadsheets and Egap.Cli 2.3.0-preview.1 did. Nothing before the first release below was published; those versions were
 internal milestones whose public API was frozen and reviewed, and they are listed so the version numbers make sense.
 
+## Egap.Documents 2.4.0 (unreleased)
+
+- Justified and distributed paragraphs now break lines as Word 2013 and later do: a line takes one more word when its
+  spaces can shrink to fit it, by up to a quarter of their width in all and each by no more than half of what it would
+  stretch had the line ended a word earlier. This changes line breaks, and so page breaks, in justified text from Word
+  documents in compatibility mode 15 (DOCX from Word 2013 and later, RTF and documents made in code): it often takes fewer
+  lines, as it does in Word. The new `WordCompatibility.ShrinkJustifiedSpaces` turns it off. It is off below mode 15 (Word
+  2010 and older, DOC files) and for ODT documents, and it is not saved to DOCX, since Word has no setting for it.
+- Needs Egami.Fonts 1.6.0 (`ParagraphStyle.SpaceShrink`).
+
+## Egap.Documents.Html 2.4.0 (unreleased)
+
+- Documents read from HTML, MHTML and EPUB set `WordCompatibility.ShrinkJustifiedSpaces` off, so justified text breaks as
+  in a browser, where lines only stretch.
+
+## Egap.Documents.Markdown 2.4.0 (unreleased)
+
+- Documents read from Markdown set `WordCompatibility.ShrinkJustifiedSpaces` off, as their HTML rendering only stretches
+  justified lines.
+
 ## Egap.Cli 2.3.0 (2026-11-23)
 
 - `compare` compares documents: two files of any format egap reads, also of two different formats, become one document

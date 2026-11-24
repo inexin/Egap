@@ -849,6 +849,9 @@ internal sealed class ParagraphBridge(FontProvider fonts, Document document, Rev
             },
             AlignLast = format.Alignment == ParagraphAlignment.Distribute ? TextAlignLast.Justify : TextAlignLast.Auto,
             Justify = format.Alignment == ParagraphAlignment.Justify && format.Kashida != KashidaLevel.None ? TextJustify.Kashida : TextJustify.Auto,
+            // Word 2013 and later fit one more word on a justified line when its spaces can shrink to take it.
+            SpaceShrink = format.Alignment is ParagraphAlignment.Justify or ParagraphAlignment.Distribute
+                && document.Settings.WordCompatibility.ShrinkJustifiedSpaces ? 0.25f : 0,
             Kashida = format.Kashida switch
             {
                 KashidaLevel.Low => EgamiKashidaLevel.Low,
