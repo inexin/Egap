@@ -1,0 +1,82 @@
+# Egap.Cli: guide for coding agents
+
+Egap.Cli is the `egap` dotnet tool: it converts HTML, Markdown, DOCX, RTF, ODT, workbooks and images to PDF and back, and
+inspects, merges, splits, stamps, optimizes, encrypts, redacts, fills, signs and checks PDFs from a shell, a build script
+or an AI assistant. It is built on Egap's public API, so it does what the libraries do, with the same defaults, and
+`egap mcp` serves the commands as tools over the Model Context Protocol.
+
+Install: `dotnet tool install --global Egap.Cli`, or run it without installing with `dnx Egap.Cli --yes -- <command>`.
+
+{{shared}}
+
+## Commands
+
+- Inspect: `info`, `text`, `render`, `metadata show`, `form list`, `attach list`, and for workbooks `cells`.
+- Convert: `convert` picks the direction from the output's extension (PDF, DOCX, RTF, ODT, HTML, Markdown, text, XLSX,
+  CSV, images); `calc` calculates a workbook; `merge-data` fills a mail-merge template.
+- Pages: `merge`, `split`, `pages` (rotate, delete, select, labels), `impose`, `stamp`.
+- Edit and protect: `metadata set`, `metadata strip`, `optimize`, `encrypt`, `decrypt`, `redact`, `sanitize`, `form fill`,
+  `form flatten`, `attach add`, `attach extract`, `invoice embed`.
+- Sign and check: `sign`, `verify`, `compare`, `pdfa check`, `pdfa convert`, `pdfx check`, `pdfx convert`, `preflight`,
+  `separations`, `color`.
+- Scans: `ocr` (through an OCR program you install, such as Tesseract), `ocr-layer`, `clean`.
+- Pipelines: `run` chains steps joined by a bare `+`, each step a command with the same options, ending in `save`;
+  `--save-workflow` and `--workflow` keep a recipe as JSON. `egap run --list` lists the steps.
+- `egap mcp --allow <folder>`: the commands as MCP tools, inside the folders allowed; `--allow-sign` adds sign, encrypt
+  and decrypt. `ocr` is never offered.
+- `egap <name>` runs `egap-<name>` from the PATH, so `egap preview` starts Egap.Preview's `egap-preview`.
+
+## Samples
+
+```sh
+egap info report.pdf --json
+egap convert notes.md -o notes.pdf --page-size A4 --footer "Page {page} of {total-pages}"
+egap convert report.pdf -o report.docx
+egap convert budget.xlsx -o budget.pdf
+egap merge cover.pdf body.pdf#2-z appendix.pdf -o book.pdf
+egap redact statement.pdf --regex "\d{4} \d{4} \d{4} \d{4}" -o redacted.pdf
+egap pdfa convert report.pdf --level 2b -o report-a.pdf
+egap sign contract.pdf --cert me.pfx --cert-password-env PFX_PASSWORD --reason Approved -o signed.pdf
+egap compare v1.docx v2.docx --output redline.docx --author Legal
+egap run scan.pdf clean --deskew + stamp --page-numbers + save out.pdf
+egap mcp --allow ./contracts
+```
+
+## Conventions
+
+- Inputs are files, globs that egap expands itself (`*`, `?`, `**`), folders with `--recursive`, or `-` for standard
+  input. Several inputs run at once (`--jobs`); a file that fails is reported and the rest carry on unless `--fail-fast`.
+- `-o` takes a file, a folder, a template such as `out/{name}.pdf` (`{name}`, `{ext}`, `{dir}`, `{index}`, `{page}`) or
+  `-`. egap never writes over an input unless `--in-place`.
+- Pages are numbered from 1: `1,3,5-10`, `z` for the last, `r2` for the second to last, `:odd`, `:even`, `x` to leave
+  pages out. A file in `merge` takes its pages after a `#`.
+- Lengths: `12mm`, `1.5cm`, `1in`, `72pt`; page sizes `A4`, `Letter` or `210mmx297mm`.
+- Edits save incrementally, so signatures stay valid where the change allows; new documents are written whole;
+  `--rewrite`, `--linearize` and `--compress` override that.
+- `--set key=value` passes a writer setting, such as `--set outline=bookmarks` for PDF or `--set images=data-uris` for
+  Markdown; a setting the writer does not take is a usage error.
+- Report commands take `--json`, with versioned schemas in `docs/schemas` (`egap-info-1.json` and the others).
+- Exit codes: 0 done, 1 a file failed or a check found a problem (compare, verify, pdfa check, pdfx check, preflight),
+  2 a mistake in the command line, 3 a safety limit.
+
+## Common mistakes
+
+- Passing a password with `--password`: it lands in shell history. Use `--password-env NAME` or `--password-file path`;
+  the MCP server takes passwords only from environment variables.
+- Expecting `-o in.pdf` to overwrite the input. egap refuses unless `--in-place` is given; every output goes through a
+  temporary file, so a failed run leaves the old file as it was.
+- Treating exit code 1 from `compare` or `verify` as a crash: it means the documents differ or a check failed.
+- Expecting HTML to load remote images and style sheets. HTML reads from its own folder only, unless `--allow-path` or
+  `--allow-network` says otherwise.
+- Expecting `egap ocr` to bring an OCR engine. It runs the program `--engine-command` names, such as Tesseract.
+- An edit that would break a signature stops unless `--allow-invalidating-signatures`.
+- Damaged files are repaired by default; `--strict` refuses them, and `--limit` or `EGAP_LIMITS` sets the safety limits.
+- Quoting globs: quote them (`"scans/**/*.pdf"`) so egap expands them the same way in every shell.
+- Writing C# against the tool: the libraries behind each command are Egap.Pdf, Egap.Documents (with the HTML and Markdown
+  add-ons) and Egap.Spreadsheets, each with its own guide.
+
+## More
+
+- Guide: https://inexin.github.io/Egap/v2/articles/cli/index.html
+- Command reference: https://inexin.github.io/Egap/v2/articles/cli/commands.html
+- Every page in one list: https://inexin.github.io/Egap/v2/llms.txt

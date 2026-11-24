@@ -29,6 +29,7 @@ python tools/run-tests.py                         # every test project with xUni
 dotnet format Egap.slnx --verify-no-changes      # must pass before anything lands
 python tools/update-public-api.py                 # adds new public API to PublicAPI.Unshipped.txt
 python tools/check-doc-snippets.py                # every C# block in docs/ builds
+python tools/make-llms-txt.py --check             # docs/llms.txt and the agent guides in docs/agents are current
 docfx docs/docfx.json                             # the docs site, into docs/_site (dotnet tool install -g docfx)
 ```
 
@@ -54,6 +55,12 @@ a short task with its code goes under the guide's `## Recipes` heading, not a se
 All Egap packages share one version, `EgapVersion` in `Directory.Build.props`; never set a version in a project file.
 Write docs in plain, short sentences that say what the user gets. Describe behavior, not the planning history (no phase or
 task numbers in docs).
+
+Each package's guide for coding agents is `tools/agent-guides/<package>.md`; its samples are `{{snippet page.md#Heading}}`
+lines that pull the first C# block under that heading of a page in `docs/articles`, so they are built with the docs. After
+changing a guide, a page it pulls from or `docs/articles/toc.yml`, run `python tools/make-llms-txt.py`: it writes
+`docs/agents/<package>.md` (packed as `AGENTS.md`) and `docs/llms.txt`. Rename a heading a guide pulls from and the script
+stops with an error.
 
 ## Code style
 
