@@ -68,6 +68,9 @@ internal sealed class MarkdownReader
     public static Document Build(MarkdownDocument syntax, MarkdownLoadOptions options)
     {
         Document document = new();
+
+        // Markdown renders as HTML, which lays the line before a hard break out like a last line.
+        document.Settings.WordCompatibility.JustifiesLikeWord = false;
         MarkdownReader reader = new(document, options);
         if (syntax.Count > 0 && syntax[0] is YamlFrontMatterBlock front)
         {

@@ -60,7 +60,17 @@ internal sealed partial class HtmlReader
 
     private HtmlReader(HtmlLoadOptions options, CssCascade cascade, Document? into)
     {
-        document = into ?? new Document();
+        if (into is null)
+        {
+            // Browsers lay the line before a <br> out like a last line and stretch no-break spaces.
+            document = new Document();
+            document.Settings.WordCompatibility.JustifiesLikeWord = false;
+        }
+        else
+        {
+            document = into;
+        }
+
         this.options = options;
         this.cascade = cascade;
     }

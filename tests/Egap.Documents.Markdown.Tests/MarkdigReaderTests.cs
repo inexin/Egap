@@ -54,4 +54,10 @@ public sealed class MarkdigReaderTests
 
         Assert.Equal("[not a link](/foo)", document.GetText().TrimEnd('\r'));
     }
+
+    [Fact]
+    public void DocumentsJustifyAsHtml()
+    {
+        Assert.False(MarkdownFormat.Parse("a").Settings.WordCompatibility.JustifiesLikeWord);
+    }
 }

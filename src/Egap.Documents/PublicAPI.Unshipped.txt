@@ -1,1 +1,3 @@
 #nullable enable
+Egap.Documents.WordCompatibility.DoNotExpandShiftReturn.get -> bool
+Egap.Documents.WordCompatibility.DoNotExpandShiftReturn.set -> void

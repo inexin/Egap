@@ -112,6 +112,9 @@ internal sealed partial class OdtReader
     private void ReadDocument()
     {
         document.Settings.CompatibilityMode = 15;
+
+        // Justified lines before a break are laid out like last lines, not by Word's rules.
+        document.Settings.WordCompatibility.JustifiesLikeWord = false;
         ReadSettings();
         ReadStyleTables();
         ReadMeta();

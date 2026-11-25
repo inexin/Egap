@@ -12,17 +12,34 @@ internal milestones whose public API was frozen and reviewed, and they are liste
 
 ## Egap.Documents 2.4.0 (unreleased)
 
+- Justified lines before breaks are laid out as Word lays them out. The line before a manual line break (Shift+Enter) or
+  a display equation now stretches to the margins, unless the document has Word's `doNotExpandShiftReturn`, which the new
+  `WordCompatibility.DoNotExpandShiftReturn` reads and writes (it used to be listed in `OtherSettings`). The line before a
+  page or column break stretches in compatibility modes 14 and below and stays at the start in mode 15. A manual line
+  break that ends a paragraph now leaves an empty line after it, and a manual line break on either side of a display
+  equation, as Word writes them, no longer adds an empty line. No-break spaces keep their width on justified lines, and only
+  spaces after a line's last tab stretch. DOC (`fExpShRtn`) and RTF (`\expshrtn`) files keep the setting too, stored the
+  other way round as Word does, so RTF files without `\expshrtn`, from Word's own or other applications, lay those lines
+  out like last lines. Documents read from ODT keep the old rule.
+- Needs Egami.Fonts 1.6.0 (`ParagraphStyle.JustifyLineBreaks` and `StretchNoBreakSpaces`).
+
 - The package carries `AGENTS.md`, a guide for AI coding assistants with the package's own names, entry points,
   samples and common mistakes. The docs site publishes the same guides under `agents/`, and `llms.txt`, a list of every
   page for AI assistants.
 
 ## Egap.Documents.Html 2.4.0 (unreleased)
 
+- Documents read from HTML, MHTML and EPUB lay justified lines out as browsers do: the line before a `<br>` stays at the
+  start, and no-break spaces stretch, whatever `WordCompatibility.DoNotExpandShiftReturn` says.
+
 - The package carries `AGENTS.md`, a guide for AI coding assistants with the package's own names, entry points,
   samples and common mistakes. The docs site publishes the same guides under `agents/`, and `llms.txt`, a list of every
   page for AI assistants.
 
 ## Egap.Documents.Markdown 2.4.0 (unreleased)
+
+- Documents read from Markdown lay justified lines out as their HTML rendering does: the line before a hard line break
+  stays at the start.
 
 - The package carries `AGENTS.md`, a guide for AI coding assistants with the package's own names, entry points,
   samples and common mistakes. The docs site publishes the same guides under `agents/`, and `llms.txt`, a list of every

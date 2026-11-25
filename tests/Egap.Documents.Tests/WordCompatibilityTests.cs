@@ -73,7 +73,8 @@ public class WordCompatibilityTests
         Assert.False(compat.OverrideTableStyleFontSizeAndJustification);
         Assert.False(compat.EnableOpenTypeFeatures);
         Assert.True(compat.TableIndentFromCellText);
-        Assert.Equal(new Dictionary<string, string> { ["ulTrailSpace"] = "1", ["doNotExpandShiftReturn"] = "1", ["doNotFlipMirrorIndents"] = "1" }, compat.OtherSettings);
+        Assert.True(compat.DoNotExpandShiftReturn);
+        Assert.Equal(new Dictionary<string, string> { ["ulTrailSpace"] = "1", ["doNotFlipMirrorIndents"] = "1" }, compat.OtherSettings);
     }
 
     [Fact]

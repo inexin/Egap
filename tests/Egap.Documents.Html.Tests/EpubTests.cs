@@ -499,4 +499,10 @@ public class EpubTests
 
         Assert.Single(entries.Keys, k => k.StartsWith("OEBPS/chapter", StringComparison.Ordinal));
     }
+
+    [Fact]
+    public void BooksJustifyAsReadingSystems()
+    {
+        Assert.False(EpubFormat.Load(new MemoryStream(TestBook())).Settings.WordCompatibility.JustifiesLikeWord);
+    }
 }

@@ -43,6 +43,9 @@ internal sealed class EpubReader
         this.container = container;
         this.package = package;
         this.options = options;
+
+        // Reading systems justify as browsers do: lines before a break are laid out like last lines.
+        document.Settings.WordCompatibility.JustifiesLikeWord = false;
     }
 
     public static Document Read(Stream stream, EpubLoadOptions options, out IReadOnlyList<ConversionWarning> warnings)
