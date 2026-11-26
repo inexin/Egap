@@ -25,7 +25,8 @@ def main() -> int:
     # that imports both namespaces. A page about both uses neither Cell, and gets a file of its own too.
     groups: dict[str, tuple[set[str], list[str], list[str]]] = {}
     for page in sorted((ROOT / "docs").rglob("*.md")):
-        if "_site" in page.parts:
+        # docs/agents holds copies of blocks from docs/articles (tools/make-llms-txt.py), built where they come from.
+        if "_site" in page.parts or page.parent == ROOT / "docs" / "agents":
             continue
         blocks = re.findall(r"```csharp\n(.*?)```", page.read_text(encoding="utf-8"), re.S)
         group = "Spreadsheets" if any("using Egap.Spreadsheets;" in block for block in blocks) else "Snippets"

@@ -1,0 +1,78 @@
+# Egap
+
+> Egap is an MIT-licensed, fully managed family of document libraries for .NET 10, with no native code: PDF files, flow
+> documents in DOCX, DOC, RTF, ODT, HTML, EPUB and Markdown, and Excel workbooks. It draws, decodes images and reads fonts
+> through Egami. The packages are Egap.Pdf (read, edit, render, sign, redact and save PDF; PDF/A, optimize, stamps,
+> compare), Egap.Documents (one document model, page layout, PDF export and PDF back to documents), Egap.Documents.Html
+> (HTML, MHTML and EPUB), Egap.Documents.Markdown (Markdown), Egap.Spreadsheets (workbooks, formulas, Excel files),
+> Egap.Cli (the `egap` command and MCP server) and Egap.Preview (the `egap-preview` live preview tool).
+
+Egap's own names: `PdfDocument` (`PdfDocument.Open`, `Pages`, `Save`) is a PDF file, `Document` (`Document.Load`, `Save`,
+`DocumentBuilder`, `SaveAsPdf`) a flow document in any format, `Workbook` and `Worksheet` (`sheet["B2"]` is a `Cell`) a
+workbook, and `PdfConvert` turns HTML, Markdown, DOCX and images into PDF in one call. Options are objects such as
+`PdfReadOptions`, `PdfExportOptions` and `WorkbookLoadOptions`; damaged input is repaired and reported as warnings.
+
+
+## Docs
+
+- [Getting started](https://inexin.github.io/Egap/v2/articles/getting-started.html): Install the packages, open, edit and save a first PDF, render a page and turn a Word file into PDF.
+- [Packages](https://inexin.github.io/Egap/v2/articles/packages.html): Take Egap.Pdf alone for PDF work, Egap.Documents for documents and conversions, and an add-on for each of HTML and Markdown you read or write.
+- [Guides](https://inexin.github.io/Egap/v2/articles/guides/index.html): Each guide covers one area of Egap.
+
+## Egap.Pdf
+
+- [Editing PDF files](https://inexin.github.io/Egap/v2/articles/guides/editing.html): `PdfDocument` opens a file, lets you change its pages, navigation, annotations and forms, and saves it.
+- [Fonts](https://inexin.github.io/Egap/v2/articles/guides/fonts.html): Egap.Pdf and Egap.Documents use open fonts with the same glyph widths as the fonts documents name most.
+- [OCR and searchable scans](https://inexin.github.io/Egap/v2/articles/guides/ocr.html): Egap makes scanned PDFs searchable through an OCR engine you plug in.
+- [PDF tools](https://inexin.github.io/Egap/v2/articles/guides/pdf-tools.html): Optimize, stamps and Bates numbers, N-up and booklets, page ranges and lengths, compare, and scan clean-up.
+- [Print production](https://inexin.github.io/Egap/v2/articles/guides/print-production.html): Preflight, print profiles, ink separations and coverage, colour conversion to CMYK, PDF/X and overprint preview.
+- [Redaction and PDF/A](https://inexin.github.io/Egap/v2/articles/guides/redaction-and-pdfa.html): Redaction removes the covered text, paths and image pixels from the file for real, then rewrites the whole file so nothing is left in older revisions.
+- [Rendering pages](https://inexin.github.io/Egap/v2/articles/guides/rendering.html): A page renders to an Egami raster, or onto any Egami canvas.
+- [Signatures](https://inexin.github.io/Egap/v2/articles/guides/signatures.html): PAdES signatures from B-B to B-LTA with .NET's own cryptography, timestamps, smart cards and HSMs, and verifying signatures.
+- [Text, images and drawing](https://inexin.github.io/Egap/v2/articles/guides/text-images-drawing.html): Each page gives its text in reading order and the images drawn on it.
+
+## Egap.Documents
+
+- [Comparing documents](https://inexin.github.io/Egap/v2/articles/guides/comparing-documents.html): `DocumentCompare.Run` compares two versions of a document, as Word's *Compare* does.
+- [Flow documents](https://inexin.github.io/Egap/v2/articles/guides/flow-documents.html): Egap.Documents holds one editable document model for DOCX, plain text and, with the add-on packages Egap.Documents.Html and Egap.Documents.Markdown, HTML and Markdown.
+- [Moving to Egap.Documents 2.0](https://inexin.github.io/Egap/v2/articles/guides/migrating-to-2.0.html): Egap.Documents 2.0 is one converter package.
+- [PDF export and conversion](https://inexin.github.io/Egap/v2/articles/guides/pdf-export-and-conversion.html): Egap.Documents saves documents as PDF and turns PDF pages back into documents, in namespace `Egap.Documents.Pdf`.
+- [Reports in code](https://inexin.github.io/Egap/v2/articles/guides/reports.html): `Report.Create` builds a document from code.
+
+## Egap.Spreadsheets
+
+- [Charts](https://inexin.github.io/Egap/v2/articles/guides/charts.html): `Egap.Documents.Charts` is one model for the charts in workbooks and Word documents.
+- [Spreadsheets](https://inexin.github.io/Egap/v2/articles/guides/spreadsheets.html): Egap.Spreadsheets holds workbooks in memory and lets you build and edit them from code.
+- [Spreadsheet functions](https://inexin.github.io/Egap/v2/articles/guides/spreadsheet-functions.html): Egap.Spreadsheets has 491 of the 524 functions on Microsoft's list of Excel's functions.
+- [Spreadsheets and documents](https://inexin.github.io/Egap/v2/articles/guides/spreadsheets-and-documents.html): Workbooks reach Egap's document tools through `SpreadsheetFormat.Register()`, called once at startup.
+
+## The egap command
+
+- [Guide](https://inexin.github.io/Egap/v2/articles/cli/index.html): `egap` turns HTML, Markdown, DOCX, RTF, ODT and images into PDF, and inspects, merges, splits, stamps, redacts, fills, signs and checks PDFs from a shell, a build script or an AI assistant.
+- [Command reference](https://inexin.github.io/Egap/v2/articles/cli/commands.html): Every command, its arguments and its options, as `egap <command> --help` shows them.
+
+## Document formats
+
+- [Overview](https://inexin.github.io/Egap/v2/articles/formats/index.html): Egap.Documents reads each format below into one document model and writes the model back out, so any format it reads can be saved as any format it writes.
+- [Docling JSON](https://inexin.github.io/Egap/v2/articles/formats/docling-json.html): Docling JSON is the DoclingDocument format that Docling writes.
+- [DOC](https://inexin.github.io/Egap/v2/articles/formats/doc.html): Egap.Documents reads Word's binary documents and templates, the DOC and DOT files of Word 97 to 2003, and those of Word 6 and Word 95.
+- [DOCX](https://inexin.github.io/Egap/v2/articles/formats/docx.html): Egap.Documents reads and writes Word's files.
+- [EPUB](https://inexin.github.io/Egap/v2/articles/formats/epub.html): EPUB books come from the add-on package Egap.Documents.Html, the same one that reads and writes HTML.
+- [HTML](https://inexin.github.io/Egap/v2/articles/formats/html.html): HTML and XHTML come from the add-on package Egap.Documents.Html.
+- [Markdown](https://inexin.github.io/Egap/v2/articles/formats/markdown.html): Markdown comes from the add-on package Egap.Documents.Markdown.
+- [MHTML](https://inexin.github.io/Egap/v2/articles/formats/mhtml.html): MHTML web archives (`.mht`, `.mhtml`) come from the add-on package Egap.Documents.Html.
+- [OpenDocument Text](https://inexin.github.io/Egap/v2/articles/formats/odt.html): Egap.Documents reads OpenDocument Text, the format LibreOffice and OpenOffice write and Word opens.
+- [Plain text](https://inexin.github.io/Egap/v2/articles/formats/text.html): Egap.Documents reads and writes plain text without an add-on package.
+- [RTF](https://inexin.github.io/Egap/v2/articles/formats/rtf.html): Egap.Documents reads and writes RTF, the Rich Text Format that Word, WordPad, TextEdit and many other programs write.
+
+## Optional
+
+- [API reference](https://inexin.github.io/Egap/v2/api/Egap.Pdf.html): every public type and member of every package.
+- [Egap.Pdf agent guide](https://inexin.github.io/Egap/v2/agents/Egap.Pdf.md): the names, entry points, samples and common mistakes of Egap.Pdf, as packed in its NuGet package as AGENTS.md.
+- [Egap.Cli agent guide](https://inexin.github.io/Egap/v2/agents/Egap.Cli.md): the names, entry points, samples and common mistakes of Egap.Cli, as packed in its NuGet package as AGENTS.md.
+- [Egap.Documents agent guide](https://inexin.github.io/Egap/v2/agents/Egap.Documents.md): the names, entry points, samples and common mistakes of Egap.Documents, as packed in its NuGet package as AGENTS.md.
+- [Egap.Documents.Html agent guide](https://inexin.github.io/Egap/v2/agents/Egap.Documents.Html.md): the names, entry points, samples and common mistakes of Egap.Documents.Html, as packed in its NuGet package as AGENTS.md.
+- [Egap.Documents.Markdown agent guide](https://inexin.github.io/Egap/v2/agents/Egap.Documents.Markdown.md): the names, entry points, samples and common mistakes of Egap.Documents.Markdown, as packed in its NuGet package as AGENTS.md.
+- [Egap.Preview agent guide](https://inexin.github.io/Egap/v2/agents/Egap.Preview.md): the names, entry points, samples and common mistakes of Egap.Preview, as packed in its NuGet package as AGENTS.md.
+- [Egap.Spreadsheets agent guide](https://inexin.github.io/Egap/v2/agents/Egap.Spreadsheets.md): the names, entry points, samples and common mistakes of Egap.Spreadsheets, as packed in its NuGet package as AGENTS.md.
+- [Source and changelog](https://github.com/inexin/Egap): the repository, CHANGELOG.md and CONTRIBUTING.md.
