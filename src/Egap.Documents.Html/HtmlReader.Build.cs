@@ -909,7 +909,7 @@ internal sealed partial class HtmlReader
             format.LineFill = fill;
         }
 
-        if ((style.Text("-webkit-line-clamp") ?? style.Text("line-clamp")) is { } clamp && int.TryParse(clamp.Trim(), System.Globalization.NumberStyles.None, System.Globalization.CultureInfo.InvariantCulture, out int maxLines) && maxLines > 0)
+        if (style.Integer(style.Computed.TryGetValue("-webkit-line-clamp", out _) ? "-webkit-line-clamp" : "line-clamp") is > 0 and int maxLines)
         {
             format.MaxLines = maxLines;
         }

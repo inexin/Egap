@@ -66,7 +66,7 @@ internal sealed partial class HtmlReader
             Warn(ConversionWarningKind.LayoutApproximated, "Positioned boxes placed from their parent's first line, or from an edge without their size");
         }
 
-        int z = style.Text("z-index") is { } index && int.TryParse(index.Trim(), out int zIndex) ? zIndex : 0;
+        int z = style.Integer("z-index") ?? 0;
         shape.Floating = new FloatingPlacement
         {
             HorizontalAnchor = horizontalAnchor,
