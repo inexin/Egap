@@ -11,26 +11,29 @@ namespace Egap.Presentations;
 /// presentation keeps its file whole, so a save writes back every part and every element the model does not hold, as it was,
 /// and only the parts whose content the model changed are written again.
 /// </summary>
-public sealed class Presentation
+public sealed partial class Presentation
 {
     private const string MainContentType = "application/vnd.openxmlformats-officedocument.presentationml.";
     private const string MacroContentType = "application/vnd.ms-powerpoint.";
 
     private readonly XmlPart main;
     private readonly List<SlideMaster> masters = [];
+    private NotesMaster? notesMaster;
 
     private Presentation(PptxPackage package, XmlPart main)
     {
         Package = package;
         this.main = main;
         Format = FormatOf(main.Part.ContentType);
-        Slides = new SlideCollection();
+        Slides = new SlideCollection(this);
+        Sections = new SlideSectionCollection(this);
+        CommentAuthors = new CommentAuthorCollection(this);
     }
 
     internal PptxPackage Package { get; }
 
     /// <summary>Whether the file was written in ISO/IEC 29500 Strict namespaces; a save keeps them.</summary>
-    internal bool IsStrict => main.IsStrict;
+    internal bool IsStrict => Package.IsStrict;
 
     /// <summary>The kind of file the presentation was loaded from; a save writes the same kind.</summary>
     public PresentationFormat Format { get; }
@@ -90,9 +93,46 @@ public sealed class Presentation
 
     /// <summary>
     /// The name of the notes master's part, such as <c>/ppt/notesMasters/notesMaster1.xml</c>, or null when the presentation
-    /// has none. The notes master and the notes pages are kept as they are and written back with the file.
+    /// has none. Setting a slide's notes makes one when there is none.
     /// </summary>
-    public string? NotesMasterPartName { get; private set; }
+    public string? NotesMasterPartName => NotesMasterPart?.Name;
+
+    /// <summary>The notes master, which lays out every notes page, or null when the presentation has none.</summary>
+    public NotesMaster? NotesMaster
+    {
+        get
+        {
+            PackagePart? part = NotesMasterPart;
+            if (part is null)
+            {
+                return notesMaster = null;
+            }
+
+            return notesMaster is not null && notesMaster.Xml.Part == part ? notesMaster : notesMaster = new NotesMaster(this, Package.Xml(part));
+        }
+    }
+
+    /// <summary>The authors of the presentation's comments, of both kinds; add one to comment on a slide.</summary>
+    public CommentAuthorCollection CommentAuthors { get; }
+
+    /// <summary>The sections the slides are grouped in; empty when the presentation has none.</summary>
+    public SlideSectionCollection Sections { get; }
+
+    internal PackagePart? NotesMasterPart
+    {
+        get
+        {
+            foreach (XElement id in main.Root.Element(PptxNames.P + "notesMasterIdLst")?.Elements(PptxNames.P + "notesMasterId") ?? [])
+            {
+                if (IdTarget(main.Part.Name, id, PptxNames.NotesMasterRelationship) is { } part)
+                {
+                    return part;
+                }
+            }
+
+            return null;
+        }
+    }
 
     /// <summary>Loads a PowerPoint file: PPTX, PPTM, POTX, POTM, PPSX or PPSM, transitional or Strict.</summary>
     /// <exception cref="ArgumentException">The path is null or empty.</exception>
@@ -121,7 +161,7 @@ public sealed class Presentation
         }
 
         PptxPackage package = PptxPackage.Read(stream, options?.Limits ?? new DocumentLimits());
-        OpcPart part = package.Opc.GetRelatedPart(package.Opc.Relationships, OpcRelationshipTypes.OfficeDocument)
+        PackagePart part = package.Related("/", OpcRelationshipTypes.OfficeDocument)
             ?? throw new DocumentException("The package has no main part: it is not a PowerPoint file.");
         XmlPart main = package.Xml(part);
         if (main.Root.Name != PptxNames.P + "presentation")
@@ -129,6 +169,20 @@ public sealed class Presentation
             throw new DocumentException($"The main part {part.Name} holds a {main.Root.Name.LocalName} element, not a presentation: the file is not a PowerPoint file.");
         }
 
+        Presentation presentation = new(package, main);
+        presentation.Read();
+        return presentation;
+    }
+
+    /// <summary>
+    /// A new presentation with 16:9 slides and no slides yet: one slide master with Egap's own theme (Office-like colours,
+    /// Calibri Light and Calibri) and the eleven standard layouts, from Title Slide to Vertical Title and Text. Add slides
+    /// with <see cref="SlideCollection.Add(SlideLayout)"/>.
+    /// </summary>
+    public static Presentation Create()
+    {
+        PptxPackage package = PptxPackage.Create();
+        XmlPart main = DefaultTemplate.Build(package);
         Presentation presentation = new(package, main);
         presentation.Read();
         return presentation;
@@ -157,13 +211,49 @@ public sealed class Presentation
         Package.Save(stream);
     }
 
+    internal XmlPart Main => main;
+
+    /// <summary>The part an id list entry's <c>r:id</c> points at, when the relationship has the type expected.</summary>
+    internal PackagePart? IdTarget(string sourceName, XElement id, string type)
+    {
+        if ((string?)id.Attribute(PptxNames.R + "id") is not { } rid || Package.Relationship(sourceName, rid) is not { External: false } relationship
+            || !OpcRelationshipTypes.Same(relationship.Type, type))
+        {
+            return null;
+        }
+
+        return Package.GetPart(relationship.TargetName);
+    }
+
+    /// <summary>Puts <paramref name="element"/> into the presentation part where CT_Presentation's sequence wants it.</summary>
+    internal void InsertInOrder(XElement element)
+    {
+        string[] sequence =
+        [
+            "sldMasterIdLst", "notesMasterIdLst", "handoutMasterIdLst", "sldIdLst", "sldSz", "notesSz", "smartTags", "embeddedFontLst",
+            "custShowLst", "photoAlbum", "custDataLst", "kinsoku", "defaultTextStyle", "modifyVerifier", "extLst",
+        ];
+        int rank = Array.IndexOf(sequence, element.Name.LocalName);
+        XElement? after = main.Root.Elements().LastOrDefault(e => e.Name.Namespace == PptxNames.P && Array.IndexOf(sequence, e.Name.LocalName) is int r && r >= 0 && r < rank);
+        if (after is null)
+        {
+            main.Root.AddFirst(element);
+        }
+        else
+        {
+            after.AddAfterSelf(element);
+        }
+
+        main.MarkChanged();
+    }
+
     private void Read()
     {
-        OpcPart part = main.Part;
+        string part = main.Part.Name;
         Dictionary<string, SlideLayout> layouts = new(StringComparer.OrdinalIgnoreCase);
         foreach (XElement id in main.Root.Element(PptxNames.P + "sldMasterIdLst")?.Elements(PptxNames.P + "sldMasterId") ?? [])
         {
-            if (Related(part, id, PptxNames.SlideMasterRelationship) is not { } masterPart)
+            if (IdTarget(part, id, PptxNames.SlideMasterRelationship) is not { } masterPart)
             {
                 continue;
             }
@@ -172,7 +262,7 @@ public sealed class Presentation
             masters.Add(master);
             foreach (XElement layoutId in master.Xml.Root.Element(PptxNames.P + "sldLayoutIdLst")?.Elements(PptxNames.P + "sldLayoutId") ?? [])
             {
-                if (Related(masterPart, layoutId, PptxNames.SlideLayoutRelationship) is { } layoutPart && !layouts.ContainsKey(layoutPart.Name))
+                if (IdTarget(masterPart.Name, layoutId, PptxNames.SlideLayoutRelationship) is { } layoutPart && !layouts.ContainsKey(layoutPart.Name))
                 {
                     SlideLayout layout = new(this, Package.Xml(layoutPart), master);
                     layouts[layoutPart.Name] = layout;
@@ -181,39 +271,18 @@ public sealed class Presentation
             }
         }
 
-        foreach (XElement id in main.Root.Element(PptxNames.P + "notesMasterIdLst")?.Elements(PptxNames.P + "notesMasterId") ?? [])
-        {
-            if (Related(part, id, PptxNames.NotesMasterRelationship) is { } notesMaster)
-            {
-                NotesMasterPartName = notesMaster.Name;
-                break;
-            }
-        }
-
         foreach (XElement id in main.Root.Element(PptxNames.P + "sldIdLst")?.Elements(PptxNames.P + "sldId") ?? [])
         {
-            if (Related(part, id, PptxNames.SlideRelationship) is not { } slidePart)
+            if (IdTarget(part, id, PptxNames.SlideRelationship) is not { } slidePart)
             {
                 continue;
             }
 
             XmlPart xml = Package.Xml(slidePart);
-            OpcPart? layoutPart = slidePart.RelatedPart(PptxNames.SlideLayoutRelationship);
+            PackagePart? layoutPart = Package.Related(slidePart.Name, PptxNames.SlideLayoutRelationship);
             SlideLayout? layout = layoutPart is null ? null : layouts.GetValueOrDefault(layoutPart.Name);
-            Slides.List.Add(new Slide(this, xml, layout, PptxNames.UInt(id, "id") ?? 0, slidePart.RelatedPart(PptxNames.NotesSlideRelationship)?.Name));
+            Slides.List.Add(new Slide(this, xml, layout, id));
         }
-    }
-
-    /// <summary>The part an id list entry's <c>r:id</c> points at, when the relationship has the type expected.</summary>
-    private OpcPart? Related(OpcPart source, XElement id, string type)
-    {
-        if ((string?)id.Attribute(PptxNames.R + "id") is not { } rid || source.GetRelationship(rid) is not { External: false } relationship
-            || !OpcRelationshipTypes.Same(relationship.Type, type))
-        {
-            return null;
-        }
-
-        return Package.Opc.GetPart(relationship.TargetName);
     }
 
     private static SlideSize? ReadSize(XElement? element)

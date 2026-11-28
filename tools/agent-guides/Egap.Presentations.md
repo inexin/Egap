@@ -1,7 +1,8 @@
 # Egap.Presentations: guide for coding agents
 
-Egap.Presentations loads PowerPoint files (PPTX, PPTM, POTX, POTM, PPSX, PPSM, transitional or Strict), reads and edits
-their slides, layouts, masters and shapes, and saves them with everything the model does not hold kept as it was.
+Egap.Presentations loads PowerPoint files (PPTX, PPTM, POTX, POTM, PPSX, PPSM, transitional or Strict) and makes new
+ones, reads and edits their slides, layouts, masters, shapes, tables, notes, comments and sections, and saves them with
+everything the model does not hold kept as it was.
 
 Namespace: `Egap.Presentations`, with `Egap.Documents` for `DocumentException`, `ThemeColor` and `ThemeFont`, and
 `Egami.Pixels` for theme colours (`Rgba8`).
@@ -10,8 +11,14 @@ Namespace: `Egap.Presentations`, with `Egap.Documents` for `DocumentException`, 
 
 ## Entry points
 
-- `Presentation.Load(path | stream, PresentationLoadOptions)` and `presentation.Save(path | stream)`; `Format` is the
-  kind of file, which a save keeps.
+- `Presentation.Load(path | stream, PresentationLoadOptions)`, `Presentation.Create()` (16:9, eleven layouts) and
+  `presentation.Save(path | stream)`; `Format` is the kind of file, which a save keeps.
+- `presentation.Slides.Add(layout)`, `Insert`, `Remove`, `RemoveAt`, `Move`; `master.GetLayout(SlideLayoutType.Title)`.
+- `slide.Shapes.AddShape(preset, transform, text)`, `AddTextBox`, `AddPicture(bytes)`, `AddGroup`, `AddConnector`,
+  `AddTable(rows, columns, transform)`, `Remove`.
+- `shape.InheritedPlaceholder`, `shape.EffectiveTransform`; `frame.Table` (`Cell(r, c).Text`, `AddRow`, `Merge`);
+  `slide.NotesText`; `presentation.CommentAuthors.Add`, `slide.Comments.Add`, `comment.Reply`;
+  `presentation.Sections.Add`, `MoveSlide`.
 - `presentation.Slides` (`[0]`, `FindById`), `SlideMasters` (each with `Layouts`, `Theme`, `ColorMap`), `SlideSize`
   (settable, `SlideSize.FromPoints`), `NotesSize`.
 - `Slide`: `Layout`, `Master`, `SlideId`, `Hidden`, `NotesPartName`, `ColorMap`, `ColorMapOverride`, `Shapes`.
@@ -34,11 +41,20 @@ Edit shapes:
 
 {{snippet guides/presentations.md#Shapes}}
 
+Build a deck:
+
+{{snippet guides/presentations.md#Building a deck}}
+
+Tables:
+
+{{snippet guides/presentations.md#Tables}}
+
 ## Common mistakes
 
 - Expecting `Transform` on a placeholder. A placeholder that takes its position from its layout has a null `Transform`;
-  find the layout's placeholder with the same `Placeholder` type and index.
+  use `EffectiveTransform`, or `InheritedPlaceholder` for the layout's placeholder.
 - Treating sizes as points. `ShapeTransform` and `SlideSize` are in EMUs (914,400 to the inch, 12,700 to the point);
   `XPoints`, `WidthPoints` and `FromPoints` convert.
-- Adding slides or shapes. The model edits a loaded file in place; it cannot add or remove slides, shapes or text yet.
+- Setting a run's text to change a whole shape's text. `TextBody.Text` replaces every paragraph; `TextRun.Text` one run.
+- Holding table rows or cells across `AddRow`, `RemoveColumn` and the like; read them from the table again.
 - Catching the wrong exception. A file that is not a presentation throws `DocumentException` from `Egap.Documents`.

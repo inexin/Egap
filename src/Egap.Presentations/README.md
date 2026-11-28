@@ -1,9 +1,10 @@
 # Egap.Presentations
 
-PowerPoint files for .NET 10: presentations (PPTX, PPTM, POTX, POTM, PPSX, PPSM, transitional or Strict) loaded, read and
-edited from code, and saved with what they hold kept. The model has the slide masters with their themes, colour maps and
-layouts, and the slides with their shapes: shapes with text, pictures, groups, connectors, and frames for tables, charts,
-SmartArt and embedded objects, each with its id, name, placeholder and position. Fully managed and MIT-licensed; part of
+PowerPoint files for .NET 10: presentations (PPTX, PPTM, POTX, POTM, PPSX, PPSM, transitional or Strict) loaded or made
+new, read and edited from code, and saved with what they hold kept. The model has the slide masters with their themes,
+colour maps and layouts, and the slides with their shapes: shapes with text, pictures, groups, connectors, tables, and
+frames for charts, SmartArt and embedded objects, each with its id, name, placeholder and position; and the slides' notes,
+comments and sections. Slides and shapes can be added, moved and removed. Fully managed and MIT-licensed; part of
 [Egap](https://github.com/inexin/Egap).
 
 ```csharp

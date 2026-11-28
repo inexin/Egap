@@ -18,13 +18,10 @@ public sealed class TextBody
     {
         Shape = shape;
         Element = element;
-        foreach (XElement paragraph in element.Elements(PptxNames.A + "p"))
-        {
-            paragraphs.Add(new TextParagraph(this, paragraph));
-        }
+        Read();
     }
 
-    /// <summary>The shape the text is in.</summary>
+    /// <summary>The shape the text is in: for a table cell's text, the table's frame.</summary>
     public SlideShape Shape { get; }
 
     /// <summary>The paragraphs, in order.</summary>
@@ -34,9 +31,93 @@ public sealed class TextBody
     /// The text of every paragraph, each ended by <see cref="ControlChar.ParagraphBreak"/> but the last, with line breaks as
     /// <see cref="ControlChar.LineBreak"/>, as Egap.Documents' text is.
     /// </summary>
-    public string Text => string.Join(ControlChar.ParagraphBreak, paragraphs.Select(p => p.Text));
+    /// <remarks>
+    /// Setting it replaces the paragraphs: one for each part between paragraph breaks, with <c>a:br</c> for line breaks. The
+    /// new paragraphs take the first paragraph's properties and the first run's formatting, so a title keeps its look.
+    /// </remarks>
+    /// <exception cref="ArgumentNullException">The text set is null.</exception>
+    public string Text
+    {
+        get => string.Join(ControlChar.ParagraphBreak, paragraphs.Select(p => p.Text));
+        set
+        {
+            ArgumentNullException.ThrowIfNull(value);
+            if (value == Text)
+            {
+                return;
+            }
+
+            XElement? first = Element.Element(PptxNames.A + "p");
+            XElement? properties = first?.Element(PptxNames.A + "pPr");
+            XElement? format = first?.Elements().FirstOrDefault(e => e.Name == PptxNames.A + "r" || e.Name == PptxNames.A + "fld")?.Element(PptxNames.A + "rPr")
+                ?? first?.Element(PptxNames.A + "endParaRPr");
+            List<XElement> made = [.. NewParagraphs(value, properties, format)];
+            Element.Elements(PptxNames.A + "p").Remove();
+            Element.Add(made);
+            Read();
+            Shape.Changed();
+        }
+    }
 
     internal XElement Element { get; }
+
+    internal void Changed() => Shape.Changed();
+
+    /// <summary>A new text body (<c>p:txBody</c>, or <c>a:txBody</c> in a table cell) holding <paramref name="text"/>.</summary>
+    internal static XElement NewElement(string text, XName? name = null, XElement? bodyProperties = null)
+    {
+        return new XElement(name ?? PptxNames.P + "txBody", bodyProperties ?? new XElement(PptxNames.A + "bodyPr"), new XElement(PptxNames.A + "lstStyle"),
+            NewParagraphs(text, null, null));
+    }
+
+    /// <summary>Paragraphs for <paramref name="text"/>, each with a copy of the paragraph properties and run formatting given.</summary>
+    internal static IEnumerable<XElement> NewParagraphs(string text, XElement? properties, XElement? format)
+    {
+        foreach (string paragraph in text.Split(ControlChar.ParagraphBreak))
+        {
+            XElement p = new(PptxNames.A + "p");
+            if (properties is not null)
+            {
+                p.Add(new XElement(properties));
+            }
+
+            string[] lines = paragraph.Split(ControlChar.LineBreak);
+            for (int i = 0; i < lines.Length; i++)
+            {
+                if (i > 0)
+                {
+                    p.Add(new XElement(PptxNames.A + "br", RunProperties(format)));
+                }
+
+                if (lines[i].Length > 0)
+                {
+                    p.Add(new XElement(PptxNames.A + "r", RunProperties(format), new XElement(PptxNames.A + "t", lines[i])));
+                }
+            }
+
+            XElement end = RunProperties(format);
+            end.Name = PptxNames.A + "endParaRPr";
+            p.Add(end);
+            yield return p;
+        }
+    }
+
+    private static XElement RunProperties(XElement? format)
+    {
+        XElement properties = format is null ? new XElement(PptxNames.A + "rPr", new XAttribute("lang", "en-US")) : new XElement(format);
+        properties.Name = PptxNames.A + "rPr";
+        properties.Attribute("dirty")?.Remove();
+        return properties;
+    }
+
+    private void Read()
+    {
+        paragraphs.Clear();
+        foreach (XElement paragraph in Element.Elements(PptxNames.A + "p"))
+        {
+            paragraphs.Add(new TextParagraph(this, paragraph));
+        }
+    }
 }
 
 /// <summary>A paragraph of a shape's text (<c>a:p</c>): its runs and line breaks, and its outline level.</summary>
@@ -129,7 +210,7 @@ public sealed class TextRun
                 text.Value = value;
             }
 
-            Paragraph.Body.Shape.Changed();
+            Paragraph.Body.Changed();
         }
     }
 

@@ -42,6 +42,54 @@ public abstract class SlideBase
 
     private XElement? CommonData => Xml.Root.Element(PptxNames.P + "cSld");
 
+    /// <summary>The shape tree (<c>p:cSld/p:spTree</c>), made when the part has none.</summary>
+    internal XElement ShapeTree
+    {
+        get
+        {
+            XElement common = CommonData ?? AddFirst(Xml.Root, PptxNames.P + "cSld");
+            if (common.Element(PptxNames.P + "spTree") is { } tree)
+            {
+                return tree;
+            }
+
+            XElement made = new(PptxNames.P + "spTree",
+                new XElement(PptxNames.P + "nvGrpSpPr", new XElement(PptxNames.P + "cNvPr", new XAttribute("id", "1"), new XAttribute("name", "")),
+                    new XElement(PptxNames.P + "cNvGrpSpPr"), new XElement(PptxNames.P + "nvPr")),
+                new XElement(PptxNames.P + "grpSpPr"));
+            if (common.Element(PptxNames.P + "bg") is { } background)
+            {
+                background.AddAfterSelf(made);
+            }
+            else
+            {
+                common.AddFirst(made);
+            }
+
+            Xml.MarkChanged();
+            return made;
+        }
+    }
+
+    /// <summary>An id no shape on the part has yet: one more than the highest.</summary>
+    internal uint NextShapeId()
+    {
+        uint highest = 1;
+        foreach (XElement properties in ShapeTree.Descendants(PptxNames.P + "cNvPr"))
+        {
+            highest = Math.Max(highest, PptxNames.UInt(properties, "id") ?? 0);
+        }
+
+        return highest + 1;
+    }
+
+    private static XElement AddFirst(XElement parent, XName name)
+    {
+        XElement child = new(name);
+        parent.AddFirst(child);
+        return child;
+    }
+
     /// <summary>The override of a layout or slide (<c>p:clrMapOvr</c>), or null when it follows its master.</summary>
     private protected ColorMap? ReadOverride()
     {
@@ -50,17 +98,16 @@ public abstract class SlideBase
 }
 
 /// <summary>A slide: the layout it follows, its shapes, and whether the show skips it.</summary>
-public sealed class Slide : SlideBase
+public sealed partial class Slide : SlideBase
 {
     private ColorMap? colorOverride;
     private bool overrideRead;
 
-    internal Slide(Presentation presentation, XmlPart xml, SlideLayout? layout, uint id, string? notes)
+    internal Slide(Presentation presentation, XmlPart xml, SlideLayout? layout, XElement idElement)
         : base(presentation, xml)
     {
         Layout = layout;
-        SlideId = id;
-        NotesPartName = notes;
+        IdElement = idElement;
     }
 
     /// <summary>The layout the slide follows, or null when the file names none the presentation's masters list.</summary>
@@ -70,7 +117,7 @@ public sealed class Slide : SlideBase
     public SlideMaster? Master => Layout?.Master;
 
     /// <summary>The slide's id in the presentation (<c>p:sldId/@id</c>), from 256; stable while slides move.</summary>
-    public uint SlideId { get; }
+    public uint SlideId => PptxNames.UInt(IdElement, "id") ?? 0;
 
     /// <summary>Whether the slide show skips the slide (<c>show="0"</c>).</summary>
     public bool Hidden => !PptxNames.Bool(Xml.Root, "show", fallback: true);
@@ -79,7 +126,10 @@ public sealed class Slide : SlideBase
     /// The name of the slide's notes page part, such as <c>/ppt/notesSlides/notesSlide1.xml</c>, or null when it has none.
     /// The notes page is kept as it is and written back with the file.
     /// </summary>
-    public string? NotesPartName { get; }
+    public string? NotesPartName => Presentation.Package.Related(PartName, PptxNames.NotesSlideRelationship)?.Name;
+
+    /// <summary>The slide's entry in the presentation's slide list (<c>p:sldId</c>).</summary>
+    internal XElement IdElement { get; }
 
     /// <summary>The slide's own colour map (<c>p:clrMapOvr</c>), or null when it follows its master's.</summary>
     public ColorMap? ColorMapOverride
@@ -202,7 +252,7 @@ public sealed class SlideMaster : SlideBase
             if (!themeRead)
             {
                 themeRead = true;
-                if (Xml.Part.RelatedPart(PptxNames.ThemeRelationship) is { } part)
+                if (Presentation.Package.Related(PartName, PptxNames.ThemeRelationship) is { } part)
                 {
                     try
                     {
@@ -223,6 +273,9 @@ public sealed class SlideMaster : SlideBase
     public override ColorMap ColorMap => colorMap ??= Xml.Root.Element(PptxNames.P + "clrMap") is { } map ? new ColorMap(map) : ColorMap.Default;
 
     internal List<SlideLayout> LayoutList { get; } = [];
+
+    /// <summary>The first of the master's layouts of the type <paramref name="type"/>, or null when it has none.</summary>
+    public SlideLayout? GetLayout(SlideLayoutType type) => LayoutList.Find(l => l.LayoutType == type);
 }
 
 /// <summary>
@@ -231,8 +284,11 @@ public sealed class SlideMaster : SlideBase
 /// </summary>
 public sealed class SlideCollection : IReadOnlyList<Slide>
 {
-    internal SlideCollection()
+    private readonly Presentation presentation;
+
+    internal SlideCollection(Presentation presentation)
     {
+        this.presentation = presentation;
     }
 
     /// <summary>The number of slides.</summary>
@@ -243,6 +299,78 @@ public sealed class SlideCollection : IReadOnlyList<Slide>
     /// <summary>The slide at <paramref name="index"/>, from 0.</summary>
     /// <exception cref="ArgumentOutOfRangeException">There is no slide at that position.</exception>
     public Slide this[int index] => List[index];
+
+    /// <summary>
+    /// Adds a slide at the end that follows <paramref name="layout"/>, with an empty placeholder for each of the layout's
+    /// but the date, footer and slide number, as PowerPoint makes one. It joins the last section.
+    /// </summary>
+    /// <exception cref="ArgumentNullException">The layout is null.</exception>
+    /// <exception cref="ArgumentException">The layout belongs to another presentation.</exception>
+    public Slide Add(SlideLayout layout) => Insert(Count, layout);
+
+    /// <summary>Adds a slide at <paramref name="index"/>, as <see cref="Add(SlideLayout)"/> does; it joins the section of the slide before it.</summary>
+    /// <exception cref="ArgumentNullException">The layout is null.</exception>
+    /// <exception cref="ArgumentException">The layout belongs to another presentation.</exception>
+    /// <exception cref="ArgumentOutOfRangeException">The index is negative or past <see cref="Count"/>.</exception>
+    public Slide Insert(int index, SlideLayout layout)
+    {
+        ArgumentNullException.ThrowIfNull(layout);
+        ArgumentOutOfRangeException.ThrowIfNegative(index);
+        ArgumentOutOfRangeException.ThrowIfGreaterThan(index, Count);
+        if (layout.Presentation != presentation)
+        {
+            throw new ArgumentException("The layout belongs to another presentation.", nameof(layout));
+        }
+
+        return presentation.InsertSlide(index, layout);
+    }
+
+    /// <summary>
+    /// Removes <paramref name="slide"/> and its part, with its notes page, its comments and the pictures and other parts
+    /// only it used; it leaves its section and the custom shows that list it. Links to it from other slides are left as they are.
+    /// </summary>
+    /// <returns>Whether the slide was in the presentation.</returns>
+    /// <exception cref="ArgumentNullException">The slide is null.</exception>
+    public bool Remove(Slide slide)
+    {
+        ArgumentNullException.ThrowIfNull(slide);
+        if (!List.Contains(slide))
+        {
+            return false;
+        }
+
+        presentation.RemoveSlide(slide);
+        return true;
+    }
+
+    /// <summary>Removes the slide at <paramref name="index"/>, as <see cref="Remove(Slide)"/> does.</summary>
+    /// <exception cref="ArgumentOutOfRangeException">There is no slide at that position.</exception>
+    public void RemoveAt(int index) => presentation.RemoveSlide(List[index]);
+
+    /// <summary>
+    /// Moves <paramref name="slide"/> to <paramref name="index"/> in the order shown, counted after it is taken out; it joins
+    /// the section of the slide that is then before it, or the first section when it becomes the first slide.
+    /// </summary>
+    /// <exception cref="ArgumentNullException">The slide is null.</exception>
+    /// <exception cref="ArgumentException">The slide is not in this presentation.</exception>
+    /// <exception cref="ArgumentOutOfRangeException">The index is negative or not below <see cref="Count"/>.</exception>
+    public void Move(Slide slide, int index)
+    {
+        ArgumentNullException.ThrowIfNull(slide);
+        if (!List.Contains(slide))
+        {
+            throw new ArgumentException("The slide is not in this presentation.", nameof(slide));
+        }
+
+        ArgumentOutOfRangeException.ThrowIfNegative(index);
+        ArgumentOutOfRangeException.ThrowIfGreaterThanOrEqual(index, Count);
+        presentation.Sections.SlideRemoved(slide);
+        presentation.MoveSlide(slide, index);
+        presentation.Sections.SlideAdded(slide, index);
+    }
+
+    /// <summary>The position of <paramref name="slide"/> in the order shown, or -1 when it is not in this presentation.</summary>
+    public int IndexOf(Slide slide) => List.IndexOf(slide);
 
     /// <summary>The slide with the id <paramref name="slideId"/> (<see cref="Slide.SlideId"/>), or null.</summary>
     public Slide? FindById(uint slideId) => List.Find(s => s.SlideId == slideId);
