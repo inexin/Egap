@@ -65,6 +65,8 @@ internal sealed partial class HtmlReader
             // Browsers lay the line before a <br> out like a last line and stretch no-break spaces.
             document = new Document();
             document.Settings.WordCompatibility.JustifiesLikeWord = false;
+            // Browsers only stretch justified lines.
+            document.Settings.WordCompatibility.ShrinkJustifiedSpaces = false;
         }
         else
         {

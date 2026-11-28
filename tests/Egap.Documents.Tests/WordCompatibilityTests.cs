@@ -259,6 +259,86 @@ public class WordCompatibilityTests
         Assert.Equal(on ? -5.4 : 0, layout.FindBoxes(layout.Document.Sections[0].Body.Tables.Single()).Single().Box.Bounds.X - margin, 1);
     }
 
+    [Fact]
+    public void ShrinkJustifiedSpacesFollowsTheMode()
+    {
+        Document document = new();
+        WordCompatibility compat = document.Settings.WordCompatibility;
+        Assert.True(compat.ShrinkJustifiedSpaces);
+
+        foreach (int mode in (int[])[14, 12, 11])
+        {
+            document.Settings.CompatibilityMode = mode;
+            Assert.False(compat.ShrinkJustifiedSpaces);
+        }
+
+        compat.ShrinkJustifiedSpaces = true;
+        Assert.True(compat.ShrinkJustifiedSpaces);
+        compat.ResetToModeDefaults();
+        Assert.False(compat.ShrinkJustifiedSpaces);
+        document.Settings.CompatibilityMode = 15;
+        Assert.True(compat.ShrinkJustifiedSpaces);
+
+        // Word has no setting for it: nothing is written, and a file read back follows its mode.
+        string before = SettingsOf(Save(document)).Element(W + "compat")!.ToString(SaveOptions.DisableFormatting);
+        compat.ShrinkJustifiedSpaces = false;
+        Assert.Equal(before, SettingsOf(Save(document)).Element(W + "compat")!.ToString(SaveOptions.DisableFormatting));
+        Assert.True(RoundTrip(document).Settings.WordCompatibility.ShrinkJustifiedSpaces);
+        Assert.False(Load(Compat).Settings.WordCompatibility.ShrinkJustifiedSpaces);
+    }
+
+    [Fact]
+    public void OdtDocumentsDoNotShrinkJustifiedSpaces()
+    {
+        using MemoryStream stream = new();
+        OdtFormat.Save(new Document(), stream);
+        Document read = OdtFormat.Load(new MemoryStream(stream.ToArray()));
+        Assert.Equal(15, read.Settings.CompatibilityMode);
+        Assert.False(read.Settings.WordCompatibility.ShrinkJustifiedSpaces);
+    }
+
+    [Theory]
+    [InlineData(ParagraphAlignment.Justify)]
+    [InlineData(ParagraphAlignment.Distribute)]
+    public void JustifiedLinesTakeOneMoreWordWhenSpacesShrink(ParagraphAlignment alignment)
+    {
+        // Somewhere in a sweep of widths a justified paragraph needs a line less with shrinking; it never needs more.
+        int fewer = 0;
+        for (int indent = 0; indent <= 120; indent += 3)
+        {
+            int on = Lines(alignment, indent, shrink: true);
+            int off = Lines(alignment, indent, shrink: false);
+            Assert.True(on <= off, $"{on} > {off} at {indent}");
+            fewer += on < off ? 1 : 0;
+        }
+
+        Assert.True(fewer > 0);
+    }
+
+    [Fact]
+    public void LeftAlignedLinesDoNotChange()
+    {
+        for (int indent = 0; indent <= 120; indent += 6)
+        {
+            Assert.Equal(Lines(ParagraphAlignment.Left, indent, shrink: false), Lines(ParagraphAlignment.Left, indent, shrink: true));
+        }
+    }
+
+    private static int Lines(ParagraphAlignment alignment, int rightIndent, bool shrink)
+    {
+        const string text = "In olden times when wishing still helped one, there lived a king whose daughters were all beautiful, but the "
+            + "youngest was so beautiful that the sun itself, which has seen so much, was astonished whenever it shone in her face. "
+            + "Close by the king's castle lay a great dark forest, and under an old lime tree in the forest was a well, and when "
+            + "the day was very warm, the king's child went out into the forest and sat down by the side of the cool fountain.";
+        Document document = new();
+        Paragraph paragraph = Body(document).AddParagraph(text);
+        paragraph.Format.Alignment = alignment;
+        paragraph.Format.RightIndent = rightIndent;
+        document.Settings.WordCompatibility.ShrinkJustifiedSpaces = shrink;
+        DocumentLayout layout = document.Layout(Isolated);
+        return layout.FindBoxes(paragraph).Select(b => b.Box).OfType<ParagraphBox>().Sum(p => p.Lines.Count);
+    }
+
     private static Body Body(Document document)
     {
         Section section = document.AddSection();

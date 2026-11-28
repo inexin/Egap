@@ -71,6 +71,8 @@ internal sealed class MarkdownReader
 
         // Markdown renders as HTML, which lays the line before a hard break out like a last line.
         document.Settings.WordCompatibility.JustifiesLikeWord = false;
+        // Markdown renders as HTML, whose justified lines only stretch.
+        document.Settings.WordCompatibility.ShrinkJustifiedSpaces = false;
         MarkdownReader reader = new(document, options);
         if (syntax.Count > 0 && syntax[0] is YamlFrontMatterBlock front)
         {

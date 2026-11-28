@@ -116,6 +116,7 @@ default for the compatibility mode, so changing the mode changes every flag nobo
 | `AllowTextAfterFloatingTableBreak` | Text may follow a floating table on the page where it breaks. |
 | `TableIndentFromCellText` | A table's indent is measured to its first cell's text (Word before 2013; not saved to DOCX). |
 | `DoNotExpandShiftReturn` | In a justified paragraph, the line before a manual line break (Shift+Enter) or a display equation stays at the start, like a last line, instead of stretching to the margins. |
+| `ShrinkJustifiedSpaces` | A justified line takes one more word when its spaces can shrink by up to a quarter to fit it (Word 2013 and later; not saved to DOCX). |
 
 Justified lines before breaks follow Word: without `DoNotExpandShiftReturn`, which new documents lack, the line before a
 manual line break or a display equation stretches like any wrapped line. Page and column breaks do not follow the flag:

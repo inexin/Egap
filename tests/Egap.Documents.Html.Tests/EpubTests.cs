@@ -112,6 +112,14 @@ public class EpubTests
         }
     }
 
+    [Fact]
+    public void HtmlAndEpubDocumentsDoNotShrinkJustifiedSpaces()
+    {
+        // Browsers and reading systems only stretch justified lines.
+        Assert.False(HtmlFormat.Parse("<p style=\"text-align: justify\">x</p>").Settings.WordCompatibility.ShrinkJustifiedSpaces);
+        Assert.False(EpubFormat.Load(new MemoryStream(TestBook())).Settings.WordCompatibility.ShrinkJustifiedSpaces);
+    }
+
     private static byte[] TestBook() => BookBytes(
         ("OEBPS/content.opf", Encoding.UTF8.GetBytes(Opf3)),
         ("OEBPS/nav.xhtml", Encoding.UTF8.GetBytes(Nav)),

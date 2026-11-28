@@ -25,6 +25,7 @@ public sealed class WordCompatibility
         ("enableOpenTypeFeatures", true),
         ("allowTextAfterFloatingTableBreak", true),
         ("", false),
+        ("", false),
         ("doNotExpandShiftReturn", false),
     ];
 
@@ -36,7 +37,8 @@ public sealed class WordCompatibility
     internal const int EnableOpenTypeFeaturesId = 5;
     internal const int AllowTextAfterFloatingTableBreakId = 6;
     internal const int TableIndentFromCellTextId = 7;
-    internal const int DoNotExpandShiftReturnId = 8;
+    internal const int ShrinkJustifiedSpacesId = 8;
+    internal const int DoNotExpandShiftReturnId = 9;
 
     private readonly DocumentSettings settings;
     private readonly Document document;
@@ -132,6 +134,21 @@ public sealed class WordCompatibility
     }
 
     /// <summary>
+    /// A justified line takes one more word when its spaces can shrink to fit it, as Word 2013 and later lay justified
+    /// paragraphs out: by up to a quarter of their width in all, and each by no more than half of what it would stretch had the
+    /// line ended a word earlier. Such lines are hyphenated whatever room they leave, without
+    /// <see cref="DocumentSettings.HyphenationZone"/>, as Word does. When off, as in Word 2010 and older, justified lines only
+    /// stretch. Word has no setting of its
+    /// own for this: it is on in compatibility mode 15 (Word 2013) and off below, and a value set here is not saved to DOCX.
+    /// Documents read from ODT, HTML and Markdown have it off, as their own applications only stretch justified lines.
+    /// </summary>
+    public bool ShrinkJustifiedSpaces
+    {
+        get => Get(ShrinkJustifiedSpacesId);
+        set => Set(ShrinkJustifiedSpacesId, value);
+    }
+
+    /// <summary>
     /// In a justified paragraph, the line before a manual line break (Shift+Enter, <see cref="BreakKind.Line"/>) or before a
     /// display equation is laid out like the paragraph's last line, at the start, instead of stretching to the width like a
     /// wrapped line (Word's <c>doNotExpandShiftReturn</c>). Off by default, also in new documents, as in Word. Page and column
@@ -166,7 +183,12 @@ public sealed class WordCompatibility
     /// <summary>The value a flag has when nobody set it, for <paramref name="mode"/>.</summary>
     internal static bool ModeDefault(int id, int mode)
     {
-        return id == TableIndentFromCellTextId && mode < 15;
+        return id switch
+        {
+            TableIndentFromCellTextId => mode < 15,
+            ShrinkJustifiedSpacesId => mode >= 15,
+            _ => false,
+        };
     }
 
     internal bool? GetExplicit(int id) => explicitValues[id];
@@ -204,7 +226,10 @@ public sealed class WordCompatibility
         if (explicitValues[id] != value)
         {
             explicitValues[id] = value;
-            document.NotifyFormattingChanged("Settings.WordCompatibility." + property);
+            document.NotifyFormattingChanged(ChangeNames[id] ??= "Settings.WordCompatibility." + property);
         }
     }
+
+    // The change names, built once each, so readers that set a flag on every document allocate nothing for it.
+    private static readonly string?[] ChangeNames = new string?[Flags.Length];
 }
