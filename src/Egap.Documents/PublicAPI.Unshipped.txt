@@ -42,5 +42,7 @@ override Egap.Documents.Ruby.Clone(bool deep = true) -> Egap.Documents.Ruby!
 override Egap.Documents.Ruby.ToString() -> string!
 virtual Egap.Documents.DocumentVisitor.VisitRubyEnd(Egap.Documents.Ruby! ruby) -> Egap.Documents.VisitorAction
 virtual Egap.Documents.DocumentVisitor.VisitRubyStart(Egap.Documents.Ruby! ruby) -> Egap.Documents.VisitorAction
+Egap.Documents.WordCompatibility.DoNotExpandShiftReturn.get -> bool
+Egap.Documents.WordCompatibility.DoNotExpandShiftReturn.set -> void
 Egap.Documents.WordCompatibility.ShrinkJustifiedSpaces.get -> bool
 Egap.Documents.WordCompatibility.ShrinkJustifiedSpaces.set -> void
