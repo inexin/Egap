@@ -222,10 +222,10 @@ whatever columns they span, and `RnCn` names single cells only. `SUM(Prices B:B)
 bookmark `Prices` is in. A cell's number may have digit grouping (`1,234.50`), a minus sign or parentheses, a percent
 sign and a currency symbol set apart by a space (`€ 2.25`). Other text, such as `$1.50` or `12 kg`, stops a run of
 numbers, but when `LEFT`, `RIGHT`, `ABOVE` or `BELOW` meets it before any number it reads the numbers in it, as Word
-does. The decimal symbol and the separator
-between a function's arguments are the document's (Word's `decimalSymbol` and `listSeparator` settings), a period and a
-comma unless the file names others. Without a `\#` picture a result shows at most two decimals, its digits grouped when
-a cell number it read was, and a negative result in parentheses when a cell number was written so. A formula that cannot be worked out shows Word's error text, such as `!Zero Divide`,
+does. The decimal symbol and the separator between a function's arguments are the document's (Word's `decimalSymbol`
+and `listSeparator` settings), a period and a comma unless the file names others. Without a `\#` picture a result shows
+at most two decimals, its digits grouped when a cell number it read was, and a negative result in parentheses when a
+cell number was written so. A formula that cannot be worked out shows Word's error text, such as `!Zero Divide`,
 `!Syntax Error, $` or `!Undefined Bookmark, TOTAL`.
 
 ```csharp
