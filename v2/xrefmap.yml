@@ -31487,6 +31487,19 @@ references:
   isSpec: "True"
   fullName: Egap.Documents.WordCompatibility.DoNotBreakWrappedTables
   nameWithType: WordCompatibility.DoNotBreakWrappedTables
+- uid: Egap.Documents.WordCompatibility.DoNotExpandShiftReturn
+  name: DoNotExpandShiftReturn
+  href: api/Egap.Documents.WordCompatibility.html#Egap_Documents_WordCompatibility_DoNotExpandShiftReturn
+  commentId: P:Egap.Documents.WordCompatibility.DoNotExpandShiftReturn
+  fullName: Egap.Documents.WordCompatibility.DoNotExpandShiftReturn
+  nameWithType: WordCompatibility.DoNotExpandShiftReturn
+- uid: Egap.Documents.WordCompatibility.DoNotExpandShiftReturn*
+  name: DoNotExpandShiftReturn
+  href: api/Egap.Documents.WordCompatibility.html#Egap_Documents_WordCompatibility_DoNotExpandShiftReturn_
+  commentId: Overload:Egap.Documents.WordCompatibility.DoNotExpandShiftReturn
+  isSpec: "True"
+  fullName: Egap.Documents.WordCompatibility.DoNotExpandShiftReturn
+  nameWithType: WordCompatibility.DoNotExpandShiftReturn
 - uid: Egap.Documents.WordCompatibility.DoNotUseIndentAsNumberingTabStop
   name: DoNotUseIndentAsNumberingTabStop
   href: api/Egap.Documents.WordCompatibility.html#Egap_Documents_WordCompatibility_DoNotUseIndentAsNumberingTabStop

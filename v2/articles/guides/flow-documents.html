@@ -151,6 +151,9 @@ applications only stretch justified lines.</p>
 and high kashida alignments do: set <code>ParagraphFormat.Kashida</code> to <code>KashidaLevel.Low</code>, <code>Medium</code> or <code>High</code> with
 <code>ParagraphAlignment.Justify</code>. What the tatweels do not take goes to word spaces, and lines in other scripts justify at
 spaces as before. In PDF exports the inserted tatweels are left out of the text, so copy and search give the words as typed.</p>
+<p>In a justified paragraph the line before a manual line break (<code>BreakKind.Line</code>) stretches to the margins, as in Word,
+unless <code>DocumentSettings.WordCompatibility.DoNotExpandShiftReturn</code> is set; the format page for
+<a href="../formats/docx.html#word-compatibility">DOCX</a> says how page and column breaks and documents from other formats differ.</p>
 <pre><code class="lang-csharp">using Egap.Documents;
 
 Document doc = new();

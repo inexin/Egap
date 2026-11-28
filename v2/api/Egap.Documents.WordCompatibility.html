@@ -163,7 +163,7 @@ set is off, as ECMA-376 and Word's own extensions define it.</p>
 
   <h3 id="Egap_Documents_WordCompatibility_AllowSpaceOfSameStyleInTable" data-uid="Egap.Documents.WordCompatibility.AllowSpaceOfSameStyleInTable">
   AllowSpaceOfSameStyleInTable
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/WordCompatibility.cs/#L60"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/WordCompatibility.cs/#L62"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Contextual spacing (<a class="xref" href="Egap.Documents.ParagraphFormat.html#Egap_Documents_ParagraphFormat_ContextualSpacing">ContextualSpacing</a>) is ignored in table cells, so paragraphs of the
@@ -196,7 +196,7 @@ same style there keep their space (Word's <code>allowSpaceOfSameStyleInTable</co
 
   <h3 id="Egap_Documents_WordCompatibility_AllowTextAfterFloatingTableBreak" data-uid="Egap.Documents.WordCompatibility.AllowTextAfterFloatingTableBreak">
   AllowTextAfterFloatingTableBreak
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/WordCompatibility.cs/#L117"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/WordCompatibility.cs/#L119"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Text may follow a floating table on the page where the table breaks (Word's <code>allowTextAfterFloatingTableBreak</code>).</p>
@@ -228,7 +228,7 @@ same style there keep their space (Word's <code>allowSpaceOfSameStyleInTable</co
 
   <h3 id="Egap_Documents_WordCompatibility_DoNotBreakWrappedTables" data-uid="Egap.Documents.WordCompatibility.DoNotBreakWrappedTables">
   DoNotBreakWrappedTables
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/WordCompatibility.cs/#L87"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/WordCompatibility.cs/#L89"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>A floating table is kept on one page instead of continuing on the next (Word's <code>doNotBreakWrappedTables</code>).</p>
@@ -256,11 +256,50 @@ same style there keep their space (Word's <code>allowSpaceOfSameStyleInTable</co
 
 
 
+  <a id="Egap_Documents_WordCompatibility_DoNotExpandShiftReturn_" data-uid="Egap.Documents.WordCompatibility.DoNotExpandShiftReturn*"></a>
+
+  <h3 id="Egap_Documents_WordCompatibility_DoNotExpandShiftReturn" data-uid="Egap.Documents.WordCompatibility.DoNotExpandShiftReturn">
+  DoNotExpandShiftReturn
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/WordCompatibility.cs/#L161"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>In a justified paragraph, the line before a manual line break (Shift+Enter, <a class="xref" href="Egap.Documents.BreakKind.html#Egap_Documents_BreakKind_Line">Line</a>) or before a
+display equation is laid out like the paragraph's last line, at the start, instead of stretching to the width like a
+wrapped line (Word's <code>doNotExpandShiftReturn</code>). Off by default, also in new documents, as in Word. Page and column
+breaks do not follow it: in compatibility mode 15 (Word 2013) the line before them is laid out like a last line, below
+mode 15 it stretches. Distributed paragraphs stretch every line either way. DOC and RTF files store the setting the
+other way round (<code>fExpShRtn</code>, <code>\expshrtn</code>), so an RTF file without <code>\expshrtn</code> has it on, as Word reads
+it. Documents read from ODT, HTML, EPUB and Markdown lay lines before a break out like last lines, as their own
+applications do.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool DoNotExpandShiftReturn { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
   <a id="Egap_Documents_WordCompatibility_DoNotUseIndentAsNumberingTabStop_" data-uid="Egap.Documents.WordCompatibility.DoNotUseIndentAsNumberingTabStop*"></a>
 
   <h3 id="Egap_Documents_WordCompatibility_DoNotUseIndentAsNumberingTabStop" data-uid="Egap.Documents.WordCompatibility.DoNotUseIndentAsNumberingTabStop">
   DoNotUseIndentAsNumberingTabStop
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/WordCompatibility.cs/#L70"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/WordCompatibility.cs/#L72"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>A hanging indent is not a tab stop for the tab after a list label, which then goes to the next tab stop
@@ -293,7 +332,7 @@ same style there keep their space (Word's <code>allowSpaceOfSameStyleInTable</co
 
   <h3 id="Egap_Documents_WordCompatibility_EnableOpenTypeFeatures" data-uid="Egap.Documents.WordCompatibility.EnableOpenTypeFeatures">
   EnableOpenTypeFeatures
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/WordCompatibility.cs/#L110"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/WordCompatibility.cs/#L112"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>The OpenType features runs ask for (<a class="xref" href="Egap.Documents.RunFormat.html#Egap_Documents_RunFormat_Features">Features</a>: ligatures, contextual alternates, stylistic
@@ -327,7 +366,7 @@ sets, number forms and spacing) are used. When off, as in files older than Word 
 
   <h3 id="Egap_Documents_WordCompatibility_OtherSettings" data-uid="Egap.Documents.WordCompatibility.OtherSettings">
   OtherSettings
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/WordCompatibility.cs/#L153"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/WordCompatibility.cs/#L171"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Word's compatibility options read from the file that Egap keeps but does not act on, by name: a <code>w:compat</code>
@@ -360,7 +399,7 @@ child's local name with its value (<code>1</code> when on), or a <code>w:compatS
 
   <h3 id="Egap_Documents_WordCompatibility_OverrideTableStyleFontSizeAndJustification" data-uid="Egap.Documents.WordCompatibility.OverrideTableStyleFontSizeAndJustification">
   OverrideTableStyleFontSizeAndJustification
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/WordCompatibility.cs/#L99"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/WordCompatibility.cs/#L101"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>A table style's font size and alignment win over the default paragraph style's, as the style hierarchy says. When off,
@@ -395,7 +434,7 @@ size, and a left-aligned default paragraph style leaves it at the table style's 
 
   <h3 id="Egap_Documents_WordCompatibility_ShrinkJustifiedSpaces" data-uid="Egap.Documents.WordCompatibility.ShrinkJustifiedSpaces">
   ShrinkJustifiedSpaces
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/WordCompatibility.cs/#L143"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/WordCompatibility.cs/#L145"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>A justified line takes one more word when its spaces can shrink to fit it, as Word 2013 and later lay justified
@@ -433,7 +472,7 @@ Documents read from ODT, HTML and Markdown have it off, as their own application
 
   <h3 id="Egap_Documents_WordCompatibility_SplitPageBreakAndParagraphMark" data-uid="Egap.Documents.WordCompatibility.SplitPageBreakAndParagraphMark">
   SplitPageBreakAndParagraphMark
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/WordCompatibility.cs/#L80"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/WordCompatibility.cs/#L82"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>The paragraph mark after a page break that ends a paragraph moves to the next page and takes a line there, as before
@@ -466,7 +505,7 @@ Word 2013 (Word's <code>splitPgBreakAndParaMark</code>).</p>
 
   <h3 id="Egap_Documents_WordCompatibility_TableIndentFromCellText" data-uid="Egap.Documents.WordCompatibility.TableIndentFromCellText">
   TableIndentFromCellText
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/WordCompatibility.cs/#L128"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/WordCompatibility.cs/#L130"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>A left-aligned table's indent is measured to its first cell's text, so the table's edge sits the cell's left margin
@@ -504,7 +543,7 @@ set here is not saved to DOCX.</p>
 
   <h3 id="Egap_Documents_WordCompatibility_ResetToModeDefaults" data-uid="Egap.Documents.WordCompatibility.ResetToModeDefaults">
   ResetToModeDefaults()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/WordCompatibility.cs/#L156"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/WordCompatibility.cs/#L174"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Forgets every flag value the file or code set, so each flag follows <a class="xref" href="Egap.Documents.DocumentSettings.html#Egap_Documents_DocumentSettings_CompatibilityMode">CompatibilityMode</a>.</p>
