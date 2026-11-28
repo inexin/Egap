@@ -44,10 +44,10 @@ Egap.Documents.RunFormat.Emphasis.get -> Egap.Documents.EmphasisMark?
 Egap.Documents.RunFormat.Emphasis.set -> void
 Egap.Documents.WordCompatibility.DoNotExpandShiftReturn.get -> bool
 Egap.Documents.WordCompatibility.DoNotExpandShiftReturn.set -> void
-Egap.Documents.WordCompatibility.ShrinkJustifiedSpaces.get -> bool
-Egap.Documents.WordCompatibility.ShrinkJustifiedSpaces.set -> void
 Egap.Documents.WordCompatibility.DoNotUseHtmlParagraphAutoSpacing.get -> bool
 Egap.Documents.WordCompatibility.DoNotUseHtmlParagraphAutoSpacing.set -> void
+Egap.Documents.WordCompatibility.ShrinkJustifiedSpaces.get -> bool
+Egap.Documents.WordCompatibility.ShrinkJustifiedSpaces.set -> void
 override Egap.Documents.Ruby.Clone(bool deep = true) -> Egap.Documents.Ruby!
 override Egap.Documents.Ruby.ToString() -> string!
 virtual Egap.Documents.DocumentVisitor.VisitRubyEnd(Egap.Documents.Ruby! ruby) -> Egap.Documents.VisitorAction

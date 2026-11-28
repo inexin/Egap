@@ -21,7 +21,7 @@ internal sealed class FormulaEvaluator
     private readonly char decimalSymbol;
     private readonly char listSeparator;
     private readonly Dictionary<Table, Cell?[][]> grids = [];
-    private bool anyGrouped;
+    private NumberLook look;
     private List<Token> tokens = [];
     private int position;
 
@@ -48,34 +48,34 @@ internal sealed class FormulaEvaluator
     /// </summary>
     public static (double Value, string? Error) Evaluate(string expression, Document document, Node? at, Func<string, Bookmark?>? bookmarks = null)
     {
-        (double value, string? error, _) = EvaluateGrouped(expression, document, at, bookmarks);
+        (double value, string? error, _) = EvaluateWithLook(expression, document, at, bookmarks);
         return (value, error);
     }
 
     /// <summary>
-    /// As <see cref="Evaluate"/>, and whether a cell number the formula read had digit grouping, which Word then
-    /// gives the result too.
+    /// As <see cref="Evaluate"/>, and the look of the cell and bookmark numbers the formula read (digit grouping, a
+    /// negative in parentheses), which Word gives the result too.
     /// </summary>
-    public static (double Value, string? Error, bool Grouped) EvaluateGrouped(string expression, Document document, Node? at, Func<string, Bookmark?>? bookmarks = null)
+    public static (double Value, string? Error, NumberLook Look) EvaluateWithLook(string expression, Document document, Node? at, Func<string, Bookmark?>? bookmarks = null)
     {
         FormulaEvaluator evaluator = new(document, at, bookmarks);
         try
         {
             Expr tree = evaluator.ParseAll(expression);
             double value = evaluator.Scalar(tree);
-            return (value, null, evaluator.anyGrouped);
+            return (value, null, evaluator.look);
         }
         catch (FormulaException error)
         {
-            return (0, error.Message, false);
+            return (0, error.Message, NumberLook.None);
         }
     }
 
     /// <summary>
     /// A formula's value as Word shows it without a numeric picture: rounded to two decimals, its digits grouped by
-    /// thousands when <paramref name="grouped"/>.
+    /// thousands and a negative value in parentheses as <paramref name="look"/> says.
     /// </summary>
-    public static string FormatDefault(double value, char decimalSymbol, bool grouped = false)
+    public static string FormatDefault(double value, char decimalSymbol, NumberLook look = NumberLook.None)
     {
         if (!double.IsFinite(value))
         {
@@ -83,7 +83,13 @@ internal sealed class FormulaEvaluator
         }
 
         double rounded = Math.Round(value, 2, MidpointRounding.AwayFromZero);
-        string text = (rounded == 0 ? 0 : rounded).ToString(grouped ? "#,0.##" : "0.##", CultureInfo.InvariantCulture);
+        string format = (look & NumberLook.Grouped) != 0 ? "#,0.##" : "0.##";
+        if ((look & NumberLook.Parentheses) != 0)
+        {
+            format += ";(" + format + ")";
+        }
+
+        string text = (rounded == 0 ? 0 : rounded).ToString(format, CultureInfo.InvariantCulture);
         if (decimalSymbol == '.')
         {
             return text;
@@ -101,7 +107,7 @@ internal sealed class FormulaEvaluator
     }
 
     /// <summary>
-    /// A number in a cell's or bookmark's text, as Word reads it: a sign, currency symbols, digit grouping symbols, the
+    /// A number in a cell's or bookmark's text, as Word reads it: a minus sign, currency symbols, digit grouping symbols, the
     /// decimal symbol and a closing percent sign; null when the text is empty or not a number.
     /// </summary>
     public static double? ParseNumber(string text, char decimalSymbol)
@@ -109,9 +115,9 @@ internal sealed class FormulaEvaluator
         return ParseNumber(text, decimalSymbol, out _);
     }
 
-    private static double? ParseNumber(string text, char decimalSymbol, out bool grouped)
+    private static double? ParseNumber(string text, char decimalSymbol, out NumberLook look)
     {
-        grouped = false;
+        look = NumberLook.None;
         ReadOnlySpan<char> span = text.AsSpan().Trim();
         if (span.IsEmpty)
         {
@@ -125,6 +131,7 @@ internal sealed class FormulaEvaluator
         bool parenthesis = span[0] == '(' && span[^1] == ')';
         if (parenthesis)
         {
+            look = NumberLook.Parentheses;
             negative = true;
             span = span[1..^1].Trim();
         }
@@ -163,11 +170,12 @@ internal sealed class FormulaEvaluator
                     return null;
                 }
 
-                grouped = true;
+                look |= NumberLook.Grouped;
             }
-            else if (c is '-' or '+' && !digits && !sign && !parenthesis)
+            else if (c == '-' && !digits && !sign && !parenthesis)
             {
-                negative = c == '-';
+                // Word reads "+4" as no number.
+                negative = true;
                 sign = true;
             }
             else if (c == '%' && digits && !percent)
@@ -196,6 +204,50 @@ internal sealed class FormulaEvaluator
         double value = whole + fraction;
         value = percent ? value / 100 : value;
         return negative ? -value : value;
+    }
+
+    /// <summary>
+    /// The numbers in text that is no number, as Word reads a cell or bookmark such as "Item 7" or "12 kg": the sum of
+    /// the numbers in it up to the first operator sign; null when there is none.
+    /// </summary>
+    internal static double? ReadNumbers(string text, char decimalSymbol)
+    {
+        ReadOnlySpan<char> span = text.AsSpan();
+        double? sum = null;
+        int i = 0;
+        while (i < span.Length)
+        {
+            char c = span[i];
+            if (c is '+' or '-' or '*' or '/' or '^' or '=' or '<' or '>')
+            {
+                break;
+            }
+
+            if (!char.IsAsciiDigit(c) && !(c == decimalSymbol && i + 1 < span.Length && char.IsAsciiDigit(span[i + 1])))
+            {
+                i++;
+                continue;
+            }
+
+            double whole = 0, fraction = 0, scale = 1;
+            for (; i < span.Length && char.IsAsciiDigit(span[i]); i++)
+            {
+                whole = (whole * 10) + (span[i] - '0');
+            }
+
+            if (i + 1 < span.Length && span[i] == decimalSymbol && char.IsAsciiDigit(span[i + 1]))
+            {
+                for (i++; i < span.Length && char.IsAsciiDigit(span[i]); i++)
+                {
+                    scale /= 10;
+                    fraction += (span[i] - '0') * scale;
+                }
+            }
+
+            sum = (sum ?? 0) + whole + fraction;
+        }
+
+        return sum;
     }
 
     private Expr ParseAll(string expression)
@@ -698,9 +750,10 @@ internal sealed class FormulaEvaluator
 
         if (bookmarks(name) is { } bookmark)
         {
-            // Word puts the bookmark's text in the formula: text that is no number is a syntax error at what follows.
+            // Word puts the bookmark's text in the formula: text without digits reads as 0, and other text that is no
+            // number is a syntax error at what follows.
             string text = bookmark.Text.Replace(ControlChar.ParagraphBreak, ' ').Trim();
-            double? number = text.Length == 0 ? 0 : ParseNumber(text, decimalSymbol);
+            double? number = TextNumber(text) ?? (text.AsSpan().ContainsAnyInRange('0', '9') ? null : 0);
             if (number is null)
             {
                 throw reference.After is { } after ? new FormulaException("!Syntax Error, " + after) : new FormulaException("!Unexpected End of Formula");
@@ -742,10 +795,16 @@ internal sealed class FormulaEvaluator
     /// <summary>A cell's number, noting whether it had digit grouping.</summary>
     private double? CellNumber(Cell c)
     {
-        double? number = ParseNumber(CellText(c), decimalSymbol, out bool grouped);
+        return TextNumber(CellText(c));
+    }
+
+    /// <summary>The number <paramref name="text"/> is, noting its look.</summary>
+    private double? TextNumber(string text)
+    {
+        double? number = ParseNumber(text, decimalSymbol, out NumberLook found);
         if (number is not null)
         {
-            anyGrouped |= grouped;
+            look |= found;
         }
 
         return number;
@@ -767,7 +826,10 @@ internal sealed class FormulaEvaluator
         return cell?.GetAncestor<Table>() ?? throw new FormulaException("!" + reference + " Is Not In Table");
     }
 
-    /// <summary>Numbers next to the field's cell, toward the side: empty and text cells before the first number are skipped, and the run of numbers stops at the next one.</summary>
+    /// <summary>
+    /// Numbers next to the field's cell, toward the side: empty and text cells before the first number are skipped (the
+    /// first with numbers in its text, such as "Item 7", counts), and the run of numbers stops at the next one.
+    /// </summary>
     private List<double> Positional(Table table, string side)
     {
         Cell?[][] grid = Grid(table);
@@ -789,7 +851,7 @@ internal sealed class FormulaEvaluator
             }
 
             previous = next;
-            double? number = CellNumber(next);
+            double? number = CellNumber(next) ?? (found.Count == 0 ? ReadNumbers(CellText(next), decimalSymbol) : null);
             if (number is double value)
             {
                 found.Add(value);
@@ -1036,4 +1098,18 @@ internal sealed class FormulaEvaluator
     private sealed record Range(string First, string Last, string? Table) : Expr;
 
     private sealed class FormulaException(string message) : Exception(message);
+}
+
+/// <summary>How the numbers a formula read were written, which Word gives its result without a numeric picture too.</summary>
+[Flags]
+internal enum NumberLook
+{
+    /// <summary>Plain digits.</summary>
+    None = 0,
+
+    /// <summary>Digits grouped by thousands, as in 1,234.</summary>
+    Grouped = 1,
+
+    /// <summary>A negative number in parentheses, as in (5).</summary>
+    Parentheses = 2,
 }

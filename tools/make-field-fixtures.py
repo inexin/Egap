@@ -174,13 +174,13 @@ def formulas():
     blocks.append(line("Column B", "= SUM(Numbers B1:B2)", "7"))
 
     # How a cell's text reads as a number: each probe, then the SUM(LEFT) Egap gives it.
-    probes = [("$ 1.50", "1.5"), ("€2.25", "0"), ("€ 2.25", "2.25"), ("5 €", "5"), ("$1.50", "0"), ("12 kg", "0"), ("(5)", "-5"),
-              ("50%", "0.5"), ("-3", "-3"), ("+4", "4"), ("1,234", "1,234"), ("1,23", "0"), ("5.", "5"), (".5", "0.5"),
-              ("Item 7", "0"), ("1 000", "0"), ("1,234.5", "1,234.5")]
+    probes = [("$ 1.50", "1.5"), ("€2.25", "2.25"), ("€ 2.25", "2.25"), ("5 €", "5"), ("$1.50", "1.5"), ("12 kg", "12"), ("(5)", "(5)"),
+              ("50%", "0.5"), ("-3", "-3"), ("+4", "0"), ("1,234", "1,234"), ("1,23", "24"), ("5.", "5"), (".5", "0.5"),
+              ("Item 7", "7"), ("1 000", "1"), ("1,234.5", "1,234.5")]
     blocks.append(paragraph("Cell text as numbers:"))
     blocks.append(table([[text, ("= SUM(LEFT)", result)] for text, result in probes]))
     blocks.append(paragraph(["Label: ", ("[", "Label"), "abc", ("]", "Label")]))
-    blocks.append(line("Text bookmark", "= Label + 1", "!Syntax Error, +"))
+    blocks.append(line("Text bookmark", "= Label + 1", "1"))
 
     # RIGHT and BELOW.
     blocks.append(table([

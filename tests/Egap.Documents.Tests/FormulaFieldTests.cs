@@ -211,6 +211,7 @@ public sealed class FormulaFieldTests
     [InlineData("Total", null)]
     [InlineData("12 kg", null)]
     [InlineData("1,23", null)]
+    [InlineData("+4", null)]
     public void CellTextReadsAsANumber(string text, double? value)
     {
         Assert.Equal(value, FormulaEvaluator.ParseNumber(text, '.'));

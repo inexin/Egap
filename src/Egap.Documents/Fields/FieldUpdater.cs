@@ -232,7 +232,7 @@ internal sealed class FieldUpdater
             int equals = resolved.IndexOf('=', StringComparison.Ordinal);
             int switches = resolved.IndexOf('\\', equals + 1);
             string expression = switches < 0 ? resolved[(equals + 1)..] : resolved[(equals + 1)..switches];
-            (double value, string? error, bool grouped) = FormulaEvaluator.EvaluateGrouped(expression, document, field.Start, Bookmark);
+            (double value, string? error, NumberLook look) = FormulaEvaluator.EvaluateWithLook(expression, document, field.Start, Bookmark);
             if (error is not null)
             {
                 SetResult(field, error);
@@ -240,7 +240,7 @@ internal sealed class FieldUpdater
             }
 
             char decimalSymbol = document.Settings.DecimalSymbol;
-            result = code.Switch("\\#") is { Length: > 0 } picture ? NumberPicture.Format(value, picture, decimalSymbol) : FormulaEvaluator.FormatDefault(value, decimalSymbol, grouped);
+            result = code.Switch("\\#") is { Length: > 0 } picture ? NumberPicture.Format(value, picture, decimalSymbol) : FormulaEvaluator.FormatDefault(value, decimalSymbol, look);
             SetResult(field, code.ApplyGeneralFormat(result));
             return true;
         }

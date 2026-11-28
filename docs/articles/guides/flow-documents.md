@@ -219,11 +219,13 @@ bookmark names (the number a bookmark holds) and nested fields. In a table cell 
 `R2C2`, ranges such as `A1:C3`, `B:B` and `2:2`, lists such as `A1,B3`, and `LEFT`, `RIGHT`, `ABOVE` and `BELOW`, the
 numbers next to the field's cell up to the first empty or text cell after them. As in Word, a row's cells count in order
 whatever columns they span, and `RnCn` names single cells only. `SUM(Prices B:B)` reads a column of the table the
-bookmark `Prices` is in. A cell's number may have digit grouping (`1,234.50`), a sign, a percent sign and a currency symbol
-set apart by a space (`€ 2.25`); a cell such as `$1.50` reads as text, as in Word. The decimal symbol and the separator
+bookmark `Prices` is in. A cell's number may have digit grouping (`1,234.50`), a minus sign or parentheses, a percent
+sign and a currency symbol set apart by a space (`€ 2.25`). Other text, such as `$1.50` or `12 kg`, stops a run of
+numbers, but when `LEFT`, `RIGHT`, `ABOVE` or `BELOW` meets it before any number it reads the numbers in it, as Word
+does. The decimal symbol and the separator
 between a function's arguments are the document's (Word's `decimalSymbol` and `listSeparator` settings), a period and a
 comma unless the file names others. Without a `\#` picture a result shows at most two decimals, its digits grouped when
-a cell number it read was. A formula that cannot be worked out shows Word's error text, such as `!Zero Divide`,
+a cell number it read was, and a negative result in parentheses when a cell number was written so. A formula that cannot be worked out shows Word's error text, such as `!Zero Divide`,
 `!Syntax Error, $` or `!Undefined Bookmark, TOTAL`.
 
 ```csharp

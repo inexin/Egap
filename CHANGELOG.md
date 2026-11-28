@@ -109,7 +109,8 @@ internal milestones whose public API was frozen and reviewed, and they are liste
   `+ - * / % ^`, comparisons, parentheses, Word's eighteen functions (`SUM`, `AVERAGE`, `IF`, `ROUND` and the rest),
   bookmarks and nested fields, and in a table cell A1 and RnCn references, ranges and `LEFT`, `RIGHT`, `ABOVE` and
   `BELOW`, with a row's cells counted in order as Word counts them and cell numbers with digit grouping, signs, percent
-  signs and currency symbols set apart by a space. The DOCX reader takes the document's decimal symbol and list separator
+  signs and currency symbols set apart by a space (and, before the first number `LEFT` or `ABOVE` meets, the numbers in
+  text such as `Item 7`). The DOCX reader takes the document's decimal symbol and list separator
   for them. Errors show Word's texts, such as `!Zero Divide`. Checked field by field against Word's own results.
 - `\#` numeric pictures follow Word's rules for every field, a mail merge's included: `#` shows a space for a missing
   digit, `x` drops digits, `-` and `+` show the sign, text in apostrophes, and positive, negative and zero sections.
