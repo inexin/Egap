@@ -49,3 +49,5 @@ Egap.Documents.WordCompatibility.DoNotExpandShiftReturn.get -> bool
 Egap.Documents.WordCompatibility.DoNotExpandShiftReturn.set -> void
 Egap.Documents.WordCompatibility.ShrinkJustifiedSpaces.get -> bool
 Egap.Documents.WordCompatibility.ShrinkJustifiedSpaces.set -> void
+Egap.Documents.WordCompatibility.DoNotUseHtmlParagraphAutoSpacing.get -> bool
+Egap.Documents.WordCompatibility.DoNotUseHtmlParagraphAutoSpacing.set -> void

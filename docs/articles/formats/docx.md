@@ -123,6 +123,7 @@ default for the compatibility mode, so changing the mode changes every flag nobo
 | `TableIndentFromCellText` | A table's indent is measured to its first cell's text (Word before 2013; not saved to DOCX). |
 | `DoNotExpandShiftReturn` | In a justified paragraph, the line before a manual line break (Shift+Enter) or a display equation stays at the start, like a last line, instead of stretching to the margins. |
 | `ShrinkJustifiedSpaces` | A justified line takes one more word when its spaces can shrink by up to a quarter to fit it (Word 2013 and later; not saved to DOCX). |
+| `DoNotUseHtmlParagraphAutoSpacing` | Space after and space before add up, and automatic spacing is a fixed 5 points before and 10 after. |
 
 Justified lines before breaks follow Word: without `DoNotExpandShiftReturn`, which new documents lack, the line before a
 manual line break or a display equation stretches like any wrapped line. Page and column breaks do not follow the flag:
@@ -131,6 +132,15 @@ that ends a paragraph leaves an empty line after it, as in Word. Distributed par
 spaces keep their width on justified lines. DOC and RTF files store the flag the other way round (`fExpShRtn`,
 `\expshrtn`); Egap reads and writes it as Word does, so an RTF file without `\expshrtn` has `DoNotExpandShiftReturn` on.
 Documents read from ODT, HTML, EPUB and Markdown keep their applications' rule: lines before a break stay at the start.
+
+Space between paragraphs follows Word too. Without `DoNotUseHtmlParagraphAutoSpacing`, which new documents lack, the space
+between two paragraphs is the larger of the first one's space after and the second one's space before, not the two added
+up. Automatic spacing (`ParagraphFormat.SpaceBeforeAuto` and `SpaceAfterAuto`, Word's "Auto" in the paragraph dialog)
+follows HTML: 14 points, none between items of lists that share one definition, none before the first paragraph of the
+document, a header, a note or a text box, and none at the top and bottom of a table cell; the stated value beside it is
+ignored. With the flag, spacing adds up and automatic spacing is 5 points before and 10 after. DOC files keep Word's
+default; RTF stores the flag the other way round (`\htmautsp`), so an RTF file without `\htmautsp` adds spacing up.
+Documents read from ODT, HTML, EPUB and Markdown add spacing up, as their applications do.
 
 A new document has Word 2013's options, and saving it writes them. A file's options go back as they were read; a flag
 you set is written, and the options Egap does not act on stay in the file and are listed in `OtherSettings`.

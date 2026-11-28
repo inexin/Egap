@@ -46,6 +46,7 @@ internal sealed class EpubReader
 
         // Reading systems justify as browsers do: lines before a break are laid out like last lines.
         document.Settings.WordCompatibility.JustifiesLikeWord = false;
+        document.Settings.WordCompatibility.SpacesLikeWord = false;
         // Reading systems lay chapters out as browsers do, only stretching justified lines.
         document.Settings.WordCompatibility.ShrinkJustifiedSpaces = false;
     }

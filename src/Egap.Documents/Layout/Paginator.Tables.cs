@@ -489,8 +489,8 @@ internal sealed partial class Paginator
                         ParagraphContent content = ContentOf(paragraph);
                         ResolvedParagraphFormat format = content.Format;
                         int firstLine = b == start.Block ? start.Line : 0;
-                        (double spaceBefore, double spaceAfter) = Spacing(paragraph, format, b > 0 ? blocks[b - 1] as Paragraph : null, b + 1 < blocks.Count ? blocks[b + 1] as Paragraph : null);
-                        double before = firstLine == 0 ? spaceBefore : 0;
+                        (double spaceBefore, double spaceAfter, double shared) = Spacing(paragraph, format, b > 0 ? blocks[b - 1] as Paragraph : null, b + 1 < blocks.Count ? blocks[b + 1] as Paragraph : null);
+                        double before = firstLine > 0 ? 0 : b > start.Block ? spaceBefore - shared : spaceBefore;
                         if (firstLine == 0 && content.Floats.Count > 0)
                         {
                             PlaceFloats(content, at + before);

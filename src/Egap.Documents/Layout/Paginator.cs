@@ -750,7 +750,11 @@ internal sealed partial class Paginator
             NewPage();
         }
 
-        (double before, double after) = Spacing(paragraph, format, previous, next);
+        (double before, double after, double shared) = Spacing(paragraph, format, previous, next);
+        if (!AtColumnTop)
+        {
+            before -= shared;
+        }
 
         // A top or bottom border sits its space away from the text and takes its width: the paragraph is that much taller,
         // unless the neighbour has the same borders and Word draws the two as one box.
@@ -881,16 +885,146 @@ internal sealed partial class Paginator
     }
 
     /// <summary>
-    /// A paragraph's space before and after: none between paragraphs of one style with contextual spacing, except in table
-    /// cells under Word's allowSpaceOfSameStyleInTable.
+    /// A paragraph's space before and after, and how much of the space before the previous paragraph's space after already
+    /// gives. Contextual spacing leaves none between paragraphs of one style, except in table cells under Word's
+    /// allowSpaceOfSameStyleInTable. Word puts the larger of the two spaces between paragraphs, unless
+    /// doNotUseHTMLParagraphAutoSpacing adds them up, as other formats' documents do.
     /// </summary>
-    private (double Before, double After) Spacing(Paragraph paragraph, ResolvedParagraphFormat format, Paragraph? previous, Paragraph? next)
+    private (double Before, double After, double Shared) Spacing(Paragraph paragraph, ResolvedParagraphFormat format, Paragraph? previous, Paragraph? next)
     {
-        bool contextual = format.ContextualSpacing && !(paragraph.Parent is Cell && document.Settings.WordCompatibility.AllowSpaceOfSameStyleInTable);
-        double before = contextual && previous is not null && previous.Style == paragraph.Style ? 0 : format.SpaceBefore;
-        double after = contextual && next is not null && next.Style == paragraph.Style ? 0 : format.SpaceAfter;
-        return (before, after);
+        double before = SpaceBefore(paragraph, format, previous);
+        double after = SpaceAfter(paragraph, format, next);
+        WordCompatibility compatibility = document.Settings.WordCompatibility;
+        double shared = 0;
+        if (previous is not null && before > 0 && compatibility.SpacesLikeWord && !compatibility.DoNotUseHtmlParagraphAutoSpacing)
+        {
+            // The paragraph laid out just before is almost always the previous one: its space after is known.
+            double above = ReferenceEquals(previous, spaced) ? spacedAfter : SpaceAfter(previous, BuildContent(previous, null).Format, paragraph);
+            shared = Math.Min(before, above);
+        }
+
+        spaced = paragraph;
+        spacedAfter = after;
+        return (before, after, shared);
     }
+
+    /// <summary>The paragraph <see cref="Spacing"/> last gave space to, and its space after.</summary>
+    private Paragraph? spaced;
+    private double spacedAfter;
+
+    private double SpaceBefore(Paragraph paragraph, ResolvedParagraphFormat format, Paragraph? previous)
+    {
+        if (previous is not null && previous.Style == paragraph.Style && Contextual(paragraph, format))
+        {
+            return 0;
+        }
+
+        return AutoSpaceBefore(paragraph, format) ?? format.SpaceBefore;
+    }
+
+    private double SpaceAfter(Paragraph paragraph, ResolvedParagraphFormat format, Paragraph? next)
+    {
+        if (next is not null && next.Style == paragraph.Style && Contextual(paragraph, format))
+        {
+            return 0;
+        }
+
+        return AutoSpaceAfter(paragraph, format) ?? format.SpaceAfter;
+    }
+
+    private bool Contextual(Paragraph paragraph, ResolvedParagraphFormat format)
+    {
+        return format.ContextualSpacing && !(paragraph.Parent is Cell && document.Settings.WordCompatibility.AllowSpaceOfSameStyleInTable);
+    }
+
+    /// <summary>The space Word gives a paragraph with automatic space before (beforeAutospacing), or null where it has none.</summary>
+    private double? AutoSpaceBefore(Paragraph paragraph, ResolvedParagraphFormat format)
+    {
+        WordCompatibility compatibility = document.Settings.WordCompatibility;
+        if (!format.SpaceBeforeAuto || !compatibility.SpacesLikeWord)
+        {
+            return null;
+        }
+
+        if (compatibility.DoNotUseHtmlParagraphAutoSpacing)
+        {
+            return FixedAutoSpaceBefore;
+        }
+
+        // As HTML's margins: none at the top of a story or a cell, and none between the items of one list.
+        Block? previous = NeighbourBlock(paragraph, forward: false);
+        return previous is null || (previous is Paragraph item && SameList(format, item)) ? 0 : HtmlAutoSpace;
+    }
+
+    /// <summary>The space Word gives a paragraph with automatic space after (afterAutospacing), or null where it has none.</summary>
+    private double? AutoSpaceAfter(Paragraph paragraph, ResolvedParagraphFormat format)
+    {
+        WordCompatibility compatibility = document.Settings.WordCompatibility;
+        if (!format.SpaceAfterAuto || !compatibility.SpacesLikeWord)
+        {
+            return null;
+        }
+
+        if (compatibility.DoNotUseHtmlParagraphAutoSpacing)
+        {
+            return FixedAutoSpaceAfter;
+        }
+
+        Block? next = NeighbourBlock(paragraph, forward: true);
+        return (next is null && InCell(paragraph)) || (next is Paragraph item && SameList(format, item)) ? 0 : HtmlAutoSpace;
+    }
+
+    /// <summary>Whether a paragraph and its neighbour are items of lists with one definition (Word's abstract numbering).</summary>
+    private bool SameList(ResolvedParagraphFormat format, Paragraph other)
+    {
+        return format.List is { } list && BuildContent(other, null).Format.List is { } theirs && list.Definition == theirs.Definition;
+    }
+
+    /// <summary>The block before or after a paragraph in its story, through the content controls around it; null at the story's ends.</summary>
+    private static Block? NeighbourBlock(Paragraph paragraph, bool forward)
+    {
+        Node node = paragraph;
+        while (true)
+        {
+            Node? sibling = forward ? node.NextSibling : node.PreviousSibling;
+            while (sibling is not null and not Block)
+            {
+                sibling = forward ? sibling.NextSibling : sibling.PreviousSibling;
+            }
+
+            if (sibling is not null)
+            {
+                return (Block)sibling;
+            }
+
+            if (node.Parent is not ContentControl control)
+            {
+                return null;
+            }
+
+            node = control;
+        }
+    }
+
+    private static bool InCell(Paragraph paragraph)
+    {
+        Node? parent = paragraph.Parent;
+        while (parent is ContentControl)
+        {
+            parent = parent.Parent;
+        }
+
+        return parent is Cell;
+    }
+
+    /// <summary>Word's automatic paragraph spacing, as HTML's, in points.</summary>
+    private const double HtmlAutoSpace = 14;
+
+    /// <summary>Automatic space before under Word's doNotUseHTMLParagraphAutoSpacing, in points (ECMA-376 17.15.3).</summary>
+    private const double FixedAutoSpaceBefore = 5;
+
+    /// <summary>Automatic space after under Word's doNotUseHTMLParagraphAutoSpacing, in points.</summary>
+    private const double FixedAutoSpaceAfter = 10;
 
     private static bool SameBorders(ResolvedParagraphFormat format, Paragraph? other)
     {
