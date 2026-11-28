@@ -124,7 +124,7 @@ internal static class TextEngine
     }
 
     /// <summary>A bullet or number: its text laid out, or its picture, and where it starts across the column.</summary>
-    private sealed record Mark(TextLayout? Text, Picture? Picture, float Size, float X);
+    private sealed record Mark(TextLayout? Text, BlipImage? Picture, float Size, float X);
 
     /// <summary>A run of lines of one segment placed in a column.</summary>
     private sealed record Band(Block Block, Segment Segment, int First, int Last, int Column, float Y, bool FirstOfBlock);
@@ -273,7 +273,7 @@ internal static class TextEngine
             }
             else if (bullet.Picture is { } picture)
             {
-                bullet.Picture.Draw(canvas, new RectF(bulletX, baseline - (bullet.Size * 0.8f), bullet.Size, bullet.Size));
+                picture.Draw(canvas, new RectF(bulletX, baseline - (bullet.Size * 0.8f), bullet.Size, bullet.Size), null, frame.Theme);
             }
         }
     }

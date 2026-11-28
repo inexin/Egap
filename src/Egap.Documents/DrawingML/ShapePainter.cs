@@ -12,14 +12,18 @@ namespace Egap.Documents.DrawingML;
 /// <param name="Theme">The document theme, for theme colours and the format scheme's fill, line and effect styles.</param>
 /// <param name="Picture">Draws the picture a relationship id names into a rectangle; null when the shape has no picture fills to draw.</param>
 /// <param name="Fonts">The fonts text bodies are set in; null for the document's own.</param>
-internal sealed record ShapePaintContext(Theme Theme, Action<Canvas, string, RectF>? Picture = null, Layout.FontProvider? Fonts = null);
+/// <param name="Blip">The picture a relationship id names, for picture fills drawn with their crops, tiles and colour changes; when
+/// null, <paramref name="Picture"/> draws them.</param>
+/// <param name="Page">The canvas's matrix at the page's corner, in points: preset patterns are laid from it, as Office lays them
+/// on the page; null to lay them from each shape's corner.</param>
+internal sealed record ShapePaintContext(Theme Theme, Action<Canvas, string, RectF>? Picture = null, Layout.FontProvider? Fonts = null, Func<string, BlipImage?>? Blip = null, Matrix3x2? Page = null);
 
 /// <summary>
 /// Draws a DrawingML shape (<c>p:sp</c>, <c>wps:wsp</c>, <c>dsp:sp</c>) on a canvas from its shape properties and its style:
 /// geometry, fill, outline with dashes, compound lines and arrowheads, and the outer shadow, glow and soft edge effects. 3D settings
 /// are left out: the shape draws as its flat front face.
 /// </summary>
-internal static class ShapePainter
+internal static partial class ShapePainter
 {
     private static readonly XNamespace A = DrawingNs.A;
     private static readonly Rgba8 White = new(255, 255, 255, 255);
@@ -46,7 +50,7 @@ internal static class ShapePainter
         {
             Transform(canvas, box, xfrm);
             canvas.Translate(box.X, box.Y);
-            Paint(canvas, layout, spPr, style, context, groupFill);
+            Paint(canvas, layout, spPr, style, context, groupFill, new Vector2(box.Width, box.Height), xfrm);
         }
         finally
         {
@@ -116,7 +120,7 @@ internal static class ShapePainter
 
     internal static bool Flag(XElement? element, string name) => (string?)element?.Attribute(name) is "1" or "true";
 
-    private static void Paint(Canvas canvas, GeometryLayout layout, XElement? spPr, XElement? style, ShapePaintContext context, XElement? groupFill)
+    private static void Paint(Canvas canvas, GeometryLayout layout, XElement? spPr, XElement? style, ShapePaintContext context, XElement? groupFill, Vector2 size, XElement? xfrm)
     {
         Theme theme = context.Theme;
         (XElement? fill, Rgba8? fillPlaceholder) = FillOf(spPr, style, theme);
@@ -127,6 +131,36 @@ internal static class ShapePainter
 
         (XElement? line, Rgba8? linePlaceholder) = LineOf(spPr, style, theme);
         (XElement? effects, Rgba8? effectPlaceholder) = EffectsOf(spPr, style, theme);
+        Bevel? bevel = DrawingBevels.Of(spPr, effects?.Parent);
+        bool stroked = line is not null && !NoLine(line);
+
+        void Body(Canvas target)
+        {
+            foreach (GeometryPath path in layout.Paths)
+            {
+                if (path.Fill != PathFill.None && fill is not null)
+                {
+                    FillPath(target, path.Path, path.Fill, fill, theme, fillPlaceholder, context, bevel);
+                }
+            }
+
+            if (stroked)
+            {
+                foreach (GeometryPath path in layout.Paths)
+                {
+                    if (path.Stroke)
+                    {
+                        StrokePath(target, path.Path, line!, theme, linePlaceholder, context);
+                    }
+                }
+            }
+        }
+
+        if (!DrawingEffects.Any(effects))
+        {
+            Body(canvas);
+            return;
+        }
 
         Path? outline = null;
         foreach (GeometryPath path in layout.Paths)
@@ -137,33 +171,28 @@ internal static class ShapePainter
             }
         }
 
-        if (effects is not null && outline is not null)
+        DrawingEffects.Draw(canvas, effects!, theme, effectPlaceholder, new DrawingEffects.Target(size, outline, PageToLocal(canvas, context, xfrm)), Body);
+    }
+
+    /// <summary>
+    /// The linear map from page directions to the shape's own coordinates: from the page matrix where the caller gave one (so the
+    /// groups the shape sits in count too), else from the shape's own rotation and flips.
+    /// </summary>
+    private static Matrix3x2 PageToLocal(Canvas canvas, ShapePaintContext context, XElement? xfrm)
+    {
+        Matrix3x2 localToPage;
+        if (context.Page is { } page && Matrix3x2.Invert(page, out Matrix3x2 deviceToPage))
         {
-            DrawOuterEffects(canvas, outline, effects, theme, effectPlaceholder);
+            localToPage = canvas.Matrix * deviceToPage;
+        }
+        else
+        {
+            double rotation = (DrawingNs.Double((string?)xfrm?.Attribute("rot")) ?? 0) / 60000;
+            localToPage = Matrix3x2.CreateScale(Flag(xfrm, "flipH") ? -1 : 1, Flag(xfrm, "flipV") ? -1 : 1) * Matrix3x2.CreateRotation((float)(rotation * Math.PI / 180));
         }
 
-        bool soft = effects?.Element(A + "softEdge") is not null;
-        float softRadius = soft ? (float)((DrawingNs.Double((string?)effects!.Element(A + "softEdge")!.Attribute("rad")) ?? 0) / DrawingNs.EmuPerPoint) : 0;
-        foreach (GeometryPath path in layout.Paths)
-        {
-            if (path.Fill != PathFill.None && fill is not null)
-            {
-                FillPath(canvas, path.Path, path.Fill, fill, theme, fillPlaceholder, context, softRadius);
-            }
-        }
-
-        if (line is null || NoLine(line))
-        {
-            return;
-        }
-
-        foreach (GeometryPath path in layout.Paths)
-        {
-            if (path.Stroke)
-            {
-                StrokePath(canvas, path.Path, line, theme, linePlaceholder);
-            }
-        }
+        localToPage.Translation = Vector2.Zero;
+        return Matrix3x2.Invert(localToPage, out Matrix3x2 pageToLocal) ? pageToLocal : Matrix3x2.Identity;
     }
 
     /// <summary>The shape's fill element, its own or the theme's for its <c>fillRef</c>, and the colour that stands in for <c>phClr</c>.</summary>
@@ -280,42 +309,68 @@ internal static class ShapePainter
 
     private static bool NoLine(XElement line) => DrawingFills.Kind(line) is null or "noFill";
 
-    private static void FillPath(Canvas canvas, Path path, PathFill mode, XElement fill, Theme theme, Rgba8? placeholder, ShapePaintContext context, float softRadius)
+    private static void FillPath(Canvas canvas, Path path, PathFill mode, XElement fill, Theme theme, Rgba8? placeholder, ShapePaintContext context, Bevel? bevel)
     {
         if (fill.Name == A + "blipFill")
         {
-            if ((string?)fill.Element(A + "blip")?.Attribute(XName.Get("embed", "http://schemas.openxmlformats.org/officeDocument/2006/relationships")) is { } id && context.Picture is { } picture)
+            int saved = canvas.Save();
+            canvas.ClipPath(path);
+            if (context.Blip is { } blip)
             {
-                int saved = canvas.Save();
-                canvas.ClipPath(path);
+                BlipFill.Draw(canvas, path.Bounds, fill, blip, theme);
+            }
+            else if (BlipFill.Id(fill) is { } id && context.Picture is { } picture)
+            {
                 picture(canvas, id, path.Bounds);
-                canvas.RestoreToCount(saved);
+            }
+
+            canvas.RestoreToCount(saved);
+            if (bevel is not null)
+            {
+                canvas.DrawBevel(path, bevel);
             }
 
             return;
         }
 
-        if (PaintOf(fill, path.Bounds, theme, placeholder) is not { } paint)
+        if (fill.Name == A + "gradFill" && mode == PathFill.Normal && DrawingGradients.FillPath(canvas, path, fill, theme, placeholder, bevel))
+        {
+            return;
+        }
+
+        Paint? paint = fill.Name == A + "pattFill" ? PatternPaint(canvas, fill, path.Bounds, theme, placeholder, context) : PaintOf(fill, path.Bounds, theme, placeholder);
+        if (paint is null)
         {
             return;
         }
 
         paint = Shade(paint, mode);
-        if (softRadius > 0 && paint is SolidPaint solid)
+        if (bevel is not null)
         {
-            // A soft edge fades the shape in over the radius from its outline: the shape pulled in by half the radius and blurred
-            // by a quarter of it, so it is clear at the outline and solid the radius inside.
-            Path inset = path.Op(new Stroke(softRadius) { Join = LineJoin.Round }.ToPath(path), PathOp.Difference);
-            Matrix3x2 matrix = canvas.Matrix;
-            float scale = MathF.Sqrt(MathF.Abs((matrix.M11 * matrix.M22) - (matrix.M12 * matrix.M21)));
-            int saved = canvas.Save();
-            canvas.ClipPath(path);
-            canvas.FillPath(inset, solid with { Blur = new MaskBlur(Math.Min(MaskBlur.MaxSigma, softRadius / 4 * (scale > 0 ? scale : 1)), BlurStyle.Normal) });
-            canvas.RestoreToCount(saved);
+            canvas.FillBevel(path, paint, bevel);
             return;
         }
 
         canvas.FillPath(path, paint);
+    }
+
+    /// <summary>Fills an area, such as a page's background, with a fill element as a shape's own fill draws.</summary>
+    internal static void FillArea(Canvas canvas, Path area, XElement fill, Rgba8? placeholder, ShapePaintContext context) =>
+        FillPath(canvas, area, PathFill.Normal, fill, context.Theme, placeholder, context, bevel: null);
+
+    /// <summary>
+    /// A preset pattern's paint, its bits laid from the page's corner when the caller gave the page (as Office lays them, upright
+    /// and still whatever the shape does) or else from the shape's.
+    /// </summary>
+    private static Paint PatternPaint(Canvas canvas, XElement fill, RectF bounds, Theme theme, Rgba8? placeholder, ShapePaintContext context)
+    {
+        Rgba8 ink = DrawingColors.Resolve(fill.Element(A + "fgClr"), theme, placeholder) ?? Black;
+        Rgba8 paper = DrawingColors.Resolve(fill.Element(A + "bgClr"), theme, placeholder) ?? White;
+        Matrix3x2 bits = Matrix3x2.CreateScale(DrawingPatterns.BitSize);
+        Matrix3x2 place = context.Page is { } page && Matrix3x2.Invert(canvas.Matrix, out Matrix3x2 deviceToLocal)
+            ? bits * page * deviceToLocal
+            : bits * Matrix3x2.CreateTranslation(bounds.X, bounds.Y);
+        return DrawingPatterns.Paint((string?)fill.Attribute("prst"), ink, paper, place);
     }
 
     /// <summary>The paint for a fill element over <paramref name="bounds"/>; null for none or one this does not draw.</summary>
@@ -327,14 +382,7 @@ internal static class ShapePainter
                 return DrawingColors.Resolve(fill, theme, placeholder) is { } color ? new SolidPaint(color) : null;
             case "gradFill":
                 {
-                    List<GradientStop> stops = [];
-                    foreach ((double position, XElement stop) in DrawingFills.Stops(fill).OrderBy(s => s.Position))
-                    {
-                        if (DrawingColors.Resolve(stop, theme, placeholder) is { } stopColor)
-                        {
-                            stops.Add(new GradientStop((float)Math.Clamp(position, 0, 1), stopColor));
-                        }
-                    }
+                    List<GradientStop> stops = DrawingGradients.Stops(fill, theme, placeholder);
 
                     if (stops.Count == 0)
                     {
@@ -348,15 +396,16 @@ internal static class ShapePainter
 
                     if (fill.Element(A + "path") is { } shade)
                     {
-                        // A path gradient runs from its focus (the fill-to rectangle) out to the shape's edge. Without a fill-to
-                        // rectangle the focus is the centre; within one, each missing side is 0, as for any relative rectangle.
+                        // A circle path gradient runs from its focus out to the box's farthest corner. PowerPoint takes the focus
+                        // at the fill-to rectangle's top left corner (its centre only when the rectangle is a point); without a
+                        // fill-to rectangle it is the centre, and within one each missing side is 0, as for any relative rectangle.
                         XElement? to = shade.Element(A + "fillToRect");
                         double side = to is null ? 50000 : 0;
                         double l = (DrawingNs.Double((string?)to?.Attribute("l")) ?? side) / 100000;
                         double t = (DrawingNs.Double((string?)to?.Attribute("t")) ?? side) / 100000;
                         double r = (DrawingNs.Double((string?)to?.Attribute("r")) ?? side) / 100000;
                         double b = (DrawingNs.Double((string?)to?.Attribute("b")) ?? side) / 100000;
-                        Vector2 focus = new(bounds.X + (float)(bounds.Width * (l + 1 - r) / 2), bounds.Y + (float)(bounds.Height * (t + 1 - b) / 2));
+                        Vector2 focus = new(bounds.X + (float)(bounds.Width * l), bounds.Y + (float)(bounds.Height * t));
                         float reach = Math.Max(
                             Math.Max(Vector2.Distance(focus, new Vector2(bounds.Left, bounds.Top)), Vector2.Distance(focus, new Vector2(bounds.Right, bounds.Top))),
                             Math.Max(Vector2.Distance(focus, new Vector2(bounds.Left, bounds.Bottom)), Vector2.Distance(focus, new Vector2(bounds.Right, bounds.Bottom))));
@@ -368,8 +417,7 @@ internal static class ShapePainter
                         return new RadialGradient(focus, Math.Max(reach, 0.01f), [.. stops]);
                     }
 
-                    (Vector2 start, Vector2 end) = DrawingFills.LinearEnds(bounds.X, bounds.Y, bounds.Width, bounds.Height, DrawingFills.Angle(fill) ?? 0);
-                    return new LinearGradient(start, end, [.. stops]);
+                    return DrawingGradients.Linear(fill, bounds, [.. stops]);
                 }
 
             case "pattFill":
@@ -402,84 +450,6 @@ internal static class ShapePainter
             _ => DrawingColors.Scale(rgba, 0.8),
         };
         return solid with { Color = RgbaF32.FromRgba8(shaded) };
-    }
-
-    private static void StrokePath(Canvas canvas, Path path, XElement line, Theme theme, Rgba8? placeholder)
-    {
-        float width = (float)((DrawingNs.Double((string?)line.Attribute("w")) ?? 9525) / DrawingNs.EmuPerPoint);
-        width = Math.Max(width, 0.25f);
-        if (line.Elements().FirstOrDefault(DrawingFills.IsFill) is not { } fill || PaintOf(fill, path.Bounds, theme, placeholder) is not { } paint)
-        {
-            return;
-        }
-
-        Stroke stroke = new(width)
-        {
-            Cap = (string?)line.Attribute("cap") switch
-            {
-                "rnd" => LineCap.Round,
-                "sq" => LineCap.Square,
-                _ => LineCap.Butt,
-            },
-            Join = line.Element(A + "round") is not null ? LineJoin.Round : line.Element(A + "bevel") is not null ? LineJoin.Bevel : LineJoin.Miter,
-        };
-        if (line.Element(A + "miter") is { } miter && DrawingNs.Double((string?)miter.Attribute("lim")) is { } limit and > 0)
-        {
-            stroke = stroke with { MiterLimit = Math.Max(1, (float)(limit / 100000)) };
-        }
-
-        if (Dash(line, width) is { } dash)
-        {
-            stroke = stroke with { Dash = new DashPattern(dash, 0) };
-        }
-
-        string compound = (string?)line.Attribute("cmpd") ?? "sng";
-        if (compound == "sng")
-        {
-            canvas.StrokePath(path, stroke, paint);
-        }
-        else
-        {
-            canvas.FillPath(Compound(path, stroke, compound), paint);
-        }
-
-        Arrowheads(canvas, path, line, width, paint);
-    }
-
-    /// <summary>The dash and gap lengths of a line's <c>prstDash</c> or <c>custDash</c>, or null for a solid line.</summary>
-    internal static float[]? Dash(XElement line, float width)
-    {
-        if (line.Element(A + "custDash") is { } custom)
-        {
-            List<float> lengths = [];
-            foreach (XElement ds in custom.Elements(A + "ds"))
-            {
-                // Dash and space lengths are thousandths of a percent of the line's width.
-                lengths.Add((float)Math.Max(0.01, (DrawingNs.Double((string?)ds.Attribute("d")) ?? 0) / 100000 * width));
-                lengths.Add((float)Math.Max(0.01, (DrawingNs.Double((string?)ds.Attribute("sp")) ?? 0) / 100000 * width));
-            }
-
-            return lengths.Count == 0 ? null : [.. lengths];
-        }
-
-        return DrawingFills.Dash((string?)line.Element(A + "prstDash")?.Attribute("val"), width);
-    }
-
-    /// <summary>A double, thick-thin, thin-thick or triple line's area: the full stroke less the gaps between its lines.</summary>
-    private static Path Compound(Path path, Stroke stroke, string kind)
-    {
-        float w = stroke.Width;
-        Path Band(float width) => (stroke with { Width = width }).ToPath(path);
-
-        return kind switch
-        {
-            // Two lines and a gap of a third each; thick-thin and thin-thick are drawn the same at this size.
-            "dbl" or "thickThin" or "thinThick" => Band(w).Op(Band(w / 3), PathOp.Difference),
-
-            // Three lines and two gaps of a fifth each.
-            "tri" => Band(w).Op(Band(w * 3 / 5), PathOp.Difference).Op(Band(w / 5), PathOp.Union),
-            _ => Band(w),
-        };
     }
 
     /// <summary>Draws the head and tail ends (<c>headEnd</c> at the path's start, <c>tailEnd</c> at its end) of an open path.</summary>
@@ -553,39 +523,5 @@ internal static class ShapePainter
             "lg" => 5,
             _ => 3,
         };
-    }
-
-    /// <summary>The outer shadow and the glow, drawn behind the shape.</summary>
-    private static void DrawOuterEffects(Canvas canvas, Path outline, XElement effects, Theme theme, Rgba8? placeholder)
-    {
-        Matrix3x2 matrix = canvas.Matrix;
-        float scale = MathF.Sqrt(MathF.Abs((matrix.M11 * matrix.M22) - (matrix.M12 * matrix.M21)));
-        scale = scale > 0 ? scale : 1;
-
-        if (effects.Element(A + "outerShdw") is { } shadow && DrawingColors.Resolve(shadow, theme, placeholder) is { } shadowColor)
-        {
-            double distance = (DrawingNs.Double((string?)shadow.Attribute("dist")) ?? 0) / DrawingNs.EmuPerPoint;
-            double angle = (DrawingNs.Double((string?)shadow.Attribute("dir")) ?? 0) / 60000 * Math.PI / 180;
-            float blur = (float)((DrawingNs.Double((string?)shadow.Attribute("blurRad")) ?? 0) / DrawingNs.EmuPerPoint);
-            float sx = (float)((DrawingNs.Double((string?)shadow.Attribute("sx")) ?? 100000) / 100000);
-            float sy = (float)((DrawingNs.Double((string?)shadow.Attribute("sy")) ?? 100000) / 100000);
-            RectF bounds = outline.Bounds;
-            Vector2 center = new(bounds.X + (bounds.Width / 2), bounds.Y + (bounds.Height / 2));
-            Matrix3x2 place = Matrix3x2.CreateScale(sx, sy, center) * Matrix3x2.CreateTranslation((float)(distance * Math.Cos(angle)), (float)(distance * Math.Sin(angle)));
-            float sigma = Math.Min(MaskBlur.MaxSigma, blur / 2 * scale);
-            canvas.FillPath(outline.Transform(place), new SolidPaint(shadowColor) { Blur = sigma > 0 ? new MaskBlur(sigma, BlurStyle.Normal) : null });
-        }
-
-        if (effects.Element(A + "glow") is { } glow && DrawingColors.Resolve(glow, theme, placeholder) is { } glowColor)
-        {
-            float radius = (float)((DrawingNs.Double((string?)glow.Attribute("rad")) ?? 0) / DrawingNs.EmuPerPoint);
-            if (radius > 0)
-            {
-                float sigma = Math.Min(MaskBlur.MaxSigma, radius / 2 * scale);
-                SolidPaint paint = new(glowColor) { Blur = new MaskBlur(sigma, BlurStyle.Normal) };
-                canvas.StrokePath(outline, new Stroke(radius) { Join = LineJoin.Round }, paint);
-                canvas.FillPath(outline, paint);
-            }
-        }
     }
 }

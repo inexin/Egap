@@ -63,6 +63,26 @@ internal static class DrawingColors
                     return new DrawingColorElement(DrawingColorKind.Named, Hex((string?)element.Attribute("lastClr")), value ?? "", element);
                 case "prstClr":
                     return new DrawingColorElement(DrawingColorKind.Named, default, value ?? "", element);
+                case "hslClr":
+                    {
+                        // Hue in 60,000ths of a degree, saturation and luminance in thousandths of a percent.
+                        double hue = (DrawingNs.Double((string?)element.Attribute("hue")) ?? 0) / 21600000;
+                        double sat = (DrawingNs.Double((string?)element.Attribute("sat")) ?? 0) / 100000;
+                        double lum = (DrawingNs.Double((string?)element.Attribute("lum")) ?? 0) / 100000;
+                        return new DrawingColorElement(DrawingColorKind.Rgb, FromHsl(hue, Math.Clamp(sat, 0, 1), Math.Clamp(lum, 0, 1), 255), "", element);
+                    }
+
+                case "scrgbClr":
+                    {
+                        // Linear-light red, green and blue in thousandths of a percent.
+                        byte Encoded(string name)
+                        {
+                            double c = Math.Clamp((DrawingNs.Double((string?)element.Attribute(name)) ?? 0) / 100000, 0, 1);
+                            return Byte(255 * (c <= 0.0031308 ? c * 12.92 : (1.055 * Math.Pow(c, 1 / 2.4)) - 0.055));
+                        }
+
+                        return new DrawingColorElement(DrawingColorKind.Rgb, new Rgba8(Encoded("r"), Encoded("g"), Encoded("b"), 255), "", element);
+                    }
             }
         }
 
@@ -111,9 +131,11 @@ internal static class DrawingColors
         }
 
         Rgba8 color = found is { Kind: DrawingColorKind.Theme, Name: "phClr" } ? placeholder ?? new Rgba8(0, 0, 0, 255) : Start(found.Kind, found.Rgb, found.Name, theme);
+        // The changes apply in the order the file gives them (ECMA-376 Part 1, 20.1.2.3); those without a value (comp, gray,
+        // inv, gamma, invGamma) are flags.
         foreach (XElement change in found.Element.Elements())
         {
-            if (TryChange(change, out string name, out double value))
+            if (TryChange(change, out string name, out double value) || change.Name.LocalName is "comp" or "gray" or "inv" or "gamma" or "invGamma")
             {
                 color = Apply(color, name, value);
             }
@@ -160,21 +182,7 @@ internal static class DrawingColors
     };
 
     /// <summary>A system or preset colour by name; black for one it does not know.</summary>
-    public static Rgba8 Named(string name) => name switch
-    {
-        "window" or "white" or "btnHighlight" => White,
-        "red" => new Rgba8(255, 0, 0, 255),
-        "green" => new Rgba8(0, 128, 0, 255),
-        "lime" => new Rgba8(0, 255, 0, 255),
-        "blue" => new Rgba8(0, 0, 255, 255),
-        "yellow" => new Rgba8(255, 255, 0, 255),
-        "cyan" or "aqua" => new Rgba8(0, 255, 255, 255),
-        "magenta" or "fuchsia" => new Rgba8(255, 0, 255, 255),
-        "gray" or "grey" => new Rgba8(128, 128, 128, 255),
-        "silver" => new Rgba8(192, 192, 192, 255),
-        "orange" => new Rgba8(255, 165, 0, 255),
-        _ => new Rgba8(0, 0, 0, 255),
-    };
+    public static Rgba8 Named(string name) => DrawingPresetColors.Find(name) ?? new Rgba8(0, 0, 0, 255);
 
     /// <summary>Applies one colour change, such as <c>lumMod</c> 0.75; a change it does not know leaves the colour as it is.</summary>
     public static Rgba8 Apply(Rgba8 color, string name, double value)
@@ -194,17 +202,28 @@ internal static class DrawingColors
                 return Linear(color, c => c * value);
             case "gray":
                 {
-                    byte level = Byte((0.299 * color.R) + (0.587 * color.G) + (0.114 * color.B));
+                    // Rec. 709's weights on the encoded values, as PowerPoint greys.
+                    byte level = Byte((0.2126 * color.R) + (0.7152 * color.G) + (0.0722 * color.B));
                     return new Rgba8(level, level, level, color.A);
                 }
 
             case "inv":
-                return new Rgba8((byte)(255 - color.R), (byte)(255 - color.G), (byte)(255 - color.B), color.A);
+                // The inverse in linear light, as PowerPoint inverts.
+                return Linear(color, c => 1 - c);
             case "comp":
                 {
                     (double h, double s, double l) = ToHsl(color);
                     return FromHsl(h + 0.5, s, l, color.A);
                 }
+
+            case "gamma":
+                // The colour taken as linear light and given its sRGB encoding: lighter.
+                return Channels(color, c => c <= 0.0031308 ? c * 12.92 : (1.055 * Math.Pow(c, 1 / 2.4)) - 0.055);
+            case "invGamma":
+                // The colour taken as sRGB and given as linear light: darker.
+                return Channels(color, c => c <= 0.04045 ? c / 12.92 : Math.Pow((c + 0.055) / 1.055, 2.4));
+            case "red" or "green" or "blue" or "redMod" or "greenMod" or "blueMod" or "redOff" or "greenOff" or "blueOff":
+                return Channel(color, name, value);
         }
 
         (double hue, double saturation, double luminance) = ToHsl(color);
@@ -229,12 +248,46 @@ internal static class DrawingColors
                 // The file gives degrees times 60,000; the value here is a hundred-thousandth of that.
                 hue += value * 100000 / 21600000;
                 break;
+            case "hue":
+                hue = value * 100000 / 21600000;
+                break;
+            case "sat":
+                saturation = value;
+                break;
+            case "lum":
+                luminance = value;
+                break;
             default:
                 return color;
         }
 
-        return FromHsl(hue, Math.Clamp(saturation, 0, 1), Math.Clamp(luminance, 0, 1), color.A);
+        // A saturation past 1 is kept and the channels clipped, as PowerPoint does: a doubled saturation reaches pure hues.
+        return FromHsl(hue, Math.Max(saturation, 0), Math.Clamp(luminance, 0, 1), color.A);
     }
+
+    /// <summary>One channel set, scaled or moved, in linear light as DrawingML's red, green and blue changes are.</summary>
+    private static Rgba8 Channel(Rgba8 color, string name, double value)
+    {
+        byte Change(byte channel)
+        {
+            double c = channel / 255.0;
+            double linear = c <= 0.04045 ? c / 12.92 : Math.Pow((c + 0.055) / 1.055, 2.4);
+            linear = name.EndsWith("Mod", StringComparison.Ordinal) ? linear * value : name.EndsWith("Off", StringComparison.Ordinal) ? linear + value : value;
+            linear = Math.Clamp(linear, 0, 1);
+            return Byte(255 * (linear <= 0.0031308 ? linear * 12.92 : (1.055 * Math.Pow(linear, 1 / 2.4)) - 0.055));
+        }
+
+        return name[0] switch
+        {
+            'r' => new Rgba8(Change(color.R), color.G, color.B, color.A),
+            'g' => new Rgba8(color.R, Change(color.G), color.B, color.A),
+            _ => new Rgba8(color.R, color.G, Change(color.B), color.A),
+        };
+    }
+
+    /// <summary>Each colour channel through a curve on 0 to 1.</summary>
+    private static Rgba8 Channels(Rgba8 color, Func<double, double> curve) =>
+        new(Byte(255 * curve(color.R / 255.0)), Byte(255 * curve(color.G / 255.0)), Byte(255 * curve(color.B / 255.0)), color.A);
 
     /// <summary>Blends two colours: none of <paramref name="other"/> at 0, all of it at 1. The alpha is <paramref name="color"/>'s.</summary>
     public static Rgba8 Mix(Rgba8 color, Rgba8 other, double amount) => new(
@@ -269,7 +322,7 @@ internal static class DrawingColors
         }
     }
 
-    private static (double H, double S, double L) ToHsl(Rgba8 color)
+    internal static (double H, double S, double L) ToHsl(Rgba8 color)
     {
         double r = color.R / 255.0;
         double g = color.G / 255.0;
@@ -288,7 +341,7 @@ internal static class DrawingColors
         return (h / 6, s, l);
     }
 
-    private static Rgba8 FromHsl(double h, double s, double l, byte alpha)
+    internal static Rgba8 FromHsl(double h, double s, double l, byte alpha)
     {
         h -= Math.Floor(h);
         double c = (1 - Math.Abs((2 * l) - 1)) * s;

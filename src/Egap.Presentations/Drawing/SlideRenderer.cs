@@ -29,6 +29,7 @@ internal sealed class SlideRenderer
     private readonly SlideBase? layout;
     private readonly SlideBase? master;
     private readonly PackagePart? themePart;
+    private Matrix3x2 pageMatrix = Matrix3x2.Identity;
 
     public SlideRenderer(SlideBase target, Canvas canvas, SlideRenderOptions options)
     {
@@ -63,6 +64,8 @@ internal sealed class SlideRenderer
     {
         (double width, double height) = target.SizePoints;
         RectF page = new(0, 0, (float)width, (float)height);
+        pageMatrix = canvas.Matrix;
+        contexts.Clear();
         int saved = canvas.Save();
         try
         {
@@ -146,29 +149,18 @@ internal sealed class SlideRenderer
         static XElement? Background(SlideBase page) => page.Xml.Root.Element(P + "cSld")?.Element(P + "bg");
     }
 
-    private void Fill(RectF rect, XElement fill, Rgba8? placeholder, string owner)
-    {
-        if (fill.Name == A + "blipFill")
-        {
-            PictureFill.Draw(canvas, rect, fill, id => Picture(owner, id));
-            return;
-        }
-
-        if (ShapePainter.PaintOf(fill, rect, Theme, placeholder) is { } paint)
-        {
-            canvas.FillRect(rect, paint);
-        }
-    }
+    private void Fill(RectF rect, XElement fill, Rgba8? placeholder, string owner) =>
+        ShapePainter.FillArea(canvas, Egami.Drawing.Path.Rect(rect), fill, placeholder, Context(owner));
 
     /// <summary>The picture relationship <paramref name="id"/> of part <paramref name="owner"/> names, or null.</summary>
-    private Picture? Picture(string owner, string id) =>
+    private BlipImage? Picture(string owner, string id) =>
         presentation.Package.Target(owner, id) is { } part ? presentation.RenderCache.Picture(part) : null;
 
     private ShapePaintContext Context(string owner)
     {
         if (!contexts.TryGetValue(owner, out ShapePaintContext? context))
         {
-            context = new ShapePaintContext(Theme, (c, id, rect) => Picture(owner, id)?.Draw(c, rect), Fonts.Provider);
+            context = new ShapePaintContext(Theme, (c, id, rect) => Picture(owner, id)?.Draw(c, rect, null, Theme), Fonts.Provider, id => Picture(owner, id), pageMatrix);
             contexts[owner] = context;
         }
 
@@ -280,14 +272,7 @@ internal sealed class SlideRenderer
 
         RectF rect = place(box.X, box.Y, box.Width, box.Height);
         string owner = shape.Owner.PartName;
-        ShapePaintContext context = Context(owner);
-        if (look.Properties.Element(A + "blipFill") is { } blipFill)
-        {
-            // A picture fill keeps its crop, stretch and tiling: the shape's own context draws it.
-            context = context with { Picture = (c, _, r) => PictureFill.Draw(c, r, blipFill, id => Picture(owner, id)) };
-        }
-
-        ShapePainter.Draw(canvas, rect, look.Properties, look.Style, context, groupFill);
+        ShapePainter.Draw(canvas, rect, look.Properties, look.Style, Context(owner), groupFill);
         if (look.TextBodies.Count > 0 && shape is AutoShape)
         {
             DrawText(look, rect);
@@ -334,7 +319,7 @@ internal sealed class SlideRenderer
     }
 
     /// <summary>A picture bullet's picture: the relationship is the part's that holds the bullet's element.</summary>
-    private Picture? BulletPicture(XElement element, string id)
+    private BlipImage? BulletPicture(XElement element, string id)
     {
         foreach (SlideBase? page in (ReadOnlySpan<SlideBase?>)[target, layout, master])
         {
@@ -374,6 +359,10 @@ internal sealed class SlideRenderer
         };
     }
 
+    /// <summary>
+    /// Draws a picture (<c>p:pic</c>) as a shape whose fill is its picture: cropped, stretched or tiled into its geometry, with its
+    /// outline, effects and bevel as any shape has them.
+    /// </summary>
     private void DrawPicture(PictureShape picture, Func<double, double, double, double, RectF> place)
     {
         ShapeLook look = ShapeLook.Of(picture);
@@ -383,41 +372,22 @@ internal sealed class SlideRenderer
         }
 
         RectF rect = place(box.X, box.Y, box.Width, box.Height);
-        string owner = picture.Owner.PartName;
-        XElement? blipFill = picture.Element.Element(P + "blipFill");
-        int saved = canvas.Save();
-        try
+        XElement properties = new(look.Properties);
+        if (picture.Element.Element(P + "blipFill") is { } blipFill)
         {
-            ShapePainter.Transform(canvas, rect, look.Properties.Element(A + "xfrm"));
-            if (blipFill is not null)
+            properties.Elements().Where(DrawingFills.IsFill).Remove();
+            XElement fill = new(A + "blipFill", blipFill.Attributes(), blipFill.Elements());
+            if ((properties.Element(A + "prstGeom") ?? properties.Element(A + "custGeom")) is { } geometry)
             {
-                ShapeGeometry geometry = ShapeGeometry.Read(look.Properties) ?? ShapeGeometry.Preset("rect")!;
-                GeometryLayout layout = geometry.Layout(rect.Width, rect.Height, look.Properties.Element(A + "prstGeom")?.Element(A + "avLst"));
-                int clip = canvas.Save();
-                canvas.Translate(rect.X, rect.Y);
-                foreach (GeometryPath path in layout.Paths)
-                {
-                    if (path.Fill != PathFill.None)
-                    {
-                        canvas.ClipPath(path.Path);
-                        break;
-                    }
-                }
-
-                PictureFill.Draw(canvas, new RectF(0, 0, rect.Width, rect.Height), blipFill, id => Picture(owner, id));
-                canvas.RestoreToCount(clip);
+                geometry.AddAfterSelf(fill);
             }
+            else
+            {
+                properties.AddFirst(fill);
+            }
+        }
 
-            // The picture's outline and effects, without a fill of its own: drawn untransformed, as the canvas already turns.
-            XElement outline = new(look.Properties);
-            outline.Elements().Where(DrawingFills.IsFill).Remove();
-            outline.Element(A + "xfrm")?.Remove();
-            ShapePainter.Draw(canvas, rect, outline, look.Style, Context(owner));
-        }
-        finally
-        {
-            canvas.RestoreToCount(saved);
-        }
+        ShapePainter.Draw(canvas, rect, properties, look.Style, Context(picture.Owner.PartName));
     }
 
     /// <summary>An <c>a:xfrm</c>'s offset and extent (or child offset and extent), in EMUs; null when either is missing.</summary>

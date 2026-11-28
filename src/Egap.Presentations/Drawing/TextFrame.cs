@@ -2,6 +2,7 @@ using System.Globalization;
 using System.Xml.Linq;
 
 using Egap.Documents;
+using Egap.Documents.DrawingML;
 using Egap.Presentations.Pptx;
 
 namespace Egap.Presentations.Drawing;
@@ -35,7 +36,7 @@ internal sealed class TextFrame
     }
 
     /// <summary>The picture a bullet's <c>a:blip</c> names by relationship id, from the part that holds the element; null when there is none.</summary>
-    public Func<XElement, string, Picture?>? Pictures { get; init; }
+    public Func<XElement, string, BlipImage?>? Pictures { get; init; }
 
     /// <summary>The text bodies, the shape's own first.</summary>
     public List<XElement> Bodies { get; }

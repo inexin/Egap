@@ -7,6 +7,7 @@ using Egami.Fonts;
 using Egami.Fonts.Shaping;
 
 using Egap.Documents;
+using Egap.Documents.DrawingML;
 using Egap.Documents.Layout;
 using Egap.Presentations.Pptx;
 
@@ -21,7 +22,7 @@ internal sealed class RenderCache
     private readonly Presentation presentation;
     private readonly Lock gate = new();
     private readonly Dictionary<(string Part, string Map), Theme> themes = [];
-    private readonly ConditionalWeakTable<PackagePart, Picture> pictures = [];
+    private readonly ConditionalWeakTable<PackagePart, BlipImage> pictures = [];
     private readonly ConditionalWeakTable<FontSettings, SlideFonts> fonts = [];
     private SlideFonts? defaultFonts;
 
@@ -83,73 +84,12 @@ internal sealed class RenderCache
     }
 
     /// <summary>The picture an image part holds, decoded once; null for a format nothing here draws.</summary>
-    public Picture Picture(PackagePart part)
+    public BlipImage Picture(PackagePart part)
     {
         lock (gate)
         {
-            return pictures.GetValue(part, p => new Picture(p.ContentType, p.Data));
+            return pictures.GetValue(part, p => new BlipImage(p.ContentType, p.Data));
         }
-    }
-}
-
-/// <summary>An image part's picture: drawn as vectors when it is EMF, WMF or SVG, else decoded once by Egami.</summary>
-internal sealed class Picture
-{
-    private readonly string contentType;
-    private readonly byte[] data;
-    private EncodedImage? image;
-    private bool tried;
-
-    public Picture(string contentType, byte[] data)
-    {
-        this.contentType = contentType;
-        this.data = data;
-    }
-
-    /// <summary>The picture's size in pixels, or null when it cannot be decoded or draws as vectors.</summary>
-    public (int Width, int Height)? PixelSize => Image() is { } decoded ? (decoded.Width, decoded.Height) : null;
-
-    /// <summary>Draws the picture stretched over <paramref name="rect"/>; a picture that cannot be read leaves it empty.</summary>
-    public void Draw(Canvas canvas, RectF rect)
-    {
-        try
-        {
-            if (PictureDrawers.For(contentType) is { } drawer)
-            {
-                drawer.Draw(data, canvas, rect);
-                return;
-            }
-
-            if (Image() is { } decoded)
-            {
-                canvas.DrawImage(decoded, rect);
-            }
-        }
-        catch (Exception e) when (PictureDrawers.IsDrawFailure(e))
-        {
-            // A damaged picture, or one in a format Egami has no decoder for: its box stays empty.
-        }
-    }
-
-    private EncodedImage? Image()
-    {
-        if (!tried)
-        {
-            tried = true;
-            if (PictureDrawers.For(contentType) is null)
-            {
-                try
-                {
-                    image = EncodedImage.Load(data, Imaging.Context);
-                }
-                catch (Exception e) when (PictureDrawers.IsDrawFailure(e))
-                {
-                    image = null;
-                }
-            }
-        }
-
-        return image;
     }
 }
 
