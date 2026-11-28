@@ -93,7 +93,7 @@ public sealed class DocVariableFieldTests
     [InlineData(" DOCVARIABLE \"Customer\" \\* MERGEFORMAT ", "Acme AS")]
     [InlineData(" DOCVARIABLE Amount \\# \"0.00\" ", "12.50")]
     [InlineData(" DOCVARIABLE Missing ", "Error! No document variable supplied.")]
-    [InlineData(" DOCVARIABLE ", "Error! No document variable supplied.")]
+    [InlineData(" DOCVARIABLE ", "Error! Document Variable not defined.")]
     public void FieldsShowTheValue(string code, string result)
     {
         Document document = new();

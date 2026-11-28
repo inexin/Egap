@@ -31,7 +31,7 @@ LINES = [
     ("Spaces", " DOCVARIABLE Spaced ", "  two  spaces  "),
     ("Missing", " DOCVARIABLE Missing ", MISSING),
     ("Missing upper", r" DOCVARIABLE Missing \* Upper ", MISSING),
-    ("No name", " DOCVARIABLE ", MISSING),
+    ("No name", " DOCVARIABLE ", "Error! Document Variable not defined."),
 ]
 
 CONTENT_TYPES = """<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
