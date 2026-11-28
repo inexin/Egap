@@ -85,6 +85,10 @@ and high kashida alignments do: set `ParagraphFormat.Kashida` to `KashidaLevel.L
 `ParagraphAlignment.Justify`. What the tatweels do not take goes to word spaces, and lines in other scripts justify at
 spaces as before. In PDF exports the inserted tatweels are left out of the text, so copy and search give the words as typed.
 
+In a justified paragraph the line before a manual line break (`BreakKind.Line`) stretches to the margins, as in Word,
+unless `DocumentSettings.WordCompatibility.DoNotExpandShiftReturn` is set; the format page for
+[DOCX](../formats/docx.md#word-compatibility) says how page and column breaks and documents from other formats differ.
+
 ```csharp
 using Egap.Documents;
 

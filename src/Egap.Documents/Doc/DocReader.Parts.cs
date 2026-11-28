@@ -31,8 +31,8 @@ internal sealed partial class DocReader
     private sealed record HeaderStories(int[] Cps);
 
     // DOP ([MS-DOC] 2.7.1, the same first bytes in Word 6): fFacingPages in bit 0, the footnote numbering's start (nFtn) in
-    // bits 2-15 of the word at 2, fHyphCapitals and fAutoHyphen in bits 11 and 12 of the word at 4, dxaTab at 10, dxaHotZ at
-    // 14 and cConsecHypLim at 16.
+    // bits 2-15 of the word at 2, fHyphCapitals and fAutoHyphen in bits 11 and 12 of the word at 4, Copts60 at 8 (fExpShRtn in
+    // bit 13, the opposite of Word's doNotExpandShiftReturn), dxaTab at 10, dxaHotZ at 14 and cConsecHypLim at 16.
     private void ReadSettings()
     {
         document.Settings.CompatibilityMode = 11;
@@ -47,6 +47,11 @@ internal sealed partial class DocReader
         if (start > 0)
         {
             document.Settings.FootnoteStartAt = start;
+        }
+
+        if ((BinaryPrimitives.ReadUInt16LittleEndian(dop[8..]) & 0x2000) == 0)
+        {
+            document.Settings.WordCompatibility.DoNotExpandShiftReturn = true;
         }
 
         int tab = BinaryPrimitives.ReadUInt16LittleEndian(dop[10..]);
