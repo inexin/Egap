@@ -29,4 +29,22 @@ public abstract class LayoutDrawObserver
     public virtual void EndDecoration()
     {
     }
+
+    /// <summary>
+    /// Inside a line's drawing, a ruby's base (or, when <paramref name="annotation"/>, its annotation) starts; ends with
+    /// <see cref="EndLinePart"/>.
+    /// </summary>
+    internal virtual void BeginRuby(Ruby ruby, bool annotation)
+    {
+    }
+
+    /// <summary>Inside a line's drawing, emphasis marks, which are no text, start; ends with <see cref="EndLinePart"/>.</summary>
+    internal virtual void BeginMarks()
+    {
+    }
+
+    /// <summary>The part of a line <see cref="BeginRuby"/> or <see cref="BeginMarks"/> started has ended.</summary>
+    internal virtual void EndLinePart()
+    {
+    }
 }

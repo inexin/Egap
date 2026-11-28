@@ -642,6 +642,8 @@ internal static class InlineRules
                 return "A comment cannot go into a comment.";
             case Hyperlink when owner is Hyperlink || owner.GetAncestor<Hyperlink>() is not null:
                 return "A hyperlink cannot go into a hyperlink.";
+            case Ruby when owner is Ruby || owner.GetAncestor<Ruby>() is not null:
+                return "A ruby cannot go into a ruby.";
             default:
                 return null;
         }

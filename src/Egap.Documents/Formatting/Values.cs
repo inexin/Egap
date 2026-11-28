@@ -489,6 +489,57 @@ public enum VerticalTextPosition
     Subscript,
 }
 
+/// <summary>The emphasis marks set beside each character of East Asian text, the five Word offers (<c>w:em</c>).</summary>
+public enum EmphasisMark
+{
+    /// <summary>No marks.</summary>
+    None,
+
+    /// <summary>A filled dot over each character.</summary>
+    Dot,
+
+    /// <summary>A comma-like sesame mark over each character.</summary>
+    Comma,
+
+    /// <summary>An open circle over each character.</summary>
+    Circle,
+
+    /// <summary>A filled dot under each character.</summary>
+    UnderDot,
+}
+
+/// <summary>Which side of its base a ruby annotation goes on.</summary>
+public enum RubyPosition
+{
+    /// <summary>Above the base, where Word always places it.</summary>
+    Over,
+
+    /// <summary>Below the base.</summary>
+    Under,
+}
+
+/// <summary>How a ruby annotation and its base spread over each other, as Word's <c>w:rubyAlign</c> sets it.</summary>
+public enum RubyAlignment
+{
+    /// <summary>The narrower centred over the wider.</summary>
+    Center,
+
+    /// <summary>Spread with space between the characters, none at the ends.</summary>
+    DistributeLetter,
+
+    /// <summary>Spread with space between the characters and half as much at each end.</summary>
+    DistributeSpace,
+
+    /// <summary>At the start.</summary>
+    Left,
+
+    /// <summary>At the end.</summary>
+    Right,
+
+    /// <summary>At the end, for ruby set to the right of vertical text.</summary>
+    RightVertical,
+}
+
 /// <summary>Text highlighting colours, the sixteen Word offers.</summary>
 public enum HighlightColor
 {

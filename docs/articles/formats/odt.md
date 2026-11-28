@@ -45,6 +45,9 @@ The reader follows the OpenDocument 1.3 specification and what LibreOffice write
   `DocumentSettings.AutoHyphenation` on, with that style's line limit (`fo:hyphenation-ladder-count`), zone and capitals
   switch (LibreOffice's `loext:hyphenation-zone` and `loext:hyphenation-no-caps`). Paragraphs whose style does not
   hyphenate get `SuppressAutoHyphens`.
+- Ruby (`text:ruby`) as `Ruby` inlines, with the ruby style's position and alignment and the ruby text's style, and
+  emphasis marks (`style:text-emphasis`) as `RunFormat.Emphasis`; the writer writes both back. ODF has no tate-chu-yoko
+  of its own, so `RunFormat.CombineUpright` is not written.
 - Frames: pictures (stored in the package or, in a flat file, inline), text boxes, rectangles, ellipses and lines,
   inline or floating, placed and wrapped as the frame says. A frame holding only a table, as LibreOffice writes Word's
   floating tables, is a floating table.

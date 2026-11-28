@@ -203,6 +203,9 @@ internal sealed partial class DocxWriter
             case Hyperlink link:
                 WriteHyperlink(link, kept, target);
                 break;
+            case Ruby ruby:
+                target.Add(RunWith(kept, WriteRuby(ruby, kept)));
+                break;
             case InlineContentControl control:
                 {
                     XElement content = new(Ns.W + "sdtContent");
@@ -340,6 +343,53 @@ internal sealed partial class DocxWriter
 
         bookmarkIds[start.Name] = id;
         return id;
+    }
+
+    /// <summary>
+    /// A phonetic guide (17.3.3.25): <c>w:rubyPr</c> with the settings Word asks for (a size, a raise and the base's size
+    /// from the base's first run when the ruby sets none), the annotation as one run and the base's inlines.
+    /// </summary>
+    private XElement WriteRuby(Ruby ruby, DocxExtension? kept)
+    {
+        double baseSize = ruby.BaseFontSize ?? ruby.Runs.FirstOrDefault()?.GetEffectiveFormat().Size ?? 10.5;
+        double size = ruby.FontSize ?? Math.Max(1, Math.Round(baseSize) / 2);
+        double raise = ruby.Raise ?? Math.Round(baseSize * 2 * 6 / 7) / 2;
+        List<XElement> properties =
+        [
+            DocxPropertyWriter.Val("rubyAlign", ruby.Alignment switch
+            {
+                RubyAlignment.DistributeLetter => "distributeLetter",
+                RubyAlignment.DistributeSpace => "distributeSpace",
+                RubyAlignment.Left => "left",
+                RubyAlignment.Right => "right",
+                RubyAlignment.RightVertical => "rightVertical",
+                _ => "center",
+            }),
+            DocxPropertyWriter.Val("hps", DocxUnits.HalfPoints(size)),
+            DocxPropertyWriter.Val("hpsRaise", DocxUnits.HalfPoints(raise)),
+            DocxPropertyWriter.Val("hpsBaseText", DocxUnits.HalfPoints(baseSize)),
+            DocxPropertyWriter.Val("lid", ruby.Language ?? "ja-JP"),
+        ];
+        if (kept?.Original?.Element(Ns.W + "rubyPr") is { } original)
+        {
+            // What the model does not name (w:dirty) stays.
+            properties.AddRange(original.Elements().Where(e => properties.All(p => p.Name != e.Name)).Select(e => new XElement(e)));
+        }
+
+        RunFormat format = new();
+        format.CopyRaw(ruby.TextFormat);
+        format.Size = size;
+        format.SizeComplexScript ??= size;
+        XElement annotation = new(Ns.W + "r");
+        if (DocxPropertyWriter.Run(format, null, null) is { } rPr)
+        {
+            annotation.Add(rPr);
+        }
+
+        annotation.Add(new XElement(Ns.W + "t", Text(ruby.Text)));
+        XElement rubyBase = new(Ns.W + "rubyBase");
+        WriteInlines(ruby.Inlines, rubyBase, false);
+        return new XElement(Ns.W + "ruby", new XElement(Ns.W + "rubyPr", properties), new XElement(Ns.W + "rt", annotation), rubyBase);
     }
 
     private void WriteHyperlink(Hyperlink link, DocxExtension? kept, XElement target)

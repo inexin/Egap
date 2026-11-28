@@ -425,6 +425,10 @@ internal sealed class ParagraphTokens
                 case Hyperlink link:
                     key.Append(link.Address).Append('#').Append(link.Anchor).Append(':').Append(link.GetText());
                     break;
+                case Ruby ruby:
+                    // A ruby is its base and its annotation: a change of either is a change of the ruby.
+                    key.Append(ruby.GetText()).Append('\u0002').Append(ruby.Text);
+                    break;
                 case Island island when acrossFormats:
                     // Each format keeps its own markup for what it cannot read, so across formats an island is known only
                     // by its kind, and a drawing (a VML shape, a shape group, an embedded object) as one, as one format

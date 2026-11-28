@@ -488,6 +488,9 @@ internal sealed partial class OdtWriter
             case Hyperlink link:
                 WriteLink(link, writer, revision);
                 break;
+            case Ruby ruby when !writer.InDeletion:
+                WriteRuby(ruby, writer, revision);
+                break;
             case InlineContentControl control:
                 warnings.Add(ConversionWarningKind.ContentControlsDropped, "OpenDocument has no content controls; their content was kept.");
                 foreach (Inline child in control.Inlines)
@@ -614,6 +617,44 @@ internal sealed partial class OdtWriter
         string? parent = StyleName(run.Style);
         XElement? props = run.Format.IsEmpty ? null : TextProperties(run.Format, null);
         return props is null ? parent : Auto("text", parent, null, props);
+    }
+
+    /// <summary>
+    /// A ruby as <c>text:ruby</c> (ODF 1.3 Part 3, 6.4): its base's inlines in <c>text:ruby-base</c>, its text in
+    /// <c>text:ruby-text</c> with a text style of its format and size, and a ruby style of its position and alignment.
+    /// </summary>
+    private void WriteRuby(Ruby ruby, ParagraphWriter writer, Revision? revision)
+    {
+        XElement properties = new(StyleNs + "ruby-properties",
+            new XAttribute(StyleNs + "ruby-position", ruby.Position == RubyPosition.Under ? "below" : "above"),
+            new XAttribute(StyleNs + "ruby-align", ruby.Alignment switch
+            {
+                RubyAlignment.Left => "left",
+                RubyAlignment.Right or RubyAlignment.RightVertical => "right",
+                RubyAlignment.DistributeLetter => "distribute-letter",
+                RubyAlignment.DistributeSpace => "distribute-space",
+                _ => "center",
+            }));
+        XElement element = new(TextNs + "ruby", new XAttribute(TextNs + "style-name", Auto("ruby", null, null, properties)));
+        int depth = writer.Depth;
+        writer.Push(element, null);
+        writer.Push(new XElement(TextNs + "ruby-base"), null);
+        foreach (Inline child in ruby.Inlines)
+        {
+            WriteInline(child, writer, revision);
+        }
+
+        writer.PopTo(depth);
+        RunFormat format = new();
+        format.CopyRaw(ruby.TextFormat);
+        format.Size = ruby.FontSize;
+        XElement text = new(TextNs + "ruby-text", Clean(ruby.Text));
+        if (!format.IsEmpty && TextProperties(format, null) is { } textProperties)
+        {
+            text.Add(new XAttribute(TextNs + "style-name", Auto("text", null, null, textProperties)));
+        }
+
+        element.Add(text);
     }
 
     private void WriteLink(Hyperlink link, ParagraphWriter writer, Revision? revision)
