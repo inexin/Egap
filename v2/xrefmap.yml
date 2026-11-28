@@ -12025,6 +12025,12 @@ references:
   commentId: F:Egap.Documents.FieldKind.FormField
   fullName: Egap.Documents.FieldKind.FormField
   nameWithType: FieldKind.FormField
+- uid: Egap.Documents.FieldKind.Formula
+  name: Formula
+  href: api/Egap.Documents.FieldKind.html#Egap_Documents_FieldKind_Formula
+  commentId: F:Egap.Documents.FieldKind.Formula
+  fullName: Egap.Documents.FieldKind.Formula
+  nameWithType: FieldKind.Formula
 - uid: Egap.Documents.FieldKind.Hyperlink
   name: Hyperlink
   href: api/Egap.Documents.FieldKind.html#Egap_Documents_FieldKind_Hyperlink

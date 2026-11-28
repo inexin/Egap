@@ -280,6 +280,49 @@ paragraph.AddRun(&quot; &quot;);
 paragraph.AddField(&quot;DISPLAYBARCODE \&quot;490123456789\&quot; JAN13 \\t&quot;);
 label.Save(&quot;label.docx&quot;);
 </code></pre>
+<h2 id="fields">Fields</h2>
+<p><code>Document.UpdateFields</code> recomputes every field Egap understands, and <code>Field.Update</code> one of them: DATE, TIME and the other
+dates, document properties (AUTHOR, TITLE, DOCPROPERTY and the rest), FILENAME, REF, NOTEREF, SEQ, STYLEREF, HYPERLINK,
+IF, formulas and TOC. Fields are updated in the order Word updates them, nested fields before the field that holds them, so
+an IF or a formula reads their new results. Page fields (PAGE, NUMPAGES, SECTIONPAGES, PAGEREF) are filled in by layout;
+locked fields and fields Egap does not know keep the result they have. A field's <code>\*</code> format (<code>Upper</code>, <code>ROMAN</code>, <code>CardText</code>
+and the rest) and <code>\#</code> numeric picture apply to its new result.</p>
+<p>A <code>\#</code> picture works as Word's: <code>0</code> shows a digit or a zero, <code>#</code> a digit or a space, <code>x</code> drops the digits to its left (after
+the decimal point it rounds there), a comma groups the digits by thousands, <code>-</code> and <code>+</code> show the sign, text in apostrophes
+and other characters show as they are, and semicolons split the picture into the positive, negative and zero cases:
+<code>$#,##0.00;($#,##0.00);'none'</code> shows 1234.5 as <code>$1,234.50</code>, -8 as <code>($8.00)</code> and 0 as <code>none</code>.</p>
+<h3 id="formula-fields">Formula fields</h3>
+<p>A formula field (<code>FieldKind.Formula</code>) is <code>=</code> and an expression: numbers, <code>+ - * / ^</code>, <code>%</code> after a number (<code>8%</code> is 0.08),
+the comparisons <code>= &lt;&gt; &lt; &lt;= &gt; &gt;=</code> (1 when true, 0 when not) and parentheses; Word's functions <code>ABS</code>, <code>AND</code>, <code>AVERAGE</code>,
+<code>COUNT</code>, <code>DEFINED</code>, <code>FALSE</code>, <code>IF</code>, <code>INT</code>, <code>MAX</code>, <code>MIN</code>, <code>MOD</code>, <code>NOT</code>, <code>OR</code>, <code>PRODUCT</code>, <code>ROUND</code>, <code>SIGN</code>, <code>SUM</code> and <code>TRUE</code>;
+bookmark names (the number a bookmark holds) and nested fields. In a table cell a formula reads the table's cells: <code>B2</code> or
+<code>R2C2</code>, ranges such as <code>A1:C3</code>, <code>B:B</code> and <code>2:2</code>, lists such as <code>A1,B3</code>, and <code>LEFT</code>, <code>RIGHT</code>, <code>ABOVE</code> and <code>BELOW</code>, the
+numbers next to the field's cell up to the first empty or text cell after them. As in Word, a row's cells count in order
+whatever columns they span, and <code>RnCn</code> names single cells only. <code>SUM(Prices B:B)</code> reads a column of the table the
+bookmark <code>Prices</code> is in. A cell's number may have digit grouping (<code>1,234.50</code>), a minus sign or parentheses, a percent
+sign and a currency symbol set apart by a space (<code>€ 2.25</code>). Other text, such as <code>$1.50</code> or <code>12 kg</code>, stops a run of
+numbers, but when <code>LEFT</code>, <code>RIGHT</code>, <code>ABOVE</code> or <code>BELOW</code> meets it before any number it reads the numbers in it, as Word
+does. The decimal symbol and the separator between a function's arguments are the document's (Word's <code>decimalSymbol</code>
+and <code>listSeparator</code> settings), a period and a comma unless the file names others. Without a <code>\#</code> picture a result shows
+at most two decimals, its digits grouped when a cell number it read was, and a negative result in parentheses when a
+cell number was written so. A formula that cannot be worked out shows Word's error text, such as <code>!Zero Divide</code>,
+<code>!Syntax Error, $</code> or <code>!Undefined Bookmark, TOTAL</code>.</p>
+<pre><code class="lang-csharp">using Egap.Documents;
+
+Document invoice = new();
+Table table = invoice.AddSection().Body.AddTable(3, 2);
+table.Rows[0].Cells[0].AddParagraph(&quot;Bolts&quot;);
+table.Rows[0].Cells[1].AddParagraph(&quot;4.50&quot;);
+table.Rows[1].Cells[0].AddParagraph(&quot;Nuts&quot;);
+table.Rows[1].Cells[1].AddParagraph(&quot;1,200.00&quot;);
+table.Rows[2].Cells[0].AddParagraph(&quot;Total&quot;);
+Field total = table.Rows[2].Cells[1].AddParagraph().AddField(&quot;= SUM(ABOVE) \\# \&quot;$#,##0.00\&quot;&quot;);
+invoice.UpdateFields();
+Console.WriteLine(total.Start.GetField()!.Result); // $1,204.50
+</code></pre>
+<p>An IF field compares numbers as numbers: a formula, a nested field's result or a bookmark holding one, as in
+<code>IF { = SUM(ABOVE) } &gt; 100 &quot;Yes&quot; &quot;No&quot;</code>. Other operands compare as text, <code>=</code> and <code>&lt;&gt;</code> with Word's <code>*</code> and <code>?</code> wildcards. A
+mail merge works out its IF fields the same way.</p>
 <h2 id="mail-merge">Mail merge</h2>
 <p><code>FillMergeFields</code> fills a template's MERGEFIELD fields from one record. Each field becomes plain text in its own
 formatting, written with its number (<code>\#</code>), date (<code>\@</code>) and text (<code>\*</code>) formats and the text it puts before and after a
