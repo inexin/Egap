@@ -145,6 +145,36 @@ public sealed class DrawingTests
         Assert.Equal(new Rgba8(255, 255, 255, 255), At(raster, 98, 98));
     }
 
+    [Theory]
+    [InlineData("tl", 0, 0)]
+    [InlineData("ctr", 1, 1)]
+    [InlineData("t", 1, 0)]
+    [InlineData("l", 0, 1)]
+    [InlineData("br", 0, 0)]
+    [InlineData("r", 0, 1)]
+    [InlineData("b", 1, 0)]
+    public void TilesAlignInTheBox(string align, int column, int row)
+    {
+        // A 2 by 2 tile (red, blue over green, yellow) in a box 96 pixels square: aligning it to the centre moves it by 47
+        // pixels, an odd number, so the box's top-left pixel falls on the tile's other column or row; to the far edge by an
+        // even 94, the same as the top-left.
+        Rgba8[] colours = [new(255, 0, 0, 255), new(0, 0, 255, 255), new(0, 255, 0, 255), new(255, 255, 0, 255)];
+        using Raster<Rgba8> tile = Raster.Create(2, 2, colours[0]);
+        tile.Row(0)[1] = colours[1];
+        tile.Row(1)[0] = colours[2];
+        tile.Row(1)[1] = colours[3];
+        using MemoryStream png = new();
+        tile.Save(png, "png");
+
+        PptxBuilder builder = new() { Image = true };
+        builder.Slides.Add("<p:sp><p:nvSpPr><p:cNvPr id=\"2\" name=\"Tiled\"/><p:cNvSpPr/><p:nvPr/></p:nvSpPr>"
+            + $"<p:spPr><a:xfrm><a:off x=\"{Inch}\" y=\"{Inch}\"/><a:ext cx=\"{Inch}\" cy=\"{Inch}\"/></a:xfrm><a:prstGeom prst=\"rect\"><a:avLst/></a:prstGeom>"
+            + $"<a:blipFill><a:blip r:embed=\"rId2\"/><a:tile tx=\"0\" ty=\"0\" sx=\"100000\" sy=\"100000\" flip=\"none\" algn=\"{align}\"/></a:blipFill></p:spPr></p:sp>");
+        byte[] package = PptxBuilder.WithEntry(builder.Build(), "ppt/media/image1.png", png.ToArray());
+        using Raster<Rgba8> raster = Presentation.Load(new MemoryStream(package)).Slides[0].Render(Options);
+        Assert.Equal(colours[(row * 2) + column], At(raster, 96, 96));
+    }
+
     [Fact]
     public void ParagraphsAlignInTheBox()
     {

@@ -103,20 +103,20 @@ internal static class PictureFill
         string align = (string?)tile.Attribute("algn") ?? "tl";
         float x0 = rect.X + (float)((PptxNames.Long(tile, "tx") ?? 0) / (double)ShapeTransform.EmusPerPoint);
         float y0 = rect.Y + (float)((PptxNames.Long(tile, "ty") ?? 0) / (double)ShapeTransform.EmusPerPoint);
-        if (align.Contains('r', StringComparison.Ordinal))
+        if (align is "tr" or "r" or "br")
         {
             x0 += rect.Width - width;
         }
-        else if (align is "t" or "b" or "ctr")
+        else if (align is "t" or "ctr" or "b")
         {
             x0 += (rect.Width - width) / 2;
         }
 
-        if (align.StartsWith('b'))
+        if (align is "bl" or "b" or "br")
         {
             y0 += rect.Height - height;
         }
-        else if (align is "l" or "r" or "ctr")
+        else if (align is "l" or "ctr" or "r")
         {
             y0 += (rect.Height - height) / 2;
         }
