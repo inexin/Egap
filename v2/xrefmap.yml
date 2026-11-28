@@ -60176,6 +60176,22 @@ references:
   isSpec: "True"
   fullName: Egap.Presentations.SlideBase.ColorMap
   nameWithType: SlideBase.ColorMap
+- uid: Egap.Presentations.SlideBase.Draw(Egami.Drawing.Canvas,Egap.Presentations.SlideRenderOptions)
+  name: Draw(Canvas, SlideRenderOptions?)
+  href: api/Egap.Presentations.SlideBase.html#Egap_Presentations_SlideBase_Draw_Egami_Drawing_Canvas_Egap_Presentations_SlideRenderOptions_
+  commentId: M:Egap.Presentations.SlideBase.Draw(Egami.Drawing.Canvas,Egap.Presentations.SlideRenderOptions)
+  name.vb: Draw(Canvas, SlideRenderOptions)
+  fullName: Egap.Presentations.SlideBase.Draw(Egami.Drawing.Canvas, Egap.Presentations.SlideRenderOptions?)
+  fullName.vb: Egap.Presentations.SlideBase.Draw(Egami.Drawing.Canvas, Egap.Presentations.SlideRenderOptions)
+  nameWithType: SlideBase.Draw(Canvas, SlideRenderOptions?)
+  nameWithType.vb: SlideBase.Draw(Canvas, SlideRenderOptions)
+- uid: Egap.Presentations.SlideBase.Draw*
+  name: Draw
+  href: api/Egap.Presentations.SlideBase.html#Egap_Presentations_SlideBase_Draw_
+  commentId: Overload:Egap.Presentations.SlideBase.Draw
+  isSpec: "True"
+  fullName: Egap.Presentations.SlideBase.Draw
+  nameWithType: SlideBase.Draw
 - uid: Egap.Presentations.SlideBase.Name
   name: Name
   href: api/Egap.Presentations.SlideBase.html#Egap_Presentations_SlideBase_Name
@@ -60215,6 +60231,22 @@ references:
   isSpec: "True"
   fullName: Egap.Presentations.SlideBase.Presentation
   nameWithType: SlideBase.Presentation
+- uid: Egap.Presentations.SlideBase.Render(Egap.Presentations.SlideRenderOptions)
+  name: Render(SlideRenderOptions?)
+  href: api/Egap.Presentations.SlideBase.html#Egap_Presentations_SlideBase_Render_Egap_Presentations_SlideRenderOptions_
+  commentId: M:Egap.Presentations.SlideBase.Render(Egap.Presentations.SlideRenderOptions)
+  name.vb: Render(SlideRenderOptions)
+  fullName: Egap.Presentations.SlideBase.Render(Egap.Presentations.SlideRenderOptions?)
+  fullName.vb: Egap.Presentations.SlideBase.Render(Egap.Presentations.SlideRenderOptions)
+  nameWithType: SlideBase.Render(SlideRenderOptions?)
+  nameWithType.vb: SlideBase.Render(SlideRenderOptions)
+- uid: Egap.Presentations.SlideBase.Render*
+  name: Render
+  href: api/Egap.Presentations.SlideBase.html#Egap_Presentations_SlideBase_Render_
+  commentId: Overload:Egap.Presentations.SlideBase.Render
+  isSpec: "True"
+  fullName: Egap.Presentations.SlideBase.Render
+  nameWithType: SlideBase.Render
 - uid: Egap.Presentations.SlideBase.Shapes
   name: Shapes
   href: api/Egap.Presentations.SlideBase.html#Egap_Presentations_SlideBase_Shapes
@@ -60926,6 +60958,64 @@ references:
   isSpec: "True"
   fullName: Egap.Presentations.SlideMaster.Theme
   nameWithType: SlideMaster.Theme
+- uid: Egap.Presentations.SlideRenderOptions
+  name: SlideRenderOptions
+  href: api/Egap.Presentations.SlideRenderOptions.html
+  commentId: T:Egap.Presentations.SlideRenderOptions
+  fullName: Egap.Presentations.SlideRenderOptions
+  nameWithType: SlideRenderOptions
+- uid: Egap.Presentations.SlideRenderOptions.Date
+  name: Date
+  href: api/Egap.Presentations.SlideRenderOptions.html#Egap_Presentations_SlideRenderOptions_Date
+  commentId: P:Egap.Presentations.SlideRenderOptions.Date
+  fullName: Egap.Presentations.SlideRenderOptions.Date
+  nameWithType: SlideRenderOptions.Date
+- uid: Egap.Presentations.SlideRenderOptions.Date*
+  name: Date
+  href: api/Egap.Presentations.SlideRenderOptions.html#Egap_Presentations_SlideRenderOptions_Date_
+  commentId: Overload:Egap.Presentations.SlideRenderOptions.Date
+  isSpec: "True"
+  fullName: Egap.Presentations.SlideRenderOptions.Date
+  nameWithType: SlideRenderOptions.Date
+- uid: Egap.Presentations.SlideRenderOptions.Dpi
+  name: Dpi
+  href: api/Egap.Presentations.SlideRenderOptions.html#Egap_Presentations_SlideRenderOptions_Dpi
+  commentId: P:Egap.Presentations.SlideRenderOptions.Dpi
+  fullName: Egap.Presentations.SlideRenderOptions.Dpi
+  nameWithType: SlideRenderOptions.Dpi
+- uid: Egap.Presentations.SlideRenderOptions.Dpi*
+  name: Dpi
+  href: api/Egap.Presentations.SlideRenderOptions.html#Egap_Presentations_SlideRenderOptions_Dpi_
+  commentId: Overload:Egap.Presentations.SlideRenderOptions.Dpi
+  isSpec: "True"
+  fullName: Egap.Presentations.SlideRenderOptions.Dpi
+  nameWithType: SlideRenderOptions.Dpi
+- uid: Egap.Presentations.SlideRenderOptions.Fonts
+  name: Fonts
+  href: api/Egap.Presentations.SlideRenderOptions.html#Egap_Presentations_SlideRenderOptions_Fonts
+  commentId: P:Egap.Presentations.SlideRenderOptions.Fonts
+  fullName: Egap.Presentations.SlideRenderOptions.Fonts
+  nameWithType: SlideRenderOptions.Fonts
+- uid: Egap.Presentations.SlideRenderOptions.Fonts*
+  name: Fonts
+  href: api/Egap.Presentations.SlideRenderOptions.html#Egap_Presentations_SlideRenderOptions_Fonts_
+  commentId: Overload:Egap.Presentations.SlideRenderOptions.Fonts
+  isSpec: "True"
+  fullName: Egap.Presentations.SlideRenderOptions.Fonts
+  nameWithType: SlideRenderOptions.Fonts
+- uid: Egap.Presentations.SlideRenderOptions.Width
+  name: Width
+  href: api/Egap.Presentations.SlideRenderOptions.html#Egap_Presentations_SlideRenderOptions_Width
+  commentId: P:Egap.Presentations.SlideRenderOptions.Width
+  fullName: Egap.Presentations.SlideRenderOptions.Width
+  nameWithType: SlideRenderOptions.Width
+- uid: Egap.Presentations.SlideRenderOptions.Width*
+  name: Width
+  href: api/Egap.Presentations.SlideRenderOptions.html#Egap_Presentations_SlideRenderOptions_Width_
+  commentId: Overload:Egap.Presentations.SlideRenderOptions.Width
+  isSpec: "True"
+  fullName: Egap.Presentations.SlideRenderOptions.Width
+  nameWithType: SlideRenderOptions.Width
 - uid: Egap.Presentations.SlideSection
   name: SlideSection
   href: api/Egap.Presentations.SlideSection.html

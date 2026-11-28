@@ -324,6 +324,100 @@ the master's own, or the override this slide or layout has.</p>
 
 
 
+  <h2 class="section" id="methods">Methods
+</h2>
+
+
+  <a id="Egap_Presentations_SlideBase_Draw_" data-uid="Egap.Presentations.SlideBase.Draw*"></a>
+
+  <h3 id="Egap_Presentations_SlideBase_Draw_Egami_Drawing_Canvas_Egap_Presentations_SlideRenderOptions_" data-uid="Egap.Presentations.SlideBase.Draw(Egami.Drawing.Canvas,Egap.Presentations.SlideRenderOptions)">
+  Draw(Canvas, SlideRenderOptions?)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Presentations/SlideDrawing.cs/#L56"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Draws the slide, layout or master onto <code class="paramref">canvas</code>, its top-left corner at the canvas's origin and one canvas
+unit to the point: the background, the master's and layout's shapes where the slide shows them, then its own shapes back
+to front with their text. Any Egami canvas works, such as a raster, an SVG or a PDF page. Tables, charts, SmartArt
+diagrams, embedded objects and media frames are left out for now.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void Draw(Canvas canvas, SlideRenderOptions? options = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>canvas</code> <span class="xref">Canvas</span></dt>
+    <dd><p>The canvas to draw on.</p>
+</dd>
+    <dt><code>options</code> <a class="xref" href="Egap.Presentations.SlideRenderOptions.html">SlideRenderOptions</a></dt>
+    <dd><p>The fonts and date; null for the defaults.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p><code class="paramref">canvas</code> is null.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Egap_Presentations_SlideBase_Render_" data-uid="Egap.Presentations.SlideBase.Render*"></a>
+
+  <h3 id="Egap_Presentations_SlideBase_Render_Egap_Presentations_SlideRenderOptions_" data-uid="Egap.Presentations.SlideBase.Render(Egap.Presentations.SlideRenderOptions)">
+  Render(SlideRenderOptions?)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Presentations/SlideDrawing.cs/#L66"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>The slide, layout or master drawn as a picture, at <a class="xref" href="Egap.Presentations.SlideRenderOptions.html#Egap_Presentations_SlideRenderOptions_Dpi">Dpi</a> or <a class="xref" href="Egap.Presentations.SlideRenderOptions.html#Egap_Presentations_SlideRenderOptions_Width">Width</a>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Raster&lt;Rgba8&gt; Render(SlideRenderOptions? options = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>options</code> <a class="xref" href="Egap.Presentations.SlideRenderOptions.html">SlideRenderOptions</a></dt>
+    <dd><p>The size, fonts and date; null for 96 dots per inch.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Raster</span>&lt;<span class="xref">Rgba8</span>&gt;</dt>
+    <dd><p>The picture, as wide and high as the slide at that size, rounded up to whole pixels.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentoutofrangeexception">ArgumentOutOfRangeException</a></dt>
+    <dd><p>The options' resolution or width is not positive.</p>
+</dd>
+  </dl>
+
+
+
 
 </article>
 

@@ -359,6 +359,37 @@ foreach (Slide slide in deck.Slides)
 
 deck.Save(&quot;lobby.ppsx&quot;);
 </code></pre>
+<h2 id="drawing-slides">Drawing slides</h2>
+<p><code>slide.Render()</code> draws a slide as an Egami <code>Raster&lt;Rgba8&gt;</code>, 96 dots per inch unless <code>SlideRenderOptions</code> sets <code>Dpi</code> or
+<code>Width</code>; <code>slide.Draw(canvas)</code> draws it onto any Egami.Drawing <code>Canvas</code> instead, such as an SVG or PDF page, one unit to
+the point. Layouts, masters and notes pages draw the same way.</p>
+<pre><code class="lang-csharp">using Egami;
+using Egami.Pixels;
+using Egap.Presentations;
+
+Presentation deck = Presentation.Load(&quot;quarterly.pptx&quot;);
+SlideRenderOptions options = new() { Width = 1920, Date = new DateTime(2026, 11, 28) };
+for (int i = 0; i &lt; deck.Slides.Count; i++)
+{
+    using Raster&lt;Rgba8&gt; picture = deck.Slides[i].Render(options);
+    picture.Save($&quot;slide-{i + 1}.png&quot;);
+}
+</code></pre>
+<p>What is drawn:</p>
+<ul>
+<li>The background (the slide's, its layout's or its master's, colours worked out through the colour map), then the master's
+and layout's own shapes unless the slide hides them (<code>showMasterSp</code>), then the slide's shapes, back to front.</li>
+<li>Shapes with their preset or custom geometry, fills (solid, gradient, pattern, picture), outlines, effects and theme
+style references; groups; pictures with their cropping, stretching and tiling.</li>
+<li>Text with everything a placeholder inherits from its layout, master and the master's text styles: insets, anchoring,
+columns, vertical text, rotation, the stored autofit scale, alignment, indents, line and paragraph spacing, tab stops,
+right-to-left paragraphs, bullets (characters, automatic numbers, pictures), fonts by script, bold, italic, underline
+styles, strikethrough, superscript and subscript, capitals, character spacing, kerning, solid and gradient text fills,
+outlines, highlights, hyperlink colours, and slide number and date fields.</li>
+</ul>
+<p><code>SlideRenderOptions.Fonts</code> sets where fonts come from and what stands in for missing ones, as Egap.Documents'
+<code>FontSettings</code> does; <code>Date</code> the date that date fields show, today when it is null. Lines are spaced as PowerPoint spaces
+them, 1.2 times the font size at single spacing.</p>
 <h2 id="recipes">Recipes</h2>
 <p>Short answers to common tasks in this area. Each one is complete: open, change, save.</p>
 <h3 id="strip-the-animations-and-macros-from-a-deck">Strip the animations and macros from a deck</h3>
@@ -388,7 +419,8 @@ Charts and SmartArt are kept as they are.</li>
 out, only the position (<code>EffectiveTransform</code>).</li>
 <li>Removing a slide leaves links to it from other slides as they are.</li>
 <li>PowerPoint 97-2003 files (PPT) and files protected with rights management (IRM) are not read.</li>
-<li>Slides are not rendered to images or PDF.</li>
+<li>Drawing slides leaves out tables, charts, SmartArt diagrams, embedded objects, media and fonts embedded in the file;
+text is drawn with the stored autofit scale, not refitted, and is not hyphenated.</li>
 </ul>
 
 </article>
