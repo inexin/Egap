@@ -190,6 +190,27 @@ public class RtfWriterTests
     }
 
     [Fact]
+    public void UnsetMarginsAreWrittenAsTheInchLayoutGivesThem()
+    {
+        Document document = new();
+        document.AddSection().Body.AddParagraph("First");
+        string rtf = Encoding.ASCII.GetString(Save(document));
+        Assert.Contains(@"\margl1440\margr1440\margt1440\margb1440", rtf, StringComparison.Ordinal);
+        PageSetup read = Reread(document).Sections[0].PageSetup;
+        Assert.Equal(72, read.MarginLeft ?? 90);
+        Assert.Equal(72, read.MarginRight ?? 90);
+
+        // A later section without margins does not take the first section's, which are the document's.
+        Section first = document.Sections[0];
+        first.PageSetup.MarginLeft = first.PageSetup.MarginRight = 36;
+        document.AddSection().Body.AddParagraph("Second");
+        Document twice = Reread(document);
+        Assert.Equal(36, twice.Sections[0].PageSetup.MarginLeft ?? 72);
+        Assert.Equal(72, twice.Sections[1].PageSetup.MarginLeft ?? 36);
+        Assert.Equal(72, twice.Sections[1].PageSetup.MarginRight ?? 36);
+    }
+
+    [Fact]
     public void StylesListsAndFormattingRoundTrip()
     {
         Document document = new();

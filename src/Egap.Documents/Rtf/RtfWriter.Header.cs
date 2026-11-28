@@ -592,10 +592,12 @@ internal sealed partial class RtfWriter
             PageSetup page = document.Sections[0].PageSetup;
             DocumentPageWord("paperw", page.PageWidth, positive: true);
             DocumentPageWord("paperh", page.PageHeight, positive: true);
-            DocumentPageWord("margl", page.MarginLeft);
-            DocumentPageWord("margr", page.MarginRight);
-            DocumentPageWord("margt", page.MarginTop);
-            DocumentPageWord("margb", page.MarginBottom);
+            // Margins the document leaves unset are Egap's (and Word's) inch, written out: RTF's own default left and right
+            // margins are 1.25 inches.
+            DocumentPageWord("margl", page.MarginLeft ?? DefaultMargin);
+            DocumentPageWord("margr", page.MarginRight ?? DefaultMargin);
+            DocumentPageWord("margt", page.MarginTop ?? DefaultMargin);
+            DocumentPageWord("margb", page.MarginBottom ?? DefaultMargin);
             DocumentPageWord("gutter", page.Gutter);
         }
 
@@ -676,6 +678,9 @@ internal sealed partial class RtfWriter
             _ => "ar",
         };
     }
+
+    /// <summary>The margin a page setup that sets none has, in points: an inch, as in layout and Word.</summary>
+    private const double DefaultMargin = 72;
 
     private void DocumentPageWord(string word, double? value, bool positive = false)
     {

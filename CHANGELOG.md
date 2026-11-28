@@ -15,6 +15,8 @@ internal milestones whose public API was frozen and reviewed, and they are liste
 
 - Built on Egami 1.6.0-preview.1, Egami.Metafiles 1.1.0-preview.1 and Egami.Barcodes 1.1.0-preview.1;
   Egami.Fonts.Substitutes stays at 1.1.0.
+- The RTF writer writes page margins a document leaves unset as the inch layout gives them, so readers no longer take
+  RTF's default of 1.25 inches left and right; a later section without margins no longer takes the first section's.
 - The package carries `AGENTS.md`, a guide for AI coding assistants with the package's own names, entry points,
   samples and common mistakes. The docs site publishes the same guides under `agents/`, and `llms.txt`, a list of every
   page for AI assistants.
