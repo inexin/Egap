@@ -131,7 +131,18 @@ internal static class DrawingColors
     };
 
     /// <summary>The theme colour a <c>schemeClr</c> names; dark 1 for a name it does not know.</summary>
-    public static Rgba8 Slot(Theme theme, string name) => name switch
+    public static Rgba8 Slot(Theme theme, string name)
+    {
+        // A slide's colour map sends the mapped names (tx1, bg1, accent1 and the rest) to the theme colours it chooses.
+        if (theme.SchemeMap is { } map && map.TryGetValue(name, out ThemeColor mapped))
+        {
+            return theme.Colors[mapped];
+        }
+
+        return SlotOf(theme, name);
+    }
+
+    private static Rgba8 SlotOf(Theme theme, string name) => name switch
     {
         "dk1" or "tx1" => theme.Colors[ThemeColor.Dark1],
         "lt1" or "bg1" => theme.Colors[ThemeColor.Light1],
