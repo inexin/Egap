@@ -127,7 +127,42 @@ public abstract class SlideShape
         }
     }
 
+    /// <summary>
+    /// The placeholder this one takes what it does not set itself from: for a slide's placeholder, its layout's; for a
+    /// layout's, its master's; null for a master's, a notes page's without a master, or a shape that is not a placeholder.
+    /// A slide's placeholder is matched by index first and then by type; a layout's or notes page's by type, a centred title taking the
+    /// master's title and the content kinds (subtitle, content, chart, table, picture and the rest) its body.
+    /// </summary>
+    public SlideShape? InheritedPlaceholder
+    {
+        get
+        {
+            if (PlaceholderElement is not { } placeholder)
+            {
+                return null;
+            }
+
+            SlideBase? parent = Owner switch
+            {
+                Slide slide => slide.Layout,
+                SlideLayout layout => layout.Master,
+                NotesSlide notes => notes.Master,
+                _ => null,
+            };
+            return parent is null ? null : FindPlaceholder(parent.Shapes, placeholder, byIndex: Owner is Slide);
+        }
+    }
+
+    /// <summary>
+    /// The position the shape is drawn at: its own <see cref="Transform"/>, or for a placeholder without one, its
+    /// <see cref="InheritedPlaceholder"/>'s, from the layout or the master. Null when no one in the chain sets one.
+    /// </summary>
+    public ShapeTransform? EffectiveTransform => Transform ?? InheritedPlaceholder?.EffectiveTransform;
+
     internal XElement Element { get; }
+
+    /// <summary>The shape's <c>p:ph</c>, or null when it is not a placeholder.</summary>
+    internal XElement? PlaceholderElement => NonVisual?.Element(PptxNames.P + "nvPr")?.Element(PptxNames.P + "ph");
 
     /// <summary>The shape's non-visual properties (<c>p:nvSpPr</c>, <c>p:nvPicPr</c> and the rest), its first child.</summary>
     private protected XElement? NonVisual => Element.Elements().FirstOrDefault(e => e.Name.Namespace == PptxNames.P && e.Name.LocalName.StartsWith("nv", StringComparison.Ordinal));
@@ -203,6 +238,30 @@ public abstract class SlideShape
         Changed();
     }
 
+    private static SlideShape? FindPlaceholder(SlideShapeCollection shapes, XElement placeholder, bool byIndex)
+    {
+        string type = TypeOf(placeholder);
+        List<(SlideShape Shape, XElement Placeholder)> candidates = [.. shapes.Where(s => s.PlaceholderElement is not null).Select(s => (s, s.PlaceholderElement!))];
+        if (byIndex && PptxNames.UInt(placeholder, "idx") is uint index && index != 0
+            && candidates.FirstOrDefault(c => PptxNames.UInt(c.Placeholder, "idx") == index).Shape is { } byIdx)
+        {
+            return byIdx;
+        }
+
+        return candidates.FirstOrDefault(c => TypeOf(c.Placeholder) == type).Shape
+            ?? candidates.FirstOrDefault(c => MasterType(TypeOf(c.Placeholder)) == MasterType(type)).Shape;
+
+        static string TypeOf(XElement ph) => (string?)ph.Attribute("type") ?? "obj";
+    }
+
+    /// <summary>The master placeholder a layout placeholder of <paramref name="type"/> takes its look from.</summary>
+    private static string MasterType(string type) => type switch
+    {
+        "ctrTitle" => "title",
+        "subTitle" or "obj" or "body" or "chart" or "tbl" or "pic" or "dgm" or "media" or "clipArt" => "body",
+        _ => type,
+    };
+
     private static PlaceholderType PlaceholderTypeOf(string? type) => type switch
     {
         "title" => PlaceholderType.Title,
@@ -277,14 +336,12 @@ public sealed class PictureShape : SlideShape
     /// <summary>A copy of the image's bytes as the file holds them, or null when the picture has no image part.</summary>
     public byte[]? GetImageData() => ImagePart?.Data.ToArray();
 
-    private OpcPart? ImagePart
+    private PackagePart? ImagePart
     {
         get
         {
             string? id = (string?)Element.Element(PptxNames.P + "blipFill")?.Element(PptxNames.A + "blip")?.Attribute(PptxNames.R + "embed");
-            return id is not null && Owner.Xml.Part.GetRelationship(id) is { External: false } relationship
-                ? Owner.Presentation.Package.Opc.GetPart(relationship.TargetName)
-                : null;
+            return id is null ? null : Owner.Presentation.Package.Target(Owner.PartName, id);
         }
     }
 }
@@ -367,15 +424,61 @@ public sealed class ConnectorShape : SlideShape
     public string? PresetGeometry => PresetGeometryOf();
 
     /// <summary>The shape and connection site the connector starts at (<c>a:stCxn</c>), or null when its start is free.</summary>
-    public ShapeConnection? Start => Connection("stCxn");
+    /// <remarks>Setting it attaches the start; PowerPoint moves the line to the site when it next lays the slide out.</remarks>
+    public ShapeConnection? Start
+    {
+        get => Connection("stCxn");
+        set => SetConnection("stCxn", value);
+    }
 
     /// <summary>The shape and connection site the connector ends at (<c>a:endCxn</c>), or null when its end is free.</summary>
-    public ShapeConnection? End => Connection("endCxn");
+    /// <remarks>Setting it attaches the end, as <see cref="Start"/> does.</remarks>
+    public ShapeConnection? End
+    {
+        get => Connection("endCxn");
+        set => SetConnection("endCxn", value);
+    }
 
     private ShapeConnection? Connection(string name)
     {
         XElement? connection = NonVisual?.Element(PptxNames.P + "cNvCxnSpPr")?.Element(PptxNames.A + name);
         return PptxNames.UInt(connection, "id") is uint id ? new ShapeConnection(id, PptxNames.UInt(connection, "idx") ?? 0) : null;
+    }
+
+    private void SetConnection(string name, ShapeConnection? value)
+    {
+        if (value == Connection(name) || NonVisual is not { } nonVisual)
+        {
+            return;
+        }
+
+        XElement? properties = nonVisual.Element(PptxNames.P + "cNvCxnSpPr");
+        if (properties is null)
+        {
+            properties = new XElement(PptxNames.P + "cNvCxnSpPr");
+            nonVisual.Element(PptxNames.P + "cNvPr")?.AddAfterSelf(properties);
+        }
+
+        properties.Element(PptxNames.A + name)?.Remove();
+        if (value is { } connection)
+        {
+            XElement made = new(PptxNames.A + name, new XAttribute("id", PptxNames.Text(connection.ShapeId)), new XAttribute("idx", PptxNames.Text(connection.Site)));
+
+            // CT_NonVisualConnectorProperties: cxnSpLocks, stCxn, endCxn, extLst.
+            XElement? before = name == "stCxn"
+                ? properties.Element(PptxNames.A + "endCxn") ?? properties.Element(PptxNames.A + "extLst")
+                : properties.Element(PptxNames.A + "extLst");
+            if (before is not null)
+            {
+                before.AddBeforeSelf(made);
+            }
+            else
+            {
+                properties.Add(made);
+            }
+        }
+
+        Changed();
     }
 }
 
@@ -385,6 +488,8 @@ public sealed class ConnectorShape : SlideShape
 /// </summary>
 public sealed class GraphicFrame : SlideShape
 {
+    private SlideTable? table;
+
     internal GraphicFrame(SlideBase owner, GroupShape? group, XElement element)
         : base(owner, group, element)
     {
@@ -399,6 +504,21 @@ public sealed class GraphicFrame : SlideShape
         PptxNames.OleUri => GraphicFrameKind.OleObject,
         _ => GraphicFrameKind.Other,
     };
+
+    /// <summary>The table the frame holds, or null when it holds something else.</summary>
+    public SlideTable? Table
+    {
+        get
+        {
+            XElement? tbl = Kind == GraphicFrameKind.Table ? Element.Element(PptxNames.A + "graphic")?.Element(PptxNames.A + "graphicData")?.Element(PptxNames.A + "tbl") : null;
+            if (tbl is null)
+            {
+                return null;
+            }
+
+            return table is not null && table.Element == tbl ? table : table = new SlideTable(this, tbl);
+        }
+    }
 
     /// <summary>The URI that names the kind of content (<c>a:graphicData/@uri</c>), as the file spells it.</summary>
     public string GraphicDataUri => (string?)Element.Element(PptxNames.A + "graphic")?.Element(PptxNames.A + "graphicData")?.Attribute("uri") ?? "";
@@ -460,12 +580,18 @@ public enum GraphicFrameKind
 /// ways in <c>mc:AlternateContent</c>, for newer and older readers, is read from the branch this reader understands; a
 /// change is made in that branch only, and the other keeps the values it had.
 /// </summary>
-public sealed class SlideShapeCollection : IReadOnlyList<SlideShape>
+public sealed partial class SlideShapeCollection : IReadOnlyList<SlideShape>
 {
     private readonly List<SlideShape> shapes = [];
+    private readonly SlideBase owner;
+    private readonly GroupShape? group;
+    private XElement? tree;
 
     internal SlideShapeCollection(SlideBase owner, XElement? tree, GroupShape? group = null)
     {
+        this.owner = owner;
+        this.group = group;
+        this.tree = tree;
         if (tree is null)
         {
             return;

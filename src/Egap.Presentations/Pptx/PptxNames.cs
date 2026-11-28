@@ -14,7 +14,7 @@ internal static class PptxNames
     public static readonly XNamespace A14 = "http://schemas.microsoft.com/office/drawing/2010/main";
     public static readonly XNamespace A16 = "http://schemas.microsoft.com/office/drawing/2014/main";
 
-    private const string Office = "http://schemas.openxmlformats.org/officeDocument/2006/relationships/";
+    public const string Office = "http://schemas.openxmlformats.org/officeDocument/2006/relationships/";
 
     public const string SlideRelationship = Office + "slide";
     public const string SlideLayoutRelationship = Office + "slideLayout";
@@ -22,6 +22,7 @@ internal static class PptxNames
     public const string NotesSlideRelationship = Office + "notesSlide";
     public const string NotesMasterRelationship = Office + "notesMaster";
     public const string ThemeRelationship = Office + "theme";
+    public const string ImageRelationship = Office + "image";
 
     public const string TableUri = "http://schemas.openxmlformats.org/drawingml/2006/table";
     public const string ChartUri = "http://schemas.openxmlformats.org/drawingml/2006/chart";

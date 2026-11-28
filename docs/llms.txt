@@ -42,7 +42,7 @@ workbook, and `PdfConvert` turns HTML, Markdown, DOCX and images into PDF in one
 
 ## Egap.Presentations
 
-- [Presentations](https://inexin.github.io/Egap/v2/articles/guides/presentations.html): Egap.Presentations loads PowerPoint files and lets you read and edit their slides from code.
+- [Presentations](https://inexin.github.io/Egap/v2/articles/guides/presentations.html): Egap.Presentations loads and makes PowerPoint files and lets you read and edit their slides from code.
 
 ## Egap.Spreadsheets
 

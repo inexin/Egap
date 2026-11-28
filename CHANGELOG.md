@@ -15,6 +15,22 @@ internal milestones whose public API was frozen and reviewed, and they are liste
   charts, SmartArt and embedded objects, kept as they are), with id, name, alternative text, placeholder type and index,
   and position, size, rotation and flips in EMUs and points.
 - Shape names, alternative text, positions, run text and the slide size can be changed.
+- `Presentation.Create()` makes a new 16:9 presentation with one master, Egap's own theme and the eleven standard layouts.
+  `Slides.Add`, `Insert`, `Remove`, `RemoveAt` and `Move` add, remove and reorder slides, a new slide taking its layout's
+  placeholders; a removed slide's notes, comments and pictures only it used go with it. `SlideMaster.GetLayout` finds a
+  layout by type.
+- Shapes are added from code: `AddShape` (preset geometry and text), `AddTextBox`, `AddPicture` (PNG, JPEG, GIF, BMP or
+  TIFF, its kind found with Egami's `Raster.Probe`), `AddGroup`, `AddConnector` (with settable `Start` and `End`) and
+  `AddTable`, each with an id unique on its slide; `Shapes.Remove` takes one away. `TextBody.Text` can be set.
+- Placeholder inheritance: `SlideShape.InheritedPlaceholder` finds the layout's or master's placeholder a placeholder
+  follows, by index and type, and `EffectiveTransform` the position it is drawn at.
+- Tables: `GraphicFrame.Table` with columns, rows and cells, merges (`ColumnSpan`, `RowSpan`, `Merge`, `Split`), cell text,
+  rows and columns added and removed, and the table style id.
+- Notes: `Slide.NotesText` and `Slide.Notes`, with a notes master made when there is none.
+- Comments, modern threaded ones and the older kind: `Presentation.CommentAuthors`, `Slide.Comments`, `SlideComment.Reply`
+  and removal.
+- Sections: `Presentation.Sections`, added, renamed, removed and with slides moved between them, kept in step when slides
+  are added, moved or removed.
 
 ## Egap.Cli 2.4.0 (unreleased)
 

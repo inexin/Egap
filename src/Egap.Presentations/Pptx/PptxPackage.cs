@@ -1,3 +1,4 @@
+using System.Globalization;
 using System.IO.Compression;
 using System.Xml;
 using System.Xml.Linq;
@@ -8,20 +9,34 @@ using Egap.Documents.Docx;
 namespace Egap.Presentations.Pptx;
 
 /// <summary>
-/// A loaded presentation's package, kept whole: every part as read, and the XML of the parts the model wraps. A save writes
-/// each part's bytes back as they were, in the order read, except the XML parts the model changed, which are written from
-/// their XML (in Strict namespaces again when the part had them).
+/// A presentation's package, kept whole: every part as read, in order, and the XML of the parts the model wraps. Parts and
+/// relationships can be added and removed. A save writes each part's bytes back as they were, except the XML parts the
+/// model changed or made, which are written from their XML (in Strict namespaces again when the package had them).
 /// </summary>
 internal sealed class PptxPackage
 {
-    private readonly Dictionary<string, XmlPart> xml = new(StringComparer.OrdinalIgnoreCase);
+    public const string ContentTypesName = "/[Content_Types].xml";
+    private const string RelationshipsContentType = "application/vnd.openxmlformats-package.relationships+xml";
+    private static readonly XNamespace RelationshipsNs = "http://schemas.openxmlformats.org/package/2006/relationships";
+    private static readonly XNamespace TypesNs = "http://schemas.openxmlformats.org/package/2006/content-types";
 
-    private PptxPackage(OpcPackage package)
+    private readonly List<PackagePart> order = [];
+    private readonly Dictionary<string, PackagePart> parts = new(StringComparer.OrdinalIgnoreCase);
+    private readonly Dictionary<string, List<OpcRelationship>> relationships = new(StringComparer.OrdinalIgnoreCase);
+
+    private PptxPackage(DocumentLimits limits)
     {
-        Opc = package;
+        Limits = limits;
     }
 
-    public OpcPackage Opc { get; }
+    public DocumentLimits Limits { get; }
+
+    /// <summary>The Strict namespaces of the package, by their transitional names, for the parts it makes; empty when transitional.</summary>
+    public Dictionary<string, string> StrictNames { get; } = new(StringComparer.Ordinal);
+
+    public bool IsStrict => StrictNames.Count > 0;
+
+    public IEnumerable<PackagePart> Parts => order;
 
     /// <summary>Reads a package from a stream (left open).</summary>
     /// <exception cref="DocumentException">Not a ZIP package, or a compound file.</exception>
@@ -40,35 +55,361 @@ internal sealed class PptxPackage
             }
         }
 
-        return new PptxPackage(OpcPackage.Read(stream, limits));
+        OpcPackage opc = OpcPackage.Read(stream, limits);
+        PptxPackage package = new(limits);
+        foreach (OpcPart part in opc.Parts)
+        {
+            package.Add(new PackagePart(part.Name, part.ContentType, part.Data));
+        }
+
+        return package;
     }
+
+    /// <summary>An empty package with its content types part, for a presentation made in code.</summary>
+    public static PptxPackage Create()
+    {
+        PptxPackage package = new(new DocumentLimits());
+        XElement types = new(TypesNs + "Types",
+            new XElement(TypesNs + "Default", new XAttribute("Extension", "rels"), new XAttribute("ContentType", RelationshipsContentType)),
+            new XElement(TypesNs + "Default", new XAttribute("Extension", "xml"), new XAttribute("ContentType", "application/xml")));
+        package.AddXmlPart(ContentTypesName, "application/xml", new XDocument(types), register: false);
+        return package;
+    }
+
+    public PackagePart? GetPart(string name) => parts.GetValueOrDefault(OpcPackage.NormalizeName(name));
 
     /// <summary>The XML of a part, read once and kept, so that the model's changes are what a save writes.</summary>
     /// <exception cref="DocumentException">The part is not well-formed XML.</exception>
-    public XmlPart Xml(OpcPart part)
+    public XmlPart Xml(PackagePart part) => part.Xml ??= XmlPart.Load(part, this);
+
+    /// <summary>The relationships from <paramref name="sourceName"/> ("/" for the package), targets resolved.</summary>
+    public IReadOnlyList<OpcRelationship> Relationships(string sourceName)
     {
-        if (!xml.TryGetValue(part.Name, out XmlPart? loaded))
+        if (relationships.TryGetValue(sourceName, out List<OpcRelationship>? cached))
         {
-            loaded = XmlPart.Load(part, Opc);
-            xml[part.Name] = loaded;
+            return cached;
         }
 
-        return loaded;
+        List<OpcRelationship> list = [];
+        if (GetPart(OpcPackage.RelationshipsPartName(sourceName)) is { } rels)
+        {
+            foreach (XElement element in Xml(rels).Root.Elements())
+            {
+                if (element.Name.LocalName != "Relationship" || (string?)element.Attribute("Id") is not { } id
+                    || (string?)element.Attribute("Type") is not { } type || (string?)element.Attribute("Target") is not { } target)
+                {
+                    continue;
+                }
+
+                bool external = string.Equals((string?)element.Attribute("TargetMode"), "External", StringComparison.OrdinalIgnoreCase);
+                list.Add(new OpcRelationship(id, type, target, external, external ? target : OpcPackage.ResolveTarget(sourceName, target)));
+            }
+        }
+
+        relationships[sourceName] = list;
+        return list;
     }
 
-    /// <summary>Writes every part back: unchanged ones byte for byte, changed XML parts from their XML.</summary>
+    /// <summary>The relationship with <paramref name="id"/> from <paramref name="sourceName"/>, or null.</summary>
+    public OpcRelationship? Relationship(string sourceName, string id) => Relationships(sourceName).FirstOrDefault(r => r.Id == id);
+
+    /// <summary>The part the relationship <paramref name="id"/> from <paramref name="sourceName"/> points at, or null.</summary>
+    public PackagePart? Target(string sourceName, string id)
+    {
+        return Relationship(sourceName, id) is { External: false } relationship ? GetPart(relationship.TargetName) : null;
+    }
+
+    /// <summary>The first part <paramref name="sourceName"/> relates to with a relationship of <paramref name="type"/>, or null.</summary>
+    public PackagePart? Related(string sourceName, string type)
+    {
+        foreach (OpcRelationship relationship in Relationships(sourceName))
+        {
+            if (!relationship.External && OpcRelationshipTypes.Same(relationship.Type, type) && GetPart(relationship.TargetName) is { } part)
+            {
+                return part;
+            }
+        }
+
+        return null;
+    }
+
+    /// <summary>Adds a relationship from <paramref name="sourceName"/> to the part <paramref name="targetName"/>; returns its id.</summary>
+    public string AddRelationship(string sourceName, string type, string targetName)
+    {
+        string relsName = OpcPackage.RelationshipsPartName(sourceName);
+        PackagePart rels = GetPart(relsName) ?? AddXmlPart(relsName, RelationshipsContentType, new XDocument(new XElement(RelationshipsNs + "Relationships")), register: false);
+        XmlPart xml = Xml(rels);
+        HashSet<string> used = [.. Relationships(sourceName).Select(r => r.Id)];
+        string id;
+        for (int i = used.Count + 1; ; i++)
+        {
+            id = "rId" + i.ToString(CultureInfo.InvariantCulture);
+            if (!used.Contains(id))
+            {
+                break;
+            }
+        }
+
+        string target = sourceName == "/" ? targetName[1..] : RelativeTarget(sourceName, targetName);
+        xml.Root.Add(new XElement(xml.Root.Name.Namespace + "Relationship", new XAttribute("Id", id), new XAttribute("Type", RelationshipType(type)), new XAttribute("Target", target)));
+        xml.MarkChanged();
+        relationships.Remove(sourceName);
+        return id;
+    }
+
+    /// <summary>Removes the relationship <paramref name="id"/> from <paramref name="sourceName"/>.</summary>
+    public void RemoveRelationship(string sourceName, string id)
+    {
+        if (GetPart(OpcPackage.RelationshipsPartName(sourceName)) is not { } rels)
+        {
+            return;
+        }
+
+        XmlPart xml = Xml(rels);
+        foreach (XElement element in xml.Root.Elements().Where(e => (string?)e.Attribute("Id") == id).ToList())
+        {
+            element.Remove();
+            xml.MarkChanged();
+        }
+
+        relationships.Remove(sourceName);
+    }
+
+    /// <summary>Adds a part with bytes, and its content type unless the extension's default gives it.</summary>
+    public PackagePart AddPart(string name, string contentType, byte[] data)
+    {
+        PackagePart part = new(OpcPackage.NormalizeName(name), contentType, data);
+        Add(part);
+        RegisterContentType(part.Name, contentType);
+        return part;
+    }
+
+    /// <summary>Adds an XML part, written from its XML, in the package's Strict namespaces where it has them.</summary>
+    public PackagePart AddXmlPart(string name, string contentType, XDocument document, bool register = true)
+    {
+        PackagePart part = new(OpcPackage.NormalizeName(name), contentType, []);
+        part.Xml = XmlPart.Create(part, document, StrictNames);
+        Add(part);
+        if (register)
+        {
+            RegisterContentType(part.Name, contentType);
+        }
+
+        return part;
+    }
+
+    /// <summary>Removes a part, its relationships part and its content type override.</summary>
+    public void RemovePart(string name)
+    {
+        string normalized = OpcPackage.NormalizeName(name);
+        if (parts.Remove(normalized, out PackagePart? part))
+        {
+            order.Remove(part);
+        }
+
+        if (parts.Remove(OpcPackage.RelationshipsPartName(normalized), out PackagePart? relsPart))
+        {
+            order.Remove(relsPart);
+        }
+
+        relationships.Remove(normalized);
+        if (GetPart(ContentTypesName) is { } types)
+        {
+            XmlPart xml = Xml(types);
+            foreach (XElement element in xml.Root.Elements().Where(e => e.Name.LocalName == "Override" && string.Equals((string?)e.Attribute("PartName"), normalized, StringComparison.OrdinalIgnoreCase)).ToList())
+            {
+                element.Remove();
+                xml.MarkChanged();
+            }
+        }
+    }
+
+    /// <summary>
+    /// Removes each of <paramref name="candidates"/> that no relationship in the package points at any more, and then the
+    /// parts only those pointed at: a removed slide's notes page, comments and pictures no other slide shows.
+    /// </summary>
+    public void RemoveUnreferenced(IEnumerable<string> candidates)
+    {
+        Queue<string> queue = new(candidates);
+        while (queue.TryDequeue(out string? name))
+        {
+            if (GetPart(name) is not { } part || part.Name == ContentTypesName || IsReferenced(part.Name))
+            {
+                continue;
+            }
+
+            foreach (OpcRelationship relationship in Relationships(part.Name).Where(r => !r.External))
+            {
+                queue.Enqueue(relationship.TargetName);
+            }
+
+            RemovePart(part.Name);
+        }
+    }
+
+    /// <summary>Whether a relationship of any part left, or of the package, points at <paramref name="name"/>.</summary>
+    public bool IsReferenced(string name)
+    {
+        foreach (PackagePart rels in order.ToList())
+        {
+            if (SourceOf(rels.Name) is { } source && (source == "/" || GetPart(source) is not null)
+                && Relationships(source).Any(r => !r.External && string.Equals(r.TargetName, name, StringComparison.OrdinalIgnoreCase)))
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /// <summary>The part a relationships part belongs to ("/" for the package's own), or null when the name is not one.</summary>
+    private static string? SourceOf(string relsName)
+    {
+        int slash = relsName.LastIndexOf('/');
+        if (!relsName.EndsWith(".rels", StringComparison.OrdinalIgnoreCase) || slash < 6
+            || !relsName.AsSpan(0, slash).EndsWith("/_rels", StringComparison.OrdinalIgnoreCase))
+        {
+            return null;
+        }
+
+        string folder = relsName[..(slash - 5)];
+        string file = relsName[(slash + 1)..^5];
+        return file.Length == 0 ? "/" : folder + file;
+    }
+
+    /// <summary>The first name <paramref name="prefix"/><c>n</c><paramref name="extension"/>, from 1, that no part has.</summary>
+    public string UniqueName(string prefix, string extension)
+    {
+        for (int i = 1; ; i++)
+        {
+            string name = prefix + i.ToString(CultureInfo.InvariantCulture) + extension;
+            if (!parts.ContainsKey(name))
+            {
+                return name;
+            }
+        }
+    }
+
+    /// <summary>The relationship type in the package's spelling: Strict when the package is.</summary>
+    public string RelationshipType(string type)
+    {
+        const string transitional = "http://schemas.openxmlformats.org/officeDocument/2006/relationships/";
+        if (!IsStrict || !type.StartsWith(transitional, StringComparison.Ordinal))
+        {
+            return type;
+        }
+
+        string name = type[transitional.Length..] switch
+        {
+            "extended-properties" => "extendedProperties",
+            "custom-properties" => "customProperties",
+            var n => n,
+        };
+        return "http://purl.oclc.org/ooxml/officeDocument/relationships/" + name;
+    }
+
+    /// <summary>Writes every part back: unchanged ones byte for byte, changed or new XML parts from their XML.</summary>
     public void Save(Stream stream)
     {
         using ZipArchive zip = new(stream, ZipArchiveMode.Create, leaveOpen: true);
-        foreach (OpcPart part in Opc.Parts)
+        foreach (PackagePart part in order)
         {
-            byte[] data = xml.TryGetValue(part.Name, out XmlPart? changed) && changed.Changed ? changed.Serialize() : part.Data;
             ZipArchiveEntry entry = zip.CreateEntry(part.Name[1..], CompressionLevel.Optimal);
             entry.LastWriteTime = new DateTimeOffset(1980, 1, 1, 0, 0, 0, TimeSpan.Zero);
             using Stream output = entry.Open();
-            output.Write(data);
+            output.Write(part.CurrentData);
         }
     }
+
+    /// <summary>Safe XML reading for every part: no DTDs, no external entities, a size cap.</summary>
+    internal XmlReaderSettings XmlSettings => new()
+    {
+        DtdProcessing = DtdProcessing.Prohibit,
+        XmlResolver = null,
+        MaxCharactersFromEntities = 0,
+        MaxCharactersInDocument = Limits.MaxPartSize,
+        IgnoreProcessingInstructions = false,
+        CloseInput = true,
+    };
+
+    /// <summary>A part name relative to the folder of <paramref name="sourceName"/>, as relationship targets are written.</summary>
+    internal static string RelativeTarget(string sourceName, string targetName)
+    {
+        string[] from = sourceName[1..(sourceName.LastIndexOf('/') + 1)].Split('/', StringSplitOptions.RemoveEmptyEntries);
+        string[] to = targetName[1..].Split('/');
+        int common = 0;
+        while (common < from.Length && common < to.Length - 1 && string.Equals(from[common], to[common], StringComparison.OrdinalIgnoreCase))
+        {
+            common++;
+        }
+
+        return string.Join('/', Enumerable.Repeat("..", from.Length - common).Concat(to[common..]));
+    }
+
+    private void Add(PackagePart part)
+    {
+        if (parts.Remove(part.Name, out PackagePart? old))
+        {
+            order.Remove(old);
+        }
+
+        parts[part.Name] = part;
+        order.Add(part);
+    }
+
+    private void RegisterContentType(string name, string contentType)
+    {
+        if (GetPart(ContentTypesName) is not { } types)
+        {
+            return;
+        }
+
+        XmlPart xml = Xml(types);
+        int dot = name.LastIndexOf('.');
+        string extension = dot > name.LastIndexOf('/') ? name[(dot + 1)..] : "";
+        XElement? byExtension = xml.Root.Elements().FirstOrDefault(e => e.Name.LocalName == "Default"
+            && string.Equals((string?)e.Attribute("Extension"), extension, StringComparison.OrdinalIgnoreCase));
+        if ((string?)byExtension?.Attribute("ContentType") == contentType)
+        {
+            return;
+        }
+
+        if (byExtension is null && extension.Length > 0 && contentType.StartsWith("image/", StringComparison.Ordinal))
+        {
+            // Media go by their extension, as PowerPoint writes them.
+            XElement made = new(xml.Root.Name.Namespace + "Default", new XAttribute("Extension", extension.ToLowerInvariant()), new XAttribute("ContentType", contentType));
+            if (xml.Root.Elements().LastOrDefault(e => e.Name.LocalName == "Default") is { } last)
+            {
+                last.AddAfterSelf(made);
+            }
+            else
+            {
+                xml.Root.AddFirst(made);
+            }
+        }
+        else
+        {
+            xml.Root.Add(new XElement(xml.Root.Name.Namespace + "Override", new XAttribute("PartName", name), new XAttribute("ContentType", contentType)));
+        }
+
+        xml.MarkChanged();
+    }
+}
+
+/// <summary>One part of the package: its name, content type and bytes as read, and its XML once the model reads it.</summary>
+internal sealed class PackagePart(string name, string contentType, byte[] data)
+{
+    public string Name { get; } = name;
+
+    public string ContentType { get; } = contentType;
+
+    /// <summary>The bytes as read; empty for a part made in code, which is written from its XML.</summary>
+    public byte[] Data { get; } = data;
+
+    public XmlPart? Xml { get; set; }
+
+    /// <summary>The bytes a save writes now.</summary>
+    public byte[] CurrentData => Xml is { Changed: true } xml ? xml.Serialize() : Data;
 }
 
 /// <summary>
@@ -79,20 +420,21 @@ internal sealed class XmlPart
 {
     private readonly Dictionary<string, string> strict;
 
-    private XmlPart(OpcPart part, XDocument document, Dictionary<string, string> strict)
+    private XmlPart(PackagePart part, XDocument document, Dictionary<string, string> strict, bool changed)
     {
         Part = part;
         Document = document;
         this.strict = strict;
+        Changed = changed;
     }
 
-    public OpcPart Part { get; }
+    public PackagePart Part { get; }
 
     public XDocument Document { get; }
 
     public XElement Root => Document.Root!;
 
-    /// <summary>Whether the model changed the XML since it was read.</summary>
+    /// <summary>Whether the model changed the XML since it was read, or made it.</summary>
     public bool Changed { get; private set; }
 
     /// <summary>Whether the part was written in ISO/IEC 29500 Strict namespaces.</summary>
@@ -101,8 +443,11 @@ internal sealed class XmlPart
     /// <summary>Marks the part as changed, so a save writes it from its XML.</summary>
     public void MarkChanged() => Changed = true;
 
+    /// <summary>A part made in code, written in the Strict namespaces given (none for transitional).</summary>
+    public static XmlPart Create(PackagePart part, XDocument document, IReadOnlyDictionary<string, string> strict) => new(part, document, new Dictionary<string, string>(strict), true);
+
     /// <exception cref="DocumentException">The part is not well-formed XML or has a DTD.</exception>
-    public static XmlPart Load(OpcPart part, OpcPackage package)
+    public static XmlPart Load(PackagePart part, PptxPackage package)
     {
         XDocument document;
         try
@@ -132,7 +477,12 @@ internal sealed class XmlPart
         }
 
         StrictNamespaces.ToTransitional(document, package.Limits.MaxDepth);
-        return new XmlPart(part, document, strict);
+        foreach ((string transitional, string ns) in strict)
+        {
+            package.StrictNames.TryAdd(transitional, ns);
+        }
+
+        return new XmlPart(part, document, strict, false);
 
         void Note(string ns)
         {
