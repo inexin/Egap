@@ -6,6 +6,7 @@ internal milestones whose public API was frozen and reviewed, and they are liste
 
 ## Egap.Cli 2.4.0 (unreleased)
 
+- Built on Egami.Cli.Host 1.6.0-preview.1 and Egami 1.6.0-preview.1.
 - The package carries `AGENTS.md`, a guide for AI coding assistants with the package's own names, entry points,
   samples and common mistakes. The docs site publishes the same guides under `agents/`, and `llms.txt`, a list of every
   page for AI assistants.
@@ -20,6 +21,8 @@ internal milestones whose public API was frozen and reviewed, and they are liste
   which Word ignores there too. The new `WordCompatibility.ShrinkJustifiedSpaces` turns it off. It is off below mode 15 (Word
   2010 and older, DOC files) and for ODT documents, and it is not saved to DOCX, since Word has no setting for it.
 - Needs Egami.Fonts 1.6.0 (`ParagraphStyle.SpaceShrink`).
+- Built on Egami 1.6.0-preview.1, Egami.Metafiles 1.1.0-preview.1 and Egami.Barcodes 1.1.0-preview.1;
+  Egami.Fonts.Substitutes stays at 1.1.0.
 - The package carries `AGENTS.md`, a guide for AI coding assistants with the package's own names, entry points,
   samples and common mistakes. The docs site publishes the same guides under `agents/`, and `llms.txt`, a list of every
   page for AI assistants.
@@ -42,18 +45,21 @@ internal milestones whose public API was frozen and reviewed, and they are liste
 
 ## Egap.Spreadsheets 2.4.0 (unreleased)
 
+- Built on Egami 1.6.0-preview.1.
 - The package carries `AGENTS.md`, a guide for AI coding assistants with the package's own names, entry points,
   samples and common mistakes. The docs site publishes the same guides under `agents/`, and `llms.txt`, a list of every
   page for AI assistants.
 
 ## Egap.Pdf 2.4.0 (unreleased)
 
+- Built on Egami 1.6.0-preview.1 and Egami.Barcodes 1.1.0-preview.1.
 - The package carries `AGENTS.md`, a guide for AI coding assistants with the package's own names, entry points,
   samples and common mistakes. The docs site publishes the same guides under `agents/`, and `llms.txt`, a list of every
   page for AI assistants.
 
 ## Egap.Preview 2.4.0 (unreleased)
 
+- Built on Egami 1.6.0-preview.1.
 - The package carries `AGENTS.md`, a guide for AI coding assistants with the package's own names, entry points,
   samples and common mistakes. The docs site publishes the same guides under `agents/`, and `llms.txt`, a list of every
   page for AI assistants.
