@@ -91,6 +91,16 @@ builder.ParagraphFormat.Kashida = KashidaLevel.Medium;
 builder.Writeln("تعلم اللغة العربية يفتح أبواب الأدب والعلوم والتاريخ للطلاب في كل مكان");
 ```
 
+## Pictures
+
+A `Picture` holds its image as bytes with a media type (`ImageData`; `ImageData.FromBytes` tells the type from the bytes).
+Layout, rendering and PDF export draw PNG, JPEG and the other raster formats Egami reads, EMF, WMF and SVG as vectors, and
+Encapsulated PostScript (EPS, `application/postscript`) by its preview, as Word does: Egap runs no PostScript. The preview
+is the best the file has: Photoshop's full image (`%ImageData`), else the TIFF preview, else the Windows metafile preview,
+drawn as vectors, else the EPSI bitmap. An EPS file with none is left as an empty box with a
+`LayoutWarningKind.PictureNotDrawn` warning. DOCX and ODT keep the EPS file as it is; RTF, which has no EPS, writes its
+preview as a PNG.
+
 ## Barcodes
 
 `InsertBarcode` writes a barcode as a picture of the size you give. Layout and PDF export draw it as vectors; DOCX keeps it

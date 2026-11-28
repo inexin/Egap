@@ -87,7 +87,11 @@ internal sealed partial class Paginator
                     }
                 }
 
-                if (box is ObjectBox { Node: Island island } && Docx.DocxDrawings.DrawsAsList(island))
+                if (box is ObjectBox { Node: Picture picture } && !PictureDrawers.Draws(picture.Image))
+                {
+                    warnings.Add(new LayoutWarning(LayoutWarningKind.PictureNotDrawn, "An EPS picture has no preview, which layout draws in place of its PostScript, so it is left as an empty box.", picture, page.Index));
+                }
+                else if (box is ObjectBox { Node: Island island } && Docx.DocxDrawings.DrawsAsList(island))
                 {
                     warnings.Add(new LayoutWarning(LayoutWarningKind.SmartArtDrawnAsList, "A SmartArt diagram has no stored drawing and is drawn as a list of its text.", island, page.Index));
                 }

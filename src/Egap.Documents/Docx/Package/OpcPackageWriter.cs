@@ -24,6 +24,7 @@ internal sealed class OpcPackageWriter
         ["wmf"] = "image/x-wmf",
         ["svg"] = "image/svg+xml",
         ["webp"] = "image/webp",
+        ["eps"] = "application/postscript",
         ["odttf"] = "application/vnd.openxmlformats-officedocument.obfuscatedFont",
         ["bin"] = "application/vnd.ms-office.vbaProject",
     };

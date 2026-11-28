@@ -15,6 +15,12 @@ internal milestones whose public API was frozen and reviewed, and they are liste
 
 - Built on Egami 1.6.0-preview.1, Egami.Metafiles 1.1.0-preview.1 and Egami.Barcodes 1.1.0-preview.1;
   Egami.Fonts.Substitutes stays at 1.1.0.
+- EPS pictures: layout, rendering and PDF export draw an Encapsulated PostScript picture by its preview, through Egami's
+  `EpsFile` (Photoshop's image, else the TIFF preview, else the metafile preview as vectors, else the EPSI bitmap); one
+  without a preview is an empty box with the new `LayoutWarningKind.PictureNotDrawn` warning. `ImageData.FromBytes`
+  recognises EPS as `application/postscript`, DOCX and ODT keep EPS parts with an `.eps` name, and RTF writes the preview
+  as a PNG. Egap loads pictures with Egami.Metafiles' format registered, so a metafile preview loads wherever Egami
+  decodes a picture.
 - The package carries `AGENTS.md`, a guide for AI coding assistants with the package's own names, entry points,
   samples and common mistakes. The docs site publishes the same guides under `agents/`, and `llms.txt`, a list of every
   page for AI assistants.
