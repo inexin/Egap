@@ -151,8 +151,7 @@ internal sealed partial class RtfWriter
                 WritePicture(picture);
                 CloseMarked(pictureGroup);
                 break;
-            case Shape shape when shape.Kind == ShapeKind.Other && shape.TextBox is null
-                && WriteDrawing(shape.Floating, shape.Width, shape.Height, shape.Title, shape.Description, (c, r) => Layout.PageDrawing.DrawDrawing(shape, c, r)):
+            case Shape { Kind: ShapeKind.Other, TextBox: null } shape when WriteShapeDrawing(shape):
                 break;
             case Shape shape:
                 WriteShape(shape);
@@ -541,6 +540,11 @@ internal sealed partial class RtfWriter
 
         PictGroup(picture.Image, picture.Width, picture.Height, picture.Crop, picture.Title, picture.Description, inShape: false);
     }
+
+    /// <summary>A DrawingML shape RTF has no type for as an EMF picture of it; false when Egap does not draw it.</summary>
+    /// <remarks>Its own method, so that the closure is made for such shapes only, not for every inline.</remarks>
+    private bool WriteShapeDrawing(Shape shape) =>
+        WriteDrawing(shape.Floating, shape.Width, shape.Height, shape.Title, shape.Description, (c, r) => Layout.PageDrawing.DrawDrawing(shape, c, r));
 
     /// <summary>
     /// A drawing Egap draws itself (a chart, shape group, SmartArt or DrawingML shape, which RTF has no form of) written as an
