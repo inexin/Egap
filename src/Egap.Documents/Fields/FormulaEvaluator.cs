@@ -21,6 +21,7 @@ internal sealed class FormulaEvaluator
     private readonly char decimalSymbol;
     private readonly char listSeparator;
     private readonly Dictionary<Table, Cell?[][]> grids = [];
+    private bool anyGrouped;
     private List<Token> tokens = [];
     private int position;
 
@@ -47,20 +48,34 @@ internal sealed class FormulaEvaluator
     /// </summary>
     public static (double Value, string? Error) Evaluate(string expression, Document document, Node? at, Func<string, Bookmark?>? bookmarks = null)
     {
+        (double value, string? error, _) = EvaluateGrouped(expression, document, at, bookmarks);
+        return (value, error);
+    }
+
+    /// <summary>
+    /// As <see cref="Evaluate"/>, and whether a cell number the formula read had digit grouping, which Word then
+    /// gives the result too.
+    /// </summary>
+    public static (double Value, string? Error, bool Grouped) EvaluateGrouped(string expression, Document document, Node? at, Func<string, Bookmark?>? bookmarks = null)
+    {
         FormulaEvaluator evaluator = new(document, at, bookmarks);
         try
         {
             Expr tree = evaluator.ParseAll(expression);
-            return (evaluator.Scalar(tree), null);
+            double value = evaluator.Scalar(tree);
+            return (value, null, evaluator.anyGrouped);
         }
         catch (FormulaException error)
         {
-            return (0, error.Message);
+            return (0, error.Message, false);
         }
     }
 
-    /// <summary>A formula's value as Word shows it without a numeric picture: rounded to two decimals.</summary>
-    public static string FormatDefault(double value, char decimalSymbol)
+    /// <summary>
+    /// A formula's value as Word shows it without a numeric picture: rounded to two decimals, its digits grouped by
+    /// thousands when <paramref name="grouped"/>.
+    /// </summary>
+    public static string FormatDefault(double value, char decimalSymbol, bool grouped = false)
     {
         if (!double.IsFinite(value))
         {
@@ -68,8 +83,21 @@ internal sealed class FormulaEvaluator
         }
 
         double rounded = Math.Round(value, 2, MidpointRounding.AwayFromZero);
-        string text = (rounded == 0 ? 0 : rounded).ToString("0.##", CultureInfo.InvariantCulture);
-        return decimalSymbol == '.' ? text : text.Replace('.', decimalSymbol);
+        string text = (rounded == 0 ? 0 : rounded).ToString(grouped ? "#,0.##" : "0.##", CultureInfo.InvariantCulture);
+        if (decimalSymbol == '.')
+        {
+            return text;
+        }
+
+        char group = decimalSymbol == ',' ? '.' : ',';
+        return string.Create(text.Length, (text, decimalSymbol, group), static (span, state) =>
+        {
+            for (int i = 0; i < span.Length; i++)
+            {
+                char c = state.text[i];
+                span[i] = c == '.' ? state.decimalSymbol : c == ',' ? state.group : c;
+            }
+        });
     }
 
     /// <summary>
@@ -78,6 +106,12 @@ internal sealed class FormulaEvaluator
     /// </summary>
     public static double? ParseNumber(string text, char decimalSymbol)
     {
+        return ParseNumber(text, decimalSymbol, out _);
+    }
+
+    private static double? ParseNumber(string text, char decimalSymbol, out bool grouped)
+    {
+        grouped = false;
         ReadOnlySpan<char> span = text.AsSpan().Trim();
         if (span.IsEmpty)
         {
@@ -128,6 +162,8 @@ internal sealed class FormulaEvaluator
                 {
                     return null;
                 }
+
+                grouped = true;
             }
             else if (c is '-' or '+' && !digits && !sign && !parenthesis)
             {
@@ -138,9 +174,13 @@ internal sealed class FormulaEvaluator
             {
                 percent = true;
             }
-            else if (CharUnicodeInfo.GetUnicodeCategory(c) == UnicodeCategory.CurrencySymbol || (c == ' ' && !(i > 0 && char.IsAsciiDigit(span[i - 1]) && i + 1 < span.Length && char.IsAsciiDigit(span[i + 1]))))
+            else if (CharUnicodeInfo.GetUnicodeCategory(c) == UnicodeCategory.CurrencySymbol && (i == 0 || span[i - 1] == ' ') && (i + 1 == span.Length || span[i + 1] == ' '))
             {
-                // Currency symbols and spaces around them.
+                // A currency symbol set apart by a space, as in "€ 2,25"; Word reads "$1.50" as text.
+            }
+            else if (c == ' ' && !(i > 0 && char.IsAsciiDigit(span[i - 1]) && i + 1 < span.Length && char.IsAsciiDigit(span[i + 1])))
+            {
+                // A space next to a currency symbol or a percent sign.
             }
             else
             {
@@ -284,14 +324,17 @@ internal sealed class FormulaEvaluator
                         throw Syntax(reference);
                     }
 
-                    return IsOperator(":") ? RangeFrom(reference.Text, token.Text) : new Reference(reference.Text, token.Text);
+                    return IsOperator(":") ? RangeFrom(reference.Text, token.Text) : new Reference(reference.Text, token.Text, After());
                 }
 
-                return new Reference(token.Text, null);
+                return new Reference(token.Text, null, After());
             default:
                 throw Syntax(token);
         }
     }
+
+    /// <summary>The next token's text, or null at the end of the formula.</summary>
+    private string? After() => Peek.Kind == TokenKind.End ? null : Peek.Text;
 
     private Range RangeFrom(string first, string? table)
     {
@@ -514,7 +557,9 @@ internal sealed class FormulaEvaluator
             case "ROUND":
                 return Round(Scalar(args[0]), Scalar(args[1]));
             case "IF":
-                return Scalar(args[0]) != 0 ? Scalar(args[1]) : Scalar(args[2]);
+                // Word works out both branches: IF(1, 1, 1/0) is !Zero Divide.
+                double condition = Scalar(args[0]), then = Scalar(args[1]), otherwise = Scalar(args[2]);
+                return condition != 0 ? then : otherwise;
             case "DEFINED":
                 try
                 {
@@ -653,23 +698,15 @@ internal sealed class FormulaEvaluator
 
         if (bookmarks(name) is { } bookmark)
         {
-            if (bookmark.End is { } end && bookmark.Start.GetAncestor<Cell>() is { } first && first.GetAncestor<Table>() is { } table)
+            // Word puts the bookmark's text in the formula: text that is no number is a syntax error at what follows.
+            string text = bookmark.Text.Replace(ControlChar.ParagraphBreak, ' ').Trim();
+            double? number = text.Length == 0 ? 0 : ParseNumber(text, decimalSymbol);
+            if (number is null)
             {
-                Cell last = end.GetAncestor<Cell>() is { } endCell && endCell.GetAncestor<Table>() == table ? endCell : table.Rows[^1].Cells[^1];
-                foreach (Cell c in Between(table, first, last))
-                {
-                    AddCell(c, values, scalar);
-                }
-
-                return true;
+                throw reference.After is { } after ? new FormulaException("!Syntax Error, " + after) : new FormulaException("!Unexpected End of Formula");
             }
 
-            double? number = ParseNumber(bookmark.Text.Replace(ControlChar.ParagraphBreak, ' '), decimalSymbol);
-            if (number is not null || scalar)
-            {
-                values.Add(number ?? 0);
-            }
-
+            values.Add(number.Value);
             return false;
         }
 
@@ -695,11 +732,23 @@ internal sealed class FormulaEvaluator
 
     private void AddCell(Cell c, List<double> values, bool scalar)
     {
-        double? number = ParseNumber(CellText(c), decimalSymbol);
+        double? number = CellNumber(c);
         if (number is not null || scalar)
         {
             values.Add(number ?? 0);
         }
+    }
+
+    /// <summary>A cell's number, noting whether it had digit grouping.</summary>
+    private double? CellNumber(Cell c)
+    {
+        double? number = ParseNumber(CellText(c), decimalSymbol, out bool grouped);
+        if (number is not null)
+        {
+            anyGrouped |= grouped;
+        }
+
+        return number;
     }
 
     /// <summary>The table a reference reads: the bookmarked table <paramref name="bookmark"/> names, or the field's own.</summary>
@@ -740,7 +789,7 @@ internal sealed class FormulaEvaluator
             }
 
             previous = next;
-            double? number = ParseNumber(CellText(next), decimalSymbol);
+            double? number = CellNumber(next);
             if (number is double value)
             {
                 found.Add(value);
@@ -982,7 +1031,7 @@ internal sealed class FormulaEvaluator
 
     private sealed record Call(string Name, List<Expr> Arguments) : Expr;
 
-    private sealed record Reference(string Name, string? Table) : Expr;
+    private sealed record Reference(string Name, string? Table, string? After) : Expr;
 
     private sealed record Range(string First, string Last, string? Table) : Expr;
 

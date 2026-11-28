@@ -218,11 +218,13 @@ the comparisons `= <> < <= > >=` (1 when true, 0 when not) and parentheses; Word
 bookmark names (the number a bookmark holds) and nested fields. In a table cell a formula reads the table's cells: `B2` or
 `R2C2`, ranges such as `A1:C3`, `B:B` and `2:2`, lists such as `A1,B3`, and `LEFT`, `RIGHT`, `ABOVE` and `BELOW`, the
 numbers next to the field's cell up to the first empty or text cell after them. As in Word, a row's cells count in order
-whatever columns they span, and `RnCn` names single cells only. `SUM(Prices)` adds the cells a bookmark covers, and `SUM(Prices B:B)` reads a column of a bookmarked table.
-Cells may hold currency signs and digit grouping, such as `$1,234.50`. The decimal symbol and the separator between a
-function's arguments are the document's (Word's `decimalSymbol` and `listSeparator` settings), a period and a comma unless
-the file names others. Without a `\#` picture a result shows at most two decimals. A formula that cannot be worked out shows
-Word's error text, such as `!Zero Divide`, `!Syntax Error, $` or `!Undefined Bookmark, Total`.
+whatever columns they span, and `RnCn` names single cells only. `SUM(Prices B:B)` reads a column of the table the
+bookmark `Prices` is in. A cell's number may have digit grouping (`1,234.50`), a sign, a percent sign and a currency symbol
+set apart by a space (`€ 2.25`); a cell such as `$1.50` reads as text, as in Word. The decimal symbol and the separator
+between a function's arguments are the document's (Word's `decimalSymbol` and `listSeparator` settings), a period and a
+comma unless the file names others. Without a `\#` picture a result shows at most two decimals, its digits grouped when
+a cell number it read was. A formula that cannot be worked out shows Word's error text, such as `!Zero Divide`,
+`!Syntax Error, $` or `!Undefined Bookmark, TOTAL`.
 
 ```csharp
 using Egap.Documents;
@@ -230,9 +232,9 @@ using Egap.Documents;
 Document invoice = new();
 Table table = invoice.AddSection().Body.AddTable(3, 2);
 table.Rows[0].Cells[0].AddParagraph("Bolts");
-table.Rows[0].Cells[1].AddParagraph("$4.50");
+table.Rows[0].Cells[1].AddParagraph("4.50");
 table.Rows[1].Cells[0].AddParagraph("Nuts");
-table.Rows[1].Cells[1].AddParagraph("$1,200.00");
+table.Rows[1].Cells[1].AddParagraph("1,200.00");
 table.Rows[2].Cells[0].AddParagraph("Total");
 Field total = table.Rows[2].Cells[1].AddParagraph().AddField("= SUM(ABOVE) \\# \"$#,##0.00\"");
 invoice.UpdateFields();

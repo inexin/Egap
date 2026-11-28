@@ -131,7 +131,7 @@ def formulas():
         ("= 3 < 2", "0"), ("= 2 = 2", "1"), ("= 2 <> 2", "0"), ("= 2 <= 2", "1"), ("= 3 >= 4", "0"), ("= 1 + 2 > 2", "1"),
         ("= ABS(-4.5)", "4.5"), ("= AND(1, 0)", "0"), ("= OR(1, 0)", "1"), ("= NOT(0)", "1"), ("= AVERAGE(1, 2, 3, 4)", "2.5"),
         ("= COUNT(1, 2, 3)", "3"), ("= DEFINED(Price)", "1"), ("= DEFINED(Missing)", "0"), ("= FALSE", "0"), ("= TRUE", "1"),
-        ("= IF(2 > 1, 10, 20)", "10"), ("= IF(1, 1, 1/0)", "1"), ("= INT(-7.8)", "-7"), ("= INT(7.8)", "7"),
+        ("= IF(2 > 1, 10, 20)", "10"), ("= IF(1, 1, 1/0)", "!Zero Divide"), ("= INT(-7.8)", "-7"), ("= INT(7.8)", "7"),
         ("= MAX(3, 9, 4)", "9"), ("= MIN(3, 9, 4)", "3"), ("= MOD(17, 5)", "2"), ("= MOD(-7, 3)", "-1"),
         ("= PRODUCT(2, 3, 4)", "24"), ("= ROUND(2.345, 2)", "2.35"), ("= ROUND(1234.5, -2)", "1200"), ("= SIGN(-3)", "-1"),
         ("= SUM(1, 2, 3)", "6"),
@@ -158,10 +158,10 @@ def formulas():
         ["Bolts", "4", [("[", "Prices"), "$1.50"]],
         ["Nuts", "10", "$0.25"],
         ["Washers", None, ["1,200.00", ("]", "Prices")]],
-        ["Total", ("= SUM(ABOVE)", "14"), ('= SUM(ABOVE) \\# "$#,##0.00"', "$1,201.75")],
+        ["Total", ("= SUM(ABOVE)", "14"), ('= SUM(ABOVE) \\# "$#,##0.00"', "$1,200.00")],
     ]))
-    blocks.append(line("Prices", "= SUM(Prices)", "1201.75"))
-    blocks.append(line("Dearest", "= MAX(Prices)", "1200"))
+    blocks.append(line("Prices", "= SUM(Prices)", "!Syntax Error, )"))
+    blocks.append(line("Dearest", "= MAX(Prices)", "!Syntax Error, )"))
 
     # A1 and RnCn references, ranges, whole rows and a bookmarked table.
     blocks.append(paragraph("Numbers:"))
@@ -172,6 +172,15 @@ def formulas():
         [("= AVERAGE(1:1)", "3"), ("= COUNT(A1,B2,C1)", "3"), ("= R2C1 + C1", "7"), [("= PRODUCT(B1:C1)", "6"), ("]", "Numbers")]],
     ]))
     blocks.append(line("Column B", "= SUM(Numbers B1:B2)", "7"))
+
+    # How a cell's text reads as a number: each probe, then the SUM(LEFT) Egap gives it.
+    probes = [("$ 1.50", "1.5"), ("€2.25", "0"), ("€ 2.25", "2.25"), ("5 €", "5"), ("$1.50", "0"), ("12 kg", "0"), ("(5)", "-5"),
+              ("50%", "0.5"), ("-3", "-3"), ("+4", "4"), ("1,234", "1,234"), ("1,23", "0"), ("5.", "5"), (".5", "0.5"),
+              ("Item 7", "0"), ("1 000", "0"), ("1,234.5", "1,234.5")]
+    blocks.append(paragraph("Cell text as numbers:"))
+    blocks.append(table([[text, ("= SUM(LEFT)", result)] for text, result in probes]))
+    blocks.append(paragraph(["Label: ", ("[", "Label"), "abc", ("]", "Label")]))
+    blocks.append(line("Text bookmark", "= Label + 1", "!Syntax Error, +"))
 
     # RIGHT and BELOW.
     blocks.append(table([
@@ -202,7 +211,7 @@ def formulas_comma():
         ["Sum"],
         ["1.200,50"],
         ["€ 2,25"],
-        [("= SUM(ABOVE)", "1202,75")],
+        [("= SUM(ABOVE)", "1.202,75")],
     ]))
     write("formulas-comma.docx", blocks, decimal=",", separator=";")
 
