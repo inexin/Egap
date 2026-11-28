@@ -1084,6 +1084,9 @@ internal sealed partial class RtfReader
             case "htmautsp":
                 settings.WordCompatibility.DoNotUseHtmlParagraphAutoSpacing = false;
                 return true;
+            case "notvatxbx":
+                settings.WordCompatibility.DoNotVerticallyAlignInTextBox = true;
+                return true;
             default:
                 return false;
         }

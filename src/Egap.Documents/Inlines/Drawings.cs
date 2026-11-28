@@ -355,6 +355,7 @@ public sealed class Shape : Inline
     private BoxShadow? shadow;
     private (double Left, double Top, double Right, double Bottom)? textInsets;
     private bool fitToText;
+    private VerticalAlignment textAlignment;
 
     /// <summary>A shape of <paramref name="kind"/> and size in points, not yet in a paragraph.</summary>
     public Shape(Document document, ShapeKind kind, double width, double height)
@@ -462,6 +463,18 @@ public sealed class Shape : Inline
         set => SetProperty(ref fitToText, value);
     }
 
+    /// <summary>
+    /// Where a text box's text sits between its top and bottom insets: <see cref="VerticalAlignment.Top"/> (the default),
+    /// <see cref="VerticalAlignment.Center"/> or <see cref="VerticalAlignment.Bottom"/> (DrawingML's <c>anchor</c>, VML's
+    /// <c>v-text-anchor</c>). <see cref="VerticalAlignment.Justify"/> is taken as top. Word ignores it, laying text out from the
+    /// top, under <see cref="WordCompatibility.DoNotVerticallyAlignInTextBox"/>.
+    /// </summary>
+    public VerticalAlignment TextVerticalAlignment
+    {
+        get => textAlignment;
+        set => SetProperty(ref textAlignment, value is VerticalAlignment.Center or VerticalAlignment.Bottom ? value : VerticalAlignment.Top);
+    }
+
     /// <summary>The text inside, for a text box; null for a shape without text.</summary>
     public TextBoxStory? TextBox { get; private set; }
 
@@ -515,6 +528,7 @@ public sealed class Shape : Inline
             shadow = shadow,
             textInsets = textInsets,
             fitToText = fitToText,
+            textAlignment = textAlignment,
         });
     }
 

@@ -51,3 +51,9 @@ Egap.Documents.WordCompatibility.ShrinkJustifiedSpaces.get -> bool
 Egap.Documents.WordCompatibility.ShrinkJustifiedSpaces.set -> void
 Egap.Documents.WordCompatibility.DoNotUseHtmlParagraphAutoSpacing.get -> bool
 Egap.Documents.WordCompatibility.DoNotUseHtmlParagraphAutoSpacing.set -> void
+Egap.Documents.Shape.TextVerticalAlignment.get -> Egap.Documents.VerticalAlignment
+Egap.Documents.Shape.TextVerticalAlignment.set -> void
+Egap.Documents.WordCompatibility.DoNotVerticallyAlignInTextBox.get -> bool
+Egap.Documents.WordCompatibility.DoNotVerticallyAlignInTextBox.set -> void
+Egap.Documents.WordCompatibility.UnderlineTabInNumberedList.get -> bool
+Egap.Documents.WordCompatibility.UnderlineTabInNumberedList.set -> void

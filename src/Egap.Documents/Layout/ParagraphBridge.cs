@@ -180,7 +180,18 @@ internal sealed class ParagraphBridge(FontProvider fonts, Document document, Rev
             switch (label.Format.Suffix)
             {
                 case ListLabelSuffix.Tab:
-                    text.Append("\t");
+                    // Word leaves the tab after an underlined label plain, unless its underlineTabInNumList says otherwise.
+                    if (labelStyle.Decoration is { } decoration && decoration.Lines.HasFlag(TextDecorationLines.Underline) && !compatibility.UnderlineTabInNumberedList)
+                    {
+                        TextDecorationLines rest = decoration.Lines & ~TextDecorationLines.Underline;
+                        text.Push(labelStyle with { Decoration = rest == TextDecorationLines.None ? null : decoration with { Lines = rest } }).Append("\t");
+                        text.Pop();
+                    }
+                    else
+                    {
+                        text.Append("\t");
+                    }
+
                     break;
                 case ListLabelSuffix.Space:
                     text.Append(" ");

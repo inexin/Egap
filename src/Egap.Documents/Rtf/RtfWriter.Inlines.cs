@@ -871,6 +871,11 @@ internal sealed partial class RtfWriter
                 Property("dxTextRight", Emu(right));
                 Property("dyTextBottom", Emu(bottom));
                 Property("fFitShapeToText", shape.FitToText ? 1 : 0);
+                if (shape.TextVerticalAlignment != VerticalAlignment.Top)
+                {
+                    Property("anchorText", shape.TextVerticalAlignment == VerticalAlignment.Center ? 1 : 2);
+                }
+
                 Open();
                 Word("shptxt");
                 WriteInnerStory(box.Blocks);
