@@ -1,12 +1,11 @@
-using System.Globalization;
-
 using Egami.Css;
 
 namespace Egap.Documents.Html;
 
 /// <summary>
-/// An element's computed style with what the reader resolves itself (Egami.Css leaves units to the consumer): its font size,
-/// lengths in points, colours, and the CSS keywords the mapping reads.
+/// An element's computed style with the Word mappings the reader adds to Egami.Css's typed getters: lengths in points (a CSS
+/// pixel is 0.75 points and the viewport is a Letter page), font sizes in points, colours as document colours, and generic
+/// font families as the faces Word documents use.
 /// </summary>
 internal sealed class HtmlStyle
 {
@@ -44,27 +43,37 @@ internal sealed class HtmlStyle
     /// <summary>The root element's font size in points, for rem.</summary>
     public double RootSize { get; }
 
-    /// <summary>A keyword property's value, lowercased; null when it has none or is not a single identifier.</summary>
+    /// <summary>
+    /// A keyword property's value, lowercased; for a value of several words, its first (<c>display: block flow</c> reads as
+    /// block); null when it has none or does not start with an identifier.
+    /// </summary>
     public string? Keyword(string property)
     {
+        if (Computed.TryGetKeyword(property, out string? keyword))
+        {
+            return keyword;
+        }
+
         if (!Computed.TryGetValue(property, out IReadOnlyList<CssComponentValue>? value))
         {
             return null;
         }
 
-        CssComponentValue? first = value.FirstOrDefault(v => v is not CssTokenValue { Token.Kind: CssTokenKind.Whitespace });
-        return first is CssTokenValue { Token.Kind: CssTokenKind.Ident } ident ? ident.Token.Value.ToLowerInvariant() : null;
+        for (int i = 0; i < value.Count; i++)
+        {
+            if (value[i] is not CssTokenValue { Token.Kind: CssTokenKind.Whitespace })
+            {
+                return value[i] is CssTokenValue { Token: { Kind: CssTokenKind.Ident } ident } ? ident.Value.ToLowerInvariant() : null;
+            }
+        }
+
+        return null;
     }
 
     /// <summary>A property's identifiers, lowercased (for text-decoration-line and the like).</summary>
     public IReadOnlyList<string> Keywords(string property)
     {
-        if (!Computed.TryGetValue(property, out IReadOnlyList<CssComponentValue>? value))
-        {
-            return [];
-        }
-
-        return [.. value.OfType<CssTokenValue>().Where(v => v.Token.Kind == CssTokenKind.Ident).Select(v => v.Token.Value.ToLowerInvariant())];
+        return Computed.GetKeywords(property);
     }
 
     public string? Text(string property)
@@ -72,49 +81,69 @@ internal sealed class HtmlStyle
         return Computed.GetValueText(property);
     }
 
+    /// <summary>An integer property such as z-index; null for auto, none or no value.</summary>
+    public int? Integer(string property)
+    {
+        return Computed.TryGetInteger(property, out int value) ? value : null;
+    }
+
     /// <summary>A length property in points; percentages of <paramref name="percentBase"/>; null for auto, none or no value.</summary>
     public double? Length(string property, double percentBase = 0)
     {
+        if (Computed.TryGetLength(property, out CssLength length))
+        {
+            return Points(length, percentBase);
+        }
+
+        // Unitless numbers (quirks) and calc() with one term.
         return Computed.TryGetValue(property, out IReadOnlyList<CssComponentValue>? value) ? Length(value, percentBase) : null;
     }
 
     public double? Length(IReadOnlyList<CssComponentValue> value, double percentBase = 0)
     {
-        CssComponentValue[] items = [.. value.Where(v => v is not CssTokenValue { Token.Kind: CssTokenKind.Whitespace })];
-        if (items.Length != 1)
+        CssComponentValue? single = null;
+        for (int i = 0; i < value.Count; i++)
         {
-            return null;
+            if (value[i] is CssTokenValue { Token.Kind: CssTokenKind.Whitespace })
+            {
+                continue;
+            }
+
+            if (single is not null)
+            {
+                return null;
+            }
+
+            single = value[i];
         }
 
-        return Length(items[0], percentBase);
+        return single is null ? null : Length(single, percentBase);
     }
 
     public double? Length(CssComponentValue item, double percentBase)
     {
-        if (item is CssTokenValue { Token: var token })
-        {
-            switch (token.Kind)
-            {
-                case CssTokenKind.Number when token.Number == 0:
-                    return 0;
-                case CssTokenKind.Percentage:
-                    return token.Number / 100 * percentBase;
-            }
-        }
-
         if (CssLength.TryParse(item, out CssLength length))
         {
-            return ToPoints(length, FontSize, RootSize);
+            return Points(length, percentBase);
         }
 
         if (item is CssFunction { Name: var name } function && name.Equals("calc", StringComparison.OrdinalIgnoreCase))
         {
             // calc() with one term is common enough ("calc(100% - 2em)" is not); the rest counts as no value.
-            CssComponentValue[] terms = [.. function.Arguments.Where(v => v is not CssTokenValue { Token.Kind: CssTokenKind.Whitespace })];
-            return terms.Length == 1 ? Length(terms[0], percentBase) : null;
+            return Length(function.Arguments, percentBase);
         }
 
         return null;
+    }
+
+    private double Points(CssLength length, double percentBase)
+    {
+        return length.Unit switch
+        {
+            CssUnit.Percent => length.Value / 100 * percentBase,
+            CssUnit.None when length.Value == 0 => 0,
+            _ => ToPoints(length, FontSize, RootSize),
+        };
     }
 
     public static double ToPoints(CssLength length, double fontSize, double rootSize)
@@ -148,66 +177,44 @@ internal sealed class HtmlStyle
     /// <summary>A colour property, with currentcolor resolved; null for transparent or none.</summary>
     public DocumentColor? Color(string property)
     {
-        if (!Computed.TryGetValue(property, out IReadOnlyList<CssComponentValue>? value) || !CssColor.TryParse(Trim(value), out CssColor color))
+        if (!Computed.TryGetColor(property, out CssColor color))
         {
             return null;
-        }
-
-        if (color.IsCurrentColor)
-        {
-            return property == "color" ? Parent?.Color("color") : Color("color");
         }
 
         (byte r, byte g, byte b, byte a) = color.ToRgba8();
         return a < 8 ? null : DocumentColor.FromRgb(new Egami.Pixels.Rgba8(r, g, b, 255));
     }
 
-    /// <summary>The font families in order, generic families mapped to the faces Word documents use.</summary>
+    /// <summary>The first font family, a generic family mapped to the face Word documents use.</summary>
     public string? FontFamily()
     {
-        if (!Computed.TryGetValue("font-family", out IReadOnlyList<CssComponentValue>? value) || !CssFontFamilyList.TryParse(Trim(value), out CssFontFamilyList? families))
+        if (!Computed.TryGetFontFamilies(out CssFontFamilyList? families) || families.Families.Count == 0)
         {
             return null;
         }
 
-        foreach (CssFontFamily entry in families.Families)
+        CssFontFamily entry = families.Families[0];
+        string family = entry.Name;
+        string? generic = !entry.IsGeneric ? null : family.ToLowerInvariant() switch
         {
-            string family = entry.Name;
-            string? generic = !entry.IsGeneric ? null : family.ToLowerInvariant() switch
-            {
-                "serif" or "ui-serif" => "Times New Roman",
-                "sans-serif" or "ui-sans-serif" or "system-ui" or "-apple-system" => "Arial",
-                "monospace" or "ui-monospace" => "Courier New",
-                "cursive" => "Comic Sans MS",
-                "fantasy" => "Impact",
-                _ => null,
-            };
-            return generic ?? family;
-        }
-
-        return null;
+            "serif" or "ui-serif" => "Times New Roman",
+            "sans-serif" or "ui-sans-serif" or "system-ui" or "-apple-system" => "Arial",
+            "monospace" or "ui-monospace" => "Courier New",
+            "cursive" => "Comic Sans MS",
+            "fantasy" => "Impact",
+            _ => null,
+        };
+        return generic ?? family;
     }
 
-    public bool Bold => Computed.TryGetValue("font-weight", out IReadOnlyList<CssComponentValue>? value) && CssFontWeight.TryParse(Trim(value), out CssFontWeight weight)
-        ? WeightOf(weight) >= 600
-        : Keyword("font-weight") is "bold" or "bolder";
+    public bool Bold => Computed.GetFontWeight() >= 600;
 
     public bool Italic => Keyword("font-style") is "italic" or "oblique";
 
-    private static double WeightOf(CssFontWeight weight)
-    {
-        // bolder and lighter are relative; the cascade resolves them where it can, and "bolder" alone reads as bold.
-        string text = weight.ToString();
-        return double.TryParse(text, NumberStyles.Float, CultureInfo.InvariantCulture, out double number) ? number
-            : text.Contains("bold", StringComparison.OrdinalIgnoreCase) ? 700 : 400;
-    }
-
-    private static IReadOnlyList<CssComponentValue> Trim(IReadOnlyList<CssComponentValue> value)
-    {
-        return [.. value.Where(v => v is not CssTokenValue { Token.Kind: CssTokenKind.Whitespace })];
-    }
-
-    private static readonly Dictionary<string, double> SizeKeywords = new(StringComparer.OrdinalIgnoreCase)
+    // The absolute-size keywords in CSS pixels. These are the sizes Egap has always used (small is 13px); CSS Fonts 4's
+    // scaling factors, which CssComputedStyle.GetFontSize uses, give other sizes for all but medium and the largest three.
+    private static readonly Dictionary<string, double> SizeKeywords = new(StringComparer.Ordinal)
     {
         ["xx-small"] = 9 * PointsPerPixel,
         ["x-small"] = 10 * PointsPerPixel,
@@ -226,33 +233,25 @@ internal sealed class HtmlStyle
             return parentSize;
         }
 
-        if (!computed.TryGetValue("font-size", out IReadOnlyList<CssComponentValue>? value))
+        if (computed.TryGetKeyword("font-size", out string? keyword))
         {
-            return parentSize;
-        }
-
-        IReadOnlyList<CssComponentValue> items = Trim(value);
-        if (items is [CssTokenValue { Token: var token }])
-        {
-            switch (token.Kind)
+            return keyword switch
             {
-                case CssTokenKind.Ident when SizeKeywords.TryGetValue(token.Value, out double size):
-                    return size;
-                case CssTokenKind.Ident when token.Value.Equals("larger", StringComparison.OrdinalIgnoreCase):
-                    return parentSize * 1.2;
-                case CssTokenKind.Ident when token.Value.Equals("smaller", StringComparison.OrdinalIgnoreCase):
-                    return parentSize / 1.2;
-                case CssTokenKind.Percentage:
-                    return parentSize * token.Number / 100;
-            }
+                "larger" => parentSize * 1.2,
+                "smaller" => parentSize / 1.2,
+                _ => SizeKeywords.TryGetValue(keyword, out double size) ? size : parentSize,
+            };
         }
 
-        if (items is [var single] && CssLength.TryParse(single, out CssLength length))
+        if (computed.TryGetLength("font-size", out CssLength length))
         {
             // em and ex in font-size are of the parent's size.
-            return Math.Max(1, ToPoints(length, parentSize, rootSize));
+            return length.Unit == CssUnit.Percent ? parentSize * length.Value / 100 : Math.Max(1, ToPoints(length, parentSize, rootSize));
         }
 
-        return parentSize;
+        // A unitless number (quirks) reads as pixels.
+        return computed.TryGetValue("font-size", out IReadOnlyList<CssComponentValue>? value) && CssLength.TryParse(value, out length)
+            ? Math.Max(1, ToPoints(length, parentSize, rootSize))
+            : parentSize;
     }
 }
