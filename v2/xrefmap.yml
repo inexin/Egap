@@ -28935,6 +28935,19 @@ references:
   isSpec: "True"
   fullName: Egap.Documents.Shape.TextInsets
   nameWithType: Shape.TextInsets
+- uid: Egap.Documents.Shape.TextVerticalAlignment
+  name: TextVerticalAlignment
+  href: api/Egap.Documents.Shape.html#Egap_Documents_Shape_TextVerticalAlignment
+  commentId: P:Egap.Documents.Shape.TextVerticalAlignment
+  fullName: Egap.Documents.Shape.TextVerticalAlignment
+  nameWithType: Shape.TextVerticalAlignment
+- uid: Egap.Documents.Shape.TextVerticalAlignment*
+  name: TextVerticalAlignment
+  href: api/Egap.Documents.Shape.html#Egap_Documents_Shape_TextVerticalAlignment_
+  commentId: Overload:Egap.Documents.Shape.TextVerticalAlignment
+  isSpec: "True"
+  fullName: Egap.Documents.Shape.TextVerticalAlignment
+  nameWithType: Shape.TextVerticalAlignment
 - uid: Egap.Documents.Shape.Title
   name: Title
   href: api/Egap.Documents.Shape.html#Egap_Documents_Shape_Title
@@ -31876,6 +31889,19 @@ references:
   isSpec: "True"
   fullName: Egap.Documents.WordCompatibility.DoNotUseIndentAsNumberingTabStop
   nameWithType: WordCompatibility.DoNotUseIndentAsNumberingTabStop
+- uid: Egap.Documents.WordCompatibility.DoNotVerticallyAlignInTextBox
+  name: DoNotVerticallyAlignInTextBox
+  href: api/Egap.Documents.WordCompatibility.html#Egap_Documents_WordCompatibility_DoNotVerticallyAlignInTextBox
+  commentId: P:Egap.Documents.WordCompatibility.DoNotVerticallyAlignInTextBox
+  fullName: Egap.Documents.WordCompatibility.DoNotVerticallyAlignInTextBox
+  nameWithType: WordCompatibility.DoNotVerticallyAlignInTextBox
+- uid: Egap.Documents.WordCompatibility.DoNotVerticallyAlignInTextBox*
+  name: DoNotVerticallyAlignInTextBox
+  href: api/Egap.Documents.WordCompatibility.html#Egap_Documents_WordCompatibility_DoNotVerticallyAlignInTextBox_
+  commentId: Overload:Egap.Documents.WordCompatibility.DoNotVerticallyAlignInTextBox
+  isSpec: "True"
+  fullName: Egap.Documents.WordCompatibility.DoNotVerticallyAlignInTextBox
+  nameWithType: WordCompatibility.DoNotVerticallyAlignInTextBox
 - uid: Egap.Documents.WordCompatibility.EnableOpenTypeFeatures
   name: EnableOpenTypeFeatures
   href: api/Egap.Documents.WordCompatibility.html#Egap_Documents_WordCompatibility_EnableOpenTypeFeatures
@@ -31967,6 +31993,19 @@ references:
   isSpec: "True"
   fullName: Egap.Documents.WordCompatibility.TableIndentFromCellText
   nameWithType: WordCompatibility.TableIndentFromCellText
+- uid: Egap.Documents.WordCompatibility.UnderlineTabInNumberedList
+  name: UnderlineTabInNumberedList
+  href: api/Egap.Documents.WordCompatibility.html#Egap_Documents_WordCompatibility_UnderlineTabInNumberedList
+  commentId: P:Egap.Documents.WordCompatibility.UnderlineTabInNumberedList
+  fullName: Egap.Documents.WordCompatibility.UnderlineTabInNumberedList
+  nameWithType: WordCompatibility.UnderlineTabInNumberedList
+- uid: Egap.Documents.WordCompatibility.UnderlineTabInNumberedList*
+  name: UnderlineTabInNumberedList
+  href: api/Egap.Documents.WordCompatibility.html#Egap_Documents_WordCompatibility_UnderlineTabInNumberedList_
+  commentId: Overload:Egap.Documents.WordCompatibility.UnderlineTabInNumberedList
+  isSpec: "True"
+  fullName: Egap.Documents.WordCompatibility.UnderlineTabInNumberedList
+  nameWithType: WordCompatibility.UnderlineTabInNumberedList
 - uid: Egap.Documents.WrapMode
   name: WrapMode
   href: api/Egap.Documents.WrapMode.html
