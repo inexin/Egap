@@ -347,11 +347,15 @@ internal sealed class SlideRenderer
         return null;
     }
 
-    /// <summary>The master text style a shape's text starts from: the title, body or other style by its placeholder.</summary>
+    /// <summary>
+    /// The master text style a placeholder's text starts from: the title, body or other style by its type. A shape that is not
+    /// a placeholder takes none, going from its own list style straight to the presentation's default text style, as
+    /// PowerPoint draws it.
+    /// </summary>
     private XElement? MasterTextStyle(ShapeLook look)
     {
         XElement? root = master?.Xml.Root ?? (target is SlideMaster or NotesMaster ? target.Xml.Root : null);
-        if (root is null)
+        if (root is null || look.PlaceholderType is null)
         {
             return null;
         }

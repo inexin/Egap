@@ -333,6 +333,39 @@ public sealed class DrawingTests
         Assert.Equal(0, Differences(first, second));
     }
 
+    [Fact]
+    public void TextBoxesTakeTheDefaultTextStyleNotTheMastersOtherStyle()
+    {
+        // PowerPoint sets a shape that is not a placeholder in the presentation's default text style, passing the master's
+        // other style by: red here, not blue.
+        PptxBuilder builder = Builder(Box(rawBody: "<a:p><a:r><a:rPr lang=\"en-US\" b=\"1\"/><a:t>IIII</a:t></a:r></a:p>"));
+        byte[] package = builder.Build();
+        string presentation = PptxBuilder.Entry(package, "ppt/presentation.xml").Replace(
+            "<a:defPPr><a:defRPr lang=\"en-US\"/></a:defPPr>",
+            "<a:defPPr><a:defRPr lang=\"en-US\"/></a:defPPr><a:lvl1pPr><a:defRPr sz=\"4000\"><a:solidFill><a:srgbClr val=\"FF0000\"/></a:solidFill></a:defRPr></a:lvl1pPr>",
+            StringComparison.Ordinal);
+        string master = PptxBuilder.Entry(package, "ppt/slideMasters/slideMaster1.xml").Replace(
+            "<p:otherStyle><a:lvl1pPr><a:defRPr/></a:lvl1pPr></p:otherStyle>",
+            "<p:otherStyle><a:lvl1pPr><a:defRPr sz=\"1000\"><a:solidFill><a:srgbClr val=\"0000FF\"/></a:solidFill></a:defRPr></a:lvl1pPr></p:otherStyle>",
+            StringComparison.Ordinal);
+        package = PptxBuilder.WithEntry(package, "ppt/presentation.xml", System.Text.Encoding.UTF8.GetBytes(presentation));
+        package = PptxBuilder.WithEntry(package, "ppt/slideMasters/slideMaster1.xml", System.Text.Encoding.UTF8.GetBytes(master));
+        using Raster<Rgba8> raster = Presentation.Load(new MemoryStream(package)).Slides[0].Render(Options);
+        Assert.Equal(new Rgba8(255, 0, 0, 255), Darkest(raster));
+        (int Left, int Top, int Right, int Bottom) ink = Ink(raster, 0, 0, 1280, 720)!.Value;
+        Assert.InRange(ink.Bottom - ink.Top, 35, 45);
+    }
+
+    [Fact]
+    public void RightToLeftParagraphsKeepTheirAlignmentAndMirrorTheMargin()
+    {
+        // PowerPoint keeps algn="l" on the left for a right-to-left paragraph, and puts marL on the right.
+        (int Left, int Top, int Right, int Bottom) left = InkOf(Paragraph("Text", "rtl=\"1\" algn=\"l\" marL=\"914400\""));
+        (int Left, int Top, int Right, int Bottom) right = InkOf(Paragraph("Text", "rtl=\"1\" algn=\"r\" marL=\"914400\""));
+        Assert.InRange(left.Left, 105, 112);
+        Assert.InRange(right.Right, 464 - 96, 471 - 96);
+    }
+
     [Theory]
     [InlineData("<a:bodyPr numCol=\"5000\" lIns=\"-99999999\" rIns=\"99999999999\"/>", "<a:p><a:r><a:rPr lang=\"en-US\" sz=\"0\"/><a:t>x</a:t></a:r></a:p>")]
     [InlineData("<a:bodyPr><a:normAutofit fontScale=\"-5\" lnSpcReduction=\"900000\"/></a:bodyPr>", "<a:p><a:pPr><a:lnSpc><a:spcPct val=\"-100000\"/></a:lnSpc></a:pPr><a:r><a:rPr lang=\"en-US\" sz=\"400000\" spc=\"-99999\"/><a:t>x</a:t></a:r></a:p>")]
