@@ -116,11 +116,49 @@ public sealed class SlideLayout : SlideBase
     public SlideMaster Master { get; }
 
     /// <summary>
-    /// The kind of layout PowerPoint uses to pick one for new content (<c>p:sldLayout/@type</c>), as the file spells it:
-    /// <c>title</c>, <c>obj</c>, <c>twoObj</c>, <c>secHead</c>, <c>titleOnly</c>, <c>blank</c> and the rest; <c>cust</c>
-    /// when the file names none.
+    /// The kind of layout PowerPoint uses to pick one for new content (<c>p:sldLayout/@type</c>);
+    /// <see cref="SlideLayoutType.Custom"/> when the file names none or one this version does not know. The attribute is
+    /// written back as it was.
     /// </summary>
-    public string LayoutType => (string?)Xml.Root.Attribute("type") ?? "cust";
+    public SlideLayoutType LayoutType => (string?)Xml.Root.Attribute("type") switch
+    {
+        "title" => SlideLayoutType.Title,
+        "tx" => SlideLayoutType.Text,
+        "twoColTx" => SlideLayoutType.TwoColumnText,
+        "tbl" => SlideLayoutType.Table,
+        "txAndChart" => SlideLayoutType.TextAndChart,
+        "chartAndTx" => SlideLayoutType.ChartAndText,
+        "dgm" => SlideLayoutType.Diagram,
+        "chart" => SlideLayoutType.Chart,
+        "txAndClipArt" => SlideLayoutType.TextAndClipArt,
+        "clipArtAndTx" => SlideLayoutType.ClipArtAndText,
+        "titleOnly" => SlideLayoutType.TitleOnly,
+        "blank" => SlideLayoutType.Blank,
+        "txAndObj" => SlideLayoutType.TextAndObject,
+        "objAndTx" => SlideLayoutType.ObjectAndText,
+        "objOnly" => SlideLayoutType.ObjectOnly,
+        "obj" => SlideLayoutType.TitleAndContent,
+        "txAndMedia" => SlideLayoutType.TextAndMedia,
+        "mediaAndTx" => SlideLayoutType.MediaAndText,
+        "objOverTx" => SlideLayoutType.ObjectOverText,
+        "txOverObj" => SlideLayoutType.TextOverObject,
+        "txAndTwoObj" => SlideLayoutType.TextAndTwoObjects,
+        "twoObjAndTx" => SlideLayoutType.TwoObjectsAndText,
+        "twoObjOverTx" => SlideLayoutType.TwoObjectsOverText,
+        "fourObj" => SlideLayoutType.FourObjects,
+        "vertTx" => SlideLayoutType.VerticalText,
+        "clipArtAndVertTx" => SlideLayoutType.ClipArtAndVerticalText,
+        "vertTitleAndTx" => SlideLayoutType.VerticalTitleAndText,
+        "vertTitleAndTxOverChart" => SlideLayoutType.VerticalTitleAndTextOverChart,
+        "twoObj" => SlideLayoutType.TwoObjects,
+        "objAndTwoObj" => SlideLayoutType.ObjectAndTwoObjects,
+        "twoObjAndObj" => SlideLayoutType.TwoObjectsAndObject,
+        "secHead" => SlideLayoutType.SectionHeader,
+        "twoTxTwoObj" => SlideLayoutType.TwoTextAndTwoObjects,
+        "objTx" => SlideLayoutType.ObjectAndCaption,
+        "picTx" => SlideLayoutType.PictureAndCaption,
+        _ => SlideLayoutType.Custom,
+    };
 
     /// <summary>The layout's own colour map (<c>p:clrMapOvr</c>), or null when it follows its master's.</summary>
     public ColorMap? ColorMapOverride
@@ -187,7 +225,10 @@ public sealed class SlideMaster : SlideBase
     internal List<SlideLayout> LayoutList { get; } = [];
 }
 
-/// <summary>The slides of a presentation, in the order they are shown.</summary>
+/// <summary>
+/// The slides of a presentation, in the order they are shown. A slide the presentation lists whose part is missing from
+/// the file is left out; its entry is written back as it was.
+/// </summary>
 public sealed class SlideCollection : IReadOnlyList<Slide>
 {
     internal SlideCollection()
@@ -210,4 +251,116 @@ public sealed class SlideCollection : IReadOnlyList<Slide>
     public IEnumerator<Slide> GetEnumerator() => List.GetEnumerator();
 
     IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
+}
+
+/// <summary>The kinds of slide layout PowerPoint uses to pick a layout for new content (ECMA-376 Part 1, 19.7.15, ST_SlideLayoutType).</summary>
+public enum SlideLayoutType
+{
+    /// <summary>A title slide: a title and a subtitle (<c>title</c>).</summary>
+    Title,
+
+    /// <summary>A title and text (<c>tx</c>).</summary>
+    Text,
+
+    /// <summary>A title and two columns of text (<c>twoColTx</c>).</summary>
+    TwoColumnText,
+
+    /// <summary>A title and a table (<c>tbl</c>).</summary>
+    Table,
+
+    /// <summary>A title, text on the left and a chart on the right (<c>txAndChart</c>).</summary>
+    TextAndChart,
+
+    /// <summary>A title, a chart on the left and text on the right (<c>chartAndTx</c>).</summary>
+    ChartAndText,
+
+    /// <summary>A title and a diagram (<c>dgm</c>).</summary>
+    Diagram,
+
+    /// <summary>A title and a chart (<c>chart</c>).</summary>
+    Chart,
+
+    /// <summary>A title, text on the left and clip art on the right (<c>txAndClipArt</c>).</summary>
+    TextAndClipArt,
+
+    /// <summary>A title, clip art on the left and text on the right (<c>clipArtAndTx</c>).</summary>
+    ClipArtAndText,
+
+    /// <summary>A title only (<c>titleOnly</c>).</summary>
+    TitleOnly,
+
+    /// <summary>No placeholders (<c>blank</c>).</summary>
+    Blank,
+
+    /// <summary>A title, text on the left and an object on the right (<c>txAndObj</c>).</summary>
+    TextAndObject,
+
+    /// <summary>A title, an object on the left and text on the right (<c>objAndTx</c>).</summary>
+    ObjectAndText,
+
+    /// <summary>An object only (<c>objOnly</c>).</summary>
+    ObjectOnly,
+
+    /// <summary>A title and content: one object (<c>obj</c>).</summary>
+    TitleAndContent,
+
+    /// <summary>A title, text on the left and media on the right (<c>txAndMedia</c>).</summary>
+    TextAndMedia,
+
+    /// <summary>A title, media on the left and text on the right (<c>mediaAndTx</c>).</summary>
+    MediaAndText,
+
+    /// <summary>A title, an object above text (<c>objOverTx</c>).</summary>
+    ObjectOverText,
+
+    /// <summary>A title, text above an object (<c>txOverObj</c>).</summary>
+    TextOverObject,
+
+    /// <summary>A title, text on the left and two objects on the right (<c>txAndTwoObj</c>).</summary>
+    TextAndTwoObjects,
+
+    /// <summary>A title, two objects on the left and text on the right (<c>twoObjAndTx</c>).</summary>
+    TwoObjectsAndText,
+
+    /// <summary>A title, two objects above text (<c>twoObjOverTx</c>).</summary>
+    TwoObjectsOverText,
+
+    /// <summary>A title and four objects (<c>fourObj</c>).</summary>
+    FourObjects,
+
+    /// <summary>A title and vertical text (<c>vertTx</c>).</summary>
+    VerticalText,
+
+    /// <summary>A title, clip art and vertical text (<c>clipArtAndVertTx</c>).</summary>
+    ClipArtAndVerticalText,
+
+    /// <summary>A vertical title and vertical text (<c>vertTitleAndTx</c>).</summary>
+    VerticalTitleAndText,
+
+    /// <summary>A vertical title, and vertical text above a chart (<c>vertTitleAndTxOverChart</c>).</summary>
+    VerticalTitleAndTextOverChart,
+
+    /// <summary>A title and two objects side by side (<c>twoObj</c>).</summary>
+    TwoObjects,
+
+    /// <summary>A title, one object on the left and two on the right (<c>objAndTwoObj</c>).</summary>
+    ObjectAndTwoObjects,
+
+    /// <summary>A title, two objects on the left and one on the right (<c>twoObjAndObj</c>).</summary>
+    TwoObjectsAndObject,
+
+    /// <summary>A custom layout (<c>cust</c>): the default when the file names none, and what a type this version does not know reads as.</summary>
+    Custom,
+
+    /// <summary>A section header (<c>secHead</c>).</summary>
+    SectionHeader,
+
+    /// <summary>A title, and two objects each with text above it, for comparing (<c>twoTxTwoObj</c>).</summary>
+    TwoTextAndTwoObjects,
+
+    /// <summary>An object with a title and a caption beside it (<c>objTx</c>).</summary>
+    ObjectAndCaption,
+
+    /// <summary>A picture with a title and a caption (<c>picTx</c>).</summary>
+    PictureAndCaption,
 }

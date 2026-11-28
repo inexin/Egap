@@ -455,7 +455,11 @@ public enum GraphicFrameKind
     OleObject,
 }
 
-/// <summary>The shapes of a slide, layout, master or group, in the order they are drawn: the first is at the back.</summary>
+/// <summary>
+/// The shapes of a slide, layout, master or group, in the order they are drawn: the first is at the back. A shape written two
+/// ways in <c>mc:AlternateContent</c>, for newer and older readers, is read from the branch this reader understands; a
+/// change is made in that branch only, and the other keeps the values it had.
+/// </summary>
 public sealed class SlideShapeCollection : IReadOnlyList<SlideShape>
 {
     private readonly List<SlideShape> shapes = [];

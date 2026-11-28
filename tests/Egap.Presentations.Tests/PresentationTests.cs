@@ -24,7 +24,7 @@ public sealed class PresentationTests
         Assert.Equal("/ppt/slideMasters/slideMaster1.xml", master.PartName);
         Assert.Same(presentation, master.Presentation);
         Assert.Equal(["Title Slide", "Title and Content"], master.Layouts.Select(l => l.Name));
-        Assert.Equal(["title", "obj"], master.Layouts.Select(l => l.LayoutType));
+        Assert.Equal([SlideLayoutType.Title, SlideLayoutType.TitleAndContent], master.Layouts.Select(l => l.LayoutType));
         Assert.All(master.Layouts, l => Assert.Same(master, l.Master));
 
         Assert.Equal(2, presentation.Slides.Count);
@@ -40,6 +40,22 @@ public sealed class PresentationTests
         Assert.Null(presentation.Slides[0].NotesPartName);
         Assert.Null(presentation.NotesMasterPartName);
         Assert.Equal(PresentationFormat.Pptx, presentation.Format);
+    }
+
+    [Theory]
+    [InlineData("secHead", SlideLayoutType.SectionHeader)]
+    [InlineData("twoTxTwoObj", SlideLayoutType.TwoTextAndTwoObjects)]
+    [InlineData("vertTitleAndTxOverChart", SlideLayoutType.VerticalTitleAndTextOverChart)]
+    [InlineData("picTx", SlideLayoutType.PictureAndCaption)]
+    [InlineData("blank", SlideLayoutType.Blank)]
+    [InlineData("cust", SlideLayoutType.Custom)]
+    [InlineData("somethingNew", SlideLayoutType.Custom)]
+    public void LayoutTypesAreRead(string type, SlideLayoutType expected)
+    {
+        PptxBuilder builder = new();
+        builder.Layouts[0] = (type, "Layout", "");
+
+        Assert.Equal(expected, Load(builder).SlideMasters[0].Layouts[0].LayoutType);
     }
 
     [Fact]

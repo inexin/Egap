@@ -50,7 +50,9 @@ reader use; past a limit it throws `DocumentLimitException`.
 A presentation has one or more slide masters (`SlideMasters`). Each master has a theme (`PresentationTheme`: twelve
 colours and the heading and body fonts), a colour map, and its layouts (`Layouts`). Each slide follows one layout
 (`Slide.Layout`, and `Slide.Master` for its master). Slides, layouts and masters all have `Shapes` and a `ColorMap`; a
-layout or slide that overrides its master's colour map has it in `ColorMapOverride`.
+layout or slide that overrides its master's colour map has it in `ColorMapOverride`. `SlideLayout.LayoutType` says what kind
+of layout it is (`SlideLayoutType.Title`, `TitleOnly`, `SectionHeader` and the rest). A slide the presentation lists whose
+part is missing from the file is left out of `Slides`.
 
 ```csharp
 using Egap.Documents;
@@ -81,7 +83,8 @@ ThemeColor background = first.ColorMap[ColorMapSlot.Background1];   // Light1, o
 
 `Transform` gives a shape's position, size, rotation and flips in EMUs (914,400 to the inch), with the position and size in
 points too; it is null for a placeholder that takes its position from its layout. `Placeholder` gives a placeholder's type
-and index, which match it to its layout's placeholder.
+and index, which match it to its layout's placeholder. A shape PowerPoint wrote two ways (`mc:AlternateContent`, for newer
+and older readers) is read and changed in the branch Egap understands; the other branch keeps its values.
 
 ```csharp
 using Egap.Presentations;
