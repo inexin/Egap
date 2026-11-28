@@ -89,7 +89,7 @@
 
 
   <h1 id="Egap_Presentations_Presentation" data-uid="Egap.Presentations.Presentation" class="text-break">
-Class Presentation  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Presentations/Presentation.cs/#L14"><i class="bi bi-code-slash"></i></a>
+Class Presentation  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Presentations/Presentation.cs/#L15"><i class="bi bi-code-slash"></i></a>
   </h1>
 
   <div class="facts text-secondary">
@@ -154,7 +154,7 @@ Class Presentation  <a class="header-action link-secondary" title="View source" 
 
   <h3 id="Egap_Presentations_Presentation_CommentAuthors" data-uid="Egap.Presentations.Presentation.CommentAuthors">
   CommentAuthors
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Presentations/Presentation.cs/#L116"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Presentations/Presentation.cs/#L135"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>The authors of the presentation's comments, of both kinds; add one to comment on a slide.</p>
@@ -186,15 +186,17 @@ Class Presentation  <a class="header-action link-secondary" title="View source" 
 
   <h3 id="Egap_Presentations_Presentation_Format" data-uid="Egap.Presentations.Presentation.Format">
   Format
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Presentations/Presentation.cs/#L39"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Presentations/Presentation.cs/#L46"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>The kind of file the presentation was loaded from; a save writes the same kind.</p>
+  <div class="markdown level1 summary"><p>The kind of file a save to a stream writes: the kind it was loaded from until set. Saving as another kind changes the
+main part's content type; saving a deck with macros as a kind without them leaves its VBA project out of the file
+(the presentation keeps it, for a later save with macros).</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public PresentationFormat Format { get; }</code></pre>
+    <pre><code class="lang-csharp hljs">public PresentationFormat Format { get; set; }</code></pre>
   </div>
 
 
@@ -214,11 +216,44 @@ Class Presentation  <a class="header-action link-secondary" title="View source" 
 
 
 
+  <a id="Egap_Presentations_Presentation_HasModifyPassword_" data-uid="Egap.Presentations.Presentation.HasModifyPassword*"></a>
+
+  <h3 id="Egap_Presentations_Presentation_HasModifyPassword" data-uid="Egap.Presentations.Presentation.HasModifyPassword">
+  HasModifyPassword
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Presentations/Presentation.cs/#L58"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Whether the file has a password to modify it (<code>p:modifyVerifier</code>): PowerPoint opens it read-only without the
+password. It is not encryption; anyone can read the file, and other programs may ignore it.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool HasModifyPassword { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
   <a id="Egap_Presentations_Presentation_NotesMaster_" data-uid="Egap.Presentations.Presentation.NotesMaster*"></a>
 
   <h3 id="Egap_Presentations_Presentation_NotesMaster" data-uid="Egap.Presentations.Presentation.NotesMaster">
   NotesMaster
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Presentations/Presentation.cs/#L101"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Presentations/Presentation.cs/#L120"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>The notes master, which lays out every notes page, or null when the presentation has none.</p>
@@ -250,7 +285,7 @@ Class Presentation  <a class="header-action link-secondary" title="View source" 
 
   <h3 id="Egap_Presentations_Presentation_NotesMasterPartName" data-uid="Egap.Presentations.Presentation.NotesMasterPartName">
   NotesMasterPartName
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Presentations/Presentation.cs/#L98"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Presentations/Presentation.cs/#L117"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>The name of the notes master's part, such as <code>/ppt/notesMasters/notesMaster1.xml</code>, or null when the presentation
@@ -283,7 +318,7 @@ has none. Setting a slide's notes makes one when there is none.</p>
 
   <h3 id="Egap_Presentations_Presentation_NotesSize" data-uid="Egap.Presentations.Presentation.NotesSize">
   NotesSize
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Presentations/Presentation.cs/#L86"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Presentations/Presentation.cs/#L105"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>The size of the notes pages, in EMUs with points alongside (<code>p:notesSz</code>).</p>
@@ -311,11 +346,43 @@ has none. Setting a slide's notes makes one when there is none.</p>
 
 
 
+  <a id="Egap_Presentations_Presentation_Properties_" data-uid="Egap.Presentations.Presentation.Properties*"></a>
+
+  <h3 id="Egap_Presentations_Presentation_Properties" data-uid="Egap.Presentations.Presentation.Properties">
+  Properties
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Presentations/Presentation.cs/#L49"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>The title, author, dates and custom properties of the file.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public PresentationProperties Properties { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Egap.Presentations.PresentationProperties.html">PresentationProperties</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
   <a id="Egap_Presentations_Presentation_Sections_" data-uid="Egap.Presentations.Presentation.Sections*"></a>
 
   <h3 id="Egap_Presentations_Presentation_Sections" data-uid="Egap.Presentations.Presentation.Sections">
   Sections
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Presentations/Presentation.cs/#L119"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Presentations/Presentation.cs/#L138"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>The sections the slides are grouped in; empty when the presentation has none.</p>
@@ -347,7 +414,7 @@ has none. Setting a slide's notes makes one when there is none.</p>
 
   <h3 id="Egap_Presentations_Presentation_SlideMasters" data-uid="Egap.Presentations.Presentation.SlideMasters">
   SlideMasters
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Presentations/Presentation.cs/#L89"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Presentations/Presentation.cs/#L108"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>The slide masters, in the order the presentation lists them, each with its layouts and theme.</p>
@@ -375,11 +442,43 @@ has none. Setting a slide's notes makes one when there is none.</p>
 
 
 
+  <a id="Egap_Presentations_Presentation_SlideShow_" data-uid="Egap.Presentations.Presentation.SlideShow*"></a>
+
+  <h3 id="Egap_Presentations_Presentation_SlideShow" data-uid="Egap.Presentations.Presentation.SlideShow">
+  SlideShow
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Presentations/Presentation.cs/#L52"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>How the slide show runs: speaker, window or kiosk, looping or not.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public SlideShowSettings SlideShow { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Egap.Presentations.SlideShowSettings.html">SlideShowSettings</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
   <a id="Egap_Presentations_Presentation_SlideSize_" data-uid="Egap.Presentations.Presentation.SlideSize*"></a>
 
   <h3 id="Egap_Presentations_Presentation_SlideSize" data-uid="Egap.Presentations.Presentation.SlideSize">
   SlideSize
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Presentations/Presentation.cs/#L46"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Presentations/Presentation.cs/#L65"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>The size of every slide, in EMUs with points alongside (<code>p:sldSz</code>). Setting it changes the size the slides are
@@ -418,7 +517,7 @@ shown and printed at; their shapes keep their positions.</p>
 
   <h3 id="Egap_Presentations_Presentation_Slides" data-uid="Egap.Presentations.Presentation.Slides">
   Slides
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Presentations/Presentation.cs/#L92"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Presentations/Presentation.cs/#L111"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>The slides, in the order they are shown.</p>
@@ -454,7 +553,7 @@ shown and printed at; their shapes keep their positions.</p>
 
   <h3 id="Egap_Presentations_Presentation_Create" data-uid="Egap.Presentations.Presentation.Create">
   Create()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Presentations/Presentation.cs/#L182"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Presentations/Presentation.cs/#L228"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>A new presentation with 16:9 slides and no slides yet: one slide master with Egap's own theme (Office-like colours,
@@ -488,7 +587,7 @@ with <a class="xref" href="Egap.Presentations.SlideCollection.html#Egap_Presenta
 
   <h3 id="Egap_Presentations_Presentation_Load_System_IO_Stream_Egap_Presentations_PresentationLoadOptions_" data-uid="Egap.Presentations.Presentation.Load(System.IO.Stream,Egap.Presentations.PresentationLoadOptions)">
   Load(Stream, PresentationLoadOptions?)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Presentations/Presentation.cs/#L152"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Presentations/Presentation.cs/#L176"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Loads a PowerPoint file from a stream, which is left open.</p>
@@ -525,6 +624,9 @@ with <a class="xref" href="Egap.Presentations.SlideCollection.html#Egap_Presenta
     <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
     <dd><p>The stream is null.</p>
 </dd>
+    <dt><a class="xref" href="Egap.Documents.DocumentPasswordException.html">DocumentPasswordException</a></dt>
+    <dd><p>The file is encrypted and the password is missing or wrong.</p>
+</dd>
     <dt><a class="xref" href="Egap.Documents.DocumentException.html">DocumentException</a></dt>
     <dd><p>The stream does not hold a presentation Egap can read.</p>
 </dd>
@@ -539,10 +641,11 @@ with <a class="xref" href="Egap.Presentations.SlideCollection.html#Egap_Presenta
 
   <h3 id="Egap_Presentations_Presentation_Load_System_String_Egap_Presentations_PresentationLoadOptions_" data-uid="Egap.Presentations.Presentation.Load(System.String,Egap.Presentations.PresentationLoadOptions)">
   Load(string, PresentationLoadOptions?)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Presentations/Presentation.cs/#L141"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Presentations/Presentation.cs/#L164"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Loads a PowerPoint file: PPTX, PPTM, POTX, POTM, PPSX or PPSM, transitional or Strict.</p>
+  <div class="markdown level1 summary"><p>Loads a PowerPoint file: PPTX, PPTM, POTX, POTM, PPSX or PPSM, transitional or Strict, and encrypted with a password
+(<a class="xref" href="Egap.Presentations.PresentationLoadOptions.html#Egap_Presentations_PresentationLoadOptions_Password">Password</a>) by agile or standard encryption.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -576,6 +679,9 @@ with <a class="xref" href="Egap.Presentations.SlideCollection.html#Egap_Presenta
     <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a></dt>
     <dd><p>The path is null or empty.</p>
 </dd>
+    <dt><a class="xref" href="Egap.Documents.DocumentPasswordException.html">DocumentPasswordException</a></dt>
+    <dd><p>The file is encrypted and the password is missing or wrong.</p>
+</dd>
     <dt><a class="xref" href="Egap.Documents.DocumentException.html">DocumentException</a></dt>
     <dd><p>The file is not a presentation Egap can read.</p>
 </dd>
@@ -588,22 +694,24 @@ with <a class="xref" href="Egap.Presentations.SlideCollection.html#Egap_Presenta
 
   <a id="Egap_Presentations_Presentation_Save_" data-uid="Egap.Presentations.Presentation.Save*"></a>
 
-  <h3 id="Egap_Presentations_Presentation_Save_System_IO_Stream_" data-uid="Egap.Presentations.Presentation.Save(System.IO.Stream)">
-  Save(Stream)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Presentations/Presentation.cs/#L208"><i class="bi bi-code-slash"></i></a>
+  <h3 id="Egap_Presentations_Presentation_Save_System_IO_Stream_Egap_Presentations_PresentationSaveOptions_" data-uid="Egap.Presentations.Presentation.Save(System.IO.Stream,Egap.Presentations.PresentationSaveOptions)">
+  Save(Stream, PresentationSaveOptions?)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Presentations/Presentation.cs/#L259"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Saves the presentation to a stream, which is left open.</p>
+  <div class="markdown level1 summary"><p>Saves the presentation to a stream, which is left open, as <a class="xref" href="Egap.Presentations.PresentationSaveOptions.html#Egap_Presentations_PresentationSaveOptions_Format">Format</a> or else <a class="xref" href="Egap.Presentations.Presentation.html#Egap_Presentations_Presentation_Format">Format</a>.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public void Save(Stream stream)</code></pre>
+    <pre><code class="lang-csharp hljs">public void Save(Stream stream, PresentationSaveOptions? options = null)</code></pre>
   </div>
 
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>stream</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.io.stream">Stream</a></dt>
+    <dd></dd>
+    <dt><code>options</code> <a class="xref" href="Egap.Presentations.PresentationSaveOptions.html">PresentationSaveOptions</a></dt>
     <dd></dd>
   </dl>
 
@@ -620,29 +728,36 @@ with <a class="xref" href="Egap.Presentations.SlideCollection.html#Egap_Presenta
     <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
     <dd><p>The stream is null.</p>
 </dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a></dt>
+    <dd><p>The password is longer than 255 characters.</p>
+</dd>
   </dl>
 
 
 
   <a id="Egap_Presentations_Presentation_Save_" data-uid="Egap.Presentations.Presentation.Save*"></a>
 
-  <h3 id="Egap_Presentations_Presentation_Save_System_String_" data-uid="Egap.Presentations.Presentation.Save(System.String)">
-  Save(string)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Presentations/Presentation.cs/#L196"><i class="bi bi-code-slash"></i></a>
+  <h3 id="Egap_Presentations_Presentation_Save_System_String_Egap_Presentations_PresentationSaveOptions_" data-uid="Egap.Presentations.Presentation.Save(System.String,Egap.Presentations.PresentationSaveOptions)">
+  Save(string, PresentationSaveOptions?)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Presentations/Presentation.cs/#L244"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Saves the presentation to a file. The file is the same kind as the one loaded (<a class="xref" href="Egap.Presentations.Presentation.html#Egap_Presentations_Presentation_Format">Format</a>), whatever the
-extension: a PPTM saved as <code>.pptx</code> still holds its macros, and PowerPoint will not open it under that name.</p>
+  <div class="markdown level1 summary"><p>Saves the presentation to a file as the kind its extension names (.pptx, .pptm, .potx, .potm, .ppsx or .ppsm), unless
+<a class="xref" href="Egap.Presentations.PresentationSaveOptions.html#Egap_Presentations_PresentationSaveOptions_Format">Format</a> names one. A deck with macros saved as a kind without them leaves the
+macros out. With <a class="xref" href="Egap.Presentations.PresentationSaveOptions.html#Egap_Presentations_PresentationSaveOptions_Password">Password</a>, the file is encrypted (agile encryption, as
+PowerPoint 2010 and later write it).</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public void Save(string path)</code></pre>
+    <pre><code class="lang-csharp hljs">public void Save(string path, PresentationSaveOptions? options = null)</code></pre>
   </div>
 
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>path</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd></dd>
+    <dt><code>options</code> <a class="xref" href="Egap.Presentations.PresentationSaveOptions.html">PresentationSaveOptions</a></dt>
     <dd></dd>
   </dl>
 
@@ -657,7 +772,91 @@ extension: a PPTM saved as <code>.pptx</code> still holds its macros, and PowerP
   <h4 class="section">Exceptions</h4>
   <dl class="parameters">
     <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a></dt>
-    <dd><p>The path is null or empty.</p>
+    <dd><p>The path is null or empty, the extension names no PowerPoint kind and the options name none, or the password is longer than 255 characters.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Egap_Presentations_Presentation_SetModifyPassword_" data-uid="Egap.Presentations.Presentation.SetModifyPassword*"></a>
+
+  <h3 id="Egap_Presentations_Presentation_SetModifyPassword_System_String_" data-uid="Egap.Presentations.Presentation.SetModifyPassword(System.String)">
+  SetModifyPassword(string?)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Presentations/Presentation.cs/#L271"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Sets the password to modify the file, which PowerPoint asks for before it lets anyone edit (it opens the file
+read-only otherwise), or removes it with null. The password is kept as a salted SHA-512 hash, as PowerPoint 2013 and
+later write it.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void SetModifyPassword(string? password)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>password</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a></dt>
+    <dd><p>The password is empty or longer than 255 characters.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Egap_Presentations_Presentation_VerifyModifyPassword_" data-uid="Egap.Presentations.Presentation.VerifyModifyPassword*"></a>
+
+  <h3 id="Egap_Presentations_Presentation_VerifyModifyPassword_System_String_" data-uid="Egap.Presentations.Presentation.VerifyModifyPassword(System.String)">
+  VerifyModifyPassword(string?)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Presentations/Presentation.cs/#L299"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Whether <code class="paramref">password</code> is the password to modify the file; true when it has none. Both of the forms
+PowerPoint writes are checked: the algorithm name of 2013 and later, and the algorithm number of 2007 and 2010.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool VerifyModifyPassword(string? password)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>password</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Egap.Documents.DocumentException.html">DocumentException</a></dt>
+    <dd><p>The file's hash asks for more than ten million rounds.</p>
 </dd>
   </dl>
 
@@ -667,7 +866,7 @@ extension: a PPTM saved as <code>.pptx</code> still holds its macros, and PowerP
 </article>
 
         <div class="contribution d-print-none">
-          <a href="https://github.com/inexin/Egap/blob/main/src/Egap.Presentations/Presentation.cs/#L14" class="edit-link">Edit this page</a>
+          <a href="https://github.com/inexin/Egap/blob/main/src/Egap.Presentations/Presentation.cs/#L15" class="edit-link">Edit this page</a>
         </div>
 
 

@@ -8759,6 +8759,48 @@
     },
     {
       "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Presentations.AnimationClass.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Presentations.AnimationClass.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Presentations.AnimationClass",
+      "Summary": "<p sourcefile=\"api/Egap.Presentations.AnimationClass.yml\" sourcestartlinenumber=\"1\">The kinds of animation effect PowerPoint has.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Presentations.AnimationEffect.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Presentations.AnimationEffect.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Presentations.AnimationEffect",
+      "Summary": "<p sourcefile=\"api/Egap.Presentations.AnimationEffect.yml\" sourcestartlinenumber=\"1\">One animation effect: what it animates, which of PowerPoint's effects it is, and when it starts.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Presentations.AnimationTrigger.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Presentations.AnimationTrigger.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Presentations.AnimationTrigger",
+      "Summary": "<p sourcefile=\"api/Egap.Presentations.AnimationTrigger.yml\" sourcestartlinenumber=\"1\">What starts an animation effect.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
       "source_relative_path": "api/Egap.Presentations.AutoShape.yml",
       "output": {
         ".html": {
@@ -8983,6 +9025,34 @@
     },
     {
       "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Presentations.PresentationProperties.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Presentations.PresentationProperties.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Presentations.PresentationProperties",
+      "Summary": "<p sourcefile=\"api/Egap.Presentations.PresentationProperties.yml\" sourcestartlinenumber=\"1\">A presentation's properties: the core ones every Office file has (title, author, dates; <code>docProps/core.xml</code>), two of\nthe application's (<code>docProps/app.xml</code>), and custom ones by name (<code>docProps/custom.xml</code>). They are read from the\nfile each time and written into it when set, so everything else in those parts stays as it was. The names follow\n<xref href=\"Egap.Documents.DocumentProperties\" data-throw-if-not-resolved=\"false\"></xref>.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Presentations.PresentationSaveOptions.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Presentations.PresentationSaveOptions.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Presentations.PresentationSaveOptions",
+      "Summary": "<p sourcefile=\"api/Egap.Presentations.PresentationSaveOptions.yml\" sourcestartlinenumber=\"1\">How a presentation is saved.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
       "source_relative_path": "api/Egap.Presentations.PresentationTheme.yml",
       "output": {
         ".html": {
@@ -9049,7 +9119,7 @@
       "Uid": null,
       "IsMRef": true,
       "Title": "Egap.Presentations.Slide",
-      "Summary": "<p sourcefile=\"api/Egap.Presentations.Slide.yml\" sourcestartlinenumber=\"1\">The comments on a slide.</p>\n"
+      "Summary": "<p sourcefile=\"api/Egap.Presentations.Slide.yml\" sourcestartlinenumber=\"1\">A slide's transition and animations.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -9063,7 +9133,7 @@
       "Uid": null,
       "IsMRef": true,
       "Title": "Egap.Presentations.SlideBase",
-      "Summary": "<p sourcefile=\"api/Egap.Presentations.SlideBase.yml\" sourcestartlinenumber=\"1\">What slides, slide layouts and slide masters have in common: a part of the file, a name, and a tree of shapes\n(<code>p:cSld</code>).</p>\n"
+      "Summary": "<p sourcefile=\"api/Egap.Presentations.SlideBase.yml\" sourcestartlinenumber=\"1\">Animations removal for any slide part.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -9207,6 +9277,34 @@
     },
     {
       "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Presentations.SlideShowSettings.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Presentations.SlideShowSettings.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Presentations.SlideShowSettings",
+      "Summary": "<p sourcefile=\"api/Egap.Presentations.SlideShowSettings.yml\" sourcestartlinenumber=\"1\">How the slide show runs (<code>p:showPr</code> in <code>ppt/presProps.xml</code>): its type, whether it loops, and whether it keeps to the slides' timings.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Presentations.SlideShowType.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Presentations.SlideShowType.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Presentations.SlideShowType",
+      "Summary": "<p sourcefile=\"api/Egap.Presentations.SlideShowType.yml\" sourcestartlinenumber=\"1\">Who runs a slide show.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
       "source_relative_path": "api/Egap.Presentations.SlideSize.yml",
       "output": {
         ".html": {
@@ -9277,6 +9375,48 @@
     },
     {
       "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Presentations.SlideTiming.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Presentations.SlideTiming.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Presentations.SlideTiming",
+      "Summary": "<p sourcefile=\"api/Egap.Presentations.SlideTiming.yml\" sourcestartlinenumber=\"1\">The animations of a slide (<code>p:timing</code>) as a list of effects, read when asked. Egap keeps the timing tree whole and\ndoes not play it; it can remove all of it, or the effects on one shape. Removing a shape removes its effects too.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Presentations.SlideTransition.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Presentations.SlideTransition.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Presentations.SlideTransition",
+      "Summary": "<p sourcefile=\"api/Egap.Presentations.SlideTransition.yml\" sourcestartlinenumber=\"1\">How a slide comes onto the screen in the slide show (<code>p:transition</code>): the effect, its speed, and when the show moves\non. Egap keeps and edits transitions; it does not play them. Take one from <xref href=\"Egap.Presentations.Slide.Transition\" data-throw-if-not-resolved=\"false\"></xref> and change it\nwith a <code>with</code> expression to keep what the model does not hold (its sound and the effect's own settings).</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Presentations.SlideTransitionType.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Presentations.SlideTransitionType.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Presentations.SlideTransitionType",
+      "Summary": "<p sourcefile=\"api/Egap.Presentations.SlideTransitionType.yml\" sourcestartlinenumber=\"1\">The transition effects: those of ECMA-376, of PowerPoint 2010 (<code>p14</code>), 2013 (<code>p15</code>) and Morph.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
       "source_relative_path": "api/Egap.Presentations.TextBody.yml",
       "output": {
         ".html": {
@@ -9316,6 +9456,20 @@
       "IsMRef": true,
       "Title": "Egap.Presentations.TextRun",
       "Summary": "<p sourcefile=\"api/Egap.Presentations.TextRun.yml\" sourcestartlinenumber=\"1\">A run of text with one formatting (<code>a:r</code>), or a field PowerPoint fills in, such as the slide number (<code>a:fld</code>).</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Presentations.TransitionSpeed.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Presentations.TransitionSpeed.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Presentations.TransitionSpeed",
+      "Summary": "<p sourcefile=\"api/Egap.Presentations.TransitionSpeed.yml\" sourcestartlinenumber=\"1\">The speeds a transition can have in the PowerPoint 2007 schema.</p>\n"
     },
     {
       "type": "ManagedReference",

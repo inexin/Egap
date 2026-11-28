@@ -95,6 +95,11 @@
 Classes
 </h3>
     <dl class="jumplist">
+      <dt><a class="xref" href="Egap.Presentations.AnimationEffect.html">AnimationEffect</a></dt>
+      <dd><p>One animation effect: what it animates, which of PowerPoint's effects it is, and when it starts.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
       <dt><a class="xref" href="Egap.Presentations.AutoShape.html">AutoShape</a></dt>
       <dd><p>A shape with a geometry, a fill and an outline, and usually text (<code>p:sp</code>): rectangles, text boxes, placeholders.</p>
 </dd>
@@ -160,6 +165,19 @@ and written back; <a class="xref" href="Egap.Presentations.GraphicFrame.html#Ega
 </dd>
     </dl>
     <dl class="jumplist">
+      <dt><a class="xref" href="Egap.Presentations.PresentationProperties.html">PresentationProperties</a></dt>
+      <dd><p>A presentation's properties: the core ones every Office file has (title, author, dates; <code>docProps/core.xml</code>), two of
+the application's (<code>docProps/app.xml</code>), and custom ones by name (<code>docProps/custom.xml</code>). They are read from the
+file each time and written into it when set, so everything else in those parts stays as it was. The names follow
+<a class="xref" href="Egap.Documents.DocumentProperties.html">DocumentProperties</a>.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="Egap.Presentations.PresentationSaveOptions.html">PresentationSaveOptions</a></dt>
+      <dd><p>How a presentation is saved.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
       <dt><a class="xref" href="Egap.Presentations.PresentationTheme.html">PresentationTheme</a></dt>
       <dd><p>A slide master's theme (<code>a:theme</code>): its twelve colours and its heading and body fonts, as read from the file. It is
 read-only here; the theme part is written back as it was.</p>
@@ -172,13 +190,12 @@ read-only here; the theme part is written back as it was.</p>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="Egap.Presentations.Slide.html">Slide</a></dt>
-      <dd><p>The comments on a slide.</p>
+      <dd><p>A slide's transition and animations.</p>
 </dd>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="Egap.Presentations.SlideBase.html">SlideBase</a></dt>
-      <dd><p>What slides, slide layouts and slide masters have in common: a part of the file, a name, and a tree of shapes
-(<code>p:cSld</code>).</p>
+      <dd><p>Animations removal for any slide part.</p>
 </dd>
     </dl>
     <dl class="jumplist">
@@ -234,6 +251,11 @@ back where they change; everything else the shape holds is kept as it was.</p>
 </dd>
     </dl>
     <dl class="jumplist">
+      <dt><a class="xref" href="Egap.Presentations.SlideShowSettings.html">SlideShowSettings</a></dt>
+      <dd><p>How the slide show runs (<code>p:showPr</code> in <code>ppt/presProps.xml</code>): its type, whether it loops, and whether it keeps to the slides' timings.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
       <dt><a class="xref" href="Egap.Presentations.SlideTable.html">SlideTable</a></dt>
       <dd><p>A table in a <a class="xref" href="Egap.Presentations.GraphicFrame.html">GraphicFrame</a> (<code>a:tbl</code>): its grid of columns and rows, the cells' text and how cells are
 merged. Cell, row and table formatting the model does not hold (borders, fills, margins) are kept as they are. A row,
@@ -254,6 +276,19 @@ column or cell object stays valid until a row or column is added or removed; rea
     <dl class="jumplist">
       <dt><a class="xref" href="Egap.Presentations.SlideTableRow.html">SlideTableRow</a></dt>
       <dd><p>A row of a table (<code>a:tr</code>).</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="Egap.Presentations.SlideTiming.html">SlideTiming</a></dt>
+      <dd><p>The animations of a slide (<code>p:timing</code>) as a list of effects, read when asked. Egap keeps the timing tree whole and
+does not play it; it can remove all of it, or the effects on one shape. Removing a shape removes its effects too.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="Egap.Presentations.SlideTransition.html">SlideTransition</a></dt>
+      <dd><p>How a slide comes onto the screen in the slide show (<code>p:transition</code>): the effect, its speed, and when the show moves
+on. Egap keeps and edits transitions; it does not play them. Take one from <a class="xref" href="Egap.Presentations.Slide.html#Egap_Presentations_Slide_Transition">Transition</a> and change it
+with a <code>with</code> expression to keep what the model does not hold (its sound and the effect's own settings).</p>
 </dd>
     </dl>
     <dl class="jumplist">
@@ -295,6 +330,16 @@ with the position and size in points alongside.</p>
 Enums
 </h3>
     <dl class="jumplist">
+      <dt><a class="xref" href="Egap.Presentations.AnimationClass.html">AnimationClass</a></dt>
+      <dd><p>The kinds of animation effect PowerPoint has.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="Egap.Presentations.AnimationTrigger.html">AnimationTrigger</a></dt>
+      <dd><p>What starts an animation effect.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
       <dt><a class="xref" href="Egap.Presentations.ColorMapSlot.html">ColorMapSlot</a></dt>
       <dd><p>The colour names slides use for text and backgrounds, which a <a class="xref" href="Egap.Presentations.ColorMap.html">ColorMap</a> maps to theme colours
 (ECMA-376 Part 1, 19.3.1.6, <code>p:clrMap</code>).</p>
@@ -318,6 +363,21 @@ Enums
     <dl class="jumplist">
       <dt><a class="xref" href="Egap.Presentations.SlideLayoutType.html">SlideLayoutType</a></dt>
       <dd><p>The kinds of slide layout PowerPoint uses to pick a layout for new content (ECMA-376 Part 1, 19.7.15, ST_SlideLayoutType).</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="Egap.Presentations.SlideShowType.html">SlideShowType</a></dt>
+      <dd><p>Who runs a slide show.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="Egap.Presentations.SlideTransitionType.html">SlideTransitionType</a></dt>
+      <dd><p>The transition effects: those of ECMA-376, of PowerPoint 2010 (<code>p14</code>), 2013 (<code>p15</code>) and Morph.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="Egap.Presentations.TransitionSpeed.html">TransitionSpeed</a></dt>
+      <dd><p>The speeds a transition can have in the PowerPoint 2007 schema.</p>
 </dd>
     </dl>
 

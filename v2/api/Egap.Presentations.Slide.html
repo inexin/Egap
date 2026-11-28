@@ -6,7 +6,7 @@
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <meta name="title" content="Class Slide | Egap ">
       
-      <meta name="description" content="The comments on a slide.">
+      <meta name="description" content="A slide&#39;s transition and animations.">
       <link rel="icon" href="../images/favicon.ico">
       <link rel="stylesheet" href="../public/docfx.min.css">
       <link rel="stylesheet" href="../public/main.css">
@@ -97,7 +97,7 @@ Class Slide  <a class="header-action link-secondary" title="View source" href="h
   <dl><dt>Assembly</dt><dd>Egap.Presentations.dll</dd></dl>
   </div>
 
-  <div class="markdown summary"><p>The comments on a slide.</p>
+  <div class="markdown summary"><p>A slide's transition and animations.</p>
 </div>
   <div class="markdown conceptual"></div>
 
@@ -489,6 +489,159 @@ Setting it on a slide without notes makes a notes page, and a notes master too w
 
 
 
+
+
+
+  <a id="Egap_Presentations_Slide_Timing_" data-uid="Egap.Presentations.Slide.Timing*"></a>
+
+  <h3 id="Egap_Presentations_Slide_Timing" data-uid="Egap.Presentations.Slide.Timing">
+  Timing
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Presentations/Animations.cs/#L343"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>The slide's animation effects, read now from its timing tree; empty when it has none.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public SlideTiming Timing { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Egap.Presentations.SlideTiming.html">SlideTiming</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Egap_Presentations_Slide_Transition_" data-uid="Egap.Presentations.Slide.Transition*"></a>
+
+  <h3 id="Egap_Presentations_Slide_Transition" data-uid="Egap.Presentations.Slide.Transition">
+  Transition
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Presentations/Animations.cs/#L322"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>The slide's transition, or null when it has none. Setting one replaces it; null removes it. Effects newer than
+PowerPoint 2007, and durations, are written as PowerPoint writes them, with a fade for older readers.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public SlideTransition? Transition { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Egap.Presentations.SlideTransition.html">SlideTransition</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentoutofrangeexception">ArgumentOutOfRangeException</a></dt>
+    <dd><p>A duration or advance time is negative.</p>
+</dd>
+  </dl>
+
+
+
+  <h2 class="section" id="methods">Methods
+</h2>
+
+
+  <a id="Egap_Presentations_Slide_RemoveAnimations_" data-uid="Egap.Presentations.Slide.RemoveAnimations*"></a>
+
+  <h3 id="Egap_Presentations_Slide_RemoveAnimations" data-uid="Egap.Presentations.Slide.RemoveAnimations">
+  RemoveAnimations()
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Presentations/Animations.cs/#L347"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Removes every animation on the slide (its whole <code>p:timing</code>).</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool RemoveAnimations()</code></pre>
+  </div>
+
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p>Whether the slide had any.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Egap_Presentations_Slide_RemoveAnimations_" data-uid="Egap.Presentations.Slide.RemoveAnimations*"></a>
+
+  <h3 id="Egap_Presentations_Slide_RemoveAnimations_Egap_Presentations_SlideShape_" data-uid="Egap.Presentations.Slide.RemoveAnimations(Egap.Presentations.SlideShape)">
+  RemoveAnimations(SlideShape)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Presentations/Animations.cs/#L364"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Removes the animations of one shape, and of the shapes in it when it is a group: the effects that animate it, the
+sequences a click on it starts, and its build entries.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool RemoveAnimations(SlideShape shape)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>shape</code> <a class="xref" href="Egap.Presentations.SlideShape.html">SlideShape</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p>Whether there were any.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p>The shape is null.</p>
+</dd>
+  </dl>
 
 
 
