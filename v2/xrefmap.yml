@@ -31552,6 +31552,19 @@ references:
   isSpec: "True"
   fullName: Egap.Documents.WordCompatibility.ResetToModeDefaults
   nameWithType: WordCompatibility.ResetToModeDefaults
+- uid: Egap.Documents.WordCompatibility.ShrinkJustifiedSpaces
+  name: ShrinkJustifiedSpaces
+  href: api/Egap.Documents.WordCompatibility.html#Egap_Documents_WordCompatibility_ShrinkJustifiedSpaces
+  commentId: P:Egap.Documents.WordCompatibility.ShrinkJustifiedSpaces
+  fullName: Egap.Documents.WordCompatibility.ShrinkJustifiedSpaces
+  nameWithType: WordCompatibility.ShrinkJustifiedSpaces
+- uid: Egap.Documents.WordCompatibility.ShrinkJustifiedSpaces*
+  name: ShrinkJustifiedSpaces
+  href: api/Egap.Documents.WordCompatibility.html#Egap_Documents_WordCompatibility_ShrinkJustifiedSpaces_
+  commentId: Overload:Egap.Documents.WordCompatibility.ShrinkJustifiedSpaces
+  isSpec: "True"
+  fullName: Egap.Documents.WordCompatibility.ShrinkJustifiedSpaces
+  nameWithType: WordCompatibility.ShrinkJustifiedSpaces
 - uid: Egap.Documents.WordCompatibility.SplitPageBreakAndParagraphMark
   name: SplitPageBreakAndParagraphMark
   href: api/Egap.Documents.WordCompatibility.html#Egap_Documents_WordCompatibility_SplitPageBreakAndParagraphMark

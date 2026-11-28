@@ -477,7 +477,7 @@ data on the document.</p>
 
   <h3 id="Egap_Documents_DocumentSettings_HyphenateCapitals" data-uid="Egap.Documents.DocumentSettings.HyphenateCapitals">
   HyphenateCapitals
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/DocumentSettings.cs/#L136"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/DocumentSettings.cs/#L137"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Words in capitals are hyphenated too (the default); false is Word's &quot;do not hyphenate caps&quot;.</p>
@@ -509,11 +509,12 @@ data on the document.</p>
 
   <h3 id="Egap_Documents_DocumentSettings_HyphenationZone" data-uid="Egap.Documents.DocumentSettings.HyphenationZone">
   HyphenationZone
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/DocumentSettings.cs/#L129"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Documents/DocumentSettings.cs/#L130"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>The hyphenation zone, in points: a word is hyphenated only when the space it would leave at the line end is wider than
-this. Word applies it to justified and ragged lines alike. Word's default is 0.25 inch (18 points).</p>
+this. Word's default is 0.25 inch (18 points). It applies to ragged lines, and to justified ones whose spaces do not shrink;
+with <a class="xref" href="Egap.Documents.WordCompatibility.html#Egap_Documents_WordCompatibility_ShrinkJustifiedSpaces">ShrinkJustifiedSpaces</a> on, Word 2013 and later hyphenate justified lines without it.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 

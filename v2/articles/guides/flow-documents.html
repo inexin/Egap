@@ -141,6 +141,12 @@ tabular or old-style figures and stylistic sets. Paragraphs choose where lines m
 <code>word-spacing</code>, <code>text-decoration: overline</code>, <code>font-feature-settings</code>, <code>font-variant-ligatures</code>, <code>font-variant-numeric</code>,
 <code>word-break</code> and <code>overflow-wrap</code> read into the same settings. DOCX keeps the features Word has (ligatures, number forms
 and spacing, stylistic sets, contextual alternates); Word has no word spacing or overline.</p>
+<p>Justified and distributed paragraphs break lines as Word 2013 and later do: a line takes one more word when its spaces
+can shrink to fit it, by up to a quarter of their width, so justified text often takes fewer lines than in a browser, and
+they hyphenate without the hyphenation zone, as Word does.
+<code>DocumentSettings.WordCompatibility.ShrinkJustifiedSpaces</code> turns this off. It follows the compatibility mode: on in
+mode 15, off for files from Word 2010 and older, and off for documents read from ODT, HTML, EPUB and Markdown, whose own
+applications only stretch justified lines.</p>
 <p>A justified paragraph can also stretch its Arabic lines with tatweels (kashida) between letters, as Word's low, medium
 and high kashida alignments do: set <code>ParagraphFormat.Kashida</code> to <code>KashidaLevel.Low</code>, <code>Medium</code> or <code>High</code> with
 <code>ParagraphAlignment.Justify</code>. What the tatweels do not take goes to word spaces, and lines in other scripts justify at
