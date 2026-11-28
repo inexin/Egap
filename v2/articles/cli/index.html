@@ -299,6 +299,69 @@ egap mcp --allow ./contracts --allow-sign
 </code></pre>
 <p>To add it to an assistant, register the command <code>egap</code> with the argument <code>mcp</code>, or, without installing the tool, <code>dnx</code>
 with <code>Egap.Cli --yes -- mcp</code>.</p>
+<p>Besides its tools, egap serves a few documents as MCP resources, which an assistant can read before it calls a tool:</p>
+<table>
+<thead>
+<tr>
+<th>Resource</th>
+<th>Holds</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>egap://schema/workflow</code></td>
+<td>The JSON schema of a workflow object, as <code>run</code> takes it</td>
+</tr>
+<tr>
+<td><code>egap://formats</code></td>
+<td>The formats <code>convert</code> reads, with their extensions, and those it writes, with the settings <code>--set</code> takes</td>
+</tr>
+<tr>
+<td><code>egap://guide</code></td>
+<td>The <a href="https://inexin.github.io/Egap/v2/agents/Egap.Cli.md">guide for coding agents</a>: commands, workflow files, exit codes, common mistakes</td>
+</tr>
+</tbody>
+</table>
+<p>and offers common jobs as MCP prompts, which assistants show as commands (in Claude Code, <code>/mcp__egap__shrink_pdf</code>). Each
+returns one message that names the tools to call and keeps to the folder rules: paths inside the allowed folders, results
+in new files, never over an input.</p>
+<table>
+<thead>
+<tr>
+<th>Prompt</th>
+<th>Arguments</th>
+<th>Does</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>convert_folder</code></td>
+<td><code>folder</code>, <code>format</code></td>
+<td>Every document in the folder converted (to PDF unless <code>format</code> says), in a new folder named after the format</td>
+</tr>
+<tr>
+<td><code>mail_merge</code></td>
+<td><code>template</code>, <code>data</code></td>
+<td>A DOCX template filled from JSON or CSV records, one PDF per record</td>
+</tr>
+<tr>
+<td><code>compare_documents</code></td>
+<td><code>old</code>, <code>new</code></td>
+<td>The changes between two versions listed, with a marked copy or one with tracked changes</td>
+</tr>
+<tr>
+<td><code>redact_pdf</code></td>
+<td><code>file</code>, <code>phrases</code></td>
+<td>The phrases found, marked for review first, then removed for good and checked</td>
+</tr>
+<tr>
+<td><code>shrink_pdf</code></td>
+<td><code>inputs</code>, <code>preset</code></td>
+<td>PDFs made smaller with an <code>optimize</code> preset, lossless unless <code>preset</code> says</td>
+</tr>
+</tbody>
+</table>
+<p><code>format</code> and <code>preset</code> may be left out.</p>
 <h2 id="more-tools">More tools</h2>
 <p><code>egap &lt;name&gt;</code> runs a program called <code>egap-&lt;name&gt;</code> from the PATH, as git and dotnet do. <code>egap preview</code> therefore starts
 <a href="../guides/index.html">egap-preview</a> when the Egap.Preview tool is installed:</p>
