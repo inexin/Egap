@@ -558,15 +558,7 @@ internal sealed class EpubWriter
     /// </summary>
     private string EmbedFonts()
     {
-        HashSet<int> characters = [' '];
-        foreach (Paragraph paragraph in document.Descendants<Paragraph>())
-        {
-            foreach (Rune rune in paragraph.GetText().EnumerateRunes())
-            {
-                characters.Add(rune.Value);
-            }
-        }
-
+        HashSet<int> characters = FontSubsets.Characters(document);
         StringBuilder css = new();
         List<EmbeddedFont> fonts = [.. document.EmbeddedFonts];
         for (int i = 0; i < fonts.Count; i++)
@@ -587,28 +579,13 @@ internal sealed class EpubWriter
 
     private byte[] Subset(ReadOnlyMemory<byte> data, HashSet<int> characters)
     {
-        try
+        if (FontSubsets.Subset(data, characters) is { } subset)
         {
-            Egami.Fonts.Typeface face = Egami.Fonts.Typeface.FromMemory(data);
-            if ((face.Embedding & Egami.Fonts.FontEmbedding.NoSubsetting) != 0)
-            {
-                return data.ToArray();
-            }
+            return subset;
+        }
 
-            List<ushort> glyphs = [0, .. characters.Select(c => face.GetGlyph(c)).Where(g => g != 0).Distinct()];
-            Egami.Fonts.FontSubset subset = Egami.Fonts.FontSubsetter.Subset(face, glyphs, new Egami.Fonts.SubsetOptions
-            {
-                RetainGlyphIds = true,
-                KeepCmap = true,
-                LayoutClosure = true,
-            });
-            return subset.Data.ToArray();
-        }
-        catch (Exception e) when (e is NotSupportedException or InvalidDataException or FormatException or ArgumentException or IndexOutOfRangeException)
-        {
-            warnings.Add(ConversionWarningKind.FormattingDropped, "fonts that could not be subset, embedded whole");
-            return data.ToArray();
-        }
+        warnings.Add(ConversionWarningKind.FormattingDropped, "fonts that could not be subset, embedded whole");
+        return data.ToArray();
     }
 
     private string EncryptionXml()

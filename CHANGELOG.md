@@ -42,6 +42,8 @@ internal milestones whose public API was frozen and reviewed, and they are liste
   recognises EPS as `application/postscript`, DOCX and ODT keep EPS parts with an `.eps` name, and RTF writes the preview
   as a PNG. Egap loads pictures with Egami.Metafiles' format registered, so a metafile preview loads wherever Egami
   decodes a picture.
+- The RTF writer writes page margins a document leaves unset as the inch layout gives them, so readers no longer take
+  RTF's default of 1.25 inches left and right; a later section without margins no longer takes the first section's.
 - Word's barcode fields: `FieldKind.DisplayBarcode` and `FieldKind.MergeBarcode`. Layout, PDF export and rendering draw a
   DISPLAYBARCODE field's symbol in vectors in place of its result (QR, CODE128, CODE39, NW7, EAN13/JAN13, EAN8/JAN8, UPCA,
   UPCE, ITF14/CASE and JPPOST, with the `\s`, `\h`, `\r`, `\f`, `\b`, `\t`, `\q`, `\p` and `\x` switches), DOCX, RTF
@@ -65,6 +67,11 @@ internal milestones whose public API was frozen and reviewed, and they are liste
 
 ## Egap.Documents.Html 2.4.0 (unreleased)
 
+- EPUB fonts written with `EmbedFonts` are smaller, by 17 to 49 % on the fonts tried: the subset holds only the glyphs the
+  text's characters are drawn with, renumbered, where before it kept every glyph id up to the last one used. Ligatures,
+  contextual forms, mark positions and kerning (GSUB, GPOS, GDEF and kern) are kept for those glyphs, so the text shapes as
+  with the full font, and the character map holds only the characters used.
+- MHTML archives embed `Document.EmbeddedFonts` as the same subsets, where before they embedded each font whole.
 - `<ruby>` reads as a `Ruby` per base, with its `<rt>` as the annotation (its `ruby-position`, `ruby-align` and format)
   and `<rp>` dropped, and writes back the same way, `<rp>` parentheses included. CSS `text-emphasis`, its longhands and
   `-webkit-` forms read as emphasis marks and `text-combine-upright` as `CombineUpright`, both written back. EPUB reads
