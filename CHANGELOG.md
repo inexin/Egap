@@ -38,6 +38,15 @@ internal milestones whose public API was frozen and reviewed, and they are liste
   recognises EPS as `application/postscript`, DOCX and ODT keep EPS parts with an `.eps` name, and RTF writes the preview
   as a PNG. Egap loads pictures with Egami.Metafiles' format registered, so a metafile preview loads wherever Egami
   decodes a picture.
+- Ruby: a `Ruby` inline holds its base's inlines and the annotation's `Text`, `TextFormat`, `Position`, `Alignment`,
+  `FontSize`, `Raise`, `BaseFontSize` and `Language`. Layout sets the annotation over (or under) its base as Word
+  does, without overhang, and makes room for it in the line; tagged PDF puts base and annotation in Ruby, RB and RT
+  elements. DOCX reads and writes `w:ruby`, which was kept as an island before, and ODT `text:ruby` with its ruby style.
+  RTF and Markdown write the base. The annotation is not part of the paragraph's text, but comparison sees a change of it.
+- Emphasis marks: `RunFormat.Emphasis` (`EmphasisMark` Dot, Comma, Circle and UnderDot, Word's `w:em` and ODF's
+  `style:text-emphasis`) draws its marks beside the text; tagged PDF marks them as artifacts.
+- Tate-chu-yoko: `RunFormat.CombineUpright` (Word's horizontal in vertical, `w:eastAsianLayout w:vert`) reads and writes
+  in DOCX; Egap lays text out horizontally, where it changes nothing. Two lines in one (`w:combine`) stays as it was.
 - The RTF writer writes SVG pictures (barcodes among them), charts, shape groups, SmartArt and DrawingML shapes as EMF
   pictures (EMF+ with GDI records beside them, through Egami.Metafiles' `EmfCanvas`), so Word shows them as vectors,
   with a PNG of each in `\nonshppict` for readers without EMF. SVG pictures were PNGs, and charts, shape groups and
@@ -48,6 +57,10 @@ internal milestones whose public API was frozen and reviewed, and they are liste
 
 ## Egap.Documents.Html 2.4.0 (unreleased)
 
+- `<ruby>` reads as a `Ruby` per base, with its `<rt>` as the annotation (its `ruby-position`, `ruby-align` and format)
+  and `<rp>` dropped, and writes back the same way, `<rp>` parentheses included. CSS `text-emphasis`, its longhands and
+  `-webkit-` forms read as emphasis marks and `text-combine-upright` as `CombineUpright`, both written back. EPUB reads
+  and writes them through the same path.
 - Documents read from HTML, MHTML and EPUB lay justified lines out as browsers do: the line before a `<br>` stays at the
   start, and no-break spaces stretch, whatever `WordCompatibility.DoNotExpandShiftReturn` says.
 - Documents read from HTML, MHTML and EPUB set `WordCompatibility.ShrinkJustifiedSpaces` off, so justified text breaks as

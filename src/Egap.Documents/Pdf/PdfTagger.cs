@@ -241,6 +241,9 @@ internal sealed class PdfTagger
     {
         private int artifactAreas;
         private readonly Stack<bool> marked = new();
+        private readonly Dictionary<Ruby, (PdfStructureElement Base, PdfStructureElement Text)> rubies = [];
+        private PdfStructureElement? line;
+        private bool inPart;
 
         public override void BeginBox(LayoutBox box)
         {
@@ -262,7 +265,9 @@ internal sealed class PdfTagger
             }
             else
             {
-                canvas.BeginTag(tagger.ElementFor(box.Node));
+                PdfStructureElement element = tagger.ElementFor(box.Node);
+                line = box is LineBox ? element : null;
+                canvas.BeginTag(element);
             }
         }
 
@@ -271,6 +276,7 @@ internal sealed class PdfTagger
             if (marked.Pop())
             {
                 canvas.EndTag();
+                line = null;
             }
 
             if (box is AreaBox { Area: PageArea.Header or PageArea.Footer or PageArea.MarginBox })
@@ -287,6 +293,52 @@ internal sealed class PdfTagger
         public override void EndDecoration()
         {
             canvas.EndTag();
+        }
+
+        // A ruby's base and annotation leave the line's marked content for their RB and RT elements under one Ruby element
+        // (ISO 32000-1, 14.8.4.3.4), and the line's content resumes after them; emphasis marks are artifacts. Lines that are
+        // artifacts themselves stay whole.
+        internal override void BeginRuby(Ruby ruby, bool annotation)
+        {
+            if (line is null)
+            {
+                return;
+            }
+
+            if (!rubies.TryGetValue(ruby, out (PdfStructureElement Base, PdfStructureElement Text) parts))
+            {
+                PdfStructureElement element = line.Add(new PdfStructureType("Ruby"));
+                parts = (element.Add(new PdfStructureType("RB")), element.Add(new PdfStructureType("RT")));
+                rubies[ruby] = parts;
+            }
+
+            canvas.EndTag();
+            canvas.BeginTag(annotation ? parts.Text : parts.Base);
+            inPart = true;
+        }
+
+        internal override void BeginMarks()
+        {
+            if (line is null)
+            {
+                return;
+            }
+
+            canvas.EndTag();
+            canvas.BeginArtifact();
+            inPart = true;
+        }
+
+        internal override void EndLinePart()
+        {
+            if (line is null || !inPart)
+            {
+                return;
+            }
+
+            canvas.EndTag();
+            canvas.BeginTag(line);
+            inPart = false;
         }
     }
 }

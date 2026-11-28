@@ -74,6 +74,7 @@ public class ChangeNotificationTests
         [typeof(Tab)] = f => f.Paragraph.AddTab(),
         [typeof(Hyperlink)] = f => f.Paragraph.AddHyperlink("a", "b"),
         [typeof(InlineContentControl)] = f => f.Paragraph.Inlines.Add(new InlineContentControl(f.Doc)),
+        [typeof(Ruby)] = f => f.Paragraph.Inlines.Add(new Ruby(f.Doc, "a")),
         [typeof(Picture)] = f => f.Paragraph.AddPicture(new ImageData(new byte[] { 1 }, "image/png"), 1, 1),
         [typeof(Shape)] = f => f.Paragraph.Inlines.Add(new Shape(f.Doc, ShapeKind.Rectangle, 1, 1)),
         [typeof(FieldStart)] = f => f.Paragraph.AddField(FieldKind.Page).Start,
@@ -99,7 +100,7 @@ public class ChangeNotificationTests
     [
         "Node.Clone", "Node.Accept", "Node.GetText", "Node.Find", "Document.Save", "Node.Ancestors", "Node.Descendants", "Node.GetAncestor",
         "Document.Import", "Document.Clone", "Document.Layout", "NodeCollection`1.IndexOf", "NodeCollection`1.Contains", "NodeCollection`1.GetEnumerator",
-        "Run.ToString", "Section.Clone", "Body.Clone", "HeaderFooter.Clone", "Paragraph.Clone", "Table.Clone", "Row.Clone",
+        "Run.ToString", "Ruby.ToString", "Section.Clone", "Body.Clone", "HeaderFooter.Clone", "Paragraph.Clone", "Table.Clone", "Row.Clone",
         "Cell.Clone", "Run.Clone", "Tab.Clone", "Break.Clone", "Run.GetEffectiveFormat", "Paragraph.GetEffectiveFormat",
         "Table.GetEffectiveFormat", "Row.GetEffectiveFormat", "Cell.GetEffectiveFormat", "Inline.Revision",
         "Document.MailMerge", "Document.MailMergeAll", "MarginBox.Clone",

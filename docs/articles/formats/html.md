@@ -72,6 +72,11 @@ Besides fonts, colours, spacing, borders, lists and tables, these read into the 
 - `@page` margin box rules such as `@top-left` and `@bottom-center`, with `counter(page)` and `counter(pages)`, become
   margin boxes. An element with `position: running(name)` leaves the body and shows in the boxes whose content is
   `element(name)`. Margin boxes are written back as the same rules.
+- `<ruby>` with its `<rt>` (and `<rb>`, `<rtc>`; `<rp>` is dropped) reads as a `Ruby` per base, with `ruby-position`
+  and `ruby-align`. `text-emphasis` (with its longhands and `-webkit-` forms) sets the run's emphasis marks and
+  `text-combine-upright` its `CombineUpright` (see
+  [Ruby and emphasis marks](../guides/flow-documents.md#ruby-and-emphasis-marks)). The writer writes them back, ruby with
+  `<rp>` parentheses for readers without ruby.
 - `<nav data-toc>` is read as a table of contents field.
 - A MathML `<math>` element is an equation: it lays out as math, its `Island.Text` is its linear form, and the HTML writer
   writes it back.

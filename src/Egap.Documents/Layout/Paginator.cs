@@ -670,7 +670,7 @@ internal sealed partial class Paginator
     /// A line's ascent and descent as Word measures them: each font's hhea ascender with its line gap above, and its
     /// descender, at its size and unrounded (Word's single line of Aptos, Calibri, Arial and Times New Roman, checked
     /// against its PDF export). Egami's line metrics round to whole units as browsers do, which over a page adds up to lines
-    /// Word does not have. Lines with an inline object keep Egami's ascent where it is taller.
+    /// Word does not have. Lines with an inline object, ruby or emphasis marks keep Egami's ascent where it is taller.
     /// </summary>
     internal static (double Ascent, double Descent) WordMetrics(TextLine line)
     {
@@ -699,7 +699,9 @@ internal sealed partial class Paginator
             return (line.Ascent, line.Height - line.Ascent);
         }
 
-        return (placeholder ? Math.Max(ascent, line.Ascent) : ascent, placeholder ? Math.Max(descent, line.Height - line.Ascent) : descent);
+        // Ruby and emphasis marks stand beside the text, and Egami's line makes room for them as Word's does.
+        bool beside = placeholder || line.AnnotationRuns.Count > 0;
+        return (beside ? Math.Max(ascent, line.Ascent) : ascent, beside ? Math.Max(descent, line.Height - line.Ascent) : descent);
     }
 
     private static (double Height, double Ascent) LineHeight(TextLine line, ResolvedParagraphFormat format)

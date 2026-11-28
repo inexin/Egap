@@ -786,7 +786,7 @@ internal sealed partial class OdtReader
                 case "ruby":
                     if (element.Element(TextNs + "ruby-base") is { } rubyBase)
                     {
-                        ReadInlines(rubyBase, context, format, characterStyle, size);
+                        ReadRuby(element, rubyBase, context, format, characterStyle, size);
                     }
 
                     return;
@@ -1057,6 +1057,62 @@ internal sealed partial class OdtReader
             inLink = false;
         }
     }
+
+    /// <summary>
+    /// A ruby (ODF 1.3 Part 3, 6.4): its base's inlines in a <see cref="Ruby"/>, <c>text:ruby-text</c> as its text and that
+    /// text's style as its format, and the ruby style's position and alignment (20.336, 20.337).
+    /// </summary>
+    private void ReadRuby(XElement element, XElement rubyBase, InlineContext context, RunFormat format, CharacterStyle? characterStyle, double size)
+    {
+        if (inRuby)
+        {
+            ReadInlines(rubyBase, context, format, characterStyle, size);
+            return;
+        }
+
+        XElement? rubyText = element.Element(TextNs + "ruby-text");
+        Ruby ruby = new(document, rubyText?.Value ?? "");
+        if (Find("ruby", element.Attr(TextNs, "style-name"))?.Properties("ruby-properties") is { } properties)
+        {
+            ruby.Position = properties.Attr(StyleNs, "ruby-position") is "below" ? RubyPosition.Under : RubyPosition.Over;
+            ruby.Alignment = properties.Attr(StyleNs, "ruby-align") switch
+            {
+                "left" => RubyAlignment.Left,
+                "right" => RubyAlignment.Right,
+                "distribute-letter" => RubyAlignment.DistributeLetter,
+                "distribute-space" => RubyAlignment.DistributeSpace,
+                _ => RubyAlignment.Center,
+            };
+        }
+
+        if (rubyText?.Attr(TextNs, "style-name") is { } textStyle)
+        {
+            (RunFormat annotation, _) = SpanFormat(textStyle, new RunFormat(), null, size / 2);
+            if (annotation.Size is double rubySize)
+            {
+                ruby.FontSize = rubySize;
+                annotation.Size = null;
+            }
+
+            ruby.TextFormat.CopyRaw(annotation);
+        }
+
+        AddInline(context, ruby, null, null);
+        InlineContext inner = new(context.Paragraph, ruby.Inlines, topLevel: false, context.Blocks, context.Space);
+        inRuby = true;
+        try
+        {
+            ReadInlines(rubyBase, inner, format, characterStyle, size);
+            Flush(inner);
+        }
+        finally
+        {
+            inRuby = false;
+        }
+    }
+
+    /// <summary>True while a ruby's base is read: rubies do not nest.</summary>
+    private bool inRuby;
 
     /// <summary>True while a link's text is read: hyperlinks do not nest.</summary>
     private bool inLink;
