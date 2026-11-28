@@ -1,11 +1,12 @@
 # Egap
 
 > Egap is an MIT-licensed, fully managed family of document libraries for .NET 10, with no native code: PDF files, flow
-> documents in DOCX, DOC, RTF, ODT, HTML, EPUB and Markdown, and Excel workbooks. It draws, decodes images and reads fonts
-> through Egami. The packages are Egap.Pdf (read, edit, render, sign, redact and save PDF; PDF/A, optimize, stamps,
-> compare), Egap.Documents (one document model, page layout, PDF export and PDF back to documents), Egap.Documents.Html
-> (HTML, MHTML and EPUB), Egap.Documents.Markdown (Markdown), Egap.Spreadsheets (workbooks, formulas, Excel files),
-> Egap.Cli (the `egap` command and MCP server) and Egap.Preview (the `egap-preview` live preview tool).
+> documents in DOCX, DOC, RTF, ODT, HTML, EPUB and Markdown, Excel workbooks and PowerPoint presentations. It draws,
+> decodes images and reads fonts through Egami. The packages are Egap.Pdf (read, edit, render, sign, redact and save
+> PDF; PDF/A, optimize, stamps, compare), Egap.Documents (one document model, page layout, PDF export and PDF back to
+> documents), Egap.Documents.Html (HTML, MHTML and EPUB), Egap.Documents.Markdown (Markdown), Egap.Spreadsheets
+> (workbooks, formulas, Excel files), Egap.Presentations (PowerPoint files read, edited and saved), Egap.Cli (the `egap`
+> command and MCP server) and Egap.Preview (the `egap-preview` live preview tool).
 
 Egap's own names: `PdfDocument` (`PdfDocument.Open`, `Pages`, `Save`) is a PDF file, `Document` (`Document.Load`, `Save`,
 `DocumentBuilder`, `SaveAsPdf`) a flow document in any format, `Workbook` and `Worksheet` (`sheet["B2"]` is a `Cell`) a
@@ -38,6 +39,10 @@ workbook, and `PdfConvert` turns HTML, Markdown, DOCX and images into PDF in one
 - [Moving to Egap.Documents 2.0](https://inexin.github.io/Egap/v2/articles/guides/migrating-to-2.0.html): Egap.Documents 2.0 is one converter package.
 - [PDF export and conversion](https://inexin.github.io/Egap/v2/articles/guides/pdf-export-and-conversion.html): Egap.Documents saves documents as PDF and turns PDF pages back into documents, in namespace `Egap.Documents.Pdf`.
 - [Reports in code](https://inexin.github.io/Egap/v2/articles/guides/reports.html): `Report.Create` builds a document from code.
+
+## Egap.Presentations
+
+- [Presentations](https://inexin.github.io/Egap/v2/articles/guides/presentations.html): Egap.Presentations loads PowerPoint files and lets you read and edit their slides from code.
 
 ## Egap.Spreadsheets
 
@@ -73,6 +78,7 @@ workbook, and `PdfConvert` turns HTML, Markdown, DOCX and images into PDF in one
 - [Egap.Documents agent guide](https://inexin.github.io/Egap/v2/agents/Egap.Documents.md): the names, entry points, samples and common mistakes of Egap.Documents, as packed in its NuGet package as AGENTS.md.
 - [Egap.Documents.Html agent guide](https://inexin.github.io/Egap/v2/agents/Egap.Documents.Html.md): the names, entry points, samples and common mistakes of Egap.Documents.Html, as packed in its NuGet package as AGENTS.md.
 - [Egap.Documents.Markdown agent guide](https://inexin.github.io/Egap/v2/agents/Egap.Documents.Markdown.md): the names, entry points, samples and common mistakes of Egap.Documents.Markdown, as packed in its NuGet package as AGENTS.md.
+- [Egap.Presentations agent guide](https://inexin.github.io/Egap/v2/agents/Egap.Presentations.md): the names, entry points, samples and common mistakes of Egap.Presentations, as packed in its NuGet package as AGENTS.md.
 - [Egap.Preview agent guide](https://inexin.github.io/Egap/v2/agents/Egap.Preview.md): the names, entry points, samples and common mistakes of Egap.Preview, as packed in its NuGet package as AGENTS.md.
 - [Egap.Spreadsheets agent guide](https://inexin.github.io/Egap/v2/agents/Egap.Spreadsheets.md): the names, entry points, samples and common mistakes of Egap.Spreadsheets, as packed in its NuGet package as AGENTS.md.
 - [Source and changelog](https://github.com/inexin/Egap): the repository, CHANGELOG.md and CONTRIBUTING.md.

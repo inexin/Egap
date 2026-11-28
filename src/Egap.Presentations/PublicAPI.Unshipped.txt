@@ -1,0 +1,263 @@
+#nullable enable
+abstract Egap.Presentations.SlideBase.ColorMap.get -> Egap.Presentations.ColorMap!
+const Egap.Presentations.ShapeTransform.EmusPerPoint = 12700 -> int
+Egap.Presentations.AutoShape
+Egap.Presentations.AutoShape.IsTextBox.get -> bool
+Egap.Presentations.AutoShape.PresetGeometry.get -> string?
+Egap.Presentations.AutoShape.TextBody.get -> Egap.Presentations.TextBody?
+Egap.Presentations.ColorMap
+Egap.Presentations.ColorMap.this[Egap.Presentations.ColorMapSlot slot].get -> Egap.Documents.ThemeColor
+Egap.Presentations.ColorMapSlot
+Egap.Presentations.ColorMapSlot.Accent1 = 4 -> Egap.Presentations.ColorMapSlot
+Egap.Presentations.ColorMapSlot.Accent2 = 5 -> Egap.Presentations.ColorMapSlot
+Egap.Presentations.ColorMapSlot.Accent3 = 6 -> Egap.Presentations.ColorMapSlot
+Egap.Presentations.ColorMapSlot.Accent4 = 7 -> Egap.Presentations.ColorMapSlot
+Egap.Presentations.ColorMapSlot.Accent5 = 8 -> Egap.Presentations.ColorMapSlot
+Egap.Presentations.ColorMapSlot.Accent6 = 9 -> Egap.Presentations.ColorMapSlot
+Egap.Presentations.ColorMapSlot.Background1 = 0 -> Egap.Presentations.ColorMapSlot
+Egap.Presentations.ColorMapSlot.Background2 = 2 -> Egap.Presentations.ColorMapSlot
+Egap.Presentations.ColorMapSlot.FollowedHyperlink = 11 -> Egap.Presentations.ColorMapSlot
+Egap.Presentations.ColorMapSlot.Hyperlink = 10 -> Egap.Presentations.ColorMapSlot
+Egap.Presentations.ColorMapSlot.Text1 = 1 -> Egap.Presentations.ColorMapSlot
+Egap.Presentations.ColorMapSlot.Text2 = 3 -> Egap.Presentations.ColorMapSlot
+Egap.Presentations.ConnectorShape
+Egap.Presentations.ConnectorShape.End.get -> Egap.Presentations.ShapeConnection?
+Egap.Presentations.ConnectorShape.PresetGeometry.get -> string?
+Egap.Presentations.ConnectorShape.Start.get -> Egap.Presentations.ShapeConnection?
+Egap.Presentations.GraphicFrame
+Egap.Presentations.GraphicFrame.GraphicDataUri.get -> string!
+Egap.Presentations.GraphicFrame.Kind.get -> Egap.Presentations.GraphicFrameKind
+Egap.Presentations.GraphicFrameKind
+Egap.Presentations.GraphicFrameKind.Chart = 2 -> Egap.Presentations.GraphicFrameKind
+Egap.Presentations.GraphicFrameKind.Diagram = 3 -> Egap.Presentations.GraphicFrameKind
+Egap.Presentations.GraphicFrameKind.OleObject = 4 -> Egap.Presentations.GraphicFrameKind
+Egap.Presentations.GraphicFrameKind.Other = 0 -> Egap.Presentations.GraphicFrameKind
+Egap.Presentations.GraphicFrameKind.Table = 1 -> Egap.Presentations.GraphicFrameKind
+Egap.Presentations.GroupShape
+Egap.Presentations.GroupShape.ChildArea.get -> Egap.Presentations.ShapeTransform?
+Egap.Presentations.GroupShape.Shapes.get -> Egap.Presentations.SlideShapeCollection!
+Egap.Presentations.PictureShape
+Egap.Presentations.PictureShape.GetImageData() -> byte[]?
+Egap.Presentations.PictureShape.ImageContentType.get -> string?
+Egap.Presentations.PictureShape.ImagePartName.get -> string?
+Egap.Presentations.PlaceholderType
+Egap.Presentations.PlaceholderType.Body = 2 -> Egap.Presentations.PlaceholderType
+Egap.Presentations.PlaceholderType.CenteredTitle = 3 -> Egap.Presentations.PlaceholderType
+Egap.Presentations.PlaceholderType.Chart = 9 -> Egap.Presentations.PlaceholderType
+Egap.Presentations.PlaceholderType.ClipArt = 11 -> Egap.Presentations.PlaceholderType
+Egap.Presentations.PlaceholderType.Content = 0 -> Egap.Presentations.PlaceholderType
+Egap.Presentations.PlaceholderType.Date = 5 -> Egap.Presentations.PlaceholderType
+Egap.Presentations.PlaceholderType.Diagram = 12 -> Egap.Presentations.PlaceholderType
+Egap.Presentations.PlaceholderType.Footer = 7 -> Egap.Presentations.PlaceholderType
+Egap.Presentations.PlaceholderType.Header = 8 -> Egap.Presentations.PlaceholderType
+Egap.Presentations.PlaceholderType.Media = 13 -> Egap.Presentations.PlaceholderType
+Egap.Presentations.PlaceholderType.Picture = 15 -> Egap.Presentations.PlaceholderType
+Egap.Presentations.PlaceholderType.SlideImage = 14 -> Egap.Presentations.PlaceholderType
+Egap.Presentations.PlaceholderType.SlideNumber = 6 -> Egap.Presentations.PlaceholderType
+Egap.Presentations.PlaceholderType.Subtitle = 4 -> Egap.Presentations.PlaceholderType
+Egap.Presentations.PlaceholderType.Table = 10 -> Egap.Presentations.PlaceholderType
+Egap.Presentations.PlaceholderType.Title = 1 -> Egap.Presentations.PlaceholderType
+Egap.Presentations.Presentation
+Egap.Presentations.Presentation.Format.get -> Egap.Presentations.PresentationFormat
+Egap.Presentations.Presentation.NotesMasterPartName.get -> string?
+Egap.Presentations.Presentation.NotesSize.get -> Egap.Presentations.SlideSize
+Egap.Presentations.Presentation.Save(string! path) -> void
+Egap.Presentations.Presentation.Save(System.IO.Stream! stream) -> void
+Egap.Presentations.Presentation.SlideMasters.get -> System.Collections.Generic.IReadOnlyList<Egap.Presentations.SlideMaster!>!
+Egap.Presentations.Presentation.Slides.get -> Egap.Presentations.SlideCollection!
+Egap.Presentations.Presentation.SlideSize.get -> Egap.Presentations.SlideSize
+Egap.Presentations.Presentation.SlideSize.set -> void
+Egap.Presentations.PresentationFormat
+Egap.Presentations.PresentationFormat.Potm = 3 -> Egap.Presentations.PresentationFormat
+Egap.Presentations.PresentationFormat.Potx = 2 -> Egap.Presentations.PresentationFormat
+Egap.Presentations.PresentationFormat.Ppsm = 5 -> Egap.Presentations.PresentationFormat
+Egap.Presentations.PresentationFormat.Ppsx = 4 -> Egap.Presentations.PresentationFormat
+Egap.Presentations.PresentationFormat.Pptm = 1 -> Egap.Presentations.PresentationFormat
+Egap.Presentations.PresentationFormat.Pptx = 0 -> Egap.Presentations.PresentationFormat
+Egap.Presentations.PresentationLoadOptions
+Egap.Presentations.PresentationLoadOptions.Limits.get -> Egap.Documents.DocumentLimits!
+Egap.Presentations.PresentationLoadOptions.Limits.init -> void
+Egap.Presentations.PresentationLoadOptions.PresentationLoadOptions() -> void
+Egap.Presentations.PresentationTheme
+Egap.Presentations.PresentationTheme.GetColor(Egap.Documents.ThemeColor color) -> Egami.Pixels.Rgba8
+Egap.Presentations.PresentationTheme.GetColor(Egap.Presentations.ColorMapSlot slot, Egap.Presentations.ColorMap! map) -> Egami.Pixels.Rgba8
+Egap.Presentations.PresentationTheme.GetFont(Egap.Documents.ThemeFont font) -> string?
+Egap.Presentations.PresentationTheme.MajorLatinFont.get -> string!
+Egap.Presentations.PresentationTheme.MinorLatinFont.get -> string!
+Egap.Presentations.PresentationTheme.Name.get -> string!
+Egap.Presentations.PresentationTheme.PartName.get -> string!
+Egap.Presentations.ShapeConnection
+Egap.Presentations.ShapeConnection.Deconstruct(out uint ShapeId, out uint Site) -> void
+Egap.Presentations.ShapeConnection.Equals(Egap.Presentations.ShapeConnection other) -> bool
+Egap.Presentations.ShapeConnection.ShapeConnection() -> void
+Egap.Presentations.ShapeConnection.ShapeConnection(uint ShapeId, uint Site) -> void
+Egap.Presentations.ShapeConnection.ShapeId.get -> uint
+Egap.Presentations.ShapeConnection.ShapeId.init -> void
+Egap.Presentations.ShapeConnection.Site.get -> uint
+Egap.Presentations.ShapeConnection.Site.init -> void
+Egap.Presentations.ShapePlaceholder
+Egap.Presentations.ShapePlaceholder.<Clone>$() -> Egap.Presentations.ShapePlaceholder!
+Egap.Presentations.ShapePlaceholder.Deconstruct(out Egap.Presentations.PlaceholderType Type, out uint Index) -> void
+Egap.Presentations.ShapePlaceholder.Equals(Egap.Presentations.ShapePlaceholder? other) -> bool
+Egap.Presentations.ShapePlaceholder.Index.get -> uint
+Egap.Presentations.ShapePlaceholder.Index.init -> void
+Egap.Presentations.ShapePlaceholder.ShapePlaceholder(Egap.Presentations.PlaceholderType Type, uint Index) -> void
+Egap.Presentations.ShapePlaceholder.Type.get -> Egap.Presentations.PlaceholderType
+Egap.Presentations.ShapePlaceholder.Type.init -> void
+Egap.Presentations.ShapeTransform
+Egap.Presentations.ShapeTransform.Deconstruct(out long X, out long Y, out long Width, out long Height, out double Rotation, out bool FlipHorizontal, out bool FlipVertical) -> void
+Egap.Presentations.ShapeTransform.Equals(Egap.Presentations.ShapeTransform other) -> bool
+Egap.Presentations.ShapeTransform.FlipHorizontal.get -> bool
+Egap.Presentations.ShapeTransform.FlipHorizontal.init -> void
+Egap.Presentations.ShapeTransform.FlipVertical.get -> bool
+Egap.Presentations.ShapeTransform.FlipVertical.init -> void
+Egap.Presentations.ShapeTransform.Height.get -> long
+Egap.Presentations.ShapeTransform.Height.init -> void
+Egap.Presentations.ShapeTransform.HeightPoints.get -> double
+Egap.Presentations.ShapeTransform.Rotation.get -> double
+Egap.Presentations.ShapeTransform.Rotation.init -> void
+Egap.Presentations.ShapeTransform.ShapeTransform() -> void
+Egap.Presentations.ShapeTransform.ShapeTransform(long X, long Y, long Width, long Height, double Rotation = 0, bool FlipHorizontal = false, bool FlipVertical = false) -> void
+Egap.Presentations.ShapeTransform.Width.get -> long
+Egap.Presentations.ShapeTransform.Width.init -> void
+Egap.Presentations.ShapeTransform.WidthPoints.get -> double
+Egap.Presentations.ShapeTransform.X.get -> long
+Egap.Presentations.ShapeTransform.X.init -> void
+Egap.Presentations.ShapeTransform.XPoints.get -> double
+Egap.Presentations.ShapeTransform.Y.get -> long
+Egap.Presentations.ShapeTransform.Y.init -> void
+Egap.Presentations.ShapeTransform.YPoints.get -> double
+Egap.Presentations.Slide
+Egap.Presentations.Slide.ColorMapOverride.get -> Egap.Presentations.ColorMap?
+Egap.Presentations.Slide.Hidden.get -> bool
+Egap.Presentations.Slide.Layout.get -> Egap.Presentations.SlideLayout?
+Egap.Presentations.Slide.Master.get -> Egap.Presentations.SlideMaster?
+Egap.Presentations.Slide.NotesPartName.get -> string?
+Egap.Presentations.Slide.SlideId.get -> uint
+Egap.Presentations.SlideBase
+Egap.Presentations.SlideBase.Name.get -> string!
+Egap.Presentations.SlideBase.PartName.get -> string!
+Egap.Presentations.SlideBase.Presentation.get -> Egap.Presentations.Presentation!
+Egap.Presentations.SlideBase.Shapes.get -> Egap.Presentations.SlideShapeCollection!
+Egap.Presentations.SlideCollection
+Egap.Presentations.SlideCollection.Count.get -> int
+Egap.Presentations.SlideCollection.FindById(uint slideId) -> Egap.Presentations.Slide?
+Egap.Presentations.SlideCollection.GetEnumerator() -> System.Collections.Generic.IEnumerator<Egap.Presentations.Slide!>!
+Egap.Presentations.SlideCollection.this[int index].get -> Egap.Presentations.Slide!
+Egap.Presentations.SlideLayout
+Egap.Presentations.SlideLayout.ColorMapOverride.get -> Egap.Presentations.ColorMap?
+Egap.Presentations.SlideLayout.LayoutType.get -> Egap.Presentations.SlideLayoutType
+Egap.Presentations.SlideLayout.Master.get -> Egap.Presentations.SlideMaster!
+Egap.Presentations.SlideLayoutType
+Egap.Presentations.SlideLayoutType.Blank = 11 -> Egap.Presentations.SlideLayoutType
+Egap.Presentations.SlideLayoutType.Chart = 7 -> Egap.Presentations.SlideLayoutType
+Egap.Presentations.SlideLayoutType.ChartAndText = 5 -> Egap.Presentations.SlideLayoutType
+Egap.Presentations.SlideLayoutType.ClipArtAndText = 9 -> Egap.Presentations.SlideLayoutType
+Egap.Presentations.SlideLayoutType.ClipArtAndVerticalText = 25 -> Egap.Presentations.SlideLayoutType
+Egap.Presentations.SlideLayoutType.Custom = 31 -> Egap.Presentations.SlideLayoutType
+Egap.Presentations.SlideLayoutType.Diagram = 6 -> Egap.Presentations.SlideLayoutType
+Egap.Presentations.SlideLayoutType.FourObjects = 23 -> Egap.Presentations.SlideLayoutType
+Egap.Presentations.SlideLayoutType.MediaAndText = 17 -> Egap.Presentations.SlideLayoutType
+Egap.Presentations.SlideLayoutType.ObjectAndCaption = 34 -> Egap.Presentations.SlideLayoutType
+Egap.Presentations.SlideLayoutType.ObjectAndText = 13 -> Egap.Presentations.SlideLayoutType
+Egap.Presentations.SlideLayoutType.ObjectAndTwoObjects = 29 -> Egap.Presentations.SlideLayoutType
+Egap.Presentations.SlideLayoutType.ObjectOnly = 14 -> Egap.Presentations.SlideLayoutType
+Egap.Presentations.SlideLayoutType.ObjectOverText = 18 -> Egap.Presentations.SlideLayoutType
+Egap.Presentations.SlideLayoutType.PictureAndCaption = 35 -> Egap.Presentations.SlideLayoutType
+Egap.Presentations.SlideLayoutType.SectionHeader = 32 -> Egap.Presentations.SlideLayoutType
+Egap.Presentations.SlideLayoutType.Table = 3 -> Egap.Presentations.SlideLayoutType
+Egap.Presentations.SlideLayoutType.Text = 1 -> Egap.Presentations.SlideLayoutType
+Egap.Presentations.SlideLayoutType.TextAndChart = 4 -> Egap.Presentations.SlideLayoutType
+Egap.Presentations.SlideLayoutType.TextAndClipArt = 8 -> Egap.Presentations.SlideLayoutType
+Egap.Presentations.SlideLayoutType.TextAndMedia = 16 -> Egap.Presentations.SlideLayoutType
+Egap.Presentations.SlideLayoutType.TextAndObject = 12 -> Egap.Presentations.SlideLayoutType
+Egap.Presentations.SlideLayoutType.TextAndTwoObjects = 20 -> Egap.Presentations.SlideLayoutType
+Egap.Presentations.SlideLayoutType.TextOverObject = 19 -> Egap.Presentations.SlideLayoutType
+Egap.Presentations.SlideLayoutType.Title = 0 -> Egap.Presentations.SlideLayoutType
+Egap.Presentations.SlideLayoutType.TitleAndContent = 15 -> Egap.Presentations.SlideLayoutType
+Egap.Presentations.SlideLayoutType.TitleOnly = 10 -> Egap.Presentations.SlideLayoutType
+Egap.Presentations.SlideLayoutType.TwoColumnText = 2 -> Egap.Presentations.SlideLayoutType
+Egap.Presentations.SlideLayoutType.TwoObjects = 28 -> Egap.Presentations.SlideLayoutType
+Egap.Presentations.SlideLayoutType.TwoObjectsAndObject = 30 -> Egap.Presentations.SlideLayoutType
+Egap.Presentations.SlideLayoutType.TwoObjectsAndText = 21 -> Egap.Presentations.SlideLayoutType
+Egap.Presentations.SlideLayoutType.TwoObjectsOverText = 22 -> Egap.Presentations.SlideLayoutType
+Egap.Presentations.SlideLayoutType.TwoTextAndTwoObjects = 33 -> Egap.Presentations.SlideLayoutType
+Egap.Presentations.SlideLayoutType.VerticalText = 24 -> Egap.Presentations.SlideLayoutType
+Egap.Presentations.SlideLayoutType.VerticalTitleAndText = 26 -> Egap.Presentations.SlideLayoutType
+Egap.Presentations.SlideLayoutType.VerticalTitleAndTextOverChart = 27 -> Egap.Presentations.SlideLayoutType
+Egap.Presentations.SlideMaster
+Egap.Presentations.SlideMaster.Layouts.get -> System.Collections.Generic.IReadOnlyList<Egap.Presentations.SlideLayout!>!
+Egap.Presentations.SlideMaster.Theme.get -> Egap.Presentations.PresentationTheme?
+Egap.Presentations.SlideShape
+Egap.Presentations.SlideShape.Description.get -> string!
+Egap.Presentations.SlideShape.Description.set -> void
+Egap.Presentations.SlideShape.Group.get -> Egap.Presentations.GroupShape?
+Egap.Presentations.SlideShape.Hidden.get -> bool
+Egap.Presentations.SlideShape.Id.get -> uint
+Egap.Presentations.SlideShape.Name.get -> string!
+Egap.Presentations.SlideShape.Name.set -> void
+Egap.Presentations.SlideShape.Owner.get -> Egap.Presentations.SlideBase!
+Egap.Presentations.SlideShape.Placeholder.get -> Egap.Presentations.ShapePlaceholder?
+Egap.Presentations.SlideShapeCollection
+Egap.Presentations.SlideShapeCollection.Count.get -> int
+Egap.Presentations.SlideShapeCollection.FindById(uint id) -> Egap.Presentations.SlideShape?
+Egap.Presentations.SlideShapeCollection.GetEnumerator() -> System.Collections.Generic.IEnumerator<Egap.Presentations.SlideShape!>!
+Egap.Presentations.SlideShapeCollection.this[int index].get -> Egap.Presentations.SlideShape!
+Egap.Presentations.SlideSize
+Egap.Presentations.SlideSize.Deconstruct(out long Width, out long Height) -> void
+Egap.Presentations.SlideSize.Equals(Egap.Presentations.SlideSize other) -> bool
+Egap.Presentations.SlideSize.Height.get -> long
+Egap.Presentations.SlideSize.Height.init -> void
+Egap.Presentations.SlideSize.HeightPoints.get -> double
+Egap.Presentations.SlideSize.SlideSize() -> void
+Egap.Presentations.SlideSize.SlideSize(long Width, long Height) -> void
+Egap.Presentations.SlideSize.Width.get -> long
+Egap.Presentations.SlideSize.Width.init -> void
+Egap.Presentations.SlideSize.WidthPoints.get -> double
+Egap.Presentations.TextBody
+Egap.Presentations.TextBody.Paragraphs.get -> System.Collections.Generic.IReadOnlyList<Egap.Presentations.TextParagraph!>!
+Egap.Presentations.TextBody.Shape.get -> Egap.Presentations.SlideShape!
+Egap.Presentations.TextBody.Text.get -> string!
+Egap.Presentations.TextParagraph
+Egap.Presentations.TextParagraph.Body.get -> Egap.Presentations.TextBody!
+Egap.Presentations.TextParagraph.Level.get -> int
+Egap.Presentations.TextParagraph.Runs.get -> System.Collections.Generic.IReadOnlyList<Egap.Presentations.TextRun!>!
+Egap.Presentations.TextParagraph.Text.get -> string!
+Egap.Presentations.TextRun
+Egap.Presentations.TextRun.FieldType.get -> string?
+Egap.Presentations.TextRun.IsField.get -> bool
+Egap.Presentations.TextRun.Paragraph.get -> Egap.Presentations.TextParagraph!
+Egap.Presentations.TextRun.Text.get -> string!
+Egap.Presentations.TextRun.Text.set -> void
+override Egap.Presentations.GraphicFrame.Transform.get -> Egap.Presentations.ShapeTransform?
+override Egap.Presentations.GraphicFrame.Transform.set -> void
+override Egap.Presentations.ShapeConnection.GetHashCode() -> int
+override Egap.Presentations.ShapePlaceholder.Equals(object? obj) -> bool
+override Egap.Presentations.ShapePlaceholder.GetHashCode() -> int
+override Egap.Presentations.ShapePlaceholder.ToString() -> string!
+override Egap.Presentations.ShapeTransform.GetHashCode() -> int
+override Egap.Presentations.ShapeTransform.ToString() -> string!
+override Egap.Presentations.Slide.ColorMap.get -> Egap.Presentations.ColorMap!
+override Egap.Presentations.SlideLayout.ColorMap.get -> Egap.Presentations.ColorMap!
+override Egap.Presentations.SlideMaster.ColorMap.get -> Egap.Presentations.ColorMap!
+override Egap.Presentations.SlideSize.GetHashCode() -> int
+static Egap.Presentations.ColorMap.Default.get -> Egap.Presentations.ColorMap!
+static Egap.Presentations.Presentation.Load(string! path, Egap.Presentations.PresentationLoadOptions? options = null) -> Egap.Presentations.Presentation!
+static Egap.Presentations.Presentation.Load(System.IO.Stream! stream, Egap.Presentations.PresentationLoadOptions? options = null) -> Egap.Presentations.Presentation!
+static Egap.Presentations.ShapeConnection.operator !=(Egap.Presentations.ShapeConnection left, Egap.Presentations.ShapeConnection right) -> bool
+static Egap.Presentations.ShapeConnection.operator ==(Egap.Presentations.ShapeConnection left, Egap.Presentations.ShapeConnection right) -> bool
+static Egap.Presentations.ShapePlaceholder.operator !=(Egap.Presentations.ShapePlaceholder? left, Egap.Presentations.ShapePlaceholder? right) -> bool
+static Egap.Presentations.ShapePlaceholder.operator ==(Egap.Presentations.ShapePlaceholder? left, Egap.Presentations.ShapePlaceholder? right) -> bool
+static Egap.Presentations.ShapeTransform.FromPoints(double x, double y, double width, double height) -> Egap.Presentations.ShapeTransform
+static Egap.Presentations.ShapeTransform.operator !=(Egap.Presentations.ShapeTransform left, Egap.Presentations.ShapeTransform right) -> bool
+static Egap.Presentations.ShapeTransform.operator ==(Egap.Presentations.ShapeTransform left, Egap.Presentations.ShapeTransform right) -> bool
+static Egap.Presentations.SlideSize.FromPoints(double width, double height) -> Egap.Presentations.SlideSize
+static Egap.Presentations.SlideSize.operator !=(Egap.Presentations.SlideSize left, Egap.Presentations.SlideSize right) -> bool
+static Egap.Presentations.SlideSize.operator ==(Egap.Presentations.SlideSize left, Egap.Presentations.SlideSize right) -> bool
+virtual Egap.Presentations.SlideShape.Transform.get -> Egap.Presentations.ShapeTransform?
+virtual Egap.Presentations.SlideShape.Transform.set -> void
+~override Egap.Presentations.ShapeConnection.Equals(object obj) -> bool
+~override Egap.Presentations.ShapeConnection.ToString() -> string
+~override Egap.Presentations.ShapeTransform.Equals(object obj) -> bool
+~override Egap.Presentations.SlideSize.Equals(object obj) -> bool
+~override Egap.Presentations.SlideSize.ToString() -> string

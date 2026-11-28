@@ -11,6 +11,8 @@ Egap has its own names. Use them, not names from other PDF, Word or Excel librar
   disposable.
 - `Workbook` and `Worksheet` (namespace `Egap.Spreadsheets`) are an Excel workbook and its sheets; `sheet["B2"]` is a
   `Cell`, `sheet.Range("A1:C9")` a `CellRange`, and `CellValue` a cell's value.
+- `Presentation` (namespace `Egap.Presentations`) is a PowerPoint file: `Presentation.Load`, `Slides`, `SlideMasters` and
+  `Save`; `slide.Shapes` holds its `SlideShape`s.
 - Each format has its own class (`DocxFormat`, `RtfFormat`, `OdtFormat`, `TextFormat`, `HtmlFormat`, `EpubFormat`,
   `MarkdownFormat`) and members on `Document` that forward to it: `Document.LoadDocx`, `SaveAsDocx`, `ToHtml`,
   `SaveAsMarkdown`. `SaveAsPdf` and `PdfConvert` (namespace `Egap.Documents.Pdf`) write PDF.
