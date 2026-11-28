@@ -174,6 +174,18 @@ internal static class DocxPropertyWriter
 
         OnOff(c, "rtl", f.RightToLeft);
         OnOff(c, "cs", f.ComplexScript);
+        if (f.Emphasis is { } emphasis)
+        {
+            c.Add(Val("em", emphasis switch
+            {
+                EmphasisMark.Dot => "dot",
+                EmphasisMark.Comma => "comma",
+                EmphasisMark.Circle => "circle",
+                EmphasisMark.UnderDot => "underDot",
+                _ => "none",
+            }));
+        }
+
         if (f.Language is not null || f.LanguageEastAsia is not null || f.LanguageBidi is not null)
         {
             XElement lang = new(Ns.W + "lang");
@@ -181,6 +193,11 @@ internal static class DocxPropertyWriter
             SetAttribute(lang, "eastAsia", f.LanguageEastAsia);
             SetAttribute(lang, "bidi", f.LanguageBidi);
             c.Add(lang);
+        }
+
+        if (f.CombineUpright is bool combine)
+        {
+            c.Add(new XElement(Ns.W + "eastAsianLayout", new XAttribute(Ns.W + "vert", combine ? "1" : "0")));
         }
 
         OnOff(c, "specVanish", f.SpecialHidden);

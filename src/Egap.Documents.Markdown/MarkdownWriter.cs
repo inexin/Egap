@@ -878,6 +878,14 @@ internal sealed class MarkdownWriter
                 }
 
                 break;
+            case Ruby ruby:
+                warnings.Add(ConversionWarningKind.FormattingDropped, "ruby, written as its base text");
+                foreach (Inline child in ruby.Inlines)
+                {
+                    WriteInline(child, text, state);
+                }
+
+                break;
             case Picture picture:
                 {
                     if (picture.SourceUrl is null && images.Skips(picture))

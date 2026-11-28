@@ -25,6 +25,7 @@ tr { display: table-row; }
 td, th { display: table-cell; }
 ruby { display: ruby; }
 rt { display: ruby-text; }
+rp { display: none; }
 
 blockquote, figure, listing, p, plaintext, pre, xmp { margin-top: 1em; margin-bottom: 1em; }
 blockquote, figure { margin-left: 40px; margin-right: 40px; }
