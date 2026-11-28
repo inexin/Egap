@@ -199,7 +199,7 @@ label.Save("label.docx");
 ## Fields
 
 `Document.UpdateFields` recomputes every field Egap understands, and `Field.Update` one of them: DATE, TIME and the other
-dates, document properties (AUTHOR, TITLE, DOCPROPERTY and the rest), FILENAME, REF, NOTEREF, SEQ, STYLEREF, HYPERLINK,
+dates, document properties (AUTHOR, TITLE, DOCPROPERTY and the rest), DOCVARIABLE, FILENAME, REF, NOTEREF, SEQ, STYLEREF, HYPERLINK,
 IF, formulas and TOC. Fields are updated in the order Word updates them, nested fields before the field that holds them, so
 an IF or a formula reads their new results. Page fields (PAGE, NUMPAGES, SECTIONPAGES, PAGEREF) are filled in by layout;
 locked fields and fields Egap does not know keep the result they have. A field's `\*` format (`Upper`, `ROMAN`, `CardText`
@@ -246,6 +246,26 @@ Console.WriteLine(total.Start.GetField()!.Result); // $1,204.50
 An IF field compares numbers as numbers: a formula, a nested field's result or a bookmark holding one, as in
 `IF { = SUM(ABOVE) } > 100 "Yes" "No"`. Other operands compare as text, `=` and `<>` with Word's `*` and `?` wildcards. A
 mail merge works out its IF fields the same way.
+
+### Document variables
+
+`Document.Variables` holds a document's variables (Word's document variables): text values by name, which a DOCVARIABLE
+field (`FieldKind.DocVariable`) shows. Names compare without regard to case, as in Word. A field naming a variable the
+document does not have shows Word's text, `Error! No document variable supplied.` (one that names none,
+`Error! Document Variable not defined.`), whatever its switches. DOCX (`w:docVars`), RTF (`\docvar`) and DOC read the
+variables and DOCX and RTF write them; OpenDocument has no document variables, so saving as ODT leaves them out with a
+warning. `Clone` and mail merge copy them, and a comparison's document has the variables of the one it was built on.
+
+```csharp
+using Egap.Documents;
+
+Document letter = new();
+letter.Variables["Customer"] = "Acme AS";
+Paragraph greeting = letter.AddSection().Body.AddParagraph("Dear ");
+Field customer = greeting.AddField("DOCVARIABLE Customer");
+letter.UpdateFields();
+// The field's result, customer.Start.GetField()!.Result, is now "Acme AS".
+```
 
 ## Mail merge
 

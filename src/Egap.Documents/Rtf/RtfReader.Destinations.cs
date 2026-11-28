@@ -76,6 +76,9 @@ internal sealed partial class RtfReader
             case "userprops":
                 ReadUserProperties();
                 return true;
+            case "docvar":
+                ReadDocumentVariable();
+                return true;
             case "defchp":
                 {
                     (RunFormat run, _) = ReadProperties();

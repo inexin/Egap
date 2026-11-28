@@ -1,4 +1,17 @@
 #nullable enable
+Egap.Documents.Document.Variables.get -> Egap.Documents.DocumentVariableCollection!
+Egap.Documents.DocumentVariableCollection
+Egap.Documents.DocumentVariableCollection.Clear() -> void
+Egap.Documents.DocumentVariableCollection.ContainsKey(string! key) -> bool
+Egap.Documents.DocumentVariableCollection.Count.get -> int
+Egap.Documents.DocumentVariableCollection.GetEnumerator() -> System.Collections.Generic.IEnumerator<System.Collections.Generic.KeyValuePair<string!, string!>>!
+Egap.Documents.DocumentVariableCollection.Keys.get -> System.Collections.Generic.IEnumerable<string!>!
+Egap.Documents.DocumentVariableCollection.Remove(string! name) -> bool
+Egap.Documents.DocumentVariableCollection.Set(string! name, string! value) -> void
+Egap.Documents.DocumentVariableCollection.this[string! name].get -> string!
+Egap.Documents.DocumentVariableCollection.this[string! name].set -> void
+Egap.Documents.DocumentVariableCollection.TryGetValue(string! key, out string! value) -> bool
+Egap.Documents.DocumentVariableCollection.Values.get -> System.Collections.Generic.IEnumerable<string!>!
 Egap.Documents.EmphasisMark
 Egap.Documents.EmphasisMark.Circle = 3 -> Egap.Documents.EmphasisMark
 Egap.Documents.EmphasisMark.Comma = 2 -> Egap.Documents.EmphasisMark
@@ -6,6 +19,7 @@ Egap.Documents.EmphasisMark.Dot = 1 -> Egap.Documents.EmphasisMark
 Egap.Documents.EmphasisMark.None = 0 -> Egap.Documents.EmphasisMark
 Egap.Documents.EmphasisMark.UnderDot = 4 -> Egap.Documents.EmphasisMark
 Egap.Documents.FieldKind.DisplayBarcode = 30 -> Egap.Documents.FieldKind
+Egap.Documents.FieldKind.DocVariable = 33 -> Egap.Documents.FieldKind
 Egap.Documents.FieldKind.Formula = 32 -> Egap.Documents.FieldKind
 Egap.Documents.FieldKind.MergeBarcode = 31 -> Egap.Documents.FieldKind
 Egap.Documents.Layout.LayoutWarningKind.PictureNotDrawn = 4 -> Egap.Documents.Layout.LayoutWarningKind

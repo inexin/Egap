@@ -69,6 +69,11 @@ internal milestones whose public API was frozen and reviewed, and they are liste
 
 ## Egap.Documents 2.4.0 (unreleased)
 
+- Document variables: `Document.Variables` (a `DocumentVariableCollection`, names compared without regard to case, as
+  Word does) and DOCVARIABLE fields (`FieldKind.DocVariable`), which show a variable's value or Word's
+  `Error! No document variable supplied.` (`Error! Document Variable not defined.` without a name). DOCX `w:docVars` and RTF `\docvar` groups are read and written (an untouched
+  `w:docVars` is kept as it was), DOC files' variables (StwUser) are read, and saving as ODT leaves them out with a
+  warning. `Clone`, mail merge and compare copy them. Checked against Word's own results and files.
 - Space between paragraphs is laid out as Word lays it out: the larger of the first paragraph's space after and the next
   one's space before, where Egap used to add them up. Automatic spacing (`SpaceBeforeAuto`, `SpaceAfterAuto`, Word's
   beforeAutospacing and afterAutospacing), which was laid out as no space, is now Word's HTML spacing: 14 points, none

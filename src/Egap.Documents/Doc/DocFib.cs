@@ -36,6 +36,7 @@ internal enum DocTable
     PlcfFldTxbx = 57,
     PlcfHdrtxbxTxt = 58,
     PlcfFldHdrTxbx = 59,
+    StwUser = 60,
     PlcSpaMom = 40,
     PlcSpaHdr = 41,
     DggInfo = 50,

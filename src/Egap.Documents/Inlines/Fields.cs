@@ -109,6 +109,9 @@ public enum FieldKind
     /// in a table, the table's cells.
     /// </summary>
     Formula,
+
+    /// <summary>DOCVARIABLE: a document variable's value (<see cref="Document.Variables"/>).</summary>
+    DocVariable,
 }
 
 /// <summary>
@@ -362,6 +365,7 @@ public sealed class Field
             "LASTSAVEDBY" => FieldKind.LastSavedBy,
             "FILENAME" => FieldKind.FileName,
             "DOCPROPERTY" => FieldKind.DocProperty,
+            "DOCVARIABLE" => FieldKind.DocVariable,
             "MERGEFIELD" => FieldKind.MergeField,
             "FORMTEXT" or "FORMCHECKBOX" or "FORMDROPDOWN" => FieldKind.FormField,
             "SYMBOL" => FieldKind.Symbol,

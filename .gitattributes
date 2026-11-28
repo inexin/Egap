@@ -8,3 +8,6 @@
 
 # Fuzz seeds are raw bytes: line endings matter.
 tests/fuzz-seeds/** binary
+
+# Word's own saves of the field fixtures: kept byte for byte.
+tests/files/fields/*.word.* binary
