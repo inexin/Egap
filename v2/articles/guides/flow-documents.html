@@ -206,6 +206,72 @@ builder.Writeln(&quot;Parcel 2026-118&quot;);
 builder.InsertBarcode(Barcode.Code128(&quot;PARCEL-2026-118&quot;), 200, 50);
 label.Save(&quot;label.docx&quot;);
 </code></pre>
+<h3 id="barcode-fields">Barcode fields</h3>
+<p>Word's own barcodes are fields: <code>DISPLAYBARCODE &quot;data&quot; TYPE [switches]</code>, and <code>MERGEBARCODE FieldName TYPE [switches]</code> in a
+mail merge template. Egap reads them from DOCX, RTF and DOC as <code>FieldKind.DisplayBarcode</code> and <code>FieldKind.MergeBarcode</code>, keeps
+their codes when it saves, and layout, PDF export and rendering draw a DISPLAYBARCODE field's symbol, in vectors, in place
+of its result, as Word does. The types are Word's: <code>QR</code>, <code>CODE128</code>, <code>CODE39</code>, <code>NW7</code> (Codabar), <code>EAN13</code> and <code>JAN13</code>, <code>EAN8</code>
+and <code>JAN8</code>, <code>UPCA</code>, <code>UPCE</code>, <code>ITF14</code> and <code>CASE</code>, and <code>JPPOST</code> (the Japan Post customer barcode). The switches:</p>
+<table>
+<thead>
+<tr>
+<th>Switch</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>\s n</code></td>
+<td>Scale in percent, 10 to 1000.</td>
+</tr>
+<tr>
+<td><code>\h n</code></td>
+<td>Height in twips: a linear symbol's bars, or a QR Code's side.</td>
+</tr>
+<tr>
+<td><code>\r n</code></td>
+<td>Rotation in quarter turns clockwise, 0 to 3.</td>
+</tr>
+<tr>
+<td><code>\f n</code>, <code>\b n</code></td>
+<td>Foreground and background colour, 0xRRGGBB; no background by default.</td>
+</tr>
+<tr>
+<td><code>\t</code></td>
+<td>The text under a linear symbol.</td>
+</tr>
+<tr>
+<td><code>\q n</code></td>
+<td>QR error correction, 0 to 3 or L, M, Q, H.</td>
+</tr>
+<tr>
+<td><code>\p</code></td>
+<td>EAN and UPC style: <code>SUP2</code> and <code>SUP5</code> take an add-on after a space in the data.</td>
+</tr>
+<tr>
+<td><code>\x</code></td>
+<td>Puts right a wrong check digit (EAN, JAN, UPC, ITF-14).</td>
+</tr>
+<tr>
+<td><code>\d</code>, <code>\c</code></td>
+<td>Code 39 and NW7 start and stop characters, ITF-14 style: Egap always draws them, and bearer bars.</td>
+</tr>
+</tbody>
+</table>
+<p>Word does not say what size it draws a symbol at, so Egap draws each at its standard's nominal size at 100 %: an X of
+0.33 mm for EAN and UPC, 1.016 mm for ITF-14, 0.254 mm for Code 128, Code 39 and NW7, the manual's 0.6 mm for Japan Post and
+0.53 mm for a QR Code module. Data a type cannot hold draws nothing, and the field shows its stored result (Word shows an
+error there). A mail merge makes each MERGEBARCODE field the DISPLAYBARCODE field of its value, with the same type and
+switches, as Word does; one without a value is removed with a warning.</p>
+<pre><code class="lang-csharp">using Egap.Documents;
+
+Document label = new();
+Paragraph paragraph = label.AddSection().Body.AddParagraph(&quot;Track your parcel: &quot;);
+paragraph.AddField(&quot;DISPLAYBARCODE \&quot;https://egap.dev/t/118\&quot; QR \\q 3 \\s 80&quot;);
+paragraph.AddRun(&quot; &quot;);
+paragraph.AddField(&quot;DISPLAYBARCODE \&quot;490123456789\&quot; JAN13 \\t&quot;);
+label.Save(&quot;label.docx&quot;);
+</code></pre>
 <h2 id="mail-merge">Mail merge</h2>
 <p><code>FillMergeFields</code> fills a template's MERGEFIELD fields from one record. Each field becomes plain text in its own
 formatting, written with its number (<code>\#</code>), date (<code>\@</code>) and text (<code>\*</code>) formats and the text it puts before and after a

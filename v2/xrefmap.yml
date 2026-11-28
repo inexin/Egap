@@ -11995,6 +11995,12 @@ references:
   commentId: F:Egap.Documents.FieldKind.Date
   fullName: Egap.Documents.FieldKind.Date
   nameWithType: FieldKind.Date
+- uid: Egap.Documents.FieldKind.DisplayBarcode
+  name: DisplayBarcode
+  href: api/Egap.Documents.FieldKind.html#Egap_Documents_FieldKind_DisplayBarcode
+  commentId: F:Egap.Documents.FieldKind.DisplayBarcode
+  fullName: Egap.Documents.FieldKind.DisplayBarcode
+  nameWithType: FieldKind.DisplayBarcode
 - uid: Egap.Documents.FieldKind.DocProperty
   name: DocProperty
   href: api/Egap.Documents.FieldKind.html#Egap_Documents_FieldKind_DocProperty
@@ -12049,6 +12055,12 @@ references:
   commentId: F:Egap.Documents.FieldKind.LastSavedBy
   fullName: Egap.Documents.FieldKind.LastSavedBy
   nameWithType: FieldKind.LastSavedBy
+- uid: Egap.Documents.FieldKind.MergeBarcode
+  name: MergeBarcode
+  href: api/Egap.Documents.FieldKind.html#Egap_Documents_FieldKind_MergeBarcode
+  commentId: F:Egap.Documents.FieldKind.MergeBarcode
+  fullName: Egap.Documents.FieldKind.MergeBarcode
+  nameWithType: FieldKind.MergeBarcode
 - uid: Egap.Documents.FieldKind.MergeField
   name: MergeField
   href: api/Egap.Documents.FieldKind.html#Egap_Documents_FieldKind_MergeField
