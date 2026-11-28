@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Namespace Egap.Presentations | Egap </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Namespace Egap.Presentations | Egap ">
+      
+      
+      <link rel="icon" href="../images/favicon.ico">
+      <link rel="stylesheet" href="../public/docfx.min.css">
+      <link rel="stylesheet" href="../public/main.css">
+      <meta name="docfx:navrel" content="../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      <meta name="docfx:rel" content="../">
+      
+      
+      
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="ManagedReference">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../index.html">
+            <img id="logo" class="svg" src="../images/logo.svg" alt="Egap">
+            Egap
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="Egap.Presentations">
+
+  <h1 id="Egap_Presentations" data-uid="Egap.Presentations" class="text-break">Namespace Egap.Presentations</h1>
+  <div class="markdown level0 summary"></div>
+  <div class="markdown level0 conceptual"></div>
+  <div class="markdown level0 remarks"></div>
+
+    <h3 id="classes">
+Classes
+</h3>
+    <dl class="jumplist">
+      <dt><a class="xref" href="Egap.Presentations.AutoShape.html">AutoShape</a></dt>
+      <dd><p>A shape with a geometry, a fill and an outline, and usually text (<code>p:sp</code>): rectangles, text boxes, placeholders.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="Egap.Presentations.ColorMap.html">ColorMap</a></dt>
+      <dd><p>A colour map: which theme colour each of the twelve colour names of a slide stands for. A master has one; a layout or slide
+may override it, as a dark title slide swaps the background and text colours.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="Egap.Presentations.ConnectorShape.html">ConnectorShape</a></dt>
+      <dd><p>A connector (<code>p:cxnSp</code>): a line or elbow between two shapes, which follows them when they move.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="Egap.Presentations.GraphicFrame.html">GraphicFrame</a></dt>
+      <dd><p>A frame for a table, chart, SmartArt diagram or embedded object (<code>p:graphicFrame</code>). What it holds is kept as it is
+and written back; <a class="xref" href="Egap.Presentations.GraphicFrame.html#Egap_Presentations_GraphicFrame_Kind">Kind</a> says what it is.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="Egap.Presentations.GroupShape.html">GroupShape</a></dt>
+      <dd><p>A group of shapes (<code>p:grpSp</code>), moved and sized as one. Its shapes are placed in its child coordinates
+(<a class="xref" href="Egap.Presentations.GroupShape.html#Egap_Presentations_GroupShape_ChildArea">ChildArea</a>), which map onto the group's own <a class="xref" href="Egap.Presentations.SlideShape.html#Egap_Presentations_SlideShape_Transform">Transform</a>.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="Egap.Presentations.PictureShape.html">PictureShape</a></dt>
+      <dd><p>A picture (<code>p:pic</code>): an image from a part of the file, cropped and framed.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="Egap.Presentations.Presentation.html">Presentation</a></dt>
+      <dd><p>A PowerPoint presentation: its slides, the slide layouts they follow and the slide masters those belong to. A loaded
+presentation keeps its file whole, so a save writes back every part and every element the model does not hold, as it was,
+and only the parts whose content the model changed are written again.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="Egap.Presentations.PresentationLoadOptions.html">PresentationLoadOptions</a></dt>
+      <dd><p>How a presentation is loaded.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="Egap.Presentations.PresentationTheme.html">PresentationTheme</a></dt>
+      <dd><p>A slide master's theme (<code>a:theme</code>): its twelve colours and its heading and body fonts, as read from the file. It is
+read-only here; the theme part is written back as it was.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="Egap.Presentations.ShapePlaceholder.html">ShapePlaceholder</a></dt>
+      <dd><p>The placeholder a shape fills: its type and index, which match it to its layout's and master's placeholders.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="Egap.Presentations.Slide.html">Slide</a></dt>
+      <dd><p>A slide: the layout it follows, its shapes, and whether the show skips it.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="Egap.Presentations.SlideBase.html">SlideBase</a></dt>
+      <dd><p>What slides, slide layouts and slide masters have in common: a part of the file, a name, and a tree of shapes
+(<code>p:cSld</code>).</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="Egap.Presentations.SlideCollection.html">SlideCollection</a></dt>
+      <dd><p>The slides of a presentation, in the order they are shown. A slide the presentation lists whose part is missing from
+the file is left out; its entry is written back as it was.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="Egap.Presentations.SlideLayout.html">SlideLayout</a></dt>
+      <dd><p>A slide layout: the placeholders and shapes slides that follow it start from, under one master.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="Egap.Presentations.SlideMaster.html">SlideMaster</a></dt>
+      <dd><p>A slide master: the theme, colour map, text styles and shapes its layouts and their slides start from.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="Egap.Presentations.SlideShape.html">SlideShape</a></dt>
+      <dd><p>A shape on a slide, layout or master: an <a class="xref" href="Egap.Presentations.AutoShape.html">AutoShape</a>, <a class="xref" href="Egap.Presentations.PictureShape.html">PictureShape</a>, <a class="xref" href="Egap.Presentations.GroupShape.html">GroupShape</a>,
+<a class="xref" href="Egap.Presentations.ConnectorShape.html">ConnectorShape</a> or <a class="xref" href="Egap.Presentations.GraphicFrame.html">GraphicFrame</a>. Its id, name and position are read from the file and written
+back where they change; everything else the shape holds is kept as it was.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="Egap.Presentations.SlideShapeCollection.html">SlideShapeCollection</a></dt>
+      <dd><p>The shapes of a slide, layout, master or group, in the order they are drawn: the first is at the back. A shape written two
+ways in <code>mc:AlternateContent</code>, for newer and older readers, is read from the branch this reader understands; a
+change is made in that branch only, and the other keeps the values it had.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="Egap.Presentations.TextBody.html">TextBody</a></dt>
+      <dd><p>A shape's text (<code>p:txBody</code>): its paragraphs and their runs. The body's and paragraphs' properties, bullets and
+styles are kept as they are.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="Egap.Presentations.TextParagraph.html">TextParagraph</a></dt>
+      <dd><p>A paragraph of a shape's text (<code>a:p</code>): its runs and line breaks, and its outline level.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="Egap.Presentations.TextRun.html">TextRun</a></dt>
+      <dd><p>A run of text with one formatting (<code>a:r</code>), or a field PowerPoint fills in, such as the slide number (<code>a:fld</code>).</p>
+</dd>
+    </dl>
+    <h3 id="structs">
+Structs
+</h3>
+    <dl class="jumplist">
+      <dt><a class="xref" href="Egap.Presentations.ShapeConnection.html">ShapeConnection</a></dt>
+      <dd><p>Where a connector end is attached: a shape's id and the connection site on it, numbered from 0.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="Egap.Presentations.ShapeTransform.html">ShapeTransform</a></dt>
+      <dd><p>A shape's position, size, rotation and flips, in EMUs (English Metric Units: 914,400 to the inch, 12,700 to the point),
+with the position and size in points alongside.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="Egap.Presentations.SlideSize.html">SlideSize</a></dt>
+      <dd><p>The size of a slide or notes page, in EMUs (English Metric Units: 914,400 to the inch, 12,700 to the point).</p>
+</dd>
+    </dl>
+    <h3 id="enums">
+Enums
+</h3>
+    <dl class="jumplist">
+      <dt><a class="xref" href="Egap.Presentations.ColorMapSlot.html">ColorMapSlot</a></dt>
+      <dd><p>The colour names slides use for text and backgrounds, which a <a class="xref" href="Egap.Presentations.ColorMap.html">ColorMap</a> maps to theme colours
+(ECMA-376 Part 1, 19.3.1.6, <code>p:clrMap</code>).</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="Egap.Presentations.GraphicFrameKind.html">GraphicFrameKind</a></dt>
+      <dd><p>What a <a class="xref" href="Egap.Presentations.GraphicFrame.html">GraphicFrame</a> holds.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="Egap.Presentations.PlaceholderType.html">PlaceholderType</a></dt>
+      <dd><p>The kinds of placeholder (ECMA-376 Part 1, 19.7.10, ST_PlaceholderType).</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="Egap.Presentations.PresentationFormat.html">PresentationFormat</a></dt>
+      <dd><p>The kinds of PowerPoint file: presentations, templates and shows, with or without macros.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="Egap.Presentations.SlideLayoutType.html">SlideLayoutType</a></dt>
+      <dd><p>The kinds of slide layout PowerPoint uses to pick a layout for new content (ECMA-376 Part 1, 19.7.15, ST_SlideLayoutType).</p>
+</dd>
+    </dl>
+
+
+</article>
+
+        <div class="contribution d-print-none">
+        </div>
+
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>Made with <a href="https://dotnet.github.io/docfx">docfx</a></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

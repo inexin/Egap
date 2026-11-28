@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Presentations | Egap </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Presentations | Egap ">
+      
+      
+      <link rel="icon" href="../../images/favicon.ico">
+      <link rel="stylesheet" href="../../public/docfx.min.css">
+      <link rel="stylesheet" href="../../public/main.css">
+      <meta name="docfx:navrel" content="../../toc.html">
+      <meta name="docfx:tocrel" content="../toc.html">
+      
+      <meta name="docfx:rel" content="../../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/inexin/Egap/blob/main/docs/articles/guides/presentations.md/#L1">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../../index.html">
+            <img id="logo" class="svg" src="../../images/logo.svg" alt="Egap">
+            Egap
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="">
+<h1 id="presentations">Presentations</h1>
+
+<p>Egap.Presentations loads PowerPoint files and lets you read and edit their slides from code: the slide masters, their
+layouts and themes, the slides, and the shapes on each, with their ids, names, positions, placeholders and text. It reads
+PPTX, PPTM, POTX, POTM, PPSX and PPSM files, in transitional or Strict namespaces. The types are in
+<code>Egap.Presentations</code>.</p>
+<div class="NOTE">
+<h5>Note</h5>
+<p><a href="#known-limits">Known limits</a> lists what Egap.Presentations does not do yet.</p>
+</div>
+<pre><code class="lang-csharp">using Egap.Presentations;
+
+Presentation deck = Presentation.Load(&quot;quarterly.pptx&quot;);
+foreach (Slide slide in deck.Slides)
+{
+    Console.WriteLine($&quot;Slide {slide.SlideId}: layout {slide.Layout?.Name}&quot;);
+    foreach (SlideShape shape in slide.Shapes)
+    {
+        string text = shape is AutoShape { TextBody: { } body } ? body.Text : &quot;&quot;;
+        Console.WriteLine($&quot;  {shape.Id} {shape.Name} {shape.Transform?.XPoints} {text}&quot;);
+    }
+}
+</code></pre>
+<h2 id="loading-and-saving">Loading and saving</h2>
+<p><code>Presentation.Load</code> reads a file from a path or a stream. <code>Save</code> writes it back, as the same kind of file it was
+(<code>Presentation.Format</code>). Everything the model does not hold, from transitions and animations to charts, notes pages and
+parts it has never heard of, is written back as it was: a part the model did not change keeps its bytes, and a part it
+changed keeps every element and attribute but the values set. A Strict file stays Strict.</p>
+<pre><code class="lang-csharp">using Egap.Presentations;
+
+Presentation deck = Presentation.Load(&quot;quarterly.pptx&quot;);
+deck.SlideSize = SlideSize.FromPoints(720, 540);     // 4:3
+SlideShape title = deck.Slides[0].Shapes[0];
+title.Name = &quot;Main title&quot;;
+title.Description = &quot;The quarter's headline&quot;;
+deck.Save(&quot;quarterly-4x3.pptx&quot;);
+</code></pre>
+<p>A file that is not a presentation, or one damaged past reading, throws <code>DocumentException</code> (from Egap.Documents) with a
+message that names the problem and the part. <code>PresentationLoadOptions.Limits</code> caps what an untrusted file may make the
+reader use; past a limit it throws <code>DocumentLimitException</code>.</p>
+<h2 id="masters-layouts-and-slides">Masters, layouts and slides</h2>
+<p>A presentation has one or more slide masters (<code>SlideMasters</code>). Each master has a theme (<code>PresentationTheme</code>: twelve
+colours and the heading and body fonts), a colour map, and its layouts (<code>Layouts</code>). Each slide follows one layout
+(<code>Slide.Layout</code>, and <code>Slide.Master</code> for its master). Slides, layouts and masters all have <code>Shapes</code> and a <code>ColorMap</code>; a
+layout or slide that overrides its master's colour map has it in <code>ColorMapOverride</code>. <code>SlideLayout.LayoutType</code> says what kind
+of layout it is (<code>SlideLayoutType.Title</code>, <code>TitleOnly</code>, <code>SectionHeader</code> and the rest). A slide the presentation lists whose
+part is missing from the file is left out of <code>Slides</code>.</p>
+<pre><code class="lang-csharp">using Egap.Documents;
+using Egap.Presentations;
+
+Presentation deck = Presentation.Load(&quot;quarterly.pptx&quot;);
+SlideMaster master = deck.SlideMasters[0];
+Console.WriteLine($&quot;{master.Theme?.Name}: {master.Theme?.MajorLatinFont} / {master.Theme?.MinorLatinFont}&quot;);
+foreach (SlideLayout layout in master.Layouts)
+{
+    Console.WriteLine($&quot;{layout.Name} ({layout.LayoutType})&quot;);
+}
+
+Slide first = deck.Slides[0];
+ThemeColor background = first.ColorMap[ColorMapSlot.Background1];   // Light1, or Dark1 on a dark slide
+</code></pre>
+<h2 id="shapes">Shapes</h2>
+<p><code>Shapes</code> lists a slide's shapes in drawing order, the first at the back. Each is one of:</p>
+<ul>
+<li><code>AutoShape</code>: a shape with a geometry and text (<code>p:sp</code>): rectangles, text boxes, placeholders. <code>PresetGeometry</code> names
+its preset (<code>rect</code>, <code>ellipse</code>, <code>rightArrow</code>), and <code>TextBody</code> has its paragraphs and runs.</li>
+<li><code>PictureShape</code>: a picture; <code>ImagePartName</code>, <code>ImageContentType</code> and <code>GetImageData()</code> give its image.</li>
+<li><code>GroupShape</code>: a group, with its own <code>Shapes</code> placed in its <code>ChildArea</code>.</li>
+<li><code>ConnectorShape</code>: a line between shapes; <code>Start</code> and <code>End</code> name the shapes it is attached to.</li>
+<li><code>GraphicFrame</code>: a table, chart, SmartArt diagram or embedded object, kept as it is; <code>Kind</code> says which.</li>
+</ul>
+<p><code>Transform</code> gives a shape's position, size, rotation and flips in EMUs (914,400 to the inch), with the position and size in
+points too; it is null for a placeholder that takes its position from its layout. <code>Placeholder</code> gives a placeholder's type
+and index, which match it to its layout's placeholder. A shape PowerPoint wrote two ways (<code>mc:AlternateContent</code>, for newer
+and older readers) is read and changed in the branch Egap understands; the other branch keeps its values.</p>
+<pre><code class="lang-csharp">using Egap.Presentations;
+
+Presentation deck = Presentation.Load(&quot;quarterly.pptx&quot;);
+Slide slide = deck.Slides[0];
+foreach (SlideShape shape in slide.Shapes)
+{
+    if (shape.Placeholder is { Type: PlaceholderType.Title or PlaceholderType.CenteredTitle } &amp;&amp; shape is AutoShape { TextBody: { } body })
+    {
+        body.Paragraphs[0].Runs[0].Text = &quot;Results for Q3&quot;;
+    }
+}
+
+SlideShape logo = slide.Shapes.FindById(4) ?? throw new InvalidOperationException(&quot;No logo&quot;);
+logo.Transform = ShapeTransform.FromPoints(36, 36, 144, 72);
+deck.Save(&quot;quarterly.pptx&quot;);
+</code></pre>
+<p>A run's text is replaced in place, so it keeps its font, size and colour. <code>TextBody.Text</code> and <code>TextParagraph.Text</code> give the
+text with paragraphs ended by <code>\r</code> and line breaks as <code>\v</code>, as Egap.Documents' text does.</p>
+<h2 id="known-limits">Known limits</h2>
+<ul>
+<li>Slides, shapes and text cannot be added or removed yet; a loaded file's slides and shapes are read and edited in place.</li>
+<li>Fills, outlines, text formatting, tables, charts, notes pages, comments, transitions and animations are kept and written
+back, but not in the model.</li>
+<li>A shape's inherited position and text styles (from its layout and master placeholder) are not worked out; <code>Transform</code> is
+the shape's own.</li>
+<li>Encrypted presentations and PowerPoint 97-2003 files (PPT) are not read.</li>
+<li>Slides are not rendered to images or PDF.</li>
+</ul>
+
+</article>
+
+        <div class="contribution d-print-none">
+          <a href="https://github.com/inexin/Egap/blob/main/docs/articles/guides/presentations.md/#L1" class="edit-link">Edit this page</a>
+        </div>
+
+        <div class="next-article d-print-none border-top" id="nextArticle"></div>
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>Made with <a href="https://dotnet.github.io/docfx">docfx</a></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

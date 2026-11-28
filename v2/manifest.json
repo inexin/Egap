@@ -63,6 +63,16 @@
     },
     {
       "type": "Resource",
+      "source_relative_path": "agents/Egap.Presentations.md",
+      "output": {
+        "resource": {
+          "relative_path": "agents/Egap.Presentations.md"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Resource",
       "source_relative_path": "agents/Egap.Preview.md",
       "output": {
         "resource": {
@@ -8749,6 +8759,412 @@
     },
     {
       "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Presentations.AutoShape.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Presentations.AutoShape.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Presentations.AutoShape",
+      "Summary": "<p sourcefile=\"api/Egap.Presentations.AutoShape.yml\" sourcestartlinenumber=\"1\">A shape with a geometry, a fill and an outline, and usually text (<code>p:sp</code>): rectangles, text boxes, placeholders.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Presentations.ColorMap.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Presentations.ColorMap.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Presentations.ColorMap",
+      "Summary": "<p sourcefile=\"api/Egap.Presentations.ColorMap.yml\" sourcestartlinenumber=\"1\">A colour map: which theme colour each of the twelve colour names of a slide stands for. A master has one; a layout or slide\nmay override it, as a dark title slide swaps the background and text colours.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Presentations.ColorMapSlot.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Presentations.ColorMapSlot.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Presentations.ColorMapSlot",
+      "Summary": "<p sourcefile=\"api/Egap.Presentations.ColorMapSlot.yml\" sourcestartlinenumber=\"1\">The colour names slides use for text and backgrounds, which a <xref href=\"Egap.Presentations.ColorMap\" data-throw-if-not-resolved=\"false\"></xref> maps to theme colours\n(ECMA-376 Part 1, 19.3.1.6, <code>p:clrMap</code>).</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Presentations.ConnectorShape.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Presentations.ConnectorShape.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Presentations.ConnectorShape",
+      "Summary": "<p sourcefile=\"api/Egap.Presentations.ConnectorShape.yml\" sourcestartlinenumber=\"1\">A connector (<code>p:cxnSp</code>): a line or elbow between two shapes, which follows them when they move.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Presentations.GraphicFrame.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Presentations.GraphicFrame.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Presentations.GraphicFrame",
+      "Summary": "<p sourcefile=\"api/Egap.Presentations.GraphicFrame.yml\" sourcestartlinenumber=\"1\">A frame for a table, chart, SmartArt diagram or embedded object (<code>p:graphicFrame</code>). What it holds is kept as it is\nand written back; <xref href=\"Egap.Presentations.GraphicFrame.Kind\" data-throw-if-not-resolved=\"false\"></xref> says what it is.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Presentations.GraphicFrameKind.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Presentations.GraphicFrameKind.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Presentations.GraphicFrameKind",
+      "Summary": "<p sourcefile=\"api/Egap.Presentations.GraphicFrameKind.yml\" sourcestartlinenumber=\"1\">What a <xref href=\"Egap.Presentations.GraphicFrame\" data-throw-if-not-resolved=\"false\"></xref> holds.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Presentations.GroupShape.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Presentations.GroupShape.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Presentations.GroupShape",
+      "Summary": "<p sourcefile=\"api/Egap.Presentations.GroupShape.yml\" sourcestartlinenumber=\"1\">A group of shapes (<code>p:grpSp</code>), moved and sized as one. Its shapes are placed in its child coordinates\n(<xref href=\"Egap.Presentations.GroupShape.ChildArea\" data-throw-if-not-resolved=\"false\"></xref>), which map onto the group's own <xref href=\"Egap.Presentations.SlideShape.Transform\" data-throw-if-not-resolved=\"false\"></xref>.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Presentations.PictureShape.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Presentations.PictureShape.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Presentations.PictureShape",
+      "Summary": "<p sourcefile=\"api/Egap.Presentations.PictureShape.yml\" sourcestartlinenumber=\"1\">A picture (<code>p:pic</code>): an image from a part of the file, cropped and framed.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Presentations.PlaceholderType.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Presentations.PlaceholderType.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Presentations.PlaceholderType",
+      "Summary": "<p sourcefile=\"api/Egap.Presentations.PlaceholderType.yml\" sourcestartlinenumber=\"1\">The kinds of placeholder (ECMA-376 Part 1, 19.7.10, ST_PlaceholderType).</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Presentations.Presentation.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Presentations.Presentation.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Presentations.Presentation",
+      "Summary": "<p sourcefile=\"api/Egap.Presentations.Presentation.yml\" sourcestartlinenumber=\"1\">A PowerPoint presentation: its slides, the slide layouts they follow and the slide masters those belong to. A loaded\npresentation keeps its file whole, so a save writes back every part and every element the model does not hold, as it was,\nand only the parts whose content the model changed are written again.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Presentations.PresentationFormat.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Presentations.PresentationFormat.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Presentations.PresentationFormat",
+      "Summary": "<p sourcefile=\"api/Egap.Presentations.PresentationFormat.yml\" sourcestartlinenumber=\"1\">The kinds of PowerPoint file: presentations, templates and shows, with or without macros.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Presentations.PresentationLoadOptions.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Presentations.PresentationLoadOptions.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Presentations.PresentationLoadOptions",
+      "Summary": "<p sourcefile=\"api/Egap.Presentations.PresentationLoadOptions.yml\" sourcestartlinenumber=\"1\">How a presentation is loaded.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Presentations.PresentationTheme.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Presentations.PresentationTheme.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Presentations.PresentationTheme",
+      "Summary": "<p sourcefile=\"api/Egap.Presentations.PresentationTheme.yml\" sourcestartlinenumber=\"1\">A slide master's theme (<code>a:theme</code>): its twelve colours and its heading and body fonts, as read from the file. It is\nread-only here; the theme part is written back as it was.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Presentations.ShapeConnection.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Presentations.ShapeConnection.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Presentations.ShapeConnection",
+      "Summary": "<p sourcefile=\"api/Egap.Presentations.ShapeConnection.yml\" sourcestartlinenumber=\"1\">Where a connector end is attached: a shape's id and the connection site on it, numbered from 0.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Presentations.ShapePlaceholder.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Presentations.ShapePlaceholder.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Presentations.ShapePlaceholder",
+      "Summary": "<p sourcefile=\"api/Egap.Presentations.ShapePlaceholder.yml\" sourcestartlinenumber=\"1\">The placeholder a shape fills: its type and index, which match it to its layout's and master's placeholders.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Presentations.ShapeTransform.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Presentations.ShapeTransform.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Presentations.ShapeTransform",
+      "Summary": "<p sourcefile=\"api/Egap.Presentations.ShapeTransform.yml\" sourcestartlinenumber=\"1\">A shape's position, size, rotation and flips, in EMUs (English Metric Units: 914,400 to the inch, 12,700 to the point),\nwith the position and size in points alongside.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Presentations.Slide.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Presentations.Slide.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Presentations.Slide",
+      "Summary": "<p sourcefile=\"api/Egap.Presentations.Slide.yml\" sourcestartlinenumber=\"1\">A slide: the layout it follows, its shapes, and whether the show skips it.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Presentations.SlideBase.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Presentations.SlideBase.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Presentations.SlideBase",
+      "Summary": "<p sourcefile=\"api/Egap.Presentations.SlideBase.yml\" sourcestartlinenumber=\"1\">What slides, slide layouts and slide masters have in common: a part of the file, a name, and a tree of shapes\n(<code>p:cSld</code>).</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Presentations.SlideCollection.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Presentations.SlideCollection.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Presentations.SlideCollection",
+      "Summary": "<p sourcefile=\"api/Egap.Presentations.SlideCollection.yml\" sourcestartlinenumber=\"1\">The slides of a presentation, in the order they are shown. A slide the presentation lists whose part is missing from\nthe file is left out; its entry is written back as it was.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Presentations.SlideLayout.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Presentations.SlideLayout.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Presentations.SlideLayout",
+      "Summary": "<p sourcefile=\"api/Egap.Presentations.SlideLayout.yml\" sourcestartlinenumber=\"1\">A slide layout: the placeholders and shapes slides that follow it start from, under one master.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Presentations.SlideLayoutType.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Presentations.SlideLayoutType.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Presentations.SlideLayoutType",
+      "Summary": "<p sourcefile=\"api/Egap.Presentations.SlideLayoutType.yml\" sourcestartlinenumber=\"1\">The kinds of slide layout PowerPoint uses to pick a layout for new content (ECMA-376 Part 1, 19.7.15, ST_SlideLayoutType).</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Presentations.SlideMaster.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Presentations.SlideMaster.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Presentations.SlideMaster",
+      "Summary": "<p sourcefile=\"api/Egap.Presentations.SlideMaster.yml\" sourcestartlinenumber=\"1\">A slide master: the theme, colour map, text styles and shapes its layouts and their slides start from.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Presentations.SlideShape.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Presentations.SlideShape.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Presentations.SlideShape",
+      "Summary": "<p sourcefile=\"api/Egap.Presentations.SlideShape.yml\" sourcestartlinenumber=\"1\">A shape on a slide, layout or master: an <xref href=\"Egap.Presentations.AutoShape\" data-throw-if-not-resolved=\"false\"></xref>, <xref href=\"Egap.Presentations.PictureShape\" data-throw-if-not-resolved=\"false\"></xref>, <xref href=\"Egap.Presentations.GroupShape\" data-throw-if-not-resolved=\"false\"></xref>,\n<xref href=\"Egap.Presentations.ConnectorShape\" data-throw-if-not-resolved=\"false\"></xref> or <xref href=\"Egap.Presentations.GraphicFrame\" data-throw-if-not-resolved=\"false\"></xref>. Its id, name and position are read from the file and written\nback where they change; everything else the shape holds is kept as it was.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Presentations.SlideShapeCollection.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Presentations.SlideShapeCollection.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Presentations.SlideShapeCollection",
+      "Summary": "<p sourcefile=\"api/Egap.Presentations.SlideShapeCollection.yml\" sourcestartlinenumber=\"1\">The shapes of a slide, layout, master or group, in the order they are drawn: the first is at the back. A shape written two\nways in <code>mc:AlternateContent</code>, for newer and older readers, is read from the branch this reader understands; a\nchange is made in that branch only, and the other keeps the values it had.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Presentations.SlideSize.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Presentations.SlideSize.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Presentations.SlideSize",
+      "Summary": "<p sourcefile=\"api/Egap.Presentations.SlideSize.yml\" sourcestartlinenumber=\"1\">The size of a slide or notes page, in EMUs (English Metric Units: 914,400 to the inch, 12,700 to the point).</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Presentations.TextBody.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Presentations.TextBody.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Presentations.TextBody",
+      "Summary": "<p sourcefile=\"api/Egap.Presentations.TextBody.yml\" sourcestartlinenumber=\"1\">A shape's text (<code>p:txBody</code>): its paragraphs and their runs. The body's and paragraphs' properties, bullets and\nstyles are kept as they are.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Presentations.TextParagraph.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Presentations.TextParagraph.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Presentations.TextParagraph",
+      "Summary": "<p sourcefile=\"api/Egap.Presentations.TextParagraph.yml\" sourcestartlinenumber=\"1\">A paragraph of a shape's text (<code>a:p</code>): its runs and line breaks, and its outline level.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Presentations.TextRun.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Presentations.TextRun.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Presentations.TextRun",
+      "Summary": "<p sourcefile=\"api/Egap.Presentations.TextRun.yml\" sourcestartlinenumber=\"1\">A run of text with one formatting (<code>a:r</code>), or a field PowerPoint fills in, such as the slide number (<code>a:fld</code>).</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Presentations.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Presentations.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Presentations",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
       "source_relative_path": "api/Egap.Spreadsheets.AutoFilter.yml",
       "output": {
         ".html": {
@@ -10564,6 +10980,16 @@
       "output": {
         ".html": {
           "relative_path": "articles/guides/pdf-tools.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "articles/guides/presentations.md",
+      "output": {
+        ".html": {
+          "relative_path": "articles/guides/presentations.html"
         }
       },
       "version": ""
