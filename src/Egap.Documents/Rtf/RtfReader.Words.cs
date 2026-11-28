@@ -1078,6 +1078,9 @@ internal sealed partial class RtfReader
             case "noindnmbrts":
                 settings.WordCompatibility.DoNotUseIndentAsNumberingTabStop = true;
                 return true;
+            case "expshrtn":
+                settings.WordCompatibility.DoNotExpandShiftReturn = false;
+                return true;
             default:
                 return false;
         }
