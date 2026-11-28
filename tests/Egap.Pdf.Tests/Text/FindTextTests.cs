@@ -33,6 +33,19 @@ public sealed class FindTextTests
     }
 
     [Fact]
+    public void WholeWordsInThaiFollowTheDictionary()
+    {
+        // "Thai language is a language", as a page's text reads it: no spaces between the words.
+        const string text = "ภาษาไทยเป็นภาษา";
+        PdfFindOptions whole = new() { WholeWord = true };
+
+        Assert.Equal([0, 11], Egap.Pdf.Text.TextSearch.Matches(Egap.Pdf.Text.TextSearch.Pattern("ภาษา", whole), text).Select(m => m.Index));
+        Assert.Equal([4], Egap.Pdf.Text.TextSearch.Matches(Egap.Pdf.Text.TextSearch.Pattern("ไทย", whole), text).Select(m => m.Index));
+        Assert.Empty(Egap.Pdf.Text.TextSearch.Matches(Egap.Pdf.Text.TextSearch.Pattern("ภา", whole), text));
+        Assert.Equal(2, Egap.Pdf.Text.TextSearch.Matches(Egap.Pdf.Text.TextSearch.Pattern("ภา", new PdfFindOptions()), text).Count());
+    }
+
+    [Fact]
     public void FindsAcrossALineBreakInABlock()
     {
         using PdfDocument pdf = Pages(["BT /F1 12 Tf 72 700 Td (signed by the) Tj 0 -14 Td (customer on arrival) Tj ET BT /F1 12 Tf 72 400 Td (the) Tj 0 -200 Td (customer) Tj ET"]);
