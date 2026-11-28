@@ -461,6 +461,11 @@ internal sealed partial class Paginator
     {
         List<LayoutBox> boxes = [];
         double at = top;
+
+        // The space after the paragraph just laid out, which Word lets the next paragraph's space before take in.
+        double shared = 0;
+        WordCompatibility compatibility = document.Settings.WordCompatibility;
+        bool larger = compatibility.SpacesLikeWord && !compatibility.DoNotUseHtmlParagraphAutoSpacing;
         foreach (Block block in Flatten(story))
         {
             switch (block)
@@ -469,7 +474,10 @@ internal sealed partial class Paginator
                     {
                         ParagraphContent content = ContentOf(paragraph);
                         ResolvedParagraphFormat format = content.Format;
-                        at += format.SpaceBefore;
+                        double before = AutoSpaceBefore(paragraph, format) ?? format.SpaceBefore;
+                        double after = AutoSpaceAfter(paragraph, format) ?? format.SpaceAfter;
+                        at += before - Math.Min(before, shared);
+                        shared = larger ? after : 0;
                         if (content.Floats.Count > 0 && page is not null)
                         {
                             // A header's logo or a cell's floating picture is placed on the page like the body's.
@@ -485,7 +493,7 @@ internal sealed partial class Paginator
                                 at += line.Height;
                             }
 
-                            at += format.SpaceAfter;
+                            at += after;
                             break;
                         }
 
@@ -498,7 +506,7 @@ internal sealed partial class Paginator
                         }
 
                         boxes.Add(new ParagraphBox(paragraph, new LayoutRect(x, at, width, lineTop - at), lineBoxes, false, false, InlineObjectBoxes(content, lineBoxes)));
-                        at = lineTop + format.SpaceAfter;
+                        at = lineTop + after;
                         break;
                     }
 
@@ -506,6 +514,7 @@ internal sealed partial class Paginator
                     {
                         // Measuring needs only the height: the plan, without placing every nested cell again.
                         at += Plan(table, x, width).Rows.Sum(r => r.Height);
+                        shared = 0;
                         break;
                     }
 
@@ -514,6 +523,7 @@ internal sealed partial class Paginator
                         TableBox box = LayTable(table, x, at, width);
                         boxes.Add(box);
                         at = box.Bounds.Bottom;
+                        shared = 0;
                         break;
                     }
 
@@ -525,6 +535,7 @@ internal sealed partial class Paginator
                         }
 
                         at += height;
+                        shared = 0;
                         break;
                     }
             }

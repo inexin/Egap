@@ -45,6 +45,15 @@ internal milestones whose public API was frozen and reviewed, and they are liste
 
 ## Egap.Documents 2.4.0 (unreleased)
 
+- Space between paragraphs is laid out as Word lays it out: the larger of the first paragraph's space after and the next
+  one's space before, where Egap used to add them up. Automatic spacing (`SpaceBeforeAuto`, `SpaceAfterAuto`, Word's
+  beforeAutospacing and afterAutospacing), which was laid out as no space, is now Word's HTML spacing: 14 points, none
+  between items of one list, before the first paragraph of a story or at the top and bottom of a table cell. The new
+  `WordCompatibility.DoNotUseHtmlParagraphAutoSpacing` reads and writes Word's `doNotUseHTMLParagraphAutoSpacing` (it used
+  to be listed in `OtherSettings`): with it, spacing adds up and automatic spacing is 5 points before and 10 after. RTF
+  keeps it as `\htmautsp`, the other way round, so RTF files without `\htmautsp` add spacing up as before. This moves
+  paragraphs, and so page breaks, in Word documents whose paragraphs set both space after and space before, or automatic
+  spacing. Documents read from ODT, HTML, EPUB and Markdown keep adding spacing up.
 - Thai, Lao, Khmer and Myanmar text, written without spaces between words, breaks into lines between dictionary words,
   where before a line broke only at a space or overflowed. `Find` and `Replace` with `WholeWord` and `Compare` use the
   same word boundaries: a whole Thai word is found inside a run of letters, and a changed word is a change of that word,

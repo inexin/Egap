@@ -27,6 +27,7 @@ public sealed class WordCompatibility
         ("", false),
         ("", false),
         ("doNotExpandShiftReturn", false),
+        ("doNotUseHTMLParagraphAutoSpacing", false),
     ];
 
     internal const int AllowSpaceOfSameStyleInTableId = 0;
@@ -39,6 +40,7 @@ public sealed class WordCompatibility
     internal const int TableIndentFromCellTextId = 7;
     internal const int ShrinkJustifiedSpacesId = 8;
     internal const int DoNotExpandShiftReturnId = 9;
+    internal const int DoNotUseHtmlParagraphAutoSpacingId = 10;
 
     private readonly DocumentSettings settings;
     private readonly Document document;
@@ -165,6 +167,22 @@ public sealed class WordCompatibility
     }
 
     /// <summary>
+    /// Space before and after paragraphs adds up, and automatic spacing (<see cref="ParagraphFormat.SpaceBeforeAuto"/>,
+    /// <see cref="ParagraphFormat.SpaceAfterAuto"/>) is a fixed 5 points before and 10 points after (Word's
+    /// <c>doNotUseHTMLParagraphAutoSpacing</c>). Off by default, also in new documents, as in Word: then the space between two
+    /// paragraphs is the larger of the first one's space after and the second one's space before, and automatic spacing
+    /// follows HTML, as Word lays it out: 14 points, none between paragraphs of one list, before the first paragraph of the
+    /// document, a header, a note or a text box, or at the top and bottom of a table cell. DOC files keep Word's default; an
+    /// RTF file without <c>\htmautsp</c> has it on. Documents read from ODT, HTML, EPUB and Markdown keep their own spacing,
+    /// which adds up.
+    /// </summary>
+    public bool DoNotUseHtmlParagraphAutoSpacing
+    {
+        get => Get(DoNotUseHtmlParagraphAutoSpacingId);
+        set => Set(DoNotUseHtmlParagraphAutoSpacingId, value);
+    }
+
+    /// <summary>
     /// Word's compatibility options read from the file that Egap keeps but does not act on, by name: a <c>w:compat</c>
     /// child's local name with its value (<c>1</c> when on), or a <c>w:compatSetting</c>'s name with its <c>val</c>.
     /// </summary>
@@ -199,6 +217,12 @@ public sealed class WordCompatibility
     /// </summary>
     internal bool JustifiesLikeWord { get; set; } = true;
 
+    /// <summary>
+    /// Whether paragraph spacing follows Word (<see cref="DoNotUseHtmlParagraphAutoSpacing"/>): true but for documents the ODT,
+    /// HTML, EPUB and Markdown readers make, whose space before and after adds up. Not saved.
+    /// </summary>
+    internal bool SpacesLikeWord { get; set; } = true;
+
     /// <summary>Sets what a reader found, without a change notification.</summary>
     internal void Load(bool?[] values, IEnumerable<KeyValuePair<string, string>> others)
     {
@@ -214,6 +238,7 @@ public sealed class WordCompatibility
     {
         Load(source.explicitValues, source.other);
         JustifiesLikeWord = source.JustifiesLikeWord;
+        SpacesLikeWord = source.SpacesLikeWord;
     }
 
     private bool Get(int id)

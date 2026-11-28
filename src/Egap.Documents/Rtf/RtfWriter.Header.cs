@@ -672,6 +672,12 @@ internal sealed partial class RtfWriter
             Word("expshrtn");
         }
 
+        // \htmautsp uses HTML paragraph auto spacing; Word reads its absence as doNotUseHTMLParagraphAutoSpacing.
+        if (!compatibility.DoNotUseHtmlParagraphAutoSpacing)
+        {
+            Word("htmautsp");
+        }
+
         WriteProtectionWords();
         output.AppendLine();
 
