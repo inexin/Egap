@@ -221,6 +221,19 @@ internal sealed class ParagraphBridge(FontProvider fonts, Document document, Rev
             MissingDictionaries = unhyphenated,
         };
 
+        // A DISPLAYBARCODE field's picture, when the field is not inside another field's code and names a symbol.
+        Picture? Barcode(FieldStart start)
+        {
+            // The code's first run names the field: a cheap test before gathering the field, which walks the story.
+            if (start.NextSibling is not Run { Text: var first } || !first.AsSpan().TrimStart().StartsWith("DISPLAYBARCODE", StringComparison.OrdinalIgnoreCase)
+                || fields.Any(f => f.InCode) || start.GetField() is not { Kind: FieldKind.DisplayBarcode } field)
+            {
+                return null;
+            }
+
+            return BarcodeField.Picture(field, (family, size) => new Font(fonts.Resolve(family.Length > 0 ? family : null, default).Typeface, size));
+        }
+
         // The mark's style, resolved once for the paragraph.
         TextStyle Mark()
         {
@@ -268,6 +281,12 @@ internal sealed class ParagraphBridge(FontProvider fonts, Document document, Rev
                                 AddText(value, start, resultFormat is null ? last ?? Mark() : Style(paragraph, resultFormat));
                                 replacing = fields.Count;
                             }
+                            else if (replacing == 0 && Barcode(start) is { } barcode)
+                            {
+                                // A barcode field shows its symbol, as Word draws it, in place of any stored result.
+                                AddObject(barcode, null, barcode.Width, barcode.Height);
+                                replacing = fields.Count;
+                            }
                         }
 
                         break;
@@ -280,7 +299,12 @@ internal sealed class ParagraphBridge(FontProvider fonts, Document document, Rev
                             }
 
                             (FieldStart start, bool code, int resultStart) = fields.Pop();
-                            if (!code && start.GetField() is { Kind: FieldKind.Page or FieldKind.NumPages or FieldKind.SectionPages or FieldKind.PageRef } field)
+                            if (code && replacing == 0 && Barcode(start) is { } barcode)
+                            {
+                                // A barcode field without a separator, as Word writes them, has no result to stand in for.
+                                AddObject(barcode, null, barcode.Width, barcode.Height);
+                            }
+                            else if (!code && start.GetField() is { Kind: FieldKind.Page or FieldKind.NumPages or FieldKind.SectionPages or FieldKind.PageRef } field)
                             {
                                 pageFields.Add((field, resultStart, text.Length - resultStart));
                             }

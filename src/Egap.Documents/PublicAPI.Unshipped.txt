@@ -1,1 +1,3 @@
 #nullable enable
+Egap.Documents.FieldKind.DisplayBarcode = 30 -> Egap.Documents.FieldKind
+Egap.Documents.FieldKind.MergeBarcode = 31 -> Egap.Documents.FieldKind

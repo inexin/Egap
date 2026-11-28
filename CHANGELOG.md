@@ -15,6 +15,10 @@ internal milestones whose public API was frozen and reviewed, and they are liste
 
 - Built on Egami 1.6.0-preview.1, Egami.Metafiles 1.1.0-preview.1 and Egami.Barcodes 1.1.0-preview.1;
   Egami.Fonts.Substitutes stays at 1.1.0.
+- Word's barcode fields: `FieldKind.DisplayBarcode` and `FieldKind.MergeBarcode`. Layout, PDF export and rendering draw a
+  DISPLAYBARCODE field's symbol in vectors in place of its result (QR, CODE128, CODE39, NW7, EAN13/JAN13, EAN8/JAN8, UPCA,
+  UPCE, ITF14/CASE and JPPOST, with the `\s`, `\h`, `\r`, `\f`, `\b`, `\t`, `\q`, `\p` and `\x` switches), DOCX, RTF
+  and DOC keep the fields, and a mail merge makes each MERGEBARCODE field the DISPLAYBARCODE field of its value.
 - The package carries `AGENTS.md`, a guide for AI coding assistants with the package's own names, entry points,
   samples and common mistakes. The docs site publishes the same guides under `agents/`, and `llms.txt`, a list of every
   page for AI assistants.

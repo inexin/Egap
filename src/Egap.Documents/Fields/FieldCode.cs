@@ -28,6 +28,7 @@ internal sealed class FieldCode
         string instruction = tokens.Count > 0 ? tokens[0].ToUpperInvariant() : "";
         List<string> arguments = [];
         List<(string, string?)> switches = [];
+        bool barcode = instruction is "DISPLAYBARCODE" or "MERGEBARCODE";
         for (int i = 1; i < tokens.Count; i++)
         {
             string token = tokens[i];
@@ -35,7 +36,7 @@ internal sealed class FieldCode
             {
                 string name = token[..2].ToUpperInvariant();
                 string? value = token.Length > 2 ? token[2..] : null;
-                if (value is null && name is "\\@" or "\\#" or "\\*" or "\\R" or "\\S" or "\\O" or "\\T" or "\\L" or "\\B" or "\\F" or "\\C" && i + 1 < tokens.Count && !tokens[i + 1].StartsWith('\\'))
+                if (value is null && (barcode ? BarcodeTakesValue(name) : TakesValue(name)) && i + 1 < tokens.Count && !tokens[i + 1].StartsWith('\\'))
                 {
                     value = tokens[++i];
                 }
@@ -50,6 +51,11 @@ internal sealed class FieldCode
 
         return new FieldCode(instruction, arguments, switches);
     }
+
+    private static bool TakesValue(string name) => name is "\\@" or "\\#" or "\\*" or "\\R" or "\\S" or "\\O" or "\\T" or "\\L" or "\\B" or "\\F" or "\\C";
+
+    /// <summary>DISPLAYBARCODE's and MERGEBARCODE's switches that take a value; <c>\t</c>, <c>\x</c> and <c>\d</c> take none.</summary>
+    private static bool BarcodeTakesValue(string name) => name is "\\H" or "\\S" or "\\Q" or "\\P" or "\\C" or "\\R" or "\\F" or "\\B" or "\\*";
 
     public string? Switch(string name)
     {
