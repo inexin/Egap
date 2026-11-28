@@ -974,6 +974,7 @@ internal sealed partial class DocxWriter
                 "image/x-wmf" => ".wmf",
                 "image/svg+xml" => ".svg",
                 "image/webp" => ".webp",
+                _ when Layout.PictureDrawers.IsEps(image.ContentType) => ".eps",
                 _ => ".bin",
             };
             partName = UniquePartName("/word/media/image", extension);

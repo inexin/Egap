@@ -27,6 +27,12 @@ public enum LayoutWarningKind
     /// in it.
     /// </summary>
     HyphenationDictionaryMissing,
+
+    /// <summary>
+    /// A picture layout cannot draw, left as an empty box: an Encapsulated PostScript (EPS) picture with no preview, which would
+    /// need its PostScript run. One warning for each such picture.
+    /// </summary>
+    PictureNotDrawn,
 }
 
 /// <summary>Something a layout laid out differently from what the document asks for, with the node and page it is on.</summary>

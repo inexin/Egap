@@ -667,7 +667,7 @@ internal static class PageDrawing
                 return;
             }
 
-            canvas.DrawImage(Images.GetOrCreateValue(document).GetOrAdd(image, i => EncodedImage.Load(i.Bytes)), rect);
+            canvas.DrawImage(Images.GetOrCreateValue(document).GetOrAdd(image, i => EncodedImage.Load(i.Bytes, Imaging.Context)), rect);
         }
         catch (Exception e) when (PictureDrawers.IsDrawFailure(e))
         {

@@ -1,5 +1,6 @@
 using Egami;
 using Egami.Drawing;
+using Egami.Formats.Eps;
 using Egami.Svg;
 
 namespace Egap.Documents.Layout;
@@ -15,12 +16,22 @@ internal interface IPictureDrawer
 }
 
 /// <summary>
-/// The vector picture formats layout draws itself: EMF and WMF through Egami.Metafiles and SVG through Egami.Svg. Raster
-/// formats are not here; they are decoded by Egami's codecs and drawn as images.
+/// The picture formats layout draws itself: EMF and WMF through Egami.Metafiles, SVG through Egami.Svg, and EPS by its
+/// preview. Raster formats are not here; they are decoded by Egami's codecs and drawn as images.
 /// </summary>
 internal static class PictureDrawers
 {
-    private static readonly IPictureDrawer[] Drawers = [new MetafileDrawer(), new SvgDrawer()];
+    private static readonly IPictureDrawer[] Drawers = [new MetafileDrawer(), new SvgDrawer(), new EpsDrawer()];
+
+    /// <summary>Whether <paramref name="contentType"/> names Encapsulated PostScript, by any of the types files give it.</summary>
+    public static bool IsEps(string contentType) =>
+        contentType.ToLowerInvariant() is "application/postscript" or "application/eps" or "application/x-eps" or "image/eps" or "image/x-eps";
+
+    /// <summary>
+    /// Whether layout can draw <paramref name="image"/>: false only for an EPS file without a preview (layout runs no
+    /// PostScript), which it leaves as an empty box with a <see cref="LayoutWarningKind.PictureNotDrawn"/> warning.
+    /// </summary>
+    public static bool Draws(ImageData image) => !IsEps(image.ContentType) || EpsDrawer.Preview(image.Bytes) is not null;
 
     /// <summary>The drawer for <paramref name="contentType"/>, or <see langword="null"/> when it is a raster format.</summary>
     public static IPictureDrawer? For(string contentType)
@@ -46,6 +57,74 @@ internal static class PictureDrawers
         public bool CanDraw(string contentType) => contentType is "image/x-emf" or "image/x-wmf" or "image/emf" or "image/wmf";
 
         public void Draw(ReadOnlyMemory<byte> bytes, Canvas canvas, RectF rect) => Egami.Metafiles.Metafile.Load(bytes).Draw(canvas, rect);
+    }
+
+    /// <summary>
+    /// Encapsulated PostScript, drawn by its preview, the best the file has (Egami's <see cref="EpsFile"/>, which runs no
+    /// PostScript): Photoshop's full image, else the TIFF preview, else the Windows metafile preview, drawn as vectors, else the
+    /// EPSI bitmap. A file without any throws, leaving the box empty.
+    /// </summary>
+    private sealed class EpsDrawer : IPictureDrawer
+    {
+        // Each document's bytes keep their preview, decoded once however many pages and sizes draw it.
+        private static readonly System.Runtime.CompilerServices.ConditionalWeakTable<byte[], Prepared> Previews = [];
+
+        public bool CanDraw(string contentType) => IsEps(contentType);
+
+        public void Draw(ReadOnlyMemory<byte> bytes, Canvas canvas, RectF rect)
+        {
+            switch (Preview(bytes))
+            {
+                case { Metafile: { } metafile }:
+                    metafile.Draw(canvas, rect);
+                    break;
+                case { Image: { } image }:
+                    canvas.DrawImage(image, rect);
+                    break;
+                default:
+                    throw new NotSupportedException("The EPS picture has no preview, and Egap runs no PostScript.");
+            }
+        }
+
+        /// <summary>The preview of an EPS file, or null when it has none or is not EPS.</summary>
+        public static Prepared? Preview(ReadOnlyMemory<byte> bytes)
+        {
+            if (System.Runtime.InteropServices.MemoryMarshal.TryGetArray(bytes, out ArraySegment<byte> segment) && segment.Offset == 0
+                && segment.Count == segment.Array!.Length)
+            {
+                return Previews.GetValue(segment.Array, array => Prepare(array)).OrNull;
+            }
+
+            return Prepare(bytes).OrNull;
+        }
+
+        private static Prepared Prepare(ReadOnlyMemory<byte> bytes)
+        {
+            try
+            {
+                EpsFile file = EpsFile.Load(bytes);
+                return file.Preview switch
+                {
+                    EpsPreviewKind.Wmf => new Prepared(Egami.Metafiles.Metafile.Load(file.WmfPreview), null),
+                    EpsPreviewKind.None => Prepared.None,
+
+                    // Egami's EPS reader loads the Photoshop image, TIFF or EPSI preview, in that order.
+                    _ => new Prepared(null, EncodedImage.Load(bytes, Imaging.Context)),
+                };
+            }
+            catch (Exception e) when (IsDrawFailure(e))
+            {
+                return Prepared.None;
+            }
+        }
+
+        /// <summary>A decoded preview: a metafile drawn as vectors or an image.</summary>
+        public sealed record Prepared(Egami.Metafiles.Metafile? Metafile, EncodedImage? Image)
+        {
+            public static Prepared None { get; } = new(null, null);
+
+            public Prepared? OrNull => Metafile is null && Image is null ? null : this;
+        }
     }
 
     // SVG stays vector: drawn onto whatever canvas this is, fitted by its preserveAspectRatio.

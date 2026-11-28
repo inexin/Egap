@@ -14,7 +14,7 @@ internal static class ImageSize
     {
         try
         {
-            RasterInfo info = Raster.Probe(bytes);
+            RasterInfo info = Raster.Probe(bytes, Imaging.Context);
             return (info.Width * PointsPerPixel, info.Height * PointsPerPixel);
         }
         catch (Exception e) when (e is EgamiException or ArgumentException or InvalidDataException or NotSupportedException)

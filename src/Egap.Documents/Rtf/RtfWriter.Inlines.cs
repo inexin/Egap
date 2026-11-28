@@ -756,7 +756,7 @@ internal sealed partial class RtfWriter
 
         try
         {
-            using Raster raster = Raster.Load(bytes);
+            using Raster raster = Raster.Load(bytes, Imaging.Context);
             using MemoryStream png = new();
             raster.Save(png, PngFormat.Info);
             return (png.ToArray(), "pngblip", (raster.Width, raster.Height));

@@ -143,6 +143,7 @@ internal sealed partial class OdtWriter
         "image/webp" => ".webp",
         "image/x-emf" or "image/emf" => ".emf",
         "image/x-wmf" or "image/wmf" => ".wmf",
+        _ when Layout.PictureDrawers.IsEps(contentType) => ".eps",
         _ => ".bin",
     };
 

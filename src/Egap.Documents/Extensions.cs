@@ -171,7 +171,7 @@ public sealed record FormatRevision(string Author, DateTimeOffset? Date, FormatB
 /// <param name="ContentType">The media type.</param>
 public sealed record ImageData(ReadOnlyMemory<byte> Bytes, string ContentType)
 {
-    /// <summary>Image data from a file's bytes, the media type guessed from its first bytes (PNG, JPEG, GIF, BMP, TIFF, WebP, EMF, WMF, SVG).</summary>
+    /// <summary>Image data from a file's bytes, the media type guessed from its first bytes (PNG, JPEG, GIF, BMP, TIFF, WebP, EMF, WMF, EPS, SVG).</summary>
     public static ImageData FromBytes(byte[] bytes)
     {
         ArgumentNullException.ThrowIfNull(bytes);
@@ -191,9 +191,18 @@ public sealed record ImageData(ReadOnlyMemory<byte> Bytes, string ContentType)
             [(byte)'R', (byte)'I', (byte)'F', (byte)'F', _, _, _, _, (byte)'W', (byte)'E', (byte)'B', (byte)'P', ..] => "image/webp",
             [0x01, 0x00, 0x00, 0x00, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, 0x20, 0x45, 0x4D, 0x46, ..] => "image/x-emf",
             [0xD7, 0xCD, 0xC6, 0x9A, ..] or [0x01, 0x00, 0x09, 0x00, ..] or [0x02, 0x00, 0x09, 0x00, ..] => "image/x-wmf",
+            [0xC5, 0xD0, 0xD3, 0xC6, ..] => "application/postscript",
+            _ when LooksLikePostScript(bytes) => "application/postscript",
             _ when LooksLikeSvg(bytes) => "image/svg+xml",
             _ => "application/octet-stream",
         };
+    }
+
+    /// <summary>A PostScript (EPS) file: <c>%!PS</c>, after the whitespace some programs wrote before it.</summary>
+    private static bool LooksLikePostScript(ReadOnlySpan<byte> bytes)
+    {
+        ReadOnlySpan<byte> head = bytes[..Math.Min(bytes.Length, 64)];
+        return head.TrimStart(" \t\r\n"u8).StartsWith("%!PS"u8);
     }
 
     private static bool LooksLikeSvg(ReadOnlySpan<byte> bytes)

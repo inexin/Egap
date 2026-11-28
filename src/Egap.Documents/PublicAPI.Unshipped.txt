@@ -1,4 +1,5 @@
 #nullable enable
+Egap.Documents.Layout.LayoutWarningKind.PictureNotDrawn = 4 -> Egap.Documents.Layout.LayoutWarningKind
 Egap.Documents.FieldKind.DisplayBarcode = 30 -> Egap.Documents.FieldKind
 Egap.Documents.FieldKind.MergeBarcode = 31 -> Egap.Documents.FieldKind
 Egap.Documents.EmphasisMark

@@ -40,6 +40,12 @@ internal milestones whose public API was frozen and reviewed, and they are liste
 - Needs Egami.Fonts 1.6.0 (`ParagraphStyle.JustifyLineBreaks`, `StretchNoBreakSpaces` and `SpaceShrink`).
 - Built on Egami 1.6.0-preview.1, Egami.Metafiles 1.1.0-preview.1 and Egami.Barcodes 1.1.0-preview.1;
   Egami.Fonts.Substitutes stays at 1.1.0.
+- EPS pictures: layout, rendering and PDF export draw an Encapsulated PostScript picture by its preview, through Egami's
+  `EpsFile` (Photoshop's image, else the TIFF preview, else the metafile preview as vectors, else the EPSI bitmap); one
+  without a preview is an empty box with the new `LayoutWarningKind.PictureNotDrawn` warning. `ImageData.FromBytes`
+  recognises EPS as `application/postscript`, DOCX and ODT keep EPS parts with an `.eps` name, and RTF writes the preview
+  as a PNG. Egap loads pictures with Egami.Metafiles' format registered, so a metafile preview loads wherever Egami
+  decodes a picture.
 - The RTF writer writes page margins a document leaves unset as the inch layout gives them, so readers no longer take
   RTF's default of 1.25 inches left and right; a later section without margins no longer takes the first section's.
 - Word's barcode fields: `FieldKind.DisplayBarcode` and `FieldKind.MergeBarcode`. Layout, PDF export and rendering draw a
