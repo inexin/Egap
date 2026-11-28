@@ -78,6 +78,31 @@ public class MhtmlTests
     }
 
     [Fact]
+    public void EmbeddedFontsAreSubsetsThatShapeAsTheFullFont()
+    {
+        const string text = "تعلم اللغة العربية يفتح أبواب الأدب والعلوم";
+        byte[] font = File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory, "files", "fonts", "NotoSansArabic-Regular.ttf"));
+        Document document = new();
+        document.AddSection().Body.AddParagraph(text);
+        document.EmbeddedFonts.Add(new EmbeddedFont("Noto Sans Arabic", false, false, font));
+
+        // The font part: base64 lines from the blank line after its headers to the next boundary.
+        string mhtml = document.ToMhtml();
+        string part = mhtml[mhtml.IndexOf("Content-Type: font/ttf", StringComparison.Ordinal)..];
+        part = part[(part.IndexOf("\r\n\r\n", StringComparison.Ordinal) + 4)..];
+        byte[] data = Convert.FromBase64String(part[..part.IndexOf("--", StringComparison.Ordinal)].Replace("\r\n", "", StringComparison.Ordinal));
+        Assert.Contains("@font-face", mhtml, StringComparison.Ordinal);
+
+        Egami.Fonts.Typeface full = Egami.Fonts.Typeface.FromMemory(font), subset = Egami.Fonts.Typeface.FromMemory(data);
+        Assert.True(subset.GlyphCount < full.GlyphCount / 4, $"{subset.GlyphCount} of {full.GlyphCount} glyphs");
+        Egami.Fonts.GlyphRun expected = new Egami.Fonts.Font(full, 12).Shape(text), shaped = new Egami.Fonts.Font(subset, 12).Shape(text);
+        Assert.Equal(expected.Count, shaped.Count);
+        Assert.Equal(expected.Positions.ToArray(), shaped.Positions.ToArray());
+        Assert.Equal(expected.Clusters.ToArray(), shaped.Clusters.ToArray());
+        Assert.DoesNotContain((ushort)0, shaped.Glyphs.ToArray());
+    }
+
+    [Fact]
     public void WrittenArchivesReadBackWithTextAndPictures()
     {
         Document document = HtmlFormat.LoadMhtml(Encoding.ASCII.GetBytes(Chromium), out _);

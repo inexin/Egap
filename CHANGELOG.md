@@ -59,6 +59,11 @@ internal milestones whose public API was frozen and reviewed, and they are liste
 
 ## Egap.Documents.Html 2.4.0 (unreleased)
 
+- EPUB fonts written with `EmbedFonts` are smaller, by 17 to 49 % on the fonts tried: the subset holds only the glyphs the
+  text's characters are drawn with, renumbered, where before it kept every glyph id up to the last one used. Ligatures,
+  contextual forms, mark positions and kerning (GSUB, GPOS, GDEF and kern) are kept for those glyphs, so the text shapes as
+  with the full font, and the character map holds only the characters used.
+- MHTML archives embed `Document.EmbeddedFonts` as the same subsets, where before they embedded each font whole.
 - `<ruby>` reads as a `Ruby` per base, with its `<rt>` as the annotation (its `ruby-position`, `ruby-align` and format)
   and `<rp>` dropped, and writes back the same way, `<rp>` parentheses included. CSS `text-emphasis`, its longhands and
   `-webkit-` forms read as emphasis marks and `text-combine-upright` as `CombineUpright`, both written back. EPUB reads

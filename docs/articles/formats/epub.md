@@ -104,7 +104,7 @@ EpubFormat.Save(report, "report.epub", new EpubSaveOptions
 | --- | --- | --- |
 | `SplitAt` | `SectionBreak` and `HeadingLevel1` | Where a new chapter file starts; `None` writes one file |
 | `NavigationDepth` | 3 | How many outline levels the table of contents shows (1 to 9) |
-| `EmbedFonts` | Off | Whether `Document.EmbeddedFonts` go into the book, subset to the characters used and obfuscated as EPUB says |
+| `EmbedFonts` | Off | Whether `Document.EmbeddedFonts` go into the book, subset to the characters used and obfuscated as EPUB says. The subsets keep the font's ligatures, contextual forms and kerning for those characters, so reading systems shape the text as the full font would |
 | `CoverImage` | None | A picture for a cover page before the first chapter |
 | `Identifier` | Kept, or made from the title and author | The book's unique identifier |
 | `AccessibilitySummary` | A sentence about what the book has | The accessibility summary in the package |
