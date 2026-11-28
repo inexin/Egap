@@ -1,2 +1,4 @@
 #nullable enable
 Egap.Documents.Layout.LayoutWarningKind.PictureNotDrawn = 4 -> Egap.Documents.Layout.LayoutWarningKind
+Egap.Documents.WordCompatibility.ShrinkJustifiedSpaces.get -> bool
+Egap.Documents.WordCompatibility.ShrinkJustifiedSpaces.set -> void

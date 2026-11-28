@@ -26,6 +26,12 @@ public sealed class MarkdigReaderTests
     }
 
     [Fact]
+    public void MarkdownDocumentsDoNotShrinkJustifiedSpaces()
+    {
+        Assert.False(MarkdownFormat.Parse("Some text.").Settings.WordCompatibility.ShrinkJustifiedSpaces);
+    }
+
+    [Fact]
     public void MarkdownNestedTooDeeplyIsReadAsPlainText()
     {
         string markdown = new string('>', 1_000) + " quote";

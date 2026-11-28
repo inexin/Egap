@@ -353,28 +353,12 @@ internal static class PageDrawing
             case Island { Kind: IslandKind.Math } island when OfficeMath.MathRendering.Box(island) is { } math:
                 math.Draw(canvas, new Vector2(rect.Left, rect.Top + math.Ascent), new SolidPaint(Black));
                 break;
-            case Island { Kind: IslandKind.Chart, Chart: { } chart } island when island.Fallback is null || ChartRenderer.Draws(chart):
-                DrawChart(canvas, island, chart, rect);
-                break;
-            case Island { Kind: IslandKind.ShapeGroup } island when DocxDrawings.GroupMarkup(island) is { } group:
-                GroupPainter.Draw(canvas, rect, group, DocxDrawings.Context(island, (c, image, r) => DrawImage(c, island.Document, image, r)));
-                break;
-            case Island { Kind: IslandKind.SmartArt } island when DocxDrawings.DiagramTree(island) is { } tree:
-                GroupPainter.Draw(
-                    canvas,
-                    rect,
-                    tree,
-                    DocxDrawings.Context(island, (c, image, r) => DrawImage(c, island.Document, image, r)),
-                    space: (0, 0, island.Width * DrawingNs.EmuPerPoint, island.Height * DrawingNs.EmuPerPoint));
-                break;
-            case Island island when DocxDrawings.DrawsAsList(island):
-                SmartArtList.Draw(canvas, rect, island.Text, DocxDrawings.Context(island, (_, _, _) => { }));
+            case Island island when DrawDrawing(island, canvas, rect):
                 break;
             case Island { Fallback: { } fallback } island:
                 DrawImage(canvas, island.Document, fallback, rect);
                 break;
-            case Shape shape when DocxDrawings.ShapeMarkup(shape) is { } wsp:
-                ShapePainter.Draw(canvas, rect, wsp.Element(Docx.Ns.Wps + "spPr"), wsp.Element(Docx.Ns.Wps + "style"), DocxDrawings.Context(shape, (c, image, r) => DrawImage(c, shape.Document, image, r)));
+            case Shape shape when DrawDrawing(shape, canvas, rect):
                 break;
             case Shape shape:
                 {
@@ -413,6 +397,40 @@ internal static class PageDrawing
         }
 
         DrawChildren(box, canvas, observer);
+    }
+
+    /// <summary>
+    /// Draws a drawing Egap draws itself into <paramref name="rect"/>: a chart (one without a picture of its own, or one
+    /// the chart renderer draws), a DrawingML shape group, SmartArt, or a DrawingML shape; false, drawing nothing, for
+    /// anything else. Formats that hold no such drawing write what this draws as a picture.
+    /// </summary>
+    internal static bool DrawDrawing(Inline node, Canvas canvas, RectF rect)
+    {
+        switch (node)
+        {
+            case Island { Kind: IslandKind.Chart, Chart: { } chart } island when island.Fallback is null || ChartRenderer.Draws(chart):
+                DrawChart(canvas, island, chart, rect);
+                return true;
+            case Island { Kind: IslandKind.ShapeGroup } island when DocxDrawings.GroupMarkup(island) is { } group:
+                GroupPainter.Draw(canvas, rect, group, DocxDrawings.Context(island, (c, image, r) => DrawImage(c, island.Document, image, r)));
+                return true;
+            case Island { Kind: IslandKind.SmartArt } island when DocxDrawings.DiagramTree(island) is { } tree:
+                GroupPainter.Draw(
+                    canvas,
+                    rect,
+                    tree,
+                    DocxDrawings.Context(island, (c, image, r) => DrawImage(c, island.Document, image, r)),
+                    space: (0, 0, island.Width * DrawingNs.EmuPerPoint, island.Height * DrawingNs.EmuPerPoint));
+                return true;
+            case Island island when DocxDrawings.DrawsAsList(island):
+                SmartArtList.Draw(canvas, rect, island.Text, DocxDrawings.Context(island, (_, _, _) => { }));
+                return true;
+            case Shape shape when DocxDrawings.ShapeMarkup(shape) is { } wsp:
+                ShapePainter.Draw(canvas, rect, wsp.Element(Docx.Ns.Wps + "spPr"), wsp.Element(Docx.Ns.Wps + "style"), DocxDrawings.Context(shape, (c, image, r) => DrawImage(c, shape.Document, image, r)));
+                return true;
+            default:
+                return false;
+        }
     }
 
     /// <summary>A rounded shape's corner radius: its own, or a sixth of its shorter side, as Word's rounded rectangle draws it.</summary>

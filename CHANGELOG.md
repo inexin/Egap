@@ -13,6 +13,14 @@ internal milestones whose public API was frozen and reviewed, and they are liste
 
 ## Egap.Documents 2.4.0 (unreleased)
 
+- Justified and distributed paragraphs now break lines as Word 2013 and later do: a line takes one more word when its
+  spaces can shrink to fit it, by up to a quarter of their width in all and each by no more than half of what it would
+  stretch had the line ended a word earlier. This changes line breaks, and so page breaks, in justified text from Word
+  documents in compatibility mode 15 (DOCX from Word 2013 and later, RTF and documents made in code): it often takes fewer
+  lines, as it does in Word. Automatic hyphenation of such lines no longer keeps to `DocumentSettings.HyphenationZone`,
+  which Word ignores there too. The new `WordCompatibility.ShrinkJustifiedSpaces` turns it off. It is off below mode 15 (Word
+  2010 and older, DOC files) and for ODT documents, and it is not saved to DOCX, since Word has no setting for it.
+- Needs Egami.Fonts 1.6.0 (`ParagraphStyle.SpaceShrink`).
 - Built on Egami 1.6.0-preview.1, Egami.Metafiles 1.1.0-preview.1 and Egami.Barcodes 1.1.0-preview.1;
   Egami.Fonts.Substitutes stays at 1.1.0.
 - EPS pictures: layout, rendering and PDF export draw an Encapsulated PostScript picture by its preview, through Egami's
@@ -21,18 +29,26 @@ internal milestones whose public API was frozen and reviewed, and they are liste
   recognises EPS as `application/postscript`, DOCX and ODT keep EPS parts with an `.eps` name, and RTF writes the preview
   as a PNG. Egap loads pictures with Egami.Metafiles' format registered, so a metafile preview loads wherever Egami
   decodes a picture.
+- The RTF writer writes SVG pictures (barcodes among them), charts, shape groups, SmartArt and DrawingML shapes as EMF
+  pictures (EMF+ with GDI records beside them, through Egami.Metafiles' `EmfCanvas`), so Word shows them as vectors,
+  with a PNG of each in `\nonshppict` for readers without EMF. SVG pictures were PNGs, and charts, shape groups and
+  SmartArt without a picture of their own were their text.
 - The package carries `AGENTS.md`, a guide for AI coding assistants with the package's own names, entry points,
   samples and common mistakes. The docs site publishes the same guides under `agents/`, and `llms.txt`, a list of every
   page for AI assistants.
 
 ## Egap.Documents.Html 2.4.0 (unreleased)
 
+- Documents read from HTML, MHTML and EPUB set `WordCompatibility.ShrinkJustifiedSpaces` off, so justified text breaks as
+  in a browser, where lines only stretch.
 - The package carries `AGENTS.md`, a guide for AI coding assistants with the package's own names, entry points,
   samples and common mistakes. The docs site publishes the same guides under `agents/`, and `llms.txt`, a list of every
   page for AI assistants.
 
 ## Egap.Documents.Markdown 2.4.0 (unreleased)
 
+- Documents read from Markdown set `WordCompatibility.ShrinkJustifiedSpaces` off, as their HTML rendering only stretches
+  justified lines.
 - The package carries `AGENTS.md`, a guide for AI coding assistants with the package's own names, entry points,
   samples and common mistakes. The docs site publishes the same guides under `agents/`, and `llms.txt`, a list of every
   page for AI assistants.
