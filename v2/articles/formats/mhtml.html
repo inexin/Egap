@@ -118,8 +118,9 @@ Document page = HtmlFormat.LoadMhtml(&quot;saved-page.mhtml&quot;, out IReadOnly
 <h2 id="writing">Writing</h2>
 <p>The document is written in the shape Chromium saves pages in, which Chromium, Edge and Word open: a <code>multipart/related</code>
 message whose first part is the page in quoted-printable UTF-8, followed by each picture once and each of
-<code>Document.EmbeddedFonts</code> in base64, each with the <code>Content-Location</code> the page links to. <code>HtmlSaveOptions</code> work as for
-HTML; a picture that <code>ImageWriter</code> gives an address for is linked there instead of stored.</p>
+<code>Document.EmbeddedFonts</code> in base64, each with the <code>Content-Location</code> the page links to. Each font is subset to the
+characters the document uses, keeping its ligatures, contextual forms and kerning for them, as for EPUB. <code>HtmlSaveOptions</code>
+work as for HTML; a picture that <code>ImageWriter</code> gives an address for is linked there instead of stored.</p>
 
 </article>
 
