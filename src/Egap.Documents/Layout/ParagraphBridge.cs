@@ -155,6 +155,17 @@ internal sealed class ParagraphBridge(FontProvider fonts, Document document, Rev
         Revision? marking = null;
         FormatRevision? formatMarking = null;
 
+        // Word justifies the line before a break like a wrapped line, unless the break ends it with U+2029 (Egami's
+        // JustifyLineBreaks): a manual line break or display equation unless doNotExpandShiftReturn is set, a page or column
+        // break below compatibility mode 15.
+        WordCompatibility compatibility = document.Settings.WordCompatibility;
+        bool wordLike = compatibility.JustifiesLikeWord;
+        bool wordJustified = wordLike && format.Alignment is ParagraphAlignment.Justify or ParagraphAlignment.Distribute;
+        string lineBreak = wordJustified && compatibility.DoNotExpandShiftReturn ? "\u2029" : "\n";
+        string pageBreak = wordJustified && document.Settings.CompatibilityMode >= 15 ? "\u2029" : "\n";
+        bool endsInLineBreak = false;
+        bool endsInBreak = false;
+
         int labelLength = 0;
         if (paragraph.ListLabel is { } label && label.Text.Length + 1 is int length)
         {
@@ -184,6 +195,13 @@ internal sealed class ParagraphBridge(FontProvider fonts, Document document, Rev
         }
 
         Walk(paragraph.Inlines);
+
+        if (wordLike && endsInLineBreak)
+        {
+            // Word shows an empty line after a manual line break that ends the paragraph; Egami adds none after a break at
+            // the end of the text, so a zero-width space makes it (and the line before is not the last line).
+            text.Push(Mark()).Append("\u200B").Pop();
+        }
 
         if (maxSize == 0)
         {
@@ -321,10 +339,18 @@ internal sealed class ParagraphBridge(FontProvider fonts, Document document, Rev
                         AddText("\t", tab, Style(tab.Paragraph, null));
                         break;
                     case Break breakNode when !inCode:
-                        AddText("\n", breakNode, last ?? Mark());
+                        // A break right after a display equation ends the equation's line (Word writes a w:br on each side
+                        // of one in a paragraph's text), so the equation needs no break of its own.
+                        afterDisplay = false;
+                        AddText(breakNode.Kind == BreakKind.Line ? lineBreak : pageBreak, breakNode, last ?? Mark());
+                        endsInBreak = true;
                         if (breakNode.Kind != BreakKind.Line)
                         {
                             breaks.Add((text.Length, breakNode.Kind));
+                        }
+                        else
+                        {
+                            endsInLineBreak = true;
                         }
 
                         break;
@@ -349,13 +375,14 @@ internal sealed class ParagraphBridge(FontProvider fonts, Document document, Rev
                         {
                             // A display equation takes a line of its own; the paginator places it across the line.
                             bool display = OfficeMath.MathRendering.IsDisplay(island);
-                            if (display && text.Length > labelLength)
+                            if (display && text.Length > labelLength && !endsInBreak)
                             {
                                 BreakAfterDisplay();
-                                text.Push(last ?? Mark()).Append("\n").Pop();
+                                text.Push(last ?? Mark()).Append(lineBreak).Pop();
                             }
 
                             BreakAfterDisplay();
+                            endsInLineBreak = endsInBreak = false;
                             spans.Add(new InlineSpan(text.Length, 1, island, 0));
                             objects.Add(island);
                             text.AddPlaceholder(new Placeholder(math.Width, math.Height, PlaceholderAlignment.Baseline, math.Ascent));
@@ -473,6 +500,7 @@ internal sealed class ParagraphBridge(FontProvider fonts, Document document, Rev
             spans.Add(new InlineSpan(text.Length, value.Length, node, nodeOffset));
             text.Push(style).Append(value).Pop();
             last = style;
+            endsInLineBreak = endsInBreak = false;
         }
 
         void BreakAfterDisplay()
@@ -480,7 +508,7 @@ internal sealed class ParagraphBridge(FontProvider fonts, Document document, Rev
             if (afterDisplay)
             {
                 afterDisplay = false;
-                text.Push(last ?? Mark()).Append("\n").Pop();
+                text.Push(last ?? Mark()).Append(lineBreak).Pop();
             }
         }
 
@@ -501,6 +529,7 @@ internal sealed class ParagraphBridge(FontProvider fonts, Document document, Rev
             spans.Add(new InlineSpan(text.Length, 1, node, 0));
             objects.Add(node);
             text.AddPlaceholder(new Placeholder((float)width, (float)height, PlaceholderAlignment.AboveBaseline));
+            endsInLineBreak = endsInBreak = false;
         }
     }
 
@@ -880,6 +909,7 @@ internal sealed class ParagraphBridge(FontProvider fonts, Document document, Rev
         }
 
         bool autoHyphens = dictionaries is not null && document.Settings.AutoHyphenation && !format.SuppressAutoHyphens;
+        bool wordJustified = document.Settings.WordCompatibility.JustifiesLikeWord && format.Alignment is ParagraphAlignment.Justify or ParagraphAlignment.Distribute;
         bool shrinks = format.Alignment is ParagraphAlignment.Justify or ParagraphAlignment.Distribute
             && document.Settings.WordCompatibility.ShrinkJustifiedSpaces;
         return new EgamiParagraphStyle
@@ -894,6 +924,10 @@ internal sealed class ParagraphBridge(FontProvider fonts, Document document, Rev
                 _ => TextAlign.Start,
             },
             AlignLast = format.Alignment == ParagraphAlignment.Distribute ? TextAlignLast.Justify : TextAlignLast.Auto,
+            // Word stretches the line before a manual line break (the break's character says which, see Build) and never a
+            // no-break space.
+            JustifyLineBreaks = wordJustified,
+            StretchNoBreakSpaces = !wordJustified,
             Justify = format.Alignment == ParagraphAlignment.Justify && format.Kashida != KashidaLevel.None ? TextJustify.Kashida : TextJustify.Auto,
             // Word 2013 and later fit one more word on a justified line when its spaces can shrink to take it.
             SpaceShrink = shrinks ? 0.25f : 0,
