@@ -89,6 +89,21 @@ public sealed class ColorMap
     /// <exception cref="ArgumentOutOfRangeException">The slot is not one of <see cref="ColorMapSlot"/>'s values.</exception>
     public ThemeColor this[ColorMapSlot slot] => Enum.IsDefined(slot) ? colors[(int)slot] : throw new ArgumentOutOfRangeException(nameof(slot));
 
+    /// <summary>The map as the names a scheme colour uses and the theme colour each stands for, for Egap.Documents' colour resolving.</summary>
+    internal Dictionary<string, ThemeColor> ToSchemeMap()
+    {
+        Dictionary<string, ThemeColor> map = new(Attributes.Length, StringComparer.Ordinal);
+        for (int i = 0; i < Attributes.Length; i++)
+        {
+            map[Attributes[i]] = colors[i];
+        }
+
+        return map;
+    }
+
+    /// <summary>A key that is the same for two maps that map alike.</summary>
+    internal string Key => string.Join(',', colors.Select(c => (int)c));
+
     private static ThemeColor? ThemeColorOf(string? name) => name switch
     {
         "dk1" => ThemeColor.Dark1,

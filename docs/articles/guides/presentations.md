@@ -324,6 +324,42 @@ foreach (Slide slide in deck.Slides)
 deck.Save("lobby.ppsx");
 ```
 
+## Drawing slides
+
+`slide.Render()` draws a slide as an Egami `Raster<Rgba8>`, 96 dots per inch unless `SlideRenderOptions` sets `Dpi` or
+`Width`; `slide.Draw(canvas)` draws it onto any Egami.Drawing `Canvas` instead, such as an SVG or PDF page, one unit to
+the point. Layouts, masters and notes pages draw the same way.
+
+```csharp
+using Egami;
+using Egami.Pixels;
+using Egap.Presentations;
+
+Presentation deck = Presentation.Load("quarterly.pptx");
+SlideRenderOptions options = new() { Width = 1920, Date = new DateTime(2026, 11, 28) };
+for (int i = 0; i < deck.Slides.Count; i++)
+{
+    using Raster<Rgba8> picture = deck.Slides[i].Render(options);
+    picture.Save($"slide-{i + 1}.png");
+}
+```
+
+What is drawn:
+
+- The background (the slide's, its layout's or its master's, colours worked out through the colour map), then the master's
+  and layout's own shapes unless the slide hides them (`showMasterSp`), then the slide's shapes, back to front.
+- Shapes with their preset or custom geometry, fills (solid, gradient, pattern, picture), outlines, effects and theme
+  style references; groups; pictures with their cropping, stretching and tiling.
+- Text with everything a placeholder inherits from its layout, master and the master's text styles: insets, anchoring,
+  columns, vertical text, rotation, the stored autofit scale, alignment, indents, line and paragraph spacing, tab stops,
+  right-to-left paragraphs, bullets (characters, automatic numbers, pictures), fonts by script, bold, italic, underline
+  styles, strikethrough, superscript and subscript, capitals, character spacing, kerning, solid and gradient text fills,
+  outlines, highlights, hyperlink colours, and slide number and date fields.
+
+`SlideRenderOptions.Fonts` sets where fonts come from and what stands in for missing ones, as Egap.Documents'
+`FontSettings` does; `Date` the date that date fields show, today when it is null. Lines are spaced as PowerPoint spaces
+them, 1.2 times the font size at single spacing.
+
 ## Recipes
 
 Short answers to common tasks in this area. Each one is complete: open, change, save.
@@ -361,4 +397,5 @@ deck.Save("salaries-locked.pptx", new PresentationSaveOptions { Password = "Long
   out, only the position (`EffectiveTransform`).
 - Removing a slide leaves links to it from other slides as they are.
 - PowerPoint 97-2003 files (PPT) and files protected with rights management (IRM) are not read.
-- Slides are not rendered to images or PDF.
+- Drawing slides leaves out tables, charts, SmartArt diagrams, embedded objects, media and fonts embedded in the file;
+  text is drawn with the stored autofit scale, not refitted, and is not hyphenated.

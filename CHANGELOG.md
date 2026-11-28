@@ -47,6 +47,14 @@ internal milestones whose public API was frozen and reviewed, and they are liste
   `Presentation.SlideShow`: show type (speaker, window, kiosk), loop, timings, narration and animations.
 - A fuzz target (`tests/Egap.Presentations.Fuzz`: `pptx`, `pptxedit`, `pptxcrypt`) and benchmarks
   (`benchmarks/Egap.Presentations.Benchmarks`).
+- Drawing slides: `Render` draws a slide, layout, master or notes page as a `Raster<Rgba8>` and `Draw` onto any Egami
+  canvas, with `SlideRenderOptions` for the resolution or width, the fonts and the date fields show. It draws the
+  background, the master's and layout's shapes, shapes with their geometry, fills, outlines and effects, groups and
+  pictures (cropped, stretched or tiled), and text with its full inheritance from layout, master and text styles: body
+  insets, anchoring, columns, vertical text and the stored autofit scale; paragraph alignment, indents, spacing, tab stops
+  and right-to-left text; character, numbered and picture bullets; run fonts, sizes, styles, underlines, capitals,
+  spacing, fills, outlines, highlights and hyperlink colours; and slide number and date fields. Lines are spaced and placed
+  as PowerPoint places them. Tables, charts, SmartArt, embedded objects, media and embedded fonts are left out for now.
 
 ## Egap.Cli 2.4.0 (unreleased)
 

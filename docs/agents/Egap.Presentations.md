@@ -59,6 +59,8 @@ Egap has its own names. Use them, not names from other PDF, Word or Excel librar
   `GroupShape` (`Shapes`, `ChildArea`), `ConnectorShape` (`Start`, `End`) and `GraphicFrame` (`Kind`). Each has `Id`,
   `Name`, `Description`, `Placeholder` and `Transform`.
 - `TextBody.Paragraphs`, `TextParagraph.Runs`, `TextRun.Text` (settable, keeps the run's formatting).
+- `slide.Render(SlideRenderOptions)` (`Dpi`, `Width`, `Fonts`, `Date`) gives a `Raster<Rgba8>`; `slide.Draw(canvas)` draws
+  onto any Egami.Drawing `Canvas`, one unit to the point. Layouts, masters and notes pages have the same members.
 
 ## Samples
 
@@ -179,6 +181,22 @@ catch (DocumentPasswordException e) when (e.WrongPassword)
 }
 ```
 
+Draw slides as pictures:
+
+```csharp
+using Egami;
+using Egami.Pixels;
+using Egap.Presentations;
+
+Presentation deck = Presentation.Load("quarterly.pptx");
+SlideRenderOptions options = new() { Width = 1920, Date = new DateTime(2026, 11, 28) };
+for (int i = 0; i < deck.Slides.Count; i++)
+{
+    using Raster<Rgba8> picture = deck.Slides[i].Render(options);
+    picture.Save($"slide-{i + 1}.png");
+}
+```
+
 Transitions and animations:
 
 ```csharp
@@ -215,3 +233,5 @@ deck.Save("pitch-timed.pptx");
 - Building a new `SlideTransition` to change one setting of a loaded one; that drops its sound and effect settings. Use
   `slide.Transition with { ... }`.
 - Expecting a save to keep the encryption. Without `PresentationSaveOptions.Password` the file is written unencrypted.
+- Drawing onto a pixel canvas without scaling it. `Draw` works one canvas unit to the point; scale the canvas by
+  dpi / 72 first, or call `Render`, which does.
