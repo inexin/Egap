@@ -656,6 +656,9 @@ internal sealed partial class OdtReader
                     case "text-outline":
                         f.Outline = v == "true";
                         break;
+                    case "text-emphasis":
+                        f.Emphasis = EmphasisOf(v);
+                        break;
                     case "text-position":
                         ApplyPosition(v, f, parentSize);
                         break;
@@ -685,6 +688,20 @@ internal sealed partial class OdtReader
                 f.Hidden = v == "none";
             }
         }
+    }
+
+    /// <summary>Emphasis marks of <c>style:text-emphasis</c> (20.372): a mark and above or below.</summary>
+    private static EmphasisMark EmphasisOf(string value)
+    {
+        string[] parts = value.Split(' ', StringSplitOptions.RemoveEmptyEntries);
+        bool below = parts.Length > 1 && parts[1] == "below";
+        return parts.Length == 0 ? EmphasisMark.None : parts[0] switch
+        {
+            "dot" or "disc" => below ? EmphasisMark.UnderDot : EmphasisMark.Dot,
+            "accent" => EmphasisMark.Comma,
+            "circle" => EmphasisMark.Circle,
+            _ => EmphasisMark.None,
+        };
     }
 
     private static bool IsBold(string value)

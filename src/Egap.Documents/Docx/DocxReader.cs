@@ -1091,12 +1091,9 @@ internal sealed partial class DocxReader
                     Flush();
                     Add(inlines, new Island(document, IslandKind.Ink, DocxExtension.Format, child.ToString(SaveOptions.DisableFormatting)), state, child);
                     break;
-                case "ruby":
+                case "ruby" when child.Element(Ns.W + "rubyBase") is { } rubyBase:
                     Flush();
-                    Add(inlines, new Island(document, IslandKind.Other, DocxExtension.Format, child.ToString(SaveOptions.DisableFormatting))
-                    {
-                        Text = string.Concat(child.Element(Ns.W + "rubyBase")?.Descendants(Ns.W + "t").Select(t => t.Value) ?? []),
-                    }, state, child);
+                    ReadRuby(child, rubyBase, inlines, state);
                     break;
                 default:
                     Flush();
@@ -1191,6 +1188,52 @@ internal sealed partial class DocxReader
                     break;
             }
         }
+    }
+
+    /// <summary>
+    /// A phonetic guide (17.3.3.25): its base's runs in a <see cref="Ruby"/>, the guide text's runs as its text and the format
+    /// of their first (less the size, which <c>w:hps</c> holds), and <c>w:rubyPr</c>'s settings.
+    /// </summary>
+    private void ReadRuby(XElement element, XElement rubyBase, NodeCollection<Inline> inlines, InlineState state)
+    {
+        XElement? rt = element.Element(Ns.W + "rt");
+        Ruby ruby = Add(inlines, new Ruby(document, string.Concat(rt?.Descendants(Ns.W + "t").Select(t => t.Value) ?? [])), state, element);
+        if (element.Element(Ns.W + "rubyPr") is { } properties)
+        {
+            ruby.Alignment = properties.Element(Ns.W + "rubyAlign").Val() switch
+            {
+                "distributeLetter" => RubyAlignment.DistributeLetter,
+                "distributeSpace" => RubyAlignment.DistributeSpace,
+                "left" => RubyAlignment.Left,
+                "right" => RubyAlignment.Right,
+                "rightVertical" => RubyAlignment.RightVertical,
+                _ => RubyAlignment.Center,
+            };
+            ruby.FontSize = DocxUnits.Points(properties.Element(Ns.W + "hps").Val(), DocxUnits.HalfPoint) is double size && size > 0 ? size : null;
+            ruby.Raise = DocxUnits.Points(properties.Element(Ns.W + "hpsRaise").Val(), DocxUnits.HalfPoint);
+            ruby.BaseFontSize = DocxUnits.Points(properties.Element(Ns.W + "hpsBaseText").Val(), DocxUnits.HalfPoint) is double baseSize && baseSize > 0 ? baseSize : null;
+            ruby.Language = properties.Element(Ns.W + "lid").Val();
+        }
+
+        if (rt?.Element(Ns.W + "r")?.Element(Ns.W + "rPr") is { } rPr)
+        {
+            DocxProperties.ReadRun(rPr, ruby.TextFormat);
+            ruby.TextFormat.Size = null;
+            ruby.TextFormat.SizeComplexScript = null;
+        }
+
+        XElement? outer = runProperties;
+        runProperties = null;
+        try
+        {
+            ReadInlines(rubyBase, ruby.Inlines, state);
+        }
+        finally
+        {
+            runProperties = outer;
+        }
+
+        LiftRevision(ruby);
     }
 
     /// <summary>The character a w:sym stands for, or null when its code is not one.</summary>

@@ -21,6 +21,12 @@ report.SaveAsDocx("report-copy.docx");                            // what the mo
 DocxFormat.Save(report, "report.dotx", new DocxSaveOptions { Kind = DocxKind.Template });
 ```
 
+Phonetic guides (`w:ruby`) read as `Ruby` inlines with their `w:rubyPr` settings and the guide text's format, and are
+written back; Word's emphasis marks (`w:em`) are `RunFormat.Emphasis`, and horizontal in vertical
+(`w:eastAsianLayout w:vert`) is `RunFormat.CombineUpright` (see
+[Ruby and emphasis marks](../guides/flow-documents.md#ruby-and-emphasis-marks)). The rest of `w:eastAsianLayout`, such as
+two lines in one, is kept as it is.
+
 The settings part's automatic hyphenation (`w:autoHyphenation`, `w:consecutiveHyphenLimit`, `w:hyphenationZone` and
 `w:doNotHyphenateCaps`) reads into `DocumentSettings` and is saved from there. A missing zone is Word's 0.25 inch.
 

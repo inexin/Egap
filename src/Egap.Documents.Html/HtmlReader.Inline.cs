@@ -39,6 +39,94 @@ internal sealed partial class HtmlReader
     }
 
     /// <summary>
+    /// A <c>&lt;ruby&gt;</c>: each base (the content before an <c>&lt;rt&gt;</c>, in <c>&lt;rb&gt;</c> or not) in a
+    /// <see cref="Ruby"/> with the <c>&lt;rt&gt;</c>'s text, its <c>ruby-position</c> and <c>ruby-align</c>, and its format
+    /// where it differs from the base's; <c>&lt;rp&gt;</c> fallback parentheses are dropped, and a base without an annotation
+    /// is plain content.
+    /// </summary>
+    private void RubyElement(HtmlElement element, HtmlStyle style, Flow flow, Frame frame)
+    {
+        List<HtmlNode> bases = [];
+        foreach (HtmlNode child in element.Children)
+        {
+            if (child is HtmlElement { NamespaceUri: HtmlElement.HtmlNamespace } e && e.LocalName is "rt" or "rtc" or "rp")
+            {
+                if (e.LocalName != "rp")
+                {
+                    AddRuby(bases, e, style, flow, frame);
+                    bases.Clear();
+                }
+
+                continue;
+            }
+
+            bases.Add(child);
+        }
+
+        foreach (HtmlNode node in bases)
+        {
+            Node(node, style, flow, frame);
+        }
+    }
+
+    private void AddRuby(List<HtmlNode> bases, HtmlElement annotation, HtmlStyle style, Flow flow, Frame frame)
+    {
+        if (!bases.Any(n => n is HtmlElement || (n is HtmlText text && !string.IsNullOrWhiteSpace(text.Data))))
+        {
+            return;
+        }
+
+        HtmlStyle rtStyle = StyleOf(annotation, style);
+        Ruby ruby = new(document, string.Concat(annotation.Descendants().OfType<HtmlText>().Select(t => t.Data)).Trim())
+        {
+            Position = rtStyle.Keyword("ruby-position") == "under" ? RubyPosition.Under : RubyPosition.Over,
+            Alignment = rtStyle.Keyword("ruby-align") switch
+            {
+                "start" => RubyAlignment.Left,
+                "space-between" => RubyAlignment.DistributeLetter,
+                "space-around" => RubyAlignment.DistributeSpace,
+                _ => RubyAlignment.Center,
+            },
+        };
+        RunFormat baseFormat = RunFormatOf(style), rubyFormat = RunFormatOf(rtStyle);
+        ruby.FontSize = rubyFormat.Size;
+        for (int id = 0; id < RunFormat.Count; id++)
+        {
+            if (id != RunFormat.SizeId && rubyFormat.GetRaw(id) is { } value && !Equals(value, baseFormat.GetRaw(id)))
+            {
+                ruby.TextFormat.SetRawSilently(id, value);
+            }
+        }
+
+        NodeCollection<Inline> outer = Target(flow, frame, currentLink);
+        outer.Add(ruby);
+        Paragraph? paragraph = flow.Current;
+        flow.Target = ruby.Inlines;
+        foreach (HtmlNode node in bases)
+        {
+            Node(node, style, flow, frame);
+        }
+
+        if (flow.Current == paragraph && flow.Target == ruby.Inlines)
+        {
+            flow.Target = outer;
+        }
+    }
+
+    private void Node(HtmlNode node, HtmlStyle style, Flow flow, Frame frame)
+    {
+        switch (node)
+        {
+            case HtmlText text:
+                AddText(text.Data, style, flow, frame);
+                break;
+            case HtmlElement element:
+                Element(element, style, flow, frame);
+                break;
+        }
+    }
+
+    /// <summary>
     /// A form control as an inline content control holding its value, so it keeps its place in the text and an export can
     /// make a PDF form field of it: text inputs and text areas as plain or rich text, check boxes and radio buttons as check
     /// boxes (radio buttons in a <see cref="ContentControlProperties.RadioGroup"/>), selects as drop-down lists. An empty
@@ -306,6 +394,33 @@ internal sealed partial class HtmlReader
         return false;
     }
 
+    /// <summary>
+    /// The emphasis marks of <c>text-emphasis-style</c> and <c>text-emphasis-position</c> (or their shorthand and prefixed
+    /// forms) as Word's marks: sesame as its comma, open marks as its circle, filled ones as its dot (under the text when
+    /// the position says under); null for none.
+    /// </summary>
+    private static EmphasisMark? EmphasisOf(HtmlStyle style)
+    {
+        IReadOnlyList<string> marks = style.Keywords("text-emphasis-style") is { Count: > 0 } s ? s
+            : style.Keywords("-webkit-text-emphasis-style") is { Count: > 0 } w ? w
+            : style.Keywords("text-emphasis") is { Count: > 0 } t ? t : style.Keywords("-webkit-text-emphasis");
+        if (marks.Count == 0 && style.Computed.GetValueText("text-emphasis-style") is { Length: > 0 } custom && custom[0] is '"' or '\'')
+        {
+            return EmphasisMark.Dot;
+        }
+
+        if (marks.Count == 0 || marks.Contains("none"))
+        {
+            return null;
+        }
+
+        IReadOnlyList<string> position = style.Keywords("text-emphasis-position") is { Count: > 0 } p ? p : style.Keywords("-webkit-text-emphasis-position");
+        return marks.Contains("sesame") ? EmphasisMark.Comma
+            : marks.Contains("open") ? EmphasisMark.Circle
+            : marks.Any(m => m is "filled" or "dot" or "circle" or "double-circle" or "triangle") ? (position.Contains("under") ? EmphasisMark.UnderDot : EmphasisMark.Dot)
+            : null;
+    }
+
     private RunFormat RunFormatOf(HtmlStyle style)
     {
         if (runFormats.TryGetValue(style, out RunFormat? cached))
@@ -403,6 +518,16 @@ internal sealed partial class HtmlReader
         if (style.Keyword("visibility") == "hidden" || HiddenByDisplay(style))
         {
             format.Hidden = true;
+        }
+
+        if (EmphasisOf(style) is { } emphasis)
+        {
+            format.Emphasis = emphasis;
+        }
+
+        if ((style.Keyword("text-combine-upright") ?? style.Keyword("-webkit-text-combine")) is { } combine && combine != "none")
+        {
+            format.CombineUpright = true;
         }
 
         if (style.Computed.GetValueText("direction") is "rtl")

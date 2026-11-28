@@ -26,7 +26,9 @@ Document.LoadDocx("handbook.docx").SaveAsEpub("handbook.epub");
 A book is read into one document. Each file of the book's reading order (its spine) becomes a section that starts on a new
 page, read through the HTML reader with the book's own style sheets, for screen media unless `Media` says `"print"`. The
 cover image gets a section of its own at the start unless the first chapter already shows it. Links from one chapter to
-another become links inside the document, and an id that two chapters both use is renamed in the second.
+another become links inside the document, and an id that two chapters both use is renamed in the second. Ruby, emphasis
+marks and `text-combine-upright` read and write as in [HTML](html.md#what-css-and-html-map-to), as Japanese and Chinese
+books use them.
 
 The book's table of contents (the EPUB 3 navigation document, or the EPUB 2 NCX) becomes the outline: each entry's
 target paragraph gets the entry's outline level unless it is a heading already, so a PDF made from the book gets the same
