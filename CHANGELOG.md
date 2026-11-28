@@ -10,6 +10,10 @@ internal milestones whose public API was frozen and reviewed, and they are liste
 - The package carries `AGENTS.md`, a guide for AI coding assistants with the package's own names, entry points,
   samples and common mistakes. The docs site publishes the same guides under `agents/`, and `llms.txt`, a list of every
   page for AI assistants.
+- `egap mcp` serves MCP resources and prompts, through Egami.Cli.Host's new support for them: the resources
+  `egap://schema/workflow` (the workflow schema), `egap://formats` (what `convert` reads and writes, with each format's
+  `--set` settings) and `egap://guide` (the agent guide), and the prompts `convert_folder`, `mail_merge`,
+  `compare_documents`, `redact_pdf` and `shrink_pdf`, each one message naming the tools to call.
 
 ## Egap.Documents 2.4.0 (unreleased)
 
