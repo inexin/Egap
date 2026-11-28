@@ -34,6 +34,12 @@ One document model for DOCX, DOC, RTF, OpenDocument Text, HTML, Markdown and pla
 - [Reports in code](reports.md): the fluent report API, with rows, tables, grids, styles, components and paging, and the
   live preview tool.
 
+## Egap.Presentations
+
+PowerPoint files read and edited from code.
+
+- [Presentations](presentations.md): masters, layouts, themes, slides and shapes, and saving with everything else kept.
+
 ## Egap.Spreadsheets
 
 Workbooks built and edited from code.

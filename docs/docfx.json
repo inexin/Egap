@@ -20,6 +20,10 @@
           "files": [ "Egap.Documents.Markdown.csproj" ]
         },
         {
+          "src": "../src/Egap.Presentations",
+          "files": [ "Egap.Presentations.csproj" ]
+        },
+        {
           "src": "../src/Egap.Spreadsheets",
           "files": [ "Egap.Spreadsheets.csproj" ]
         }

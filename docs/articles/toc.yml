@@ -36,6 +36,10 @@
       href: guides/pdf-export-and-conversion.md
     - name: Reports in code
       href: guides/reports.md
+- name: Egap.Presentations
+  items:
+    - name: Presentations
+      href: guides/presentations.md
 - name: Egap.Spreadsheets
   items:
     - name: Charts

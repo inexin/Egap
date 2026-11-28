@@ -1,0 +1,27 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <RootNamespace>Egap.Presentations</RootNamespace>
+    <PackageId>Egap.Presentations</PackageId>
+    <VersionPrefix>$(EgapVersion)</VersionPrefix>
+    <Description>Presentations for .NET: PowerPoint files (PPTX, PPTM, POTX, PPSX) loaded and saved with what they hold kept, and their slides, layouts, masters and shapes read and edited from code.</Description>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <IsTrimmable>true</IsTrimmable>
+    <IsAotCompatible>true</IsAotCompatible>
+  </PropertyGroup>
+
+  <!-- Build-time analyzer only; ships nothing. -->
+  <ItemGroup>
+    <PackageReference Include="Microsoft.CodeAnalysis.PublicApiAnalyzers" PrivateAssets="all" />
+  </ItemGroup>
+
+  <!-- Builds on Egap.Documents: its OPC package, markup compatibility, Strict namespaces and DrawingML themes for PPTX. -->
+  <ItemGroup>
+    <ProjectReference Include="../Egap.Documents/Egap.Documents.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <InternalsVisibleTo Include="Egap.Presentations.Tests" />
+  </ItemGroup>
+
+</Project>

@@ -35,11 +35,12 @@ DESCRIPTIONS = {
 SUMMARY = """# Egap
 
 > Egap is an MIT-licensed, fully managed family of document libraries for .NET 10, with no native code: PDF files, flow
-> documents in DOCX, DOC, RTF, ODT, HTML, EPUB and Markdown, and Excel workbooks. It draws, decodes images and reads fonts
-> through Egami. The packages are Egap.Pdf (read, edit, render, sign, redact and save PDF; PDF/A, optimize, stamps,
-> compare), Egap.Documents (one document model, page layout, PDF export and PDF back to documents), Egap.Documents.Html
-> (HTML, MHTML and EPUB), Egap.Documents.Markdown (Markdown), Egap.Spreadsheets (workbooks, formulas, Excel files),
-> Egap.Cli (the `egap` command and MCP server) and Egap.Preview (the `egap-preview` live preview tool).
+> documents in DOCX, DOC, RTF, ODT, HTML, EPUB and Markdown, Excel workbooks and PowerPoint presentations. It draws,
+> decodes images and reads fonts through Egami. The packages are Egap.Pdf (read, edit, render, sign, redact and save
+> PDF; PDF/A, optimize, stamps, compare), Egap.Documents (one document model, page layout, PDF export and PDF back to
+> documents), Egap.Documents.Html (HTML, MHTML and EPUB), Egap.Documents.Markdown (Markdown), Egap.Spreadsheets
+> (workbooks, formulas, Excel files), Egap.Presentations (PowerPoint files read, edited and saved), Egap.Cli (the `egap`
+> command and MCP server) and Egap.Preview (the `egap-preview` live preview tool).
 
 Egap's own names: `PdfDocument` (`PdfDocument.Open`, `Pages`, `Save`) is a PDF file, `Document` (`Document.Load`, `Save`,
 `DocumentBuilder`, `SaveAsPdf`) a flow document in any format, `Workbook` and `Worksheet` (`sheet["B2"]` is a `Cell`) a

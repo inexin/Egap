@@ -32,6 +32,9 @@ def main() -> int:
         group = "Spreadsheets" if any("using Egap.Spreadsheets;" in block for block in blocks) else "Snippets"
         if group == "Spreadsheets" and any("using Egap.Documents;" in block for block in blocks):
             group = "SpreadsheetsAndDocuments"
+        # Pages about Egap.Presentations build in a file of their own too, so its names stay out of the other pages' files.
+        if any("using Egap.Presentations;" in block for block in blocks):
+            group = "Presentations"
         usings, methods, types = groups.setdefault(group, (set(), [], []))
         for index, block in enumerate(blocks):
             body = []
@@ -71,6 +74,7 @@ def main() -> int:
             f'    <ProjectReference Include="{ROOT / "src" / "Egap.Documents.Markdown" / "Egap.Documents.Markdown.csproj"}" />\n'
             f'    <ProjectReference Include="{ROOT / "src" / "Egap.Documents.Html" / "Egap.Documents.Html.csproj"}" />\n'
             f'    <ProjectReference Include="{ROOT / "src" / "Egap.Spreadsheets" / "Egap.Spreadsheets.csproj"}" />\n'
+            f'    <ProjectReference Include="{ROOT / "src" / "Egap.Presentations" / "Egap.Presentations.csproj"}" />\n'
             "  </ItemGroup>\n"
             "</Project>\n", encoding="utf-8")
         result = subprocess.run(["dotnet", "build", str(work / "Snippets.csproj"), "-nologo", "-v", "q"],

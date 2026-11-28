@@ -4,6 +4,18 @@ What each Egap package adds, newest first. From 2.1.0 all Egap packages share on
 may go out ahead of the others on its own tag, as Egap.Documents, Egap.Spreadsheets and Egap.Cli 2.3.0-preview.1 did. Nothing before the first release below was published; those versions were
 internal milestones whose public API was frozen and reviewed, and they are listed so the version numbers make sense.
 
+## Egap.Presentations 2.4.0 (unreleased)
+
+- A new package for PowerPoint files. `Presentation.Load` reads PPTX, PPTM, POTX, POTM, PPSX and PPSM files, transitional
+  or Strict, and `Save` writes them back with every part, element and attribute the model does not hold kept as it was: a
+  part the model did not change keeps its bytes, and a Strict file stays Strict.
+- The model has the slide masters with their themes (`PresentationTheme`), colour maps and layouts, and the slides with
+  their layout, id, hidden flag and notes part. Each has its shapes as a tree: `AutoShape` (preset geometry and text in
+  paragraphs, runs and fields), `PictureShape` (its image part), `GroupShape`, `ConnectorShape` and `GraphicFrame` (tables,
+  charts, SmartArt and embedded objects, kept as they are), with id, name, alternative text, placeholder type and index,
+  and position, size, rotation and flips in EMUs and points.
+- Shape names, alternative text, positions, run text and the slide size can be changed.
+
 ## Egap.Cli 2.4.0 (unreleased)
 
 - Built on Egami.Cli.Host 1.6.0-preview.1 and Egami 1.6.0-preview.1.
