@@ -792,6 +792,13 @@ internal sealed partial class RtfWriter
 
     // ---- Sections ----
 
+    /// <summary>
+    /// A section's margin: its own, or, where it sets none but the first section (whose margins are the document's) sets
+    /// another, the inch it has in layout, so that it does not take the first section's.
+    /// </summary>
+    private static double? SectionMargin(double? own, double? first) =>
+        own ?? (first is double margin && Twips(margin) != Twips(DefaultMargin) ? DefaultMargin : null);
+
     private void SectionWords(PageSetup s)
     {
         if (s.SectionStart is { } start)
@@ -816,22 +823,22 @@ internal sealed partial class RtfWriter
             Word("pghsxn", Twips(height));
         }
 
-        if (s.MarginLeft is double left)
+        if (SectionMargin(s.MarginLeft, document.Sections[0].PageSetup.MarginLeft) is double left)
         {
             Word("marglsxn", Math.Max(0, Twips(left)));
         }
 
-        if (s.MarginRight is double right)
+        if (SectionMargin(s.MarginRight, document.Sections[0].PageSetup.MarginRight) is double right)
         {
             Word("margrsxn", Math.Max(0, Twips(right)));
         }
 
-        if (s.MarginTop is double top)
+        if (SectionMargin(s.MarginTop, document.Sections[0].PageSetup.MarginTop) is double top)
         {
             Word("margtsxn", Twips(top));
         }
 
-        if (s.MarginBottom is double bottom)
+        if (SectionMargin(s.MarginBottom, document.Sections[0].PageSetup.MarginBottom) is double bottom)
         {
             Word("margbsxn", Twips(bottom));
         }

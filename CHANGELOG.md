@@ -36,6 +36,8 @@ internal milestones whose public API was frozen and reviewed, and they are liste
 - Needs Egami.Fonts 1.6.0 (`ParagraphStyle.JustifyLineBreaks`, `StretchNoBreakSpaces` and `SpaceShrink`).
 - Built on Egami 1.6.0-preview.1, Egami.Metafiles 1.1.0-preview.1 and Egami.Barcodes 1.1.0-preview.1;
   Egami.Fonts.Substitutes stays at 1.1.0.
+- The RTF writer writes page margins a document leaves unset as the inch layout gives them, so readers no longer take
+  RTF's default of 1.25 inches left and right; a later section without margins no longer takes the first section's.
 - Word's barcode fields: `FieldKind.DisplayBarcode` and `FieldKind.MergeBarcode`. Layout, PDF export and rendering draw a
   DISPLAYBARCODE field's symbol in vectors in place of its result (QR, CODE128, CODE39, NW7, EAN13/JAN13, EAN8/JAN8, UPCA,
   UPCE, ITF14/CASE and JPPOST, with the `\s`, `\h`, `\r`, `\f`, `\b`, `\t`, `\q`, `\p` and `\x` switches), DOCX, RTF
