@@ -103,6 +103,9 @@ public enum FieldKind
 
     /// <summary>MERGEBARCODE: a barcode of a mail merge field's value; a mail merge makes it a DISPLAYBARCODE field.</summary>
     MergeBarcode,
+
+    /// <summary>DOCVARIABLE: a document variable's value (<see cref="Document.Variables"/>).</summary>
+    DocVariable,
 }
 
 /// <summary>
@@ -316,6 +319,7 @@ public sealed class Field
             "LASTSAVEDBY" => FieldKind.LastSavedBy,
             "FILENAME" => FieldKind.FileName,
             "DOCPROPERTY" => FieldKind.DocProperty,
+            "DOCVARIABLE" => FieldKind.DocVariable,
             "MERGEFIELD" => FieldKind.MergeField,
             "FORMTEXT" or "FORMCHECKBOX" or "FORMDROPDOWN" => FieldKind.FormField,
             "SYMBOL" => FieldKind.Symbol,

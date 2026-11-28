@@ -371,6 +371,10 @@ internal sealed partial class DocxReader
 
         DocxCompatibility.Read(root, settings);
         DocxProtection.Read(root, document.Protection);
+        foreach ((string name, string value) in DocxWriter.ReadVariables(root))
+        {
+            document.Variables[name] = value;
+        }
     }
 
     private void ReadProperties()

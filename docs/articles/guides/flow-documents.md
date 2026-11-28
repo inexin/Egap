@@ -196,6 +196,31 @@ paragraph.AddField("DISPLAYBARCODE \"490123456789\" JAN13 \\t");
 label.Save("label.docx");
 ```
 
+## Fields
+
+`Document.UpdateFields` recomputes every field Egap understands, and `Field.Update` one of them; a field's `\*` format
+(`Upper`, `ROMAN` and the rest) and `\#` numeric picture apply to its new result.
+
+### Document variables
+
+`Document.Variables` holds a document's variables (Word's document variables): text values by name, which a DOCVARIABLE
+field (`FieldKind.DocVariable`) shows. Names compare without regard to case, as in Word. A field naming a variable the
+document does not have shows Word's text, `Error! No document variable supplied.` DOCX (`w:docVars`), RTF (`\docvar`)
+and DOC read the variables and DOCX and RTF write them; OpenDocument has no document variables, so saving as ODT leaves
+them out with a warning. `Clone` and mail merge copy them, and a comparison's document has the variables of the one it
+was built on.
+
+```csharp
+using Egap.Documents;
+
+Document letter = new();
+letter.Variables["Customer"] = "Acme AS";
+Paragraph greeting = letter.AddSection().Body.AddParagraph("Dear ");
+Field customer = greeting.AddField("DOCVARIABLE Customer");
+letter.UpdateFields();
+// The field's result, customer.Start.GetField()!.Result, is now "Acme AS".
+```
+
 ## Mail merge
 
 `FillMergeFields` fills a template's MERGEFIELD fields from one record. Each field becomes plain text in its own

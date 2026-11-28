@@ -25,6 +25,8 @@
     <None Include="../fuzz-seeds/odt/*" LinkBase="files/odt" CopyToOutputDirectory="PreserveNewest" />
     <None Include="../fuzz-seeds/docx/*.xml" LinkBase="files/docx-xml" CopyToOutputDirectory="PreserveNewest" />
     <None Include="../fuzz-seeds/package/*.docx" LinkBase="files/docx-package" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="../files/fields/*.docx" LinkBase="files/fields" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="../files/fields/*.word.doc;../files/fields/*.word.rtf" LinkBase="files/fields" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
 
   <ItemGroup>

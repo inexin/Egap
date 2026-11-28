@@ -24,6 +24,7 @@ public sealed partial class Document : Node
         Theme = new Theme(this);
         Lists = new ListCollection(this);
         Properties = new DocumentProperties(this);
+        Variables = new DocumentVariableCollection(this);
         Settings = new DocumentSettings(this);
         Protection = new DocumentProtection(this);
         Revisions = new TrackedChangeCollection(this);
@@ -50,6 +51,9 @@ public sealed partial class Document : Node
 
     /// <summary>Title, author, dates and custom properties.</summary>
     public DocumentProperties Properties { get; }
+
+    /// <summary>The document variables by name, which DOCVARIABLE fields show (Word's document variables).</summary>
+    public DocumentVariableCollection Variables { get; }
 
     /// <summary>Document-wide settings: default tab stop, odd and even headers, note numbering, compatibility mode.</summary>
     public DocumentSettings Settings { get; }
@@ -194,6 +198,7 @@ public sealed partial class Document : Node
         copy.Styles.CopyFrom(Styles, context);
         copy.Theme.CopyFrom(Theme);
         copy.Properties.CopyFrom(Properties);
+        copy.Variables.CopyFrom(Variables);
         copy.Settings.CopyFrom(Settings);
         copy.Protection.CopyFrom(Protection);
         foreach ((string name, (string? AltName, string? Kind) hint) in FontHints)

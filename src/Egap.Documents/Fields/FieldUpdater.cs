@@ -10,6 +10,9 @@ namespace Egap.Documents;
 /// </summary>
 internal sealed class FieldUpdater
 {
+    /// <summary>Word's result for a DOCVARIABLE field naming a variable the document does not have.</summary>
+    internal const string NoDocumentVariable = "Error! No document variable supplied.";
+
     private readonly Document document;
     private readonly DateTimeOffset now;
     private readonly Dictionary<FieldStart, int> sequenceValues = [];
@@ -92,6 +95,10 @@ internal sealed class FieldUpdater
                 return TableOfContents.Build(field, code);
             case FieldKind.Page or FieldKind.NumPages or FieldKind.SectionPages or FieldKind.PageRef:
                 return false;
+            case FieldKind.DocVariable when code.Arguments.Count == 0 || !document.Variables.ContainsKey(code.Arguments[0]):
+                // Word's text for a variable the document does not have, which no switch changes.
+                SetResult(field, NoDocumentVariable);
+                return true;
         }
 
         string? result = field.Kind switch
@@ -109,6 +116,7 @@ internal sealed class FieldUpdater
             FieldKind.LastSavedBy => document.Properties.LastSavedBy ?? "",
             FieldKind.FileName => document.FileName is { } name ? (code.Has("\\P") ? name : Path.GetFileName(name)) : null,
             FieldKind.DocProperty => code.Arguments.Count > 0 ? document.Properties.Get(code.Arguments[0]) ?? "" : null,
+            FieldKind.DocVariable => document.Variables[code.Arguments[0]],
             FieldKind.Ref => Ref(code),
             FieldKind.NoteRef => NoteRef(code),
             FieldKind.Seq => sequenceValues.TryGetValue(field.Start, out int value) && !code.Has("\\H") ? value.ToString(CultureInfo.InvariantCulture) : code.Has("\\H") ? "" : null,

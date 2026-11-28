@@ -548,6 +548,18 @@ internal sealed partial class RtfWriter
             Close();
         }
 
+        foreach ((string name, string value) in document.Variables)
+        {
+            Destination("docvar");
+            Open();
+            Text(name);
+            Close();
+            Open();
+            Text(value);
+            Close();
+            Close();
+        }
+
         output.AppendLine();
     }
 

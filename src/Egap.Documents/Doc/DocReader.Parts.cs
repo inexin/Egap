@@ -81,6 +81,40 @@ internal sealed partial class DocReader
         return index >= 0 && index < authors.Count && authors[index].Length > 0 ? authors[index] : "Unknown";
     }
 
+    // StwUser ([MS-DOC] 2.9.297) holds the document variables: an STTB of the names, then an Xst value for each.
+    private void ReadVariables()
+    {
+        if (fib.IsWord6)
+        {
+            return;
+        }
+
+        ReadOnlySpan<byte> table = Table(DocTable.StwUser);
+        List<(string Text, byte[] Extra)> names = Sttb(table, out int at);
+        foreach ((string name, _) in names)
+        {
+            if (at + 2 > table.Length)
+            {
+                break;
+            }
+
+            int cch = BinaryPrimitives.ReadUInt16LittleEndian(table[at..]);
+            int length = Math.Min(cch, (table.Length - at - 2) / 2);
+            string value = string.Create(length, table.Slice(at + 2, 2 * length).ToArray(), static (span, bytes) =>
+            {
+                for (int i = 0; i < span.Length; i++)
+                {
+                    span[i] = (char)BinaryPrimitives.ReadUInt16LittleEndian(bytes.AsSpan(2 * i));
+                }
+            });
+            at += 2 + (2 * cch);
+            if (name.Length > 0)
+            {
+                document.Variables[OpcPackageWriter.XmlSafe(name)] = OpcPackageWriter.XmlSafe(value);
+            }
+        }
+    }
+
     // SttbfBkmk names the bookmarks; PlcfBkf has each start CP and the index (ibkl) of its end in PlcfBkl.
     private void ReadBookmarks()
     {

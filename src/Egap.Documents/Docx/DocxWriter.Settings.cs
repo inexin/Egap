@@ -171,6 +171,14 @@ internal sealed partial class DocxWriter
             changed = true;
         }
 
+        // Variables are written when they differ from the part's, so an untouched w:docVars stays as Word wrote it.
+        if (!document.Variables.SameAs(original is null ? [] : ReadVariables(root)))
+        {
+            SetOrRemove(root, "docVars", document.Variables.Count == 0 ? null
+                : new XElement(Ns.W + "docVars", document.Variables.Select(v => new XElement(Ns.W + "docVar", new XAttribute(Ns.W + "name", v.Key), new XAttribute(Ns.W + "val", v.Value)))));
+            changed = true;
+        }
+
         // A new settings part gets every flag the model sets, and Word's other options the model holds.
         changed |= DocxCompatibility.Write(root, settings.WordCompatibility, original is null ? null : read?.WordCompatibility, () => Set(root, new XElement(Ns.W + "compat")));
         if (!changed)
@@ -186,6 +194,22 @@ internal sealed partial class DocxWriter
         string name = PartFor(OpcRelationshipTypes.Settings, original?.Name ?? "/word/settings.xml");
         package.AddXmlPart(name, WordType + "settings+xml", Xml(root));
         writtenParts.Add(name);
+    }
+
+    /// <summary>The document variables in settings' <c>w:docVars</c> (ECMA-376 Part 1 17.15.1.31), in file order.</summary>
+    internal static List<(string Name, string Value)> ReadVariables(XElement root)
+    {
+        List<(string, string)> variables = [];
+        HashSet<string> seen = new(StringComparer.OrdinalIgnoreCase);
+        foreach (XElement variable in root.Element(Ns.W + "docVars")?.Elements(Ns.W + "docVar") ?? [])
+        {
+            if (variable.W("name") is { Length: > 0 } name && variable.W("val") is { } value && seen.Add(name))
+            {
+                variables.Add((name, value));
+            }
+        }
+
+        return variables;
     }
 
     private static void ReadSettingsInto(XElement root, DocumentSettings settings)

@@ -146,6 +146,7 @@ internal sealed partial class DocReader
         ReadSettings();
         ReadAuthors();
         ReadBookmarks();
+        ReadVariables();
         ReadFields();
         ReadNotes();
         ReadComments();
@@ -487,6 +488,13 @@ internal sealed partial class DocReader
     /// </summary>
     private List<(string Text, byte[] Extra)> Sttb(ReadOnlySpan<byte> sttb)
     {
+        return Sttb(sttb, out _);
+    }
+
+    /// <summary>An STTB's strings and their extra data, and <paramref name="end"/>, the offset after it.</summary>
+    private List<(string Text, byte[] Extra)> Sttb(ReadOnlySpan<byte> sttb, out int end)
+    {
+        end = sttb.Length;
         List<(string, byte[])> found = [];
         if (sttb.Length < 2)
         {
@@ -495,10 +503,10 @@ internal sealed partial class DocReader
 
         if (fib.IsWord6)
         {
-            int end = Math.Min(BinaryPrimitives.ReadUInt16LittleEndian(sttb), sttb.Length);
-            for (int at = 2; at < end && found.Count < limits.MaxEntries;)
+            int limit = Math.Min(BinaryPrimitives.ReadUInt16LittleEndian(sttb), sttb.Length);
+            for (int at = 2; at < limit && found.Count < limits.MaxEntries;)
             {
-                int length = Math.Min(sttb[at], end - at - 1);
+                int length = Math.Min(sttb[at], limit - at - 1);
                 found.Add((Latin(sttb.Slice(at + 1, length)), []));
                 at += 1 + sttb[at];
             }
@@ -549,6 +557,7 @@ internal sealed partial class DocReader
             found.Add((value, extra));
         }
 
+        end = Math.Min(pos, sttb.Length);
         return found;
     }
 

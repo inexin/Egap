@@ -174,6 +174,7 @@ public sealed class Paragraph : Block
             FieldKind.LastSavedBy => "LASTSAVEDBY",
             FieldKind.FileName => "FILENAME",
             FieldKind.DocProperty => "DOCPROPERTY",
+            FieldKind.DocVariable => "DOCVARIABLE",
             FieldKind.MergeField => "MERGEFIELD",
             FieldKind.FormField => "FORMTEXT",
             FieldKind.Include => "INCLUDETEXT",

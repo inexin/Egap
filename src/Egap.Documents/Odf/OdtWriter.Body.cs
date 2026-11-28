@@ -81,6 +81,11 @@ internal sealed partial class OdtWriter
             warnings.Add(ConversionWarningKind.PageLayoutDropped, "OpenDocument has no margin boxes; they were left out.");
         }
 
+        if (document.Variables.Count > 0)
+        {
+            warnings.Add(ConversionWarningKind.FieldsFlattened, "OpenDocument has no document variables; they were left out, and DOCVARIABLE fields keep their results.");
+        }
+
         allowChanges = true;
         scope = contentStyles;
 

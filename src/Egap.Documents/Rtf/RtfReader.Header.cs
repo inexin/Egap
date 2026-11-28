@@ -1230,6 +1230,38 @@ internal sealed partial class RtfReader
         }
     }
 
+    /// <summary>A document variable: <c>{\*\docvar {name}{value}}</c>.</summary>
+    private void ReadDocumentVariable()
+    {
+        int groupDepth = depth;
+        List<string> parts = [];
+        while (true)
+        {
+            switch (tokens.Next())
+            {
+                case RtfTokenKind.End:
+                    return;
+                case RtfTokenKind.GroupStart:
+                    Push(tokens.Position - 1);
+                    parts.Add(ReadText(trim: false));
+                    break;
+                case RtfTokenKind.GroupEnd:
+                    Pop();
+                    if (depth < groupDepth)
+                    {
+                        if (parts is [{ Length: > 0 } name, string value, ..])
+                        {
+                            document.Variables[name] = value;
+                        }
+
+                        return;
+                    }
+
+                    break;
+            }
+        }
+    }
+
     /// <summary>
     /// Ends the header once the body starts: the default fonts, and the list each style names (the list tables come after the
     /// style sheet).
