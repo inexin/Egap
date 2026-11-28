@@ -269,6 +269,28 @@ egap mcp --allow ./contracts --allow-sign
 To add it to an assistant, register the command `egap` with the argument `mcp`, or, without installing the tool, `dnx`
 with `Egap.Cli --yes -- mcp`.
 
+Besides its tools, egap serves a few documents as MCP resources, which an assistant can read before it calls a tool:
+
+| Resource | Holds |
+| --- | --- |
+| `egap://schema/workflow` | The JSON schema of a workflow object, as `run` takes it |
+| `egap://formats` | The formats `convert` reads, with their extensions, and those it writes, with the settings `--set` takes |
+| `egap://guide` | The [guide for coding agents](https://inexin.github.io/Egap/v2/agents/Egap.Cli.md): commands, workflow files, exit codes, common mistakes |
+
+and offers common jobs as MCP prompts, which assistants show as commands (in Claude Code, `/mcp__egap__shrink_pdf`). Each
+returns one message that names the tools to call and keeps to the folder rules: paths inside the allowed folders, results
+in new files, never over an input.
+
+| Prompt | Arguments | Does |
+| --- | --- | --- |
+| `convert_folder` | `folder`, `format` | Every document in the folder converted (to PDF unless `format` says), in a new folder named after the format |
+| `mail_merge` | `template`, `data` | A DOCX template filled from JSON or CSV records, one PDF per record |
+| `compare_documents` | `old`, `new` | The changes between two versions listed, with a marked copy or one with tracked changes |
+| `redact_pdf` | `file`, `phrases` | The phrases found, marked for review first, then removed for good and checked |
+| `shrink_pdf` | `inputs`, `preset` | PDFs made smaller with an `optimize` preset, lossless unless `preset` says |
+
+`format` and `preset` may be left out.
+
 ## More tools
 
 `egap <name>` runs a program called `egap-<name>` from the PATH, as git and dotnet do. `egap preview` therefore starts

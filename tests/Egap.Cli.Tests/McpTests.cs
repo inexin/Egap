@@ -1,6 +1,9 @@
 using System.IO.Pipes;
+using System.Text;
 using System.Text.Json;
+using System.Text.RegularExpressions;
 
+using ModelContextProtocol;
 using ModelContextProtocol.Client;
 using ModelContextProtocol.Protocol;
 
@@ -171,6 +174,97 @@ public sealed class McpTests : IAsyncDisposable
         Assert.Equal(1, result.StructuredContent!.Value.GetProperty("exitCode").GetInt32());
         Assert.True(File.Exists(_tool.PathOf("redline.docx")));
         Assert.NotEmpty(Egap.Documents.Document.Load(_tool.PathOf("redline.docx")).Revisions);
+    }
+
+    [Fact]
+    public async Task ServesItsResources()
+    {
+        McpClient client = await Connect();
+        Assert.NotNull(client.ServerCapabilities.Resources);
+        IList<McpClientResource> resources = await client.ListResourcesAsync(cancellationToken: Token);
+        Assert.Equal(["egap://schema/workflow", "egap://formats", "egap://guide"], resources.Select(r => r.Uri));
+        Dictionary<string, string> texts = [];
+        foreach (McpClientResource resource in resources)
+        {
+            Assert.False(string.IsNullOrWhiteSpace(resource.ProtocolResource.Description));
+            ReadResourceResult read = await client.ReadResourceAsync(resource.Uri, cancellationToken: Token);
+            TextResourceContents contents = Assert.IsType<TextResourceContents>(Assert.Single(read.Contents));
+            Assert.Equal(resource.Uri, contents.Uri);
+            Assert.Equal(resource.MimeType, contents.MimeType);
+            texts[resource.Uri] = contents.Text;
+        }
+
+        // The schema and the guide byte for byte as the repository holds them.
+        string repository = Path.Combine(Path.GetDirectoryName(Tool.Files)!, "..");
+        Assert.Equal(File.ReadAllBytes(Path.Combine(repository, "docs", "schemas", "egap-workflow-1.json")), Encoding.UTF8.GetBytes(texts["egap://schema/workflow"]));
+        Assert.Equal(File.ReadAllBytes(Path.Combine(repository, "docs", "agents", "Egap.Cli.md")), Encoding.UTF8.GetBytes(texts["egap://guide"]));
+
+        // The formats: every one convert writes, as its --to lists them, with the settings --set takes.
+        using JsonDocument formats = JsonDocument.Parse(texts["egap://formats"]);
+        JsonElement[] writes = [.. formats.RootElement.GetProperty("writes").EnumerateArray()];
+        string listed = Regex.Match(_tool.Run("convert", "--help").Text, "The output format when -o does not say: ([a-z, ]+)\\.").Groups[1].Value;
+        Assert.Equal(listed.Split(", "), writes.Select(w => w.GetProperty("format").GetString()));
+        JsonElement pdf = writes.First(w => w.GetProperty("format").GetString() == "pdf");
+        Assert.Contains("language", pdf.GetProperty("settings").EnumerateArray().Select(s => s.GetString()));
+        string[] extensions = [.. formats.RootElement.GetProperty("reads").EnumerateArray().SelectMany(r => r.GetProperty("extensions").EnumerateArray().Select(e => e.GetString()!))];
+        Assert.Contains(".docx", extensions);
+        Assert.Contains(".pdf", extensions);
+        Assert.Equal(extensions.Length, extensions.Distinct().Count());
+        await Assert.ThrowsAnyAsync<McpException>(async () => await client.ReadResourceAsync("egap://nothing", cancellationToken: Token));
+    }
+
+    [Fact]
+    public async Task PromptsNameOnlyItsTools()
+    {
+        McpClient client = await Connect();
+        Assert.NotNull(client.ServerCapabilities.Prompts);
+        Dictionary<string, McpClientTool> tools = (await client.ListToolsAsync(cancellationToken: Token)).ToDictionary(t => t.Name);
+        IList<McpClientPrompt> prompts = await client.ListPromptsAsync(cancellationToken: Token);
+        Assert.Equal(["convert_folder", "mail_merge", "compare_documents", "redact_pdf", "shrink_pdf"], prompts.Select(p => p.Name));
+        foreach (McpClientPrompt prompt in prompts)
+        {
+            Assert.False(string.IsNullOrWhiteSpace(prompt.Description));
+            IList<PromptArgument> arguments = prompt.ProtocolPrompt.Arguments ?? [];
+            Assert.Contains(arguments, a => a.Required == true);
+            Dictionary<string, object?> values = arguments.Where(a => a.Required == true).ToDictionary(a => a.Name, a => (object?)$"some {a.Name}");
+            GetPromptResult result = await client.GetPromptAsync(prompt.Name, values, cancellationToken: Token);
+            PromptMessage message = Assert.Single(result.Messages);
+            Assert.Equal(Role.User, message.Role);
+            string text = Assert.IsType<TextContentBlock>(message.Content).Text;
+            foreach (string value in values.Values.Cast<string>())
+            {
+                Assert.Contains(value, text, StringComparison.Ordinal);
+            }
+
+            string named = Regex.Match(text, "Tools to call: ([a-z_, ]+)\\.").Groups[1].Value;
+            Assert.NotEmpty(named);
+            foreach (string tool in named.Split(", "))
+            {
+                Assert.True(tools.ContainsKey(tool), $"{prompt.Name} names {tool}, which is not a tool.");
+            }
+
+            // A required argument left out is a mistake the client hears about.
+            await Assert.ThrowsAnyAsync<McpException>(async () => await client.GetPromptAsync(prompt.Name, new Dictionary<string, object?>(), cancellationToken: Token));
+        }
+
+        // The arguments the prompts tell the assistant to pass are the tools' own.
+        (string Tool, string[] Arguments)[] used =
+        [
+            ("convert", ["inputs", "to", "output"]),
+            ("merge_data", ["template", "data", "each", "output", "name_field"]),
+            ("compare", ["old", "new", "markup", "as_documents", "redline", "output"]),
+            ("redact", ["inputs", "text", "regex", "mark_only", "output"]),
+            ("text", ["inputs"]),
+            ("optimize", ["inputs", "preset", "output"]),
+        ];
+        foreach ((string tool, string[] names) in used)
+        {
+            JsonElement properties = tools[tool].ProtocolTool.InputSchema.GetProperty("properties");
+            foreach (string name in names)
+            {
+                Assert.True(properties.TryGetProperty(name, out _), $"{tool} has no argument {name}.");
+            }
+        }
     }
 
     /// <summary>Starts egap mcp in this process on a pair of pipes and connects the SDK's client to it.</summary>

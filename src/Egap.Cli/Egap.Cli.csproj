@@ -41,6 +41,8 @@
   <!-- egap mcp's run tool takes a workflow object with the published schema. -->
   <ItemGroup>
     <EmbeddedResource Include="..\..\docs\schemas\egap-workflow-1.json" LogicalName="egap-workflow-1.json" />
+    <!-- egap mcp's resource egap://guide: the agent guide, as docs/agents/Egap.Cli.md holds it. -->
+    <EmbeddedResource Include="..\..\docs\agents\Egap.Cli.md" LogicalName="egap-guide.md" />
     <None Include=".mcp\server.json" Pack="true" PackagePath="/.mcp/" />
   </ItemGroup>
 

@@ -19,7 +19,7 @@ namespace Egap.Cli.Commands;
 internal static class ConvertCommand
 {
     /// <summary>The formats convert writes, by extension.</summary>
-    private static readonly string[] Targets = ["pdf", "docx", "odt", "ott", "fodt", "fott", "rtf", "html", "md", "txt", "xlsx", "csv", .. WorkbookConvert.Images];
+    internal static readonly string[] Targets = ["pdf", "docx", "odt", "ott", "fodt", "fott", "rtf", "html", "md", "txt", "xlsx", "csv", .. WorkbookConvert.Images];
 
     /// <summary>The most one remote resource may be (Q7).</summary>
     private const int MaxRemoteBytes = 50 << 20;
@@ -502,7 +502,7 @@ internal static class ConvertCommand
     private static readonly string[] OdtKeys = ["version", "encryption", "unknown-markup"];
 
     /// <summary>The settings each format convert writes takes through <c>--set</c>.</summary>
-    private static readonly Dictionary<string, string[]> SettingKeys = new()
+    internal static readonly Dictionary<string, string[]> SettingKeys = new()
     {
         ["pdf"] = ["language", "links", "named-destinations", "outline", "form-fields", "ua", "resolved-comments", "strict"],
         ["docx"] = [],
