@@ -134,6 +134,16 @@ internal sealed partial class RtfWriter
                 WriteHyperlink(link);
                 CloseMarked(linkGroup);
                 break;
+            case Ruby ruby:
+                warnings.Add(ConversionWarningKind.FormattingDropped, "Ruby is written as its base text.");
+                bool rubyGroup = OpenMarked(inline);
+                foreach (Inline child in ruby.Inlines)
+                {
+                    WriteInline(child);
+                }
+
+                CloseMarked(rubyGroup);
+                break;
             case InlineContentControl control:
                 warnings.Add(ConversionWarningKind.ContentControlsDropped, "RTF has no content controls; their content was kept.");
                 bool controlGroup = OpenMarked(inline);

@@ -775,6 +775,9 @@ internal sealed partial class HtmlWriter
                     linkDepth--;
                     body.Append("</a>");
                     break;
+                case Ruby ruby:
+                    WriteRuby(ruby);
+                    break;
                 case InlineContentControl control:
                     warnings.Add(ConversionWarningKind.ContentControlsDropped, "content controls, written as their content");
                     WriteInlines(control.Inlines);
@@ -1075,6 +1078,53 @@ internal sealed partial class HtmlWriter
         return quoted.Append('"').ToString();
     }
 
+    /// <summary>
+    /// A ruby as <c>&lt;ruby&gt;</c>: its base, then its text in <c>&lt;rt&gt;</c> with its format and size, between
+    /// <c>&lt;rp&gt;</c> parentheses for readers without ruby; its position and alignment as <c>ruby-position</c> and
+    /// <c>ruby-align</c>.
+    /// </summary>
+    private void WriteRuby(Ruby ruby)
+    {
+        List<(string, string)> css = [];
+        if (ruby.Position == RubyPosition.Under)
+        {
+            css.Add(("ruby-position", "under"));
+        }
+
+        if (ruby.Alignment != RubyAlignment.Center)
+        {
+            css.Add(("ruby-align", ruby.Alignment switch
+            {
+                RubyAlignment.Left => "start",
+                RubyAlignment.DistributeLetter => "space-between",
+                RubyAlignment.DistributeSpace => "space-around",
+                _ => "end",
+            }));
+        }
+
+        body.Append("<ruby");
+        if (css.Count > 0)
+        {
+            body.Append(" style=\"").Append(Attribute(Declarations(css).Trim())).Append('"');
+        }
+
+        body.Append('>');
+        WriteInlines(ruby.Inlines);
+        body.Append("<rp>(</rp><rt");
+        List<(string, string)> text = RunCss(ruby.TextFormat, null);
+        if (ruby.FontSize is { } size)
+        {
+            text.Add(("font-size", Points(size)));
+        }
+
+        if (text.Count > 0)
+        {
+            body.Append(" style=\"").Append(Attribute(Declarations(text).Trim())).Append('"');
+        }
+
+        body.Append('>').Append(Text(ruby.Text)).Append("</rt><rp>)</rp></ruby>");
+    }
+
     private List<(string, string)> RunCss(RunFormat format, CharacterStyle? style)
     {
         _ = style;
@@ -1175,6 +1225,26 @@ internal sealed partial class HtmlWriter
         if (format.WordSpacing is { } wordSpacing && wordSpacing != 0)
         {
             css.Add(("word-spacing", Points(wordSpacing)));
+        }
+
+        if (format.Emphasis is { } emphasis)
+        {
+            css.Add(("text-emphasis", emphasis switch
+            {
+                EmphasisMark.Dot or EmphasisMark.UnderDot => "filled dot",
+                EmphasisMark.Comma => "filled sesame",
+                EmphasisMark.Circle => "open circle",
+                _ => "none",
+            }));
+            if (emphasis == EmphasisMark.UnderDot)
+            {
+                css.Add(("text-emphasis-position", "under right"));
+            }
+        }
+
+        if (format.CombineUpright is { } combine)
+        {
+            css.Add(("text-combine-upright", combine ? "all" : "none"));
         }
 
         if (format.Features is { Count: > 0 } features)

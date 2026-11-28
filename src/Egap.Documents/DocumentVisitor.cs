@@ -188,6 +188,18 @@ public abstract class DocumentVisitor
         return VisitorAction.Continue;
     }
 
+    /// <summary>Entering a ruby, before its base.</summary>
+    public virtual VisitorAction VisitRubyStart(Ruby ruby)
+    {
+        return VisitorAction.Continue;
+    }
+
+    /// <summary>Leaving a ruby.</summary>
+    public virtual VisitorAction VisitRubyEnd(Ruby ruby)
+    {
+        return VisitorAction.Continue;
+    }
+
     /// <summary>Entering an inline content control.</summary>
     public virtual VisitorAction VisitInlineContentControlStart(InlineContentControl control)
     {

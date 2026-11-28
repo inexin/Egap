@@ -7,9 +7,11 @@ using Egami.Fonts.Shaping;
 using Egami.Fonts.Substitutes;
 using Egami.Pixels;
 
+using EgamiEmphasisMark = Egami.Fonts.Layout.EmphasisMark;
 using EgamiKashidaLevel = Egami.Fonts.Layout.KashidaLevel;
 using EgamiParagraph = Egami.Fonts.Layout.Paragraph;
 using EgamiParagraphStyle = Egami.Fonts.Layout.ParagraphStyle;
+using EgamiRubyPosition = Egami.Fonts.Layout.RubyPosition;
 using EgamiTab = Egami.Fonts.Layout.TabStop;
 using EgamiTabAlignment = Egami.Fonts.Layout.TabAlignment;
 using EgamiTextDirection = Egami.Fonts.Unicode.TextDirection;
@@ -75,6 +77,9 @@ internal sealed class ParagraphContent
     /// <see cref="LayoutWarningKind.HyphenationDictionaryMissing"/>.
     /// </summary>
     public IReadOnlyList<string>? MissingDictionaries { get; init; }
+
+    /// <summary>The ruby of each of the text's ruby annotations, in their order, or null for none.</summary>
+    public IReadOnlyList<Ruby>? Rubies { get; init; }
 
     /// <summary>The lines last broken for this content, at the width they were broken for; layout keeps them here.</summary>
     internal (double Width, object Lines)? Broken { get; set; }
@@ -149,6 +154,7 @@ internal sealed class ParagraphBridge(FontProvider fonts, Document document, Rev
         bool markup = view == RevisionView.Markup;
         bool hasRevisions = false;
         List<(int, int)>? changes = markup ? [] : null;
+        List<Ruby>? rubies = null;
         Revision? marking = null;
         FormatRevision? formatMarking = null;
 
@@ -219,6 +225,7 @@ internal sealed class ParagraphBridge(FontProvider fonts, Document document, Rev
             HasRevisions = hasRevisions,
             Changes = changes,
             MissingDictionaries = unhyphenated,
+            Rubies = rubies,
         };
 
         // The mark's style, resolved once for the paragraph.
@@ -301,6 +308,20 @@ internal sealed class ParagraphBridge(FontProvider fonts, Document document, Rev
                         }
 
                         break;
+                    case Ruby ruby when !inCode:
+                        {
+                            // The base's text goes in as usual; the annotation sits over the whole of it.
+                            int start = text.Length;
+                            Walk(ruby.Inlines);
+                            if (text.Length > start && ruby.Text.Length > 0)
+                            {
+                                text.AddRuby(Annotation(ruby, start, text.Length - start));
+                                (rubies ??= []).Add(ruby);
+                            }
+
+                            break;
+                        }
+
                     case CompositeInline composite:
                         Walk(composite.Inlines);
                         break;
@@ -600,6 +621,8 @@ internal sealed class ParagraphBridge(FontProvider fonts, Document document, Rev
             LetterSpacing = format.Spacing == 0 ? null : (float)format.Spacing,
             WordSpacing = format.WordSpacing == 0 ? null : (float)format.WordSpacing,
             BaselineShift = shift == 0 ? null : shift,
+            Emphasis = format.Emphasis == EmphasisMark.None ? null : Emphasis(format.Emphasis),
+            CombineUpright = format.CombineUpright ? TextCombine.All : null,
 
             // Word kerns only text at or above the run's kerning size (w:kern), and sets no standard ligatures by default;
             // the run's own features come after, so they win, unless Word's enableOpenTypeFeatures is off.
@@ -607,6 +630,65 @@ internal sealed class ParagraphBridge(FontProvider fonts, Document document, Rev
                 document.Settings.WordCompatibility.EnableOpenTypeFeatures ? format.Features : FontFeatures.None),
         };
     }
+
+    /// <summary>
+    /// A ruby's annotation over the text from <paramref name="start"/>: Word's size (<c>w:hps</c>) and raise (<c>w:hpsRaise</c>,
+    /// which Egami takes less the ruby's size, as the gap above the base), alignment, and the fonts, weight, slant and colour
+    /// its text format sets over its base's.
+    /// </summary>
+    private RubyAnnotation Annotation(Ruby ruby, int start, int length)
+    {
+        float? size = ruby.FontSize is double s ? (float)s : null;
+        float? offset = ruby.Raise is double raise && size is float rubySize ? Math.Max(0, (float)raise - rubySize) : null;
+        TextStyle? style = size is null ? null : new TextStyle { Size = size };
+        RunFormat own = ruby.TextFormat;
+        if (!own.IsEmpty && ruby.Runs.FirstOrDefault()?.GetEffectiveFormat() is { } under)
+        {
+            bool fonts = own.FontAscii is not null || own.FontEastAsia is not null || own.FontComplexScript is not null;
+            bool shape = own.Bold is not null || own.Italic is not null;
+            FontStyle fontStyle = new(Weight: (own.Bold ?? under.Bold) ? 700 : 400, Slant: (own.Italic ?? under.Italic) ? FontSlant.Italic : FontSlant.Upright);
+            style = new TextStyle
+            {
+                Size = size,
+                FontFamilies = fonts || shape ? Families(own.FontAscii ?? under.FontAscii, own.FontEastAsia ?? under.FontEastAsia, own.FontComplexScript ?? under.FontComplexScript, fontStyle) : null,
+                FontStyle = shape ? fontStyle : null,
+                Color = own.Color is { Kind: not DocumentColorKind.Auto } color ? color.Resolve(document.Theme, default) : null,
+            };
+        }
+
+        return new RubyAnnotation(start, length, ruby.Text)
+        {
+            Style = style,
+            Position = ruby.Position == RubyPosition.Under ? EgamiRubyPosition.Under : EgamiRubyPosition.Over,
+            Align = ruby.Alignment switch
+            {
+                RubyAlignment.DistributeLetter => RubyAlign.SpaceBetween,
+                RubyAlignment.DistributeSpace => RubyAlign.SpaceAround,
+                RubyAlignment.Left => RubyAlign.Start,
+                RubyAlignment.Right or RubyAlignment.RightVertical => RubyAlign.End,
+                _ => RubyAlign.Center,
+            },
+            Offset = offset,
+        };
+    }
+
+    /// <summary>Word's emphasis marks as Egami draws them: filled dots, sesame marks or open circles.</summary>
+    private static TextEmphasis? Emphasis(EmphasisMark mark) => mark switch
+    {
+        EmphasisMark.Dot => DotEmphasis,
+        EmphasisMark.Comma => SesameEmphasis,
+        EmphasisMark.Circle => CircleEmphasis,
+        EmphasisMark.UnderDot => UnderDotEmphasis,
+        _ => null,
+    };
+
+    private static readonly TextEmphasis DotEmphasis = new() { Mark = EgamiEmphasisMark.Dot, Filled = true };
+    private static readonly TextEmphasis SesameEmphasis = new() { Mark = EgamiEmphasisMark.Sesame, Filled = true };
+    private static readonly TextEmphasis CircleEmphasis = new() { Mark = EgamiEmphasisMark.Circle, Filled = false };
+    private static readonly TextEmphasis UnderDotEmphasis = new() { Mark = EgamiEmphasisMark.Dot, Filled = true, Position = EmphasisPosition.Under };
+
+    /// <summary>Ruby as Word lays it out: the base spreads to a wider ruby, which never hangs over the characters beside it.</summary>
+    private static readonly RubyOptions WordRuby = new() { Overhang = RubyOverhang.None };
 
     /// <summary>How far default tab stops are laid out: past the widest page Word allows (22 inches).</summary>
     private const double DefaultStopsReach = 1584;
@@ -867,6 +949,7 @@ internal sealed class ParagraphBridge(FontProvider fonts, Document document, Rev
             Hyphenation = autoHyphens ? WithLimits(HyphenationOf(document.Settings), format) : null,
             LineFill = format.LineFill ?? lineFill,
             Fallback = fonts.Fallback,
+            Ruby = WordRuby,
             MaxLines = format.MaxLines > 0 ? format.MaxLines : null,
             Ellipsis = format.MaxLines > 0 ? "\u2026" : null,
             LineBreaking = format.WordBreak switch

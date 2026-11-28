@@ -154,7 +154,7 @@ internal static class PageDrawing
                 DrawChildren(paragraph, canvas, observer);
                 return;
             case LineBox line:
-                DrawLine(line, canvas);
+                DrawLine(line, canvas, observer);
                 return;
             case ObjectBox item:
                 DrawObject(item, canvas, observer);
@@ -250,7 +250,7 @@ internal static class PageDrawing
         return hyphen != 0 && glyphs.Glyphs[^1] == hyphen && glyphs.Clusters[^1] >= end - 1 ? 1 : 0;
     }
 
-    private static void DrawLine(LineBox line, Canvas canvas)
+    private static void DrawLine(LineBox line, Canvas canvas, LayoutDrawObserver? observer)
     {
         TextLine text = line.Line;
         Egami.Fonts.Layout.Paragraph paragraph = line.Content.Text;
@@ -285,6 +285,10 @@ internal static class PageDrawing
                 canvas.DrawGlyphRun(GlyphRun.Create(glyphs.Font, glyphs.Glyphs[body..], glyphs.Positions[body..]), origin, color);
                 canvas.EndMarkedContent();
             }
+            else if (observer is not null && line.Content.Rubies is { } rubies && text.AnnotationRuns.Count > 0)
+            {
+                DrawWithRubyBases(canvas, observer, text, rubies, run, glyphs, origin, color);
+            }
             else
             {
                 canvas.DrawGlyphRun(OwnText(glyphs, run), origin, color);
@@ -294,6 +298,94 @@ internal static class PageDrawing
             {
                 DrawDecoration(canvas, decoration, style, origin.X + run.X, run.Advance, (float)line.Baseline - (style.BaselineShift ?? 0));
             }
+        }
+
+        // Ruby in its own style's color, emphasis marks in theirs (the text's when they set none); the marks stand for no text.
+        foreach (LayoutRun run in text.AnnotationRuns)
+        {
+            if (run.Glyphs is not GlyphRun glyphs || glyphs.Count == 0)
+            {
+                continue;
+            }
+
+            TextStyle style = paragraph.GetStyle(run.StyleIndex);
+            Ruby? ruby = run.Kind == LayoutRunKind.Ruby && line.Content.Rubies is { } rubies && run.Annotation >= 0 && run.Annotation < rubies.Count ? rubies[run.Annotation] : null;
+            if (ruby is not null)
+            {
+                observer?.BeginRuby(ruby, true);
+            }
+            else
+            {
+                observer?.BeginMarks();
+            }
+
+            Rgba8 color = run.Kind == LayoutRunKind.Emphasis && style.Emphasis?.Color is { } mark ? mark : style.Color ?? Black;
+            canvas.DrawGlyphRun(glyphs, origin, color);
+            observer?.EndLinePart();
+        }
+    }
+
+    /// <summary>
+    /// A run drawn in pieces at the edges of the ruby bases it holds, each base's piece inside
+    /// <see cref="LayoutDrawObserver.BeginRuby"/>, so a tagged PDF puts it in its ruby's RB element.
+    /// </summary>
+    private static void DrawWithRubyBases(Canvas canvas, LayoutDrawObserver observer, TextLine line, IReadOnlyList<Ruby> rubies, LayoutRun run, GlyphRun glyphs, Vector2 origin, Rgba8 color)
+    {
+        int RubyAt(int index)
+        {
+            foreach (LayoutRun annotation in line.AnnotationRuns)
+            {
+                if (annotation.Kind == LayoutRunKind.Ruby && index >= annotation.Start && index < annotation.Start + annotation.Length)
+                {
+                    return annotation.Annotation;
+                }
+            }
+
+            return -1;
+        }
+
+        int end = run.Start + run.Length;
+        bool any = false;
+        for (int i = run.Start; i < end && !any; i++)
+        {
+            any = RubyAt(i) >= 0;
+        }
+
+        if (!any || (run.BidiLevel & 1) != 0 || glyphs.Clusters.Length != glyphs.Count || !glyphs.Transforms.IsEmpty || glyphs.Text is not { } text)
+        {
+            canvas.DrawGlyphRun(OwnText(glyphs, run), origin, color);
+            return;
+        }
+
+        for (int first = 0; first < glyphs.Count;)
+        {
+            int ruby = RubyAt(glyphs.Clusters[first]), last = first + 1;
+            while (last < glyphs.Count && RubyAt(glyphs.Clusters[last]) == ruby)
+            {
+                last++;
+            }
+
+            int textStart = Math.Clamp(glyphs.Clusters[first], 0, text.Length);
+            int textEnd = last < glyphs.Count ? Math.Clamp(glyphs.Clusters[last], textStart, text.Length) : Math.Clamp(end, textStart, text.Length);
+            int[] clusters = new int[last - first];
+            for (int g = 0; g < clusters.Length; g++)
+            {
+                clusters[g] = Math.Clamp(glyphs.Clusters[first + g] - textStart, 0, textEnd - textStart);
+            }
+
+            GlyphRun piece = GlyphRun.Create(glyphs.Font, glyphs.Glyphs[first..last], glyphs.Positions[first..last], text[textStart..textEnd], clusters);
+            if (ruby >= 0 && ruby < rubies.Count)
+            {
+                observer.BeginRuby(rubies[ruby], false);
+                canvas.DrawGlyphRun(piece, origin, color);
+                observer.EndLinePart();
+            }
+            else
+            {
+                canvas.DrawGlyphRun(piece, origin, color);
+            }
+
+            first = last;
         }
     }
 

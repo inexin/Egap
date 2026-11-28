@@ -92,6 +92,31 @@ internal static class DocxProperties
                     }
 
                     break;
+                case "em":
+                    format.Emphasis = e.Val() switch
+                    {
+                        "dot" => EmphasisMark.Dot,
+                        "comma" => EmphasisMark.Comma,
+                        "circle" => EmphasisMark.Circle,
+                        "underDot" => EmphasisMark.UnderDot,
+                        "none" => EmphasisMark.None,
+                        _ => null,
+                    };
+                    break;
+                case "eastAsianLayout":
+                    // w:vert, horizontal in vertical (17.3.2.10), is tate-chu-yoko; two lines in one (w:combine), its brackets,
+                    // w:vertCompress and the layout's id stay as they are.
+                    if (e.Attribute(Ns.W + "vert") is not null)
+                    {
+                        format.CombineUpright = e.W("vert") is "1" or "true" or "on";
+                    }
+
+                    if (e.Attributes().Any(a => a.Name != Ns.W + "vert" && !a.IsNamespaceDeclaration))
+                    {
+                        unknown?.Invoke(new XElement(e.Name, e.Attributes().Where(a => a.Name != Ns.W + "vert" && !a.IsNamespaceDeclaration)));
+                    }
+
+                    break;
                 case "rStyle":
                     break;
                 default:
