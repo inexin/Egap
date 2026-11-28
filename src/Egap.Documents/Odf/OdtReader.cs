@@ -113,6 +113,8 @@ internal sealed partial class OdtReader
     {
         document.Settings.CompatibilityMode = 15;
 
+        // Justified lines before a break are laid out like last lines, not by Word's rules.
+        document.Settings.WordCompatibility.JustifiesLikeWord = false;
         // LibreOffice only stretches justified lines.
         document.Settings.WordCompatibility.ShrinkJustifiedSpaces = false;
         ReadSettings();

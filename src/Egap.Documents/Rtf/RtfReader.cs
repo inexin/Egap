@@ -49,6 +49,9 @@ internal sealed partial class RtfReader
         story = main;
         document.Settings.CompatibilityMode = 15;
         document.Styles.DefaultRunFormat.Size = 12;
+
+        // RTF's \expshrtn is the opposite of doNotExpandShiftReturn: Word reads a file without it as having the setting.
+        document.Settings.WordCompatibility.DoNotExpandShiftReturn = true;
     }
 
     public static Document Read(byte[] data, RtfLoadOptions options, out IReadOnlyList<ConversionWarning> warnings)

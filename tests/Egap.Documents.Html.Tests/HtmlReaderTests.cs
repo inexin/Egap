@@ -150,4 +150,17 @@ public class HtmlReaderTests
         Assert.Equal(14, paragraphs[1].MarkFormat.Size);
         Assert.Equal("\u00A0x", paragraphs[2].GetText().TrimEnd('\r'));
     }
+
+    [Fact]
+    public void JustifiedLinesBeforeABreakStayAsBrowsersSetThem()
+    {
+        // Browsers lay the line before a <br> out like a last line, unlike Word.
+        Document document = HtmlFormat.Parse("<p style=\"text-align: justify\">In olden times<br>when wishing still helped one</p>");
+        Paragraph paragraph = document.Sections[0].Body.Paragraphs.First();
+
+        Assert.False(document.Settings.WordCompatibility.JustifiesLikeWord);
+        Assert.False(((Document)document.Clone()).Settings.WordCompatibility.JustifiesLikeWord);
+        LineBox first = ((ParagraphBox)document.Layout().FindBoxes(paragraph).First(b => b.Box is ParagraphBox).Box).Lines[0];
+        Assert.True(first.Line.Width < 200, $"{first.Line.Width}");
+    }
 }
