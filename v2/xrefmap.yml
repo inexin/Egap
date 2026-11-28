@@ -10754,6 +10754,32 @@ references:
   isSpec: "True"
   fullName: Egap.Documents.DocumentVisitor.VisitRowStart
   nameWithType: DocumentVisitor.VisitRowStart
+- uid: Egap.Documents.DocumentVisitor.VisitRubyEnd(Egap.Documents.Ruby)
+  name: VisitRubyEnd(Ruby)
+  href: api/Egap.Documents.DocumentVisitor.html#Egap_Documents_DocumentVisitor_VisitRubyEnd_Egap_Documents_Ruby_
+  commentId: M:Egap.Documents.DocumentVisitor.VisitRubyEnd(Egap.Documents.Ruby)
+  fullName: Egap.Documents.DocumentVisitor.VisitRubyEnd(Egap.Documents.Ruby)
+  nameWithType: DocumentVisitor.VisitRubyEnd(Ruby)
+- uid: Egap.Documents.DocumentVisitor.VisitRubyEnd*
+  name: VisitRubyEnd
+  href: api/Egap.Documents.DocumentVisitor.html#Egap_Documents_DocumentVisitor_VisitRubyEnd_
+  commentId: Overload:Egap.Documents.DocumentVisitor.VisitRubyEnd
+  isSpec: "True"
+  fullName: Egap.Documents.DocumentVisitor.VisitRubyEnd
+  nameWithType: DocumentVisitor.VisitRubyEnd
+- uid: Egap.Documents.DocumentVisitor.VisitRubyStart(Egap.Documents.Ruby)
+  name: VisitRubyStart(Ruby)
+  href: api/Egap.Documents.DocumentVisitor.html#Egap_Documents_DocumentVisitor_VisitRubyStart_Egap_Documents_Ruby_
+  commentId: M:Egap.Documents.DocumentVisitor.VisitRubyStart(Egap.Documents.Ruby)
+  fullName: Egap.Documents.DocumentVisitor.VisitRubyStart(Egap.Documents.Ruby)
+  nameWithType: DocumentVisitor.VisitRubyStart(Ruby)
+- uid: Egap.Documents.DocumentVisitor.VisitRubyStart*
+  name: VisitRubyStart
+  href: api/Egap.Documents.DocumentVisitor.html#Egap_Documents_DocumentVisitor_VisitRubyStart_
+  commentId: Overload:Egap.Documents.DocumentVisitor.VisitRubyStart
+  isSpec: "True"
+  fullName: Egap.Documents.DocumentVisitor.VisitRubyStart
+  nameWithType: DocumentVisitor.VisitRubyStart
 - uid: Egap.Documents.DocumentVisitor.VisitRun(Egap.Documents.Run)
   name: VisitRun(Run)
   href: api/Egap.Documents.DocumentVisitor.html#Egap_Documents_DocumentVisitor_VisitRun_Egap_Documents_Run_
@@ -11396,6 +11422,42 @@ references:
   isSpec: "True"
   fullName: Egap.Documents.EmbeddedFont.Italic
   nameWithType: EmbeddedFont.Italic
+- uid: Egap.Documents.EmphasisMark
+  name: EmphasisMark
+  href: api/Egap.Documents.EmphasisMark.html
+  commentId: T:Egap.Documents.EmphasisMark
+  fullName: Egap.Documents.EmphasisMark
+  nameWithType: EmphasisMark
+- uid: Egap.Documents.EmphasisMark.Circle
+  name: Circle
+  href: api/Egap.Documents.EmphasisMark.html#Egap_Documents_EmphasisMark_Circle
+  commentId: F:Egap.Documents.EmphasisMark.Circle
+  fullName: Egap.Documents.EmphasisMark.Circle
+  nameWithType: EmphasisMark.Circle
+- uid: Egap.Documents.EmphasisMark.Comma
+  name: Comma
+  href: api/Egap.Documents.EmphasisMark.html#Egap_Documents_EmphasisMark_Comma
+  commentId: F:Egap.Documents.EmphasisMark.Comma
+  fullName: Egap.Documents.EmphasisMark.Comma
+  nameWithType: EmphasisMark.Comma
+- uid: Egap.Documents.EmphasisMark.Dot
+  name: Dot
+  href: api/Egap.Documents.EmphasisMark.html#Egap_Documents_EmphasisMark_Dot
+  commentId: F:Egap.Documents.EmphasisMark.Dot
+  fullName: Egap.Documents.EmphasisMark.Dot
+  nameWithType: EmphasisMark.Dot
+- uid: Egap.Documents.EmphasisMark.None
+  name: None
+  href: api/Egap.Documents.EmphasisMark.html#Egap_Documents_EmphasisMark_None
+  commentId: F:Egap.Documents.EmphasisMark.None
+  fullName: Egap.Documents.EmphasisMark.None
+  nameWithType: EmphasisMark.None
+- uid: Egap.Documents.EmphasisMark.UnderDot
+  name: UnderDot
+  href: api/Egap.Documents.EmphasisMark.html#Egap_Documents_EmphasisMark_UnderDot
+  commentId: F:Egap.Documents.EmphasisMark.UnderDot
+  fullName: Egap.Documents.EmphasisMark.UnderDot
+  nameWithType: EmphasisMark.UnderDot
 - uid: Egap.Documents.EpubFormat
   name: EpubFormat
   href: api/Egap.Documents.EpubFormat.html
@@ -26329,6 +26391,19 @@ references:
   isSpec: "True"
   fullName: Egap.Documents.ResolvedRunFormat.Color
   nameWithType: ResolvedRunFormat.Color
+- uid: Egap.Documents.ResolvedRunFormat.CombineUpright
+  name: CombineUpright
+  href: api/Egap.Documents.ResolvedRunFormat.html#Egap_Documents_ResolvedRunFormat_CombineUpright
+  commentId: P:Egap.Documents.ResolvedRunFormat.CombineUpright
+  fullName: Egap.Documents.ResolvedRunFormat.CombineUpright
+  nameWithType: ResolvedRunFormat.CombineUpright
+- uid: Egap.Documents.ResolvedRunFormat.CombineUpright*
+  name: CombineUpright
+  href: api/Egap.Documents.ResolvedRunFormat.html#Egap_Documents_ResolvedRunFormat_CombineUpright_
+  commentId: Overload:Egap.Documents.ResolvedRunFormat.CombineUpright
+  isSpec: "True"
+  fullName: Egap.Documents.ResolvedRunFormat.CombineUpright
+  nameWithType: ResolvedRunFormat.CombineUpright
 - uid: Egap.Documents.ResolvedRunFormat.ComplexScript
   name: ComplexScript
   href: api/Egap.Documents.ResolvedRunFormat.html#Egap_Documents_ResolvedRunFormat_ComplexScript
@@ -26368,6 +26443,19 @@ references:
   isSpec: "True"
   fullName: Egap.Documents.ResolvedRunFormat.Emboss
   nameWithType: ResolvedRunFormat.Emboss
+- uid: Egap.Documents.ResolvedRunFormat.Emphasis
+  name: Emphasis
+  href: api/Egap.Documents.ResolvedRunFormat.html#Egap_Documents_ResolvedRunFormat_Emphasis
+  commentId: P:Egap.Documents.ResolvedRunFormat.Emphasis
+  fullName: Egap.Documents.ResolvedRunFormat.Emphasis
+  nameWithType: ResolvedRunFormat.Emphasis
+- uid: Egap.Documents.ResolvedRunFormat.Emphasis*
+  name: Emphasis
+  href: api/Egap.Documents.ResolvedRunFormat.html#Egap_Documents_ResolvedRunFormat_Emphasis_
+  commentId: Overload:Egap.Documents.ResolvedRunFormat.Emphasis
+  isSpec: "True"
+  fullName: Egap.Documents.ResolvedRunFormat.Emphasis
+  nameWithType: ResolvedRunFormat.Emphasis
 - uid: Egap.Documents.ResolvedRunFormat.Features
   name: Features
   href: api/Egap.Documents.ResolvedRunFormat.html#Egap_Documents_ResolvedRunFormat_Features
@@ -27344,6 +27432,224 @@ references:
   isSpec: "True"
   fullName: Egap.Documents.RtfSaveOptions.KeepUnknownGroups
   nameWithType: RtfSaveOptions.KeepUnknownGroups
+- uid: Egap.Documents.Ruby
+  name: Ruby
+  href: api/Egap.Documents.Ruby.html
+  commentId: T:Egap.Documents.Ruby
+  fullName: Egap.Documents.Ruby
+  nameWithType: Ruby
+- uid: Egap.Documents.Ruby.#ctor(Egap.Documents.Document,System.String)
+  name: Ruby(Document, string)
+  href: api/Egap.Documents.Ruby.html#Egap_Documents_Ruby__ctor_Egap_Documents_Document_System_String_
+  commentId: M:Egap.Documents.Ruby.#ctor(Egap.Documents.Document,System.String)
+  name.vb: New(Document, String)
+  fullName: Egap.Documents.Ruby.Ruby(Egap.Documents.Document, string)
+  fullName.vb: Egap.Documents.Ruby.New(Egap.Documents.Document, String)
+  nameWithType: Ruby.Ruby(Document, string)
+  nameWithType.vb: Ruby.New(Document, String)
+- uid: Egap.Documents.Ruby.#ctor*
+  name: Ruby
+  href: api/Egap.Documents.Ruby.html#Egap_Documents_Ruby__ctor_
+  commentId: Overload:Egap.Documents.Ruby.#ctor
+  isSpec: "True"
+  name.vb: New
+  fullName: Egap.Documents.Ruby.Ruby
+  fullName.vb: Egap.Documents.Ruby.New
+  nameWithType: Ruby.Ruby
+  nameWithType.vb: Ruby.New
+- uid: Egap.Documents.Ruby.Alignment
+  name: Alignment
+  href: api/Egap.Documents.Ruby.html#Egap_Documents_Ruby_Alignment
+  commentId: P:Egap.Documents.Ruby.Alignment
+  fullName: Egap.Documents.Ruby.Alignment
+  nameWithType: Ruby.Alignment
+- uid: Egap.Documents.Ruby.Alignment*
+  name: Alignment
+  href: api/Egap.Documents.Ruby.html#Egap_Documents_Ruby_Alignment_
+  commentId: Overload:Egap.Documents.Ruby.Alignment
+  isSpec: "True"
+  fullName: Egap.Documents.Ruby.Alignment
+  nameWithType: Ruby.Alignment
+- uid: Egap.Documents.Ruby.BaseFontSize
+  name: BaseFontSize
+  href: api/Egap.Documents.Ruby.html#Egap_Documents_Ruby_BaseFontSize
+  commentId: P:Egap.Documents.Ruby.BaseFontSize
+  fullName: Egap.Documents.Ruby.BaseFontSize
+  nameWithType: Ruby.BaseFontSize
+- uid: Egap.Documents.Ruby.BaseFontSize*
+  name: BaseFontSize
+  href: api/Egap.Documents.Ruby.html#Egap_Documents_Ruby_BaseFontSize_
+  commentId: Overload:Egap.Documents.Ruby.BaseFontSize
+  isSpec: "True"
+  fullName: Egap.Documents.Ruby.BaseFontSize
+  nameWithType: Ruby.BaseFontSize
+- uid: Egap.Documents.Ruby.Clone(System.Boolean)
+  name: Clone(bool)
+  href: api/Egap.Documents.Ruby.html#Egap_Documents_Ruby_Clone_System_Boolean_
+  commentId: M:Egap.Documents.Ruby.Clone(System.Boolean)
+  name.vb: Clone(Boolean)
+  fullName: Egap.Documents.Ruby.Clone(bool)
+  fullName.vb: Egap.Documents.Ruby.Clone(Boolean)
+  nameWithType: Ruby.Clone(bool)
+  nameWithType.vb: Ruby.Clone(Boolean)
+- uid: Egap.Documents.Ruby.Clone*
+  name: Clone
+  href: api/Egap.Documents.Ruby.html#Egap_Documents_Ruby_Clone_
+  commentId: Overload:Egap.Documents.Ruby.Clone
+  isSpec: "True"
+  fullName: Egap.Documents.Ruby.Clone
+  nameWithType: Ruby.Clone
+- uid: Egap.Documents.Ruby.FontSize
+  name: FontSize
+  href: api/Egap.Documents.Ruby.html#Egap_Documents_Ruby_FontSize
+  commentId: P:Egap.Documents.Ruby.FontSize
+  fullName: Egap.Documents.Ruby.FontSize
+  nameWithType: Ruby.FontSize
+- uid: Egap.Documents.Ruby.FontSize*
+  name: FontSize
+  href: api/Egap.Documents.Ruby.html#Egap_Documents_Ruby_FontSize_
+  commentId: Overload:Egap.Documents.Ruby.FontSize
+  isSpec: "True"
+  fullName: Egap.Documents.Ruby.FontSize
+  nameWithType: Ruby.FontSize
+- uid: Egap.Documents.Ruby.Language
+  name: Language
+  href: api/Egap.Documents.Ruby.html#Egap_Documents_Ruby_Language
+  commentId: P:Egap.Documents.Ruby.Language
+  fullName: Egap.Documents.Ruby.Language
+  nameWithType: Ruby.Language
+- uid: Egap.Documents.Ruby.Language*
+  name: Language
+  href: api/Egap.Documents.Ruby.html#Egap_Documents_Ruby_Language_
+  commentId: Overload:Egap.Documents.Ruby.Language
+  isSpec: "True"
+  fullName: Egap.Documents.Ruby.Language
+  nameWithType: Ruby.Language
+- uid: Egap.Documents.Ruby.Position
+  name: Position
+  href: api/Egap.Documents.Ruby.html#Egap_Documents_Ruby_Position
+  commentId: P:Egap.Documents.Ruby.Position
+  fullName: Egap.Documents.Ruby.Position
+  nameWithType: Ruby.Position
+- uid: Egap.Documents.Ruby.Position*
+  name: Position
+  href: api/Egap.Documents.Ruby.html#Egap_Documents_Ruby_Position_
+  commentId: Overload:Egap.Documents.Ruby.Position
+  isSpec: "True"
+  fullName: Egap.Documents.Ruby.Position
+  nameWithType: Ruby.Position
+- uid: Egap.Documents.Ruby.Raise
+  name: Raise
+  href: api/Egap.Documents.Ruby.html#Egap_Documents_Ruby_Raise
+  commentId: P:Egap.Documents.Ruby.Raise
+  fullName: Egap.Documents.Ruby.Raise
+  nameWithType: Ruby.Raise
+- uid: Egap.Documents.Ruby.Raise*
+  name: Raise
+  href: api/Egap.Documents.Ruby.html#Egap_Documents_Ruby_Raise_
+  commentId: Overload:Egap.Documents.Ruby.Raise
+  isSpec: "True"
+  fullName: Egap.Documents.Ruby.Raise
+  nameWithType: Ruby.Raise
+- uid: Egap.Documents.Ruby.Text
+  name: Text
+  href: api/Egap.Documents.Ruby.html#Egap_Documents_Ruby_Text
+  commentId: P:Egap.Documents.Ruby.Text
+  fullName: Egap.Documents.Ruby.Text
+  nameWithType: Ruby.Text
+- uid: Egap.Documents.Ruby.Text*
+  name: Text
+  href: api/Egap.Documents.Ruby.html#Egap_Documents_Ruby_Text_
+  commentId: Overload:Egap.Documents.Ruby.Text
+  isSpec: "True"
+  fullName: Egap.Documents.Ruby.Text
+  nameWithType: Ruby.Text
+- uid: Egap.Documents.Ruby.TextFormat
+  name: TextFormat
+  href: api/Egap.Documents.Ruby.html#Egap_Documents_Ruby_TextFormat
+  commentId: P:Egap.Documents.Ruby.TextFormat
+  fullName: Egap.Documents.Ruby.TextFormat
+  nameWithType: Ruby.TextFormat
+- uid: Egap.Documents.Ruby.TextFormat*
+  name: TextFormat
+  href: api/Egap.Documents.Ruby.html#Egap_Documents_Ruby_TextFormat_
+  commentId: Overload:Egap.Documents.Ruby.TextFormat
+  isSpec: "True"
+  fullName: Egap.Documents.Ruby.TextFormat
+  nameWithType: Ruby.TextFormat
+- uid: Egap.Documents.Ruby.ToString
+  name: ToString()
+  href: api/Egap.Documents.Ruby.html#Egap_Documents_Ruby_ToString
+  commentId: M:Egap.Documents.Ruby.ToString
+  fullName: Egap.Documents.Ruby.ToString()
+  nameWithType: Ruby.ToString()
+- uid: Egap.Documents.Ruby.ToString*
+  name: ToString
+  href: api/Egap.Documents.Ruby.html#Egap_Documents_Ruby_ToString_
+  commentId: Overload:Egap.Documents.Ruby.ToString
+  isSpec: "True"
+  fullName: Egap.Documents.Ruby.ToString
+  nameWithType: Ruby.ToString
+- uid: Egap.Documents.RubyAlignment
+  name: RubyAlignment
+  href: api/Egap.Documents.RubyAlignment.html
+  commentId: T:Egap.Documents.RubyAlignment
+  fullName: Egap.Documents.RubyAlignment
+  nameWithType: RubyAlignment
+- uid: Egap.Documents.RubyAlignment.Center
+  name: Center
+  href: api/Egap.Documents.RubyAlignment.html#Egap_Documents_RubyAlignment_Center
+  commentId: F:Egap.Documents.RubyAlignment.Center
+  fullName: Egap.Documents.RubyAlignment.Center
+  nameWithType: RubyAlignment.Center
+- uid: Egap.Documents.RubyAlignment.DistributeLetter
+  name: DistributeLetter
+  href: api/Egap.Documents.RubyAlignment.html#Egap_Documents_RubyAlignment_DistributeLetter
+  commentId: F:Egap.Documents.RubyAlignment.DistributeLetter
+  fullName: Egap.Documents.RubyAlignment.DistributeLetter
+  nameWithType: RubyAlignment.DistributeLetter
+- uid: Egap.Documents.RubyAlignment.DistributeSpace
+  name: DistributeSpace
+  href: api/Egap.Documents.RubyAlignment.html#Egap_Documents_RubyAlignment_DistributeSpace
+  commentId: F:Egap.Documents.RubyAlignment.DistributeSpace
+  fullName: Egap.Documents.RubyAlignment.DistributeSpace
+  nameWithType: RubyAlignment.DistributeSpace
+- uid: Egap.Documents.RubyAlignment.Left
+  name: Left
+  href: api/Egap.Documents.RubyAlignment.html#Egap_Documents_RubyAlignment_Left
+  commentId: F:Egap.Documents.RubyAlignment.Left
+  fullName: Egap.Documents.RubyAlignment.Left
+  nameWithType: RubyAlignment.Left
+- uid: Egap.Documents.RubyAlignment.Right
+  name: Right
+  href: api/Egap.Documents.RubyAlignment.html#Egap_Documents_RubyAlignment_Right
+  commentId: F:Egap.Documents.RubyAlignment.Right
+  fullName: Egap.Documents.RubyAlignment.Right
+  nameWithType: RubyAlignment.Right
+- uid: Egap.Documents.RubyAlignment.RightVertical
+  name: RightVertical
+  href: api/Egap.Documents.RubyAlignment.html#Egap_Documents_RubyAlignment_RightVertical
+  commentId: F:Egap.Documents.RubyAlignment.RightVertical
+  fullName: Egap.Documents.RubyAlignment.RightVertical
+  nameWithType: RubyAlignment.RightVertical
+- uid: Egap.Documents.RubyPosition
+  name: RubyPosition
+  href: api/Egap.Documents.RubyPosition.html
+  commentId: T:Egap.Documents.RubyPosition
+  fullName: Egap.Documents.RubyPosition
+  nameWithType: RubyPosition
+- uid: Egap.Documents.RubyPosition.Over
+  name: Over
+  href: api/Egap.Documents.RubyPosition.html#Egap_Documents_RubyPosition_Over
+  commentId: F:Egap.Documents.RubyPosition.Over
+  fullName: Egap.Documents.RubyPosition.Over
+  nameWithType: RubyPosition.Over
+- uid: Egap.Documents.RubyPosition.Under
+  name: Under
+  href: api/Egap.Documents.RubyPosition.html#Egap_Documents_RubyPosition_Under
+  commentId: F:Egap.Documents.RubyPosition.Under
+  fullName: Egap.Documents.RubyPosition.Under
+  nameWithType: RubyPosition.Under
 - uid: Egap.Documents.Run
   name: Run
   href: api/Egap.Documents.Run.html
@@ -27534,6 +27840,19 @@ references:
   isSpec: "True"
   fullName: Egap.Documents.RunFormat.Color
   nameWithType: RunFormat.Color
+- uid: Egap.Documents.RunFormat.CombineUpright
+  name: CombineUpright
+  href: api/Egap.Documents.RunFormat.html#Egap_Documents_RunFormat_CombineUpright
+  commentId: P:Egap.Documents.RunFormat.CombineUpright
+  fullName: Egap.Documents.RunFormat.CombineUpright
+  nameWithType: RunFormat.CombineUpright
+- uid: Egap.Documents.RunFormat.CombineUpright*
+  name: CombineUpright
+  href: api/Egap.Documents.RunFormat.html#Egap_Documents_RunFormat_CombineUpright_
+  commentId: Overload:Egap.Documents.RunFormat.CombineUpright
+  isSpec: "True"
+  fullName: Egap.Documents.RunFormat.CombineUpright
+  nameWithType: RunFormat.CombineUpright
 - uid: Egap.Documents.RunFormat.ComplexScript
   name: ComplexScript
   href: api/Egap.Documents.RunFormat.html#Egap_Documents_RunFormat_ComplexScript
@@ -27573,6 +27892,19 @@ references:
   isSpec: "True"
   fullName: Egap.Documents.RunFormat.Emboss
   nameWithType: RunFormat.Emboss
+- uid: Egap.Documents.RunFormat.Emphasis
+  name: Emphasis
+  href: api/Egap.Documents.RunFormat.html#Egap_Documents_RunFormat_Emphasis
+  commentId: P:Egap.Documents.RunFormat.Emphasis
+  fullName: Egap.Documents.RunFormat.Emphasis
+  nameWithType: RunFormat.Emphasis
+- uid: Egap.Documents.RunFormat.Emphasis*
+  name: Emphasis
+  href: api/Egap.Documents.RunFormat.html#Egap_Documents_RunFormat_Emphasis_
+  commentId: Overload:Egap.Documents.RunFormat.Emphasis
+  isSpec: "True"
+  fullName: Egap.Documents.RunFormat.Emphasis
+  nameWithType: RunFormat.Emphasis
 - uid: Egap.Documents.RunFormat.Features
   name: Features
   href: api/Egap.Documents.RunFormat.html#Egap_Documents_RunFormat_Features

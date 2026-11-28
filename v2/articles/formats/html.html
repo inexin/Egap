@@ -183,6 +183,11 @@ clamps a paragraph to a number of lines (see <a href="../guides/flow-documents.h
 <li><code>@page</code> margin box rules such as <code>@top-left</code> and <code>@bottom-center</code>, with <code>counter(page)</code> and <code>counter(pages)</code>, become
 margin boxes. An element with <code>position: running(name)</code> leaves the body and shows in the boxes whose content is
 <code>element(name)</code>. Margin boxes are written back as the same rules.</li>
+<li><code>&lt;ruby&gt;</code> with its <code>&lt;rt&gt;</code> (and <code>&lt;rb&gt;</code>, <code>&lt;rtc&gt;</code>; <code>&lt;rp&gt;</code> is dropped) reads as a <code>Ruby</code> per base, with <code>ruby-position</code>
+and <code>ruby-align</code>. <code>text-emphasis</code> (with its longhands and <code>-webkit-</code> forms) sets the run's emphasis marks and
+<code>text-combine-upright</code> its <code>CombineUpright</code> (see
+<a href="../guides/flow-documents.html#ruby-and-emphasis-marks">Ruby and emphasis marks</a>). The writer writes them back, ruby with
+<code>&lt;rp&gt;</code> parentheses for readers without ruby.</li>
 <li><code>&lt;nav data-toc&gt;</code> is read as a table of contents field.</li>
 <li>A MathML <code>&lt;math&gt;</code> element is an equation: it lays out as math, its <code>Island.Text</code> is its linear form, and the HTML writer
 writes it back.</li>

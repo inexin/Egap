@@ -103,6 +103,11 @@ DocxKind? kind = DocxFormat.KindOf(report);                       // Document, T
 report.SaveAsDocx(&quot;report-copy.docx&quot;);                            // what the model does not name is kept
 DocxFormat.Save(report, &quot;report.dotx&quot;, new DocxSaveOptions { Kind = DocxKind.Template });
 </code></pre>
+<p>Phonetic guides (<code>w:ruby</code>) read as <code>Ruby</code> inlines with their <code>w:rubyPr</code> settings and the guide text's format, and are
+written back; Word's emphasis marks (<code>w:em</code>) are <code>RunFormat.Emphasis</code>, and horizontal in vertical
+(<code>w:eastAsianLayout w:vert</code>) is <code>RunFormat.CombineUpright</code> (see
+<a href="../guides/flow-documents.html#ruby-and-emphasis-marks">Ruby and emphasis marks</a>). The rest of <code>w:eastAsianLayout</code>, such as
+two lines in one, is kept as it is.</p>
 <p>The settings part's automatic hyphenation (<code>w:autoHyphenation</code>, <code>w:consecutiveHyphenLimit</code>, <code>w:hyphenationZone</code> and
 <code>w:doNotHyphenateCaps</code>) reads into <code>DocumentSettings</code> and is saved from there. A missing zone is Word's 0.25 inch.</p>
 <p>Equations (Office Math, <code>m:oMath</code> and <code>m:oMathPara</code>) are islands that keep their markup, and they lay out and draw as

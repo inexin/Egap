@@ -127,6 +127,9 @@ deleted table rows as LibreOffice marks them. Tracked formatting changes are rea
 <code>DocumentSettings.AutoHyphenation</code> on, with that style's line limit (<code>fo:hyphenation-ladder-count</code>), zone and capitals
 switch (LibreOffice's <code>loext:hyphenation-zone</code> and <code>loext:hyphenation-no-caps</code>). Paragraphs whose style does not
 hyphenate get <code>SuppressAutoHyphens</code>.</li>
+<li>Ruby (<code>text:ruby</code>) as <code>Ruby</code> inlines, with the ruby style's position and alignment and the ruby text's style, and
+emphasis marks (<code>style:text-emphasis</code>) as <code>RunFormat.Emphasis</code>; the writer writes both back. ODF has no tate-chu-yoko
+of its own, so <code>RunFormat.CombineUpright</code> is not written.</li>
 <li>Frames: pictures (stored in the package or, in a flat file, inline), text boxes, rectangles, ellipses and lines,
 inline or floating, placed and wrapped as the frame says. A frame holding only a table, as LibreOffice writes Word's
 floating tables, is a floating table.</li>

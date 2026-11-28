@@ -169,6 +169,27 @@ builder.ParagraphFormat.Alignment = ParagraphAlignment.Justify;
 builder.ParagraphFormat.Kashida = KashidaLevel.Medium;
 builder.Writeln(&quot;تعلم اللغة العربية يفتح أبواب الأدب والعلوم والتاريخ للطلاب في كل مكان&quot;);
 </code></pre>
+<h3 id="ruby-and-emphasis-marks">Ruby and emphasis marks</h3>
+<p>A <code>Ruby</code> inline sets a short annotation, such as furigana or pinyin, in small type over the inlines it holds, as Word's
+phonetic guide does. Its <code>Text</code> is the annotation and <code>TextFormat</code> its formatting over the base's; <code>FontSize</code> is its size
+(half the base's when null) and <code>Raise</code> how far its baseline is above the base's (Word's <code>w:hpsRaise</code>), and <code>Position</code>,
+<code>Alignment</code> and <code>Language</code> say the rest. Layout keeps the annotation over its base, never hanging over the characters
+beside it, and makes the line tall enough for it. The annotation is not part of the paragraph's text: <code>GetText</code>, find and
+replace and text output see the base, a tagged PDF puts base and annotation in RB and RT elements, and DOCX, ODT, HTML and
+EPUB keep it. RTF and Markdown write the base.</p>
+<p><code>RunFormat.Emphasis</code> puts emphasis marks (Word's <code>w:em</code>) beside each character: a dot, a comma (CSS's sesame), a circle,
+or a dot under the text. <code>RunFormat.CombineUpright</code> is tate-chu-yoko, Word's horizontal in vertical: Egap lays text out
+horizontally, where it changes nothing, and keeps it for files that are read and written.</p>
+<pre><code class="lang-csharp">using Egap.Documents;
+
+Document doc = new();
+Paragraph paragraph = doc.AddSection().Body.AddParagraph(&quot;Tokyo is &quot;);
+Ruby ruby = new(doc, &quot;とうきょう&quot;) { FontSize = 5, Alignment = RubyAlignment.DistributeSpace };
+ruby.Inlines.Add(new Run(doc, &quot;東京&quot;));
+paragraph.Inlines.Add(ruby);
+Run marked = paragraph.AddRun(&quot;大切&quot;);
+marked.Format.Emphasis = EmphasisMark.Comma;
+</code></pre>
 <h2 id="barcodes">Barcodes</h2>
 <p><code>InsertBarcode</code> writes a barcode as a picture of the size you give. Layout and PDF export draw it as vectors; DOCX keeps it
 as an SVG picture with a PNG stand-in at 300 pixels per inch, as Word stores SVG pictures, so older readers show it too. Any

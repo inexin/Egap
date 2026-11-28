@@ -1777,6 +1777,20 @@
     },
     {
       "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Documents.EmphasisMark.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Documents.EmphasisMark.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Documents.EmphasisMark",
+      "Summary": "<p sourcefile=\"api/Egap.Documents.EmphasisMark.yml\" sourcestartlinenumber=\"1\">The emphasis marks set beside each character of East Asian text, the five Word offers (<code>w:em</code>).</p>\n"
+    },
+    {
+      "type": "ManagedReference",
       "source_relative_path": "api/Egap.Documents.EpubFormat.yml",
       "output": {
         ".html": {
@@ -4378,6 +4392,48 @@
       "IsMRef": true,
       "Title": "Egap.Documents.RtfSaveOptions",
       "Summary": "<p sourcefile=\"api/Egap.Documents.RtfSaveOptions.yml\" sourcestartlinenumber=\"1\">How <xref href=\"Egap.Documents.RtfFormat\" data-throw-if-not-resolved=\"false\"></xref> writes a file.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Documents.Ruby.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Documents.Ruby.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Documents.Ruby",
+      "Summary": "<p sourcefile=\"api/Egap.Documents.Ruby.yml\" sourcestartlinenumber=\"1\">Ruby: a short annotation, such as furigana or pinyin, set in small type over (or under) the inlines it holds, its base\n(Word's phonetic guide, <code>w:ruby</code>; HTML's <code>&lt;ruby&gt;</code>; ODF's <code>text:ruby</code>).</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Documents.RubyAlignment.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Documents.RubyAlignment.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Documents.RubyAlignment",
+      "Summary": "<p sourcefile=\"api/Egap.Documents.RubyAlignment.yml\" sourcestartlinenumber=\"1\">How a ruby annotation and its base spread over each other, as Word's <code>w:rubyAlign</code> sets it.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Documents.RubyPosition.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Documents.RubyPosition.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Documents.RubyPosition",
+      "Summary": "<p sourcefile=\"api/Egap.Documents.RubyPosition.yml\" sourcestartlinenumber=\"1\">Which side of its base a ruby annotation goes on.</p>\n"
     },
     {
       "type": "ManagedReference",
