@@ -156,6 +156,12 @@ public sealed class Theme
         }
     }
 
+    /// <summary>
+    /// The colour map a PowerPoint slide applies (<c>p:clrMap</c>): the theme colour each mapped name, such as <c>tx1</c> or
+    /// <c>accent1</c>, stands for. Null, as for Word and Excel, maps <c>tx1</c> to dark 1, <c>bg1</c> to light 1 and each accent to itself.
+    /// </summary>
+    internal IReadOnlyDictionary<string, ThemeColor>? SchemeMap { get; set; }
+
     /// <summary>The theme's <c>a:fmtScheme</c> as read, or null when the document has none.</summary>
     internal XElement? FormatScheme { get; private set; }
 

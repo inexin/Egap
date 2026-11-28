@@ -112,17 +112,10 @@ internal sealed class FieldCode
         return text;
     }
 
-    /// <summary>A number in the \# picture, such as "0.00" or "#,##0", in the invariant culture.</summary>
-    public static string FormatNumber(double value, string picture)
+    /// <summary>A number in Word's \# numeric picture, such as "0.00", "#,##0" or "$#,##0.00;($#,##0.00)".</summary>
+    public static string FormatNumber(double value, string picture, char decimalSymbol = '.')
     {
-        try
-        {
-            return value.ToString(picture.Replace("'", "\"", StringComparison.Ordinal), CultureInfo.InvariantCulture);
-        }
-        catch (FormatException)
-        {
-            return value.ToString(CultureInfo.InvariantCulture);
-        }
+        return NumberPicture.Format(value, picture, decimalSymbol);
     }
 
     /// <summary>A date in Word's \@ picture, turned into .NET's format: am/pm to tt, quoted text kept.</summary>

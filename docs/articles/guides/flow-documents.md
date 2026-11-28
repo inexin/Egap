@@ -198,17 +198,63 @@ label.Save("label.docx");
 
 ## Fields
 
-`Document.UpdateFields` recomputes every field Egap understands, and `Field.Update` one of them; a field's `\*` format
-(`Upper`, `ROMAN` and the rest) and `\#` numeric picture apply to its new result.
+`Document.UpdateFields` recomputes every field Egap understands, and `Field.Update` one of them: DATE, TIME and the other
+dates, document properties (AUTHOR, TITLE, DOCPROPERTY and the rest), DOCVARIABLE, FILENAME, REF, NOTEREF, SEQ, STYLEREF, HYPERLINK,
+IF, formulas and TOC. Fields are updated in the order Word updates them, nested fields before the field that holds them, so
+an IF or a formula reads their new results. Page fields (PAGE, NUMPAGES, SECTIONPAGES, PAGEREF) are filled in by layout;
+locked fields and fields Egap does not know keep the result they have. A field's `\*` format (`Upper`, `ROMAN`, `CardText`
+and the rest) and `\#` numeric picture apply to its new result.
+
+A `\#` picture works as Word's: `0` shows a digit or a zero, `#` a digit or a space, `x` drops the digits to its left (after
+the decimal point it rounds there), a comma groups the digits by thousands, `-` and `+` show the sign, text in apostrophes
+and other characters show as they are, and semicolons split the picture into the positive, negative and zero cases:
+`$#,##0.00;($#,##0.00);'none'` shows 1234.5 as `$1,234.50`, -8 as `($8.00)` and 0 as `none`.
+
+### Formula fields
+
+A formula field (`FieldKind.Formula`) is `=` and an expression: numbers, `+ - * / ^`, `%` after a number (`8%` is 0.08),
+the comparisons `= <> < <= > >=` (1 when true, 0 when not) and parentheses; Word's functions `ABS`, `AND`, `AVERAGE`,
+`COUNT`, `DEFINED`, `FALSE`, `IF`, `INT`, `MAX`, `MIN`, `MOD`, `NOT`, `OR`, `PRODUCT`, `ROUND`, `SIGN`, `SUM` and `TRUE`;
+bookmark names (the number a bookmark holds) and nested fields. In a table cell a formula reads the table's cells: `B2` or
+`R2C2`, ranges such as `A1:C3`, `B:B` and `2:2`, lists such as `A1,B3`, and `LEFT`, `RIGHT`, `ABOVE` and `BELOW`, the
+numbers next to the field's cell up to the first empty or text cell after them. As in Word, a row's cells count in order
+whatever columns they span, and `RnCn` names single cells only. `SUM(Prices B:B)` reads a column of the table the
+bookmark `Prices` is in. A cell's number may have digit grouping (`1,234.50`), a minus sign or parentheses, a percent
+sign and a currency symbol set apart by a space (`€ 2.25`). Other text, such as `$1.50` or `12 kg`, stops a run of
+numbers, but when `LEFT`, `RIGHT`, `ABOVE` or `BELOW` meets it before any number it reads the numbers in it, as Word
+does. The decimal symbol and the separator between a function's arguments are the document's (Word's `decimalSymbol`
+and `listSeparator` settings), a period and a comma unless the file names others. Without a `\#` picture a result shows
+at most two decimals, its digits grouped when a cell number it read was, and a negative result in parentheses when a
+cell number was written so. A formula that cannot be worked out shows Word's error text, such as `!Zero Divide`,
+`!Syntax Error, $` or `!Undefined Bookmark, TOTAL`.
+
+```csharp
+using Egap.Documents;
+
+Document invoice = new();
+Table table = invoice.AddSection().Body.AddTable(3, 2);
+table.Rows[0].Cells[0].AddParagraph("Bolts");
+table.Rows[0].Cells[1].AddParagraph("4.50");
+table.Rows[1].Cells[0].AddParagraph("Nuts");
+table.Rows[1].Cells[1].AddParagraph("1,200.00");
+table.Rows[2].Cells[0].AddParagraph("Total");
+Field total = table.Rows[2].Cells[1].AddParagraph().AddField("= SUM(ABOVE) \\# \"$#,##0.00\"");
+invoice.UpdateFields();
+Console.WriteLine(total.Start.GetField()!.Result); // $1,204.50
+```
+
+An IF field compares numbers as numbers: a formula, a nested field's result or a bookmark holding one, as in
+`IF { = SUM(ABOVE) } > 100 "Yes" "No"`. Other operands compare as text, `=` and `<>` with Word's `*` and `?` wildcards. A
+mail merge works out its IF fields the same way.
 
 ### Document variables
 
 `Document.Variables` holds a document's variables (Word's document variables): text values by name, which a DOCVARIABLE
 field (`FieldKind.DocVariable`) shows. Names compare without regard to case, as in Word. A field naming a variable the
-document does not have shows Word's text, `Error! No document variable supplied.` DOCX (`w:docVars`), RTF (`\docvar`)
-and DOC read the variables and DOCX and RTF write them; OpenDocument has no document variables, so saving as ODT leaves
-them out with a warning. `Clone` and mail merge copy them, and a comparison's document has the variables of the one it
-was built on.
+document does not have shows Word's text, `Error! No document variable supplied.` (one that names none,
+`Error! Document Variable not defined.`), whatever its switches. DOCX (`w:docVars`), RTF (`\docvar`) and DOC read the
+variables and DOCX and RTF write them; OpenDocument has no document variables, so saving as ODT leaves them out with a
+warning. `Clone` and mail merge copy them, and a comparison's document has the variables of the one it was built on.
 
 ```csharp
 using Egap.Documents;

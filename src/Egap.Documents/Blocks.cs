@@ -179,6 +179,7 @@ public sealed class Paragraph : Block
             FieldKind.FormField => "FORMTEXT",
             FieldKind.Include => "INCLUDETEXT",
             FieldKind.Equation => "EQ",
+            FieldKind.Formula => "=",
             _ => kind.ToString().ToUpperInvariant(),
         });
         field.Start.IsDirty = true;

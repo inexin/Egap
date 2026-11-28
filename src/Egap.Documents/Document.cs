@@ -118,8 +118,9 @@ public sealed partial class Document : Node
     }
 
     /// <summary>
-    /// Recomputes the fields Egap understands (Phase 6 design Q8): DATE, TIME and the other date fields, the document
-    /// property fields, REF, NOTEREF, SEQ, STYLEREF, HYPERLINK, IF on simple comparisons and TOC. Page fields are filled by
+    /// Recomputes the fields Egap understands: DATE, TIME and the other date fields, the document property fields,
+    /// FILENAME, REF, NOTEREF, SEQ, STYLEREF, HYPERLINK, IF, formulas (<see cref="FieldKind.Formula"/>, with table cell
+    /// references) and TOC, nested fields before the field holding them, as Word updates them. Page fields are filled by
     /// layout; locked fields and others keep their stored result.
     /// </summary>
     /// <param name="now">The time DATE and TIME show; the current time when null.</param>

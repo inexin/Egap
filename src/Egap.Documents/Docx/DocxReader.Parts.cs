@@ -338,6 +338,16 @@ internal sealed partial class DocxReader
             document.MathSettings = OfficeMath.MathSettings.Read(mathPr);
         }
 
+        if (root.Element(Ns.W + "decimalSymbol").Val() is [char decimalSymbol])
+        {
+            settings.DecimalSymbol = decimalSymbol;
+        }
+
+        if (root.Element(Ns.W + "listSeparator").Val() is [char listSeparator])
+        {
+            settings.ListSeparator = listSeparator;
+        }
+
         settings.EvenAndOddHeaders = root.Element(Ns.W + "evenAndOddHeaders") is { } evenOdd && DocxUnits.OnOff(evenOdd);
         settings.TrackRevisions = root.Element(Ns.W + "trackRevisions") is { } track && DocxUnits.OnOff(track);
         settings.MirrorMargins = root.Element(Ns.W + "mirrorMargins") is { } mirror && DocxUnits.OnOff(mirror);

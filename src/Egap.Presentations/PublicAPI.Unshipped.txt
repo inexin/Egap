@@ -245,9 +245,11 @@ Egap.Presentations.Slide.Timing.get -> Egap.Presentations.SlideTiming!
 Egap.Presentations.Slide.Transition.get -> Egap.Presentations.SlideTransition?
 Egap.Presentations.Slide.Transition.set -> void
 Egap.Presentations.SlideBase
+Egap.Presentations.SlideBase.Draw(Egami.Drawing.Canvas! canvas, Egap.Presentations.SlideRenderOptions? options = null) -> void
 Egap.Presentations.SlideBase.Name.get -> string!
 Egap.Presentations.SlideBase.PartName.get -> string!
 Egap.Presentations.SlideBase.Presentation.get -> Egap.Presentations.Presentation!
+Egap.Presentations.SlideBase.Render(Egap.Presentations.SlideRenderOptions? options = null) -> Egami.Raster<Egami.Pixels.Rgba8>!
 Egap.Presentations.SlideBase.Shapes.get -> Egap.Presentations.SlideShapeCollection!
 Egap.Presentations.SlideCollection
 Egap.Presentations.SlideCollection.Add(Egap.Presentations.SlideLayout! layout) -> Egap.Presentations.Slide!
@@ -322,6 +324,16 @@ Egap.Presentations.SlideMaster
 Egap.Presentations.SlideMaster.GetLayout(Egap.Presentations.SlideLayoutType type) -> Egap.Presentations.SlideLayout?
 Egap.Presentations.SlideMaster.Layouts.get -> System.Collections.Generic.IReadOnlyList<Egap.Presentations.SlideLayout!>!
 Egap.Presentations.SlideMaster.Theme.get -> Egap.Presentations.PresentationTheme?
+Egap.Presentations.SlideRenderOptions
+Egap.Presentations.SlideRenderOptions.Date.get -> System.DateTime?
+Egap.Presentations.SlideRenderOptions.Date.init -> void
+Egap.Presentations.SlideRenderOptions.Dpi.get -> double
+Egap.Presentations.SlideRenderOptions.Dpi.init -> void
+Egap.Presentations.SlideRenderOptions.Fonts.get -> Egap.Documents.Layout.FontSettings?
+Egap.Presentations.SlideRenderOptions.Fonts.init -> void
+Egap.Presentations.SlideRenderOptions.SlideRenderOptions() -> void
+Egap.Presentations.SlideRenderOptions.Width.get -> int?
+Egap.Presentations.SlideRenderOptions.Width.init -> void
 Egap.Presentations.SlideSection
 Egap.Presentations.SlideSection.Id.get -> string!
 Egap.Presentations.SlideSection.Name.get -> string!

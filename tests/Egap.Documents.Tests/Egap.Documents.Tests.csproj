@@ -19,13 +19,13 @@
   <ItemGroup>
     <None Include="../files/fonts/*" LinkBase="files/fonts" CopyToOutputDirectory="PreserveNewest" />
     <None Include="../files/encrypted/*.docx" LinkBase="files/encrypted" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="../files/fields/*.docx" LinkBase="files/fields" CopyToOutputDirectory="PreserveNewest" />
     <None Include="../files/encrypted/*.odt" LinkBase="files/encrypted" CopyToOutputDirectory="PreserveNewest" />
     <None Include="../files/fuzz/layout-*" LinkBase="files/fuzz" CopyToOutputDirectory="PreserveNewest" />
     <None Include="../fuzz-seeds/rtf/*.rtf" LinkBase="files/rtf" CopyToOutputDirectory="PreserveNewest" />
     <None Include="../fuzz-seeds/odt/*" LinkBase="files/odt" CopyToOutputDirectory="PreserveNewest" />
     <None Include="../fuzz-seeds/docx/*.xml" LinkBase="files/docx-xml" CopyToOutputDirectory="PreserveNewest" />
     <None Include="../fuzz-seeds/package/*.docx" LinkBase="files/docx-package" CopyToOutputDirectory="PreserveNewest" />
-    <None Include="../files/fields/*.docx" LinkBase="files/fields" CopyToOutputDirectory="PreserveNewest" />
     <None Include="../files/fields/*.word.doc;../files/fields/*.word.rtf" LinkBase="files/fields" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
 

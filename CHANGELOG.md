@@ -47,6 +47,14 @@ internal milestones whose public API was frozen and reviewed, and they are liste
   `Presentation.SlideShow`: show type (speaker, window, kiosk), loop, timings, narration and animations.
 - A fuzz target (`tests/Egap.Presentations.Fuzz`: `pptx`, `pptxedit`, `pptxcrypt`) and benchmarks
   (`benchmarks/Egap.Presentations.Benchmarks`).
+- Drawing slides: `Render` draws a slide, layout, master or notes page as a `Raster<Rgba8>` and `Draw` onto any Egami
+  canvas, with `SlideRenderOptions` for the resolution or width, the fonts and the date fields show. It draws the
+  background, the master's and layout's shapes, shapes with their geometry, fills, outlines and effects, groups and
+  pictures (cropped, stretched or tiled), and text with its full inheritance from layout, master and text styles: body
+  insets, anchoring, columns, vertical text and the stored autofit scale; paragraph alignment, indents, spacing, tab stops
+  and right-to-left text; character, numbered and picture bullets; run fonts, sizes, styles, underlines, capitals,
+  spacing, fills, outlines, highlights and hyperlink colours; and slide number and date fields. Lines are spaced and placed
+  as PowerPoint places them. Tables, charts, SmartArt, embedded objects, media and embedded fonts are left out for now.
 
 ## Egap.Cli 2.4.0 (unreleased)
 
@@ -110,6 +118,19 @@ internal milestones whose public API was frozen and reviewed, and they are liste
   DISPLAYBARCODE field's symbol in vectors in place of its result (QR, CODE128, CODE39, NW7, EAN13/JAN13, EAN8/JAN8, UPCA,
   UPCE, ITF14/CASE and JPPOST, with the `\s`, `\h`, `\r`, `\f`, `\b`, `\t`, `\q`, `\p` and `\x` switches), DOCX, RTF
   and DOC keep the fields, and a mail merge makes each MERGEBARCODE field the DISPLAYBARCODE field of its value.
+- Formula fields: `FieldKind.Formula` (`= expression`), which `UpdateFields` and `Field.Update` now compute as Word does:
+  `+ - * / % ^`, comparisons, parentheses, Word's eighteen functions (`SUM`, `AVERAGE`, `IF`, `ROUND` and the rest),
+  bookmarks and nested fields, and in a table cell A1 and RnCn references, ranges and `LEFT`, `RIGHT`, `ABOVE` and
+  `BELOW`, with a row's cells counted in order as Word counts them and cell numbers with digit grouping, signs, percent
+  signs and currency symbols set apart by a space (and, before the first number `LEFT` or `ABOVE` meets, the numbers in
+  text such as `Item 7`). The DOCX reader takes the document's decimal symbol and list separator
+  for them. Errors show Word's texts, such as `!Zero Divide`. Checked field by field against Word's own results.
+- `\#` numeric pictures follow Word's rules for every field, a mail merge's included: `#` shows a space for a missing
+  digit, `x` drops digits, `-` and `+` show the sign, text in apostrophes, and positive, negative and zero sections.
+  Before, the picture went to .NET's number formatting, which dropped missing digits and read sections and quotes its own
+  way.
+- IF fields compare numbers from nested fields (`IF { = SUM(ABOVE) } > 100 "Yes" "No"`), formulas and bookmarks as
+  numbers, digit grouping included. A nested field's code no longer leaks into the IF's operands.
 - Ruby: a `Ruby` inline holds its base's inlines and the annotation's `Text`, `TextFormat`, `Position`, `Alignment`,
   `FontSize`, `Raise`, `BaseFontSize` and `Language`. Layout sets the annotation over (or under) its base as Word
   does, without overhang, and makes room for it in the line; tagged PDF puts base and annotation in Ruby, RB and RT
