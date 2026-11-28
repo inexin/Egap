@@ -138,7 +138,7 @@ internal static class TextReplacer
             List<(PdfTextMatch Match, string NewText)> found = [];
             foreach (TextSearch.Block block in TextSearch.Blocks(text.Lines))
             {
-                for (Match m = pattern.Match(block.Text); m.Success; m = m.NextMatch())
+                foreach (Match m in TextSearch.Matches(pattern, block.Text))
                 {
                     if (m.Length > 0 && TextSearch.ToMatch(index, block, m.Index, m.Length) is { } match)
                     {

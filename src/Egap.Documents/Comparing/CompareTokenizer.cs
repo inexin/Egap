@@ -187,7 +187,7 @@ internal sealed class ParagraphTokens
             }
             else
             {
-                foreach (TextSegment segment in TextSegmenter.Words(stretch))
+                foreach (TextSegment segment in TextSegmenter.Words(stretch, null))
                 {
                     AddWord(stretch.Slice(segment.Start, segment.Length), start + segment.Start);
                 }
@@ -337,7 +337,7 @@ internal sealed class ParagraphTokens
             return false;
         }
 
-        foreach (TextSegment segment in TextSegmenter.Words(text))
+        foreach (TextSegment segment in TextSegmenter.Words(text, null))
         {
             return segment.Start == 0 && segment.Length == text.Length;
         }

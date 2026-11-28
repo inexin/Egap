@@ -1,4 +1,6 @@
 #nullable enable
+Egap.Documents.FieldKind.DisplayBarcode = 30 -> Egap.Documents.FieldKind
+Egap.Documents.FieldKind.MergeBarcode = 31 -> Egap.Documents.FieldKind
 Egap.Documents.EmphasisMark
 Egap.Documents.EmphasisMark.Circle = 3 -> Egap.Documents.EmphasisMark
 Egap.Documents.EmphasisMark.Comma = 2 -> Egap.Documents.EmphasisMark

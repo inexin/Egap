@@ -97,6 +97,12 @@ public enum FieldKind
 
     /// <summary>EQ, the old equation field (kept).</summary>
     Equation,
+
+    /// <summary>DISPLAYBARCODE: a barcode of the field's data, which layout and PDF export draw in place of its result.</summary>
+    DisplayBarcode,
+
+    /// <summary>MERGEBARCODE: a barcode of a mail merge field's value; a mail merge makes it a DISPLAYBARCODE field.</summary>
+    MergeBarcode,
 }
 
 /// <summary>
@@ -315,6 +321,8 @@ public sealed class Field
             "SYMBOL" => FieldKind.Symbol,
             "INCLUDEPICTURE" or "INCLUDETEXT" or "LINK" or "DDE" or "DDEAUTO" => FieldKind.Include,
             "EQ" => FieldKind.Equation,
+            "DISPLAYBARCODE" => FieldKind.DisplayBarcode,
+            "MERGEBARCODE" => FieldKind.MergeBarcode,
             _ => FieldKind.Unknown,
         };
     }
