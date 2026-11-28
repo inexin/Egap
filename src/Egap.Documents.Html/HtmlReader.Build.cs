@@ -497,6 +497,9 @@ internal sealed partial class HtmlReader
 
         switch (element.LocalName)
         {
+            case "ruby" when display is "ruby" or "inline":
+                RubyElement(element, style, flow, frame);
+                return;
             case "br":
                 Target(flow, frame).Add(new Break(document, BreakKind.Line));
                 flow.AtLineStart = true;

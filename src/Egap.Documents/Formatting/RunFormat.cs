@@ -4,7 +4,7 @@ namespace Egap.Documents;
 /// <summary>Character formatting: font, size, colour, bold and the rest (Word's run properties). Every property is nullable: null means not set here.</summary>
 public sealed partial class RunFormat : FormatBase
 {
-    internal const int Count = 44;
+    internal const int Count = 46;
 
     /// <summary>The toggle properties, whose values from styles combine as Word's do (ECMA-376 17.7.3).</summary>
     internal static readonly int[] Toggles = [0, 1, 2, 3, 6, 7, 8, 9, 10, 11, 12, 13, 14];
@@ -53,6 +53,8 @@ public sealed partial class RunFormat : FormatBase
     internal const int WordSpacingId = 41;
     internal const int OverlineId = 42;
     internal const int FeaturesId = 43;
+    internal const int EmphasisId = 44;
+    internal const int CombineUprightId = 45;
 
     internal override int PropertyCount => Count;
 
@@ -364,6 +366,27 @@ public sealed partial class RunFormat : FormatBase
         set => SetRaw(43, value);
     }
 
+    /// <summary>
+    /// Emphasis marks beside each character, as East Asian text stresses words (Word's <c>w:em</c>, CSS <c>text-emphasis</c>,
+    /// ODF <c>style:text-emphasis</c>).
+    /// </summary>
+    public EmphasisMark? Emphasis
+    {
+        get => Get<EmphasisMark>(44);
+        set => SetEnum(44, value);
+    }
+
+    /// <summary>
+    /// The characters set upright side by side in the space of one in vertical text, as dates and numbers are in Japanese
+    /// (tate-chu-yoko: Word's horizontal in vertical, <c>w:eastAsianLayout w:vert</c>, CSS <c>text-combine-upright: all</c>).
+    /// Egap lays text out horizontally, where it changes nothing.
+    /// </summary>
+    public bool? CombineUpright
+    {
+        get => Get<bool>(45);
+        set => SetRaw(45, value);
+    }
+
     internal override string PropertyName(int id)
     {
         return id switch
@@ -412,6 +435,8 @@ public sealed partial class RunFormat : FormatBase
             41 => nameof(WordSpacing),
             42 => nameof(Overline),
             43 => nameof(Features),
+            44 => nameof(Emphasis),
+            45 => nameof(CombineUpright),
             _ => throw new ArgumentOutOfRangeException(nameof(id)),
         };
     }

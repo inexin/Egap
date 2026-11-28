@@ -144,6 +144,12 @@ public sealed class ResolvedRunFormat
     /// <summary>OpenType features turned on or off on top of the defaults; empty for none.</summary>
     public FontFeatures Features => values[RunFormat.FeaturesId] as FontFeatures ?? FontFeatures.None;
 
+    /// <summary>The emphasis marks beside each character.</summary>
+    public EmphasisMark Emphasis => Value(RunFormat.EmphasisId, EmphasisMark.None);
+
+    /// <summary>Whether the characters are set upright side by side in vertical text (tate-chu-yoko).</summary>
+    public bool CombineUpright => Flag(RunFormat.CombineUprightId);
+
     /// <summary>The effective values as a stand-alone <see cref="RunFormat"/>, every property the chain set filled in.</summary>
     public RunFormat ToRunFormat()
     {

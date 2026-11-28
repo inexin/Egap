@@ -880,6 +880,18 @@ internal sealed partial class OdtWriter
             t.Add(new XAttribute(StyleNs + "text-outline", outline ? "true" : "false"));
         }
 
+        if (f.Emphasis is { } emphasis)
+        {
+            t.Add(new XAttribute(StyleNs + "text-emphasis", emphasis switch
+            {
+                EmphasisMark.Dot => "dot above",
+                EmphasisMark.Comma => "accent above",
+                EmphasisMark.Circle => "circle above",
+                EmphasisMark.UnderDot => "dot below",
+                _ => "none",
+            }));
+        }
+
         if (f.VerticalPosition is { } position)
         {
             t.Add(new XAttribute(StyleNs + "text-position", position switch

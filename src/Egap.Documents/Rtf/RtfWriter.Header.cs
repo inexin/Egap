@@ -666,6 +666,12 @@ internal sealed partial class RtfWriter
             Word("noindnmbrts");
         }
 
+        // \expshrtn expands lines before a manual line break; Word reads its absence as doNotExpandShiftReturn.
+        if (!compatibility.DoNotExpandShiftReturn)
+        {
+            Word("expshrtn");
+        }
+
         WriteProtectionWords();
         output.AppendLine();
 

@@ -81,6 +81,10 @@ and high kashida alignments do: set `ParagraphFormat.Kashida` to `KashidaLevel.L
 `ParagraphAlignment.Justify`. What the tatweels do not take goes to word spaces, and lines in other scripts justify at
 spaces as before. In PDF exports the inserted tatweels are left out of the text, so copy and search give the words as typed.
 
+In a justified paragraph the line before a manual line break (`BreakKind.Line`) stretches to the margins, as in Word,
+unless `DocumentSettings.WordCompatibility.DoNotExpandShiftReturn` is set; the format page for
+[DOCX](../formats/docx.md#word-compatibility) says how page and column breaks and documents from other formats differ.
+
 ```csharp
 using Egap.Documents;
 
@@ -96,6 +100,32 @@ builder.ParagraphFormat.Bidi = true;
 builder.ParagraphFormat.Alignment = ParagraphAlignment.Justify;
 builder.ParagraphFormat.Kashida = KashidaLevel.Medium;
 builder.Writeln("تعلم اللغة العربية يفتح أبواب الأدب والعلوم والتاريخ للطلاب في كل مكان");
+```
+
+### Ruby and emphasis marks
+
+A `Ruby` inline sets a short annotation, such as furigana or pinyin, in small type over the inlines it holds, as Word's
+phonetic guide does. Its `Text` is the annotation and `TextFormat` its formatting over the base's; `FontSize` is its size
+(half the base's when null) and `Raise` how far its baseline is above the base's (Word's `w:hpsRaise`), and `Position`,
+`Alignment` and `Language` say the rest. Layout keeps the annotation over its base, never hanging over the characters
+beside it, and makes the line tall enough for it. The annotation is not part of the paragraph's text: `GetText`, find and
+replace and text output see the base, a tagged PDF puts base and annotation in RB and RT elements, and DOCX, ODT, HTML and
+EPUB keep it. RTF and Markdown write the base.
+
+`RunFormat.Emphasis` puts emphasis marks (Word's `w:em`) beside each character: a dot, a comma (CSS's sesame), a circle,
+or a dot under the text. `RunFormat.CombineUpright` is tate-chu-yoko, Word's horizontal in vertical: Egap lays text out
+horizontally, where it changes nothing, and keeps it for files that are read and written.
+
+```csharp
+using Egap.Documents;
+
+Document doc = new();
+Paragraph paragraph = doc.AddSection().Body.AddParagraph("Tokyo is ");
+Ruby ruby = new(doc, "とうきょう") { FontSize = 5, Alignment = RubyAlignment.DistributeSpace };
+ruby.Inlines.Add(new Run(doc, "東京"));
+paragraph.Inlines.Add(ruby);
+Run marked = paragraph.AddRun("大切");
+marked.Format.Emphasis = EmphasisMark.Comma;
 ```
 
 ## Barcodes

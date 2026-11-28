@@ -37,12 +37,15 @@ internal sealed partial class HtmlReader
 
     /// <summary>
     /// The cascade's properties: CSS's own, and the inherited text properties the reader takes that the default registry does
-    /// not know (hyphenation and text-wrap), so that a value set on the body reaches its paragraphs.
+    /// not know (hyphenation, text-wrap, emphasis marks, tate-chu-yoko and ruby), so that a value set on the body reaches its
+    /// paragraphs.
     /// </summary>
     private static readonly Lazy<CssPropertyRegistry> Registry = new(() =>
     {
         CssPropertyRegistry registry = CssPropertyRegistry.CreateDefault();
-        foreach (string name in (ReadOnlySpan<string>)["hyphens", "-webkit-hyphens", "hyphenate-character", "-webkit-hyphenate-character", "hyphenate-limit-chars", "text-wrap", "text-wrap-style"])
+        foreach (string name in (ReadOnlySpan<string>)["hyphens", "-webkit-hyphens", "hyphenate-character", "-webkit-hyphenate-character", "hyphenate-limit-chars", "text-wrap", "text-wrap-style",
+            "text-emphasis", "-webkit-text-emphasis", "text-emphasis-style", "-webkit-text-emphasis-style", "text-emphasis-position", "-webkit-text-emphasis-position",
+            "text-combine-upright", "-webkit-text-combine", "ruby-position", "ruby-align"])
         {
             registry.Register(new CssPropertyDefinition(name, true, null));
         }
@@ -62,8 +65,10 @@ internal sealed partial class HtmlReader
     {
         if (into is null)
         {
-            // Browsers only stretch justified lines.
+            // Browsers lay the line before a <br> out like a last line and stretch no-break spaces.
             document = new Document();
+            document.Settings.WordCompatibility.JustifiesLikeWord = false;
+            // Browsers only stretch justified lines.
             document.Settings.WordCompatibility.ShrinkJustifiedSpaces = false;
         }
         else

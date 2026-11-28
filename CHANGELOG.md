@@ -13,6 +13,15 @@ internal milestones whose public API was frozen and reviewed, and they are liste
 
 ## Egap.Documents 2.4.0 (unreleased)
 
+- Justified lines before breaks are laid out as Word lays them out. The line before a manual line break (Shift+Enter) or
+  a display equation now stretches to the margins, unless the document has Word's `doNotExpandShiftReturn`, which the new
+  `WordCompatibility.DoNotExpandShiftReturn` reads and writes (it used to be listed in `OtherSettings`). The line before a
+  page or column break stretches in compatibility modes 14 and below and stays at the start in mode 15. A manual line
+  break that ends a paragraph now leaves an empty line after it, and a manual line break on either side of a display
+  equation, as Word writes them, no longer adds an empty line. No-break spaces keep their width on justified lines, and only
+  spaces after a line's last tab stretch. DOC (`fExpShRtn`) and RTF (`\expshrtn`) files keep the setting too, stored the
+  other way round as Word does, so RTF files without `\expshrtn`, from Word's own or other applications, lay those lines
+  out like last lines. Documents read from ODT keep the old rule.
 - Justified and distributed paragraphs now break lines as Word 2013 and later do: a line takes one more word when its
   spaces can shrink to fit it, by up to a quarter of their width in all and each by no more than half of what it would
   stretch had the line ended a word earlier. This changes line breaks, and so page breaks, in justified text from Word
@@ -20,11 +29,20 @@ internal milestones whose public API was frozen and reviewed, and they are liste
   lines, as it does in Word. Automatic hyphenation of such lines no longer keeps to `DocumentSettings.HyphenationZone`,
   which Word ignores there too. The new `WordCompatibility.ShrinkJustifiedSpaces` turns it off. It is off below mode 15 (Word
   2010 and older, DOC files) and for ODT documents, and it is not saved to DOCX, since Word has no setting for it.
-- Needs Egami.Fonts 1.6.0 (`ParagraphStyle.SpaceShrink`).
+- Needs Egami.Fonts 1.6.0 (`ParagraphStyle.JustifyLineBreaks`, `StretchNoBreakSpaces` and `SpaceShrink`).
 - Built on Egami 1.6.0-preview.1, Egami.Metafiles 1.1.0-preview.1 and Egami.Barcodes 1.1.0-preview.1;
   Egami.Fonts.Substitutes stays at 1.1.0.
 - The RTF writer writes page margins a document leaves unset as the inch layout gives them, so readers no longer take
   RTF's default of 1.25 inches left and right; a later section without margins no longer takes the first section's.
+- Ruby: a `Ruby` inline holds its base's inlines and the annotation's `Text`, `TextFormat`, `Position`, `Alignment`,
+  `FontSize`, `Raise`, `BaseFontSize` and `Language`. Layout sets the annotation over (or under) its base as Word
+  does, without overhang, and makes room for it in the line; tagged PDF puts base and annotation in Ruby, RB and RT
+  elements. DOCX reads and writes `w:ruby`, which was kept as an island before, and ODT `text:ruby` with its ruby style.
+  RTF and Markdown write the base. The annotation is not part of the paragraph's text, but comparison sees a change of it.
+- Emphasis marks: `RunFormat.Emphasis` (`EmphasisMark` Dot, Comma, Circle and UnderDot, Word's `w:em` and ODF's
+  `style:text-emphasis`) draws its marks beside the text; tagged PDF marks them as artifacts.
+- Tate-chu-yoko: `RunFormat.CombineUpright` (Word's horizontal in vertical, `w:eastAsianLayout w:vert`) reads and writes
+  in DOCX; Egap lays text out horizontally, where it changes nothing. Two lines in one (`w:combine`) stays as it was.
 - The RTF writer writes SVG pictures (barcodes among them), charts, shape groups, SmartArt and DrawingML shapes as EMF
   pictures (EMF+ with GDI records beside them, through Egami.Metafiles' `EmfCanvas`), so Word shows them as vectors,
   with a PNG of each in `\nonshppict` for readers without EMF. SVG pictures were PNGs, and charts, shape groups and
@@ -35,6 +53,12 @@ internal milestones whose public API was frozen and reviewed, and they are liste
 
 ## Egap.Documents.Html 2.4.0 (unreleased)
 
+- `<ruby>` reads as a `Ruby` per base, with its `<rt>` as the annotation (its `ruby-position`, `ruby-align` and format)
+  and `<rp>` dropped, and writes back the same way, `<rp>` parentheses included. CSS `text-emphasis`, its longhands and
+  `-webkit-` forms read as emphasis marks and `text-combine-upright` as `CombineUpright`, both written back. EPUB reads
+  and writes them through the same path.
+- Documents read from HTML, MHTML and EPUB lay justified lines out as browsers do: the line before a `<br>` stays at the
+  start, and no-break spaces stretch, whatever `WordCompatibility.DoNotExpandShiftReturn` says.
 - Documents read from HTML, MHTML and EPUB set `WordCompatibility.ShrinkJustifiedSpaces` off, so justified text breaks as
   in a browser, where lines only stretch.
 - The package carries `AGENTS.md`, a guide for AI coding assistants with the package's own names, entry points,
@@ -43,6 +67,8 @@ internal milestones whose public API was frozen and reviewed, and they are liste
 
 ## Egap.Documents.Markdown 2.4.0 (unreleased)
 
+- Documents read from Markdown lay justified lines out as their HTML rendering does: the line before a hard line break
+  stays at the start.
 - Documents read from Markdown set `WordCompatibility.ShrinkJustifiedSpaces` off, as their HTML rendering only stretches
   justified lines.
 - The package carries `AGENTS.md`, a guide for AI coding assistants with the package's own names, entry points,

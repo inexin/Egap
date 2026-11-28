@@ -1,3 +1,48 @@
 #nullable enable
+Egap.Documents.EmphasisMark
+Egap.Documents.EmphasisMark.Circle = 3 -> Egap.Documents.EmphasisMark
+Egap.Documents.EmphasisMark.Comma = 2 -> Egap.Documents.EmphasisMark
+Egap.Documents.EmphasisMark.Dot = 1 -> Egap.Documents.EmphasisMark
+Egap.Documents.EmphasisMark.None = 0 -> Egap.Documents.EmphasisMark
+Egap.Documents.EmphasisMark.UnderDot = 4 -> Egap.Documents.EmphasisMark
+Egap.Documents.ResolvedRunFormat.CombineUpright.get -> bool
+Egap.Documents.ResolvedRunFormat.Emphasis.get -> Egap.Documents.EmphasisMark
+Egap.Documents.Ruby
+Egap.Documents.Ruby.Alignment.get -> Egap.Documents.RubyAlignment
+Egap.Documents.Ruby.Alignment.set -> void
+Egap.Documents.Ruby.BaseFontSize.get -> double?
+Egap.Documents.Ruby.BaseFontSize.set -> void
+Egap.Documents.Ruby.FontSize.get -> double?
+Egap.Documents.Ruby.FontSize.set -> void
+Egap.Documents.Ruby.Language.get -> string?
+Egap.Documents.Ruby.Language.set -> void
+Egap.Documents.Ruby.Position.get -> Egap.Documents.RubyPosition
+Egap.Documents.Ruby.Position.set -> void
+Egap.Documents.Ruby.Raise.get -> double?
+Egap.Documents.Ruby.Raise.set -> void
+Egap.Documents.Ruby.Ruby(Egap.Documents.Document! document, string! text = "") -> void
+Egap.Documents.Ruby.Text.get -> string!
+Egap.Documents.Ruby.Text.set -> void
+Egap.Documents.Ruby.TextFormat.get -> Egap.Documents.RunFormat!
+Egap.Documents.RubyAlignment
+Egap.Documents.RubyAlignment.Center = 0 -> Egap.Documents.RubyAlignment
+Egap.Documents.RubyAlignment.DistributeLetter = 1 -> Egap.Documents.RubyAlignment
+Egap.Documents.RubyAlignment.DistributeSpace = 2 -> Egap.Documents.RubyAlignment
+Egap.Documents.RubyAlignment.Left = 3 -> Egap.Documents.RubyAlignment
+Egap.Documents.RubyAlignment.Right = 4 -> Egap.Documents.RubyAlignment
+Egap.Documents.RubyAlignment.RightVertical = 5 -> Egap.Documents.RubyAlignment
+Egap.Documents.RubyPosition
+Egap.Documents.RubyPosition.Over = 0 -> Egap.Documents.RubyPosition
+Egap.Documents.RubyPosition.Under = 1 -> Egap.Documents.RubyPosition
+Egap.Documents.RunFormat.CombineUpright.get -> bool?
+Egap.Documents.RunFormat.CombineUpright.set -> void
+Egap.Documents.RunFormat.Emphasis.get -> Egap.Documents.EmphasisMark?
+Egap.Documents.RunFormat.Emphasis.set -> void
+override Egap.Documents.Ruby.Clone(bool deep = true) -> Egap.Documents.Ruby!
+override Egap.Documents.Ruby.ToString() -> string!
+virtual Egap.Documents.DocumentVisitor.VisitRubyEnd(Egap.Documents.Ruby! ruby) -> Egap.Documents.VisitorAction
+virtual Egap.Documents.DocumentVisitor.VisitRubyStart(Egap.Documents.Ruby! ruby) -> Egap.Documents.VisitorAction
+Egap.Documents.WordCompatibility.DoNotExpandShiftReturn.get -> bool
+Egap.Documents.WordCompatibility.DoNotExpandShiftReturn.set -> void
 Egap.Documents.WordCompatibility.ShrinkJustifiedSpaces.get -> bool
 Egap.Documents.WordCompatibility.ShrinkJustifiedSpaces.set -> void
