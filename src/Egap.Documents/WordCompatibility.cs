@@ -27,6 +27,8 @@ public sealed class WordCompatibility
         ("", false),
         ("", false),
         ("doNotExpandShiftReturn", false),
+        ("doNotVertAlignInTxbx", false),
+        ("underlineTabInNumList", false),
     ];
 
     internal const int AllowSpaceOfSameStyleInTableId = 0;
@@ -39,6 +41,8 @@ public sealed class WordCompatibility
     internal const int TableIndentFromCellTextId = 7;
     internal const int ShrinkJustifiedSpacesId = 8;
     internal const int DoNotExpandShiftReturnId = 9;
+    internal const int DoNotVerticallyAlignInTextBoxId = 10;
+    internal const int UnderlineTabInNumberedListId = 11;
 
     private readonly DocumentSettings settings;
     private readonly Document document;
@@ -162,6 +166,27 @@ public sealed class WordCompatibility
     {
         get => Get(DoNotExpandShiftReturnId);
         set => Set(DoNotExpandShiftReturnId, value);
+    }
+
+    /// <summary>
+    /// A text box's text is laid out from the top whatever its <see cref="Shape.TextVerticalAlignment"/> says, as Word does under
+    /// its <c>doNotVertAlignInTxbx</c>. Off by default, so centred and bottom text boxes place their text as set. RTF stores it
+    /// as <c>\notvatxbx</c>.
+    /// </summary>
+    public bool DoNotVerticallyAlignInTextBox
+    {
+        get => Get(DoNotVerticallyAlignInTextBoxId);
+        set => Set(DoNotVerticallyAlignInTextBoxId, value);
+    }
+
+    /// <summary>
+    /// The tab after an underlined list label is underlined too, as Word does under its <c>underlineTabInNumList</c>. Off by
+    /// default: Word underlines the label's own text and leaves the tab's space after it plain.
+    /// </summary>
+    public bool UnderlineTabInNumberedList
+    {
+        get => Get(UnderlineTabInNumberedListId);
+        set => Set(UnderlineTabInNumberedListId, value);
     }
 
     /// <summary>

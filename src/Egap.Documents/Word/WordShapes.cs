@@ -93,7 +93,7 @@ internal static class WordShapes
         };
     }
 
-    /// <summary>A shape's fill, line and text box insets from its properties; the defaults are a white fill and a black line.</summary>
+    /// <summary>A shape's fill, line, and text box insets and text anchor from its properties; the defaults are a white fill and a black line.</summary>
     public static void ApplyLook(Shape shape, IReadOnlyDictionary<string, string> properties)
     {
         if (Number(properties, "fFilled") != 0)
@@ -111,6 +111,14 @@ internal static class WordShapes
         {
             shape.TextInsets = (Emu(properties, "dxTextLeft", 7.2), Emu(properties, "dyTextTop", 3.6), Emu(properties, "dxTextRight", 7.2), Emu(properties, "dyTextBottom", 3.6));
             shape.FitToText = Number(properties, "fFitShapeToText") == 1;
+
+            // MS-ODRAW's MSOANCHOR: top, middle, bottom, then the same centred, then baseline variants.
+            shape.TextVerticalAlignment = Number(properties, "anchorText") switch
+            {
+                1 or 4 => VerticalAlignment.Center,
+                2 or 5 or 7 or 9 => VerticalAlignment.Bottom,
+                _ => VerticalAlignment.Top,
+            };
         }
     }
 

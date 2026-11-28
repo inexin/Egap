@@ -1081,6 +1081,9 @@ internal sealed partial class RtfReader
             case "expshrtn":
                 settings.WordCompatibility.DoNotExpandShiftReturn = false;
                 return true;
+            case "notvatxbx":
+                settings.WordCompatibility.DoNotVerticallyAlignInTextBox = true;
+                return true;
             default:
                 return false;
         }

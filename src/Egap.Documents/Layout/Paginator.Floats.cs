@@ -95,7 +95,10 @@ internal sealed partial class Paginator
         return new LayoutRect(x, y, width, height);
     }
 
-    /// <summary>A text box's laid-out text, inside the shape's insets; none for other objects.</summary>
+    /// <summary>
+    /// A text box's laid-out text, inside the shape's insets, at the top, centred or at the bottom as the shape says
+    /// (<see cref="Shape.TextVerticalAlignment"/>); none for other objects. Text taller than the room starts at the top.
+    /// </summary>
     private List<LayoutBox>? ObjectContent(Inline node, LayoutRect bounds)
     {
         if (node is not Shape { TextBox: { } box } shape)
@@ -103,8 +106,19 @@ internal sealed partial class Paginator
             return null;
         }
 
-        (double left, double top, double right, _) = Insets(shape);
-        (List<LayoutBox> blocks, _) = LayStory(box, bounds.X + left, bounds.Y + top, Math.Max(1, bounds.Width - left - right));
+        (double left, double top, double right, double bottom) = Insets(shape);
+        double width = Math.Max(1, bounds.Width - left - right);
+        double y = bounds.Y + top;
+        if (shape.TextVerticalAlignment != VerticalAlignment.Top && !document.Settings.WordCompatibility.DoNotVerticallyAlignInTextBox)
+        {
+            double room = bounds.Height - top - bottom - MeasureBlocks(box.Blocks, width);
+            if (room > 0)
+            {
+                y += shape.TextVerticalAlignment == VerticalAlignment.Center ? room / 2 : room;
+            }
+        }
+
+        (List<LayoutBox> blocks, _) = LayStory(box, bounds.X + left, y, width);
         return blocks;
     }
 

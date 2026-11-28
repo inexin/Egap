@@ -89,6 +89,12 @@ internal milestones whose public API was frozen and reviewed, and they are liste
   `style:text-emphasis`) draws its marks beside the text; tagged PDF marks them as artifacts.
 - Tate-chu-yoko: `RunFormat.CombineUpright` (Word's horizontal in vertical, `w:eastAsianLayout w:vert`) reads and writes
   in DOCX; Egap lays text out horizontally, where it changes nothing. Two lines in one (`w:combine`) stays as it was.
+- Text boxes place their text at the top, centred or at the bottom: `Shape.TextVerticalAlignment`, read from and written
+  to DOCX (`wps:bodyPr anchor`, and VML's `v-text-anchor` on reading), RTF and DOC (`anchorText`). Text taller than the box
+  starts at the top. `WordCompatibility.DoNotVerticallyAlignInTextBox` (Word's `doNotVertAlignInTxbx`, RTF's `\notvatxbx`)
+  lays every text box out from the top, as Word does under it.
+- The tab after an underlined list label is no longer underlined, as in Word; `WordCompatibility.UnderlineTabInNumberedList`
+  (Word's `underlineTabInNumList`) underlines it again.
 - The RTF writer writes SVG pictures (barcodes among them), charts, shape groups, SmartArt and DrawingML shapes as EMF
   pictures (EMF+ with GDI records beside them, through Egami.Metafiles' `EmfCanvas`), so Word shows them as vectors,
   with a PNG of each in `\nonshppict` for readers without EMF. SVG pictures were PNGs, and charts, shape groups and
