@@ -124,7 +124,8 @@ public sealed class DocumentSettings
 
     /// <summary>
     /// The hyphenation zone, in points: a word is hyphenated only when the space it would leave at the line end is wider than
-    /// this. Word applies it to justified and ragged lines alike. Word's default is 0.25 inch (18 points).
+    /// this. Word's default is 0.25 inch (18 points). It applies to ragged lines, and to justified ones whose spaces do not shrink;
+    /// with <see cref="WordCompatibility.ShrinkJustifiedSpaces"/> on, Word 2013 and later hyphenate justified lines without it.
     /// </summary>
     public double HyphenationZone
     {
