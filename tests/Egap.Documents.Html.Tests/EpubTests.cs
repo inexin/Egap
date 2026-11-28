@@ -435,6 +435,28 @@ public class EpubTests
     }
 
     [Fact]
+    public void EmbeddedFontSubsetsShapeAsTheFullFont()
+    {
+        // Arabic joins, ligates and positions marks through GSUB and GPOS: the subset keeps them for its densely renumbered glyphs.
+        const string text = "تعلم اللغة العربية يفتح أبواب الأدب والعلوم";
+        byte[] font = File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory, "files", "fonts", "NotoSansArabic-Regular.ttf"));
+        Document document = new();
+        document.AddSection().Body.AddParagraph(text);
+        document.EmbeddedFonts.Add(new EmbeddedFont("Noto Sans Arabic", false, false, font));
+
+        Document again = EpubFormat.Load(new MemoryStream(document.ToEpub(new EpubSaveOptions { EmbedFonts = true })));
+        Egami.Fonts.Typeface full = Egami.Fonts.Typeface.FromMemory(font);
+        Egami.Fonts.Typeface subset = Egami.Fonts.Typeface.FromMemory(Assert.Single(again.EmbeddedFonts).Data);
+        Assert.True(subset.GlyphCount < full.GlyphCount / 4, $"{subset.GlyphCount} of {full.GlyphCount} glyphs");
+
+        Egami.Fonts.GlyphRun expected = new Egami.Fonts.Font(full, 12).Shape(text), shaped = new Egami.Fonts.Font(subset, 12).Shape(text);
+        Assert.Equal(expected.Count, shaped.Count);
+        Assert.Equal(expected.Positions.ToArray(), shaped.Positions.ToArray());
+        Assert.Equal(expected.Clusters.ToArray(), shaped.Clusters.ToArray());
+        Assert.DoesNotContain((ushort)0, shaped.Glyphs.ToArray());
+    }
+
+    [Fact]
     public void PicturesInTheSpineAndANonLinearNavAreRead()
     {
         const string opf = """

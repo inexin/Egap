@@ -595,12 +595,13 @@ internal sealed class EpubWriter
                 return data.ToArray();
             }
 
-            List<ushort> glyphs = [0, .. characters.Select(c => face.GetGlyph(c)).Where(g => g != 0).Distinct()];
-            Egami.Fonts.FontSubset subset = Egami.Fonts.FontSubsetter.Subset(face, glyphs, new Egami.Fonts.SubsetOptions
+            // The glyphs the shaper draws the characters with, renumbered densely, with GSUB, GPOS, GDEF, kern and MATH cut down
+            // to them, so a reading system shapes the text as the full font would (ligatures, contextual forms, kerning).
+            Egami.Fonts.FontSubset subset = Egami.Fonts.FontSubsetter.Subset(face, [0, .. Egami.Fonts.FontSubsetter.GlyphsFor(face, characters)], new Egami.Fonts.SubsetOptions
             {
-                RetainGlyphIds = true,
                 KeepCmap = true,
                 LayoutClosure = true,
+                Characters = characters,
             });
             return subset.Data.ToArray();
         }
