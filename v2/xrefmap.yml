@@ -16869,6 +16869,12 @@ references:
   commentId: F:Egap.Documents.Layout.LayoutWarningKind.HyphenationDictionaryMissing
   fullName: Egap.Documents.Layout.LayoutWarningKind.HyphenationDictionaryMissing
   nameWithType: LayoutWarningKind.HyphenationDictionaryMissing
+- uid: Egap.Documents.Layout.LayoutWarningKind.PictureNotDrawn
+  name: PictureNotDrawn
+  href: api/Egap.Documents.Layout.LayoutWarningKind.html#Egap_Documents_Layout_LayoutWarningKind_PictureNotDrawn
+  commentId: F:Egap.Documents.Layout.LayoutWarningKind.PictureNotDrawn
+  fullName: Egap.Documents.Layout.LayoutWarningKind.PictureNotDrawn
+  nameWithType: LayoutWarningKind.PictureNotDrawn
 - uid: Egap.Documents.Layout.LayoutWarningKind.SmartArtDrawnAsList
   name: SmartArtDrawnAsList
   href: api/Egap.Documents.Layout.LayoutWarningKind.html#Egap_Documents_Layout_LayoutWarningKind_SmartArtDrawnAsList

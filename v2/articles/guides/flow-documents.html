@@ -193,6 +193,14 @@ paragraph.Inlines.Add(ruby);
 Run marked = paragraph.AddRun(&quot;大切&quot;);
 marked.Format.Emphasis = EmphasisMark.Comma;
 </code></pre>
+<h2 id="pictures">Pictures</h2>
+<p>A <code>Picture</code> holds its image as bytes with a media type (<code>ImageData</code>; <code>ImageData.FromBytes</code> tells the type from the bytes).
+Layout, rendering and PDF export draw PNG, JPEG and the other raster formats Egami reads, EMF, WMF and SVG as vectors, and
+Encapsulated PostScript (EPS, <code>application/postscript</code>) by its preview, as Word does: Egap runs no PostScript. The preview
+is the best the file has: Photoshop's full image (<code>%ImageData</code>), else the TIFF preview, else the Windows metafile preview,
+drawn as vectors, else the EPSI bitmap. An EPS file with none is left as an empty box with a
+<code>LayoutWarningKind.PictureNotDrawn</code> warning. DOCX and ODT keep the EPS file as it is; RTF, which has no EPS, writes its
+preview as a PNG.</p>
 <h2 id="barcodes">Barcodes</h2>
 <p><code>InsertBarcode</code> writes a barcode as a picture of the size you give. Layout and PDF export draw it as vectors; DOCX keeps it
 as an SVG picture with a PNG stand-in at 300 pixels per inch, as Word stores SVG pictures, so older readers show it too. Any
