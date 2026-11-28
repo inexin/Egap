@@ -6,7 +6,7 @@
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <meta name="title" content="Class SlideShapeCollection | Egap ">
       
-      <meta name="description" content="The shapes of a slide, layout, master or group, in the order they are drawn: the first is at the back. A shape written two ways in mc:AlternateContent, for newer and older readers, is read from the branch this reader understands; a change is made in that branch only, and the other keeps the values it had.">
+      <meta name="description" content="Adding and removing shapes.">
       <link rel="icon" href="../images/favicon.ico">
       <link rel="stylesheet" href="../public/docfx.min.css">
       <link rel="stylesheet" href="../public/main.css">
@@ -89,7 +89,7 @@
 
 
   <h1 id="Egap_Presentations_SlideShapeCollection" data-uid="Egap.Presentations.SlideShapeCollection" class="text-break">
-Class SlideShapeCollection  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Presentations/Shapes.cs/#L463"><i class="bi bi-code-slash"></i></a>
+Class SlideShapeCollection  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Presentations/Shapes.cs/#L583"><i class="bi bi-code-slash"></i></a>
   </h1>
 
   <div class="facts text-secondary">
@@ -97,9 +97,7 @@ Class SlideShapeCollection  <a class="header-action link-secondary" title="View 
   <dl><dt>Assembly</dt><dd>Egap.Presentations.dll</dd></dl>
   </div>
 
-  <div class="markdown summary"><p>The shapes of a slide, layout, master or group, in the order they are drawn: the first is at the back. A shape written two
-ways in <code>mc:AlternateContent</code>, for newer and older readers, is read from the branch this reader understands; a
-change is made in that branch only, and the other keeps the values it had.</p>
+  <div class="markdown summary"><p>Adding and removing shapes.</p>
 </div>
   <div class="markdown conceptual"></div>
 
@@ -165,7 +163,7 @@ change is made in that branch only, and the other keeps the values it had.</p>
 
   <h3 id="Egap_Presentations_SlideShapeCollection_Count" data-uid="Egap.Presentations.SlideShapeCollection.Count">
   Count
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Presentations/Shapes.cs/#L492"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Presentations/Shapes.cs/#L618"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>The number of shapes.</p>
@@ -197,7 +195,7 @@ change is made in that branch only, and the other keeps the values it had.</p>
 
   <h3 id="Egap_Presentations_SlideShapeCollection_Item_System_Int32_" data-uid="Egap.Presentations.SlideShapeCollection.Item(System.Int32)">
   this[int]
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Presentations/Shapes.cs/#L496"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Presentations/Shapes.cs/#L622"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>The shape at <code class="paramref">index</code>, from 0.</p>
@@ -240,11 +238,305 @@ change is made in that branch only, and the other keeps the values it had.</p>
 </h2>
 
 
+  <a id="Egap_Presentations_SlideShapeCollection_AddConnector_" data-uid="Egap.Presentations.SlideShapeCollection.AddConnector*"></a>
+
+  <h3 id="Egap_Presentations_SlideShapeCollection_AddConnector_Egap_Presentations_ShapeTransform_System_String_" data-uid="Egap.Presentations.SlideShapeCollection.AddConnector(Egap.Presentations.ShapeTransform,System.String)">
+  AddConnector(ShapeTransform, string)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Presentations/ShapeBuilding.cs/#L107"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Adds a connector: a line from the top left of <code class="paramref">transform</code> to its bottom right (flip it for the
+other diagonal), drawn in the theme's text colour. Attach its ends with <a class="xref" href="Egap.Presentations.ConnectorShape.html#Egap_Presentations_ConnectorShape_Start">Start</a> and
+<a class="xref" href="Egap.Presentations.ConnectorShape.html#Egap_Presentations_ConnectorShape_End">End</a>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public ConnectorShape AddConnector(ShapeTransform transform, string presetGeometry = &quot;straightConnector1&quot;)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>transform</code> <a class="xref" href="Egap.Presentations.ShapeTransform.html">ShapeTransform</a></dt>
+    <dd></dd>
+    <dt><code>presetGeometry</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Egap.Presentations.ConnectorShape.html">ConnectorShape</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a></dt>
+    <dd><p>The geometry is null or empty.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentoutofrangeexception">ArgumentOutOfRangeException</a></dt>
+    <dd><p>The width or height is negative.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Egap_Presentations_SlideShapeCollection_AddGroup_" data-uid="Egap.Presentations.SlideShapeCollection.AddGroup*"></a>
+
+  <h3 id="Egap_Presentations_SlideShapeCollection_AddGroup_Egap_Presentations_ShapeTransform_" data-uid="Egap.Presentations.SlideShapeCollection.AddGroup(Egap.Presentations.ShapeTransform)">
+  AddGroup(ShapeTransform)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Presentations/ShapeBuilding.cs/#L88"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Adds an empty group whose child coordinates are its own position; add shapes to its <a class="xref" href="Egap.Presentations.GroupShape.html#Egap_Presentations_GroupShape_Shapes">Shapes</a>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public GroupShape AddGroup(ShapeTransform transform)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>transform</code> <a class="xref" href="Egap.Presentations.ShapeTransform.html">ShapeTransform</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Egap.Presentations.GroupShape.html">GroupShape</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentoutofrangeexception">ArgumentOutOfRangeException</a></dt>
+    <dd><p>The width or height is negative.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Egap_Presentations_SlideShapeCollection_AddPicture_" data-uid="Egap.Presentations.SlideShapeCollection.AddPicture*"></a>
+
+  <h3 id="Egap_Presentations_SlideShapeCollection_AddPicture_System_ReadOnlyMemory_System_Byte__System_Nullable_Egap_Presentations_ShapeTransform__" data-uid="Egap.Presentations.SlideShapeCollection.AddPicture(System.ReadOnlyMemory{System.Byte},System.Nullable{Egap.Presentations.ShapeTransform})">
+  AddPicture(ReadOnlyMemory&lt;byte&gt;, ShapeTransform?)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Presentations/ShapeBuilding.cs/#L67"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Adds a picture of <code class="paramref">image</code>: a PNG, JPEG, GIF, BMP or TIFF file, its kind found from its header. With
+no <code class="paramref">transform</code> it is placed at the top left at its size at 96 pixels an inch. An image the
+presentation already holds byte for byte is shared, not stored twice.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public PictureShape AddPicture(ReadOnlyMemory&lt;byte&gt; image, ShapeTransform? transform = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>image</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.readonlymemory-1">ReadOnlyMemory</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>&gt;</dt>
+    <dd></dd>
+    <dt><code>transform</code> <a class="xref" href="Egap.Presentations.ShapeTransform.html">ShapeTransform</a>?</dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Egap.Presentations.PictureShape.html">PictureShape</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a></dt>
+    <dd><p>The bytes are not an image of a kind PowerPoint shows.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentoutofrangeexception">ArgumentOutOfRangeException</a></dt>
+    <dd><p>The width or height is negative.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Egap_Presentations_SlideShapeCollection_AddShape_" data-uid="Egap.Presentations.SlideShapeCollection.AddShape*"></a>
+
+  <h3 id="Egap_Presentations_SlideShapeCollection_AddShape_System_String_Egap_Presentations_ShapeTransform_System_String_" data-uid="Egap.Presentations.SlideShapeCollection.AddShape(System.String,Egap.Presentations.ShapeTransform,System.String)">
+  AddShape(string, ShapeTransform, string)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Presentations/ShapeBuilding.cs/#L26"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Adds a shape with the preset geometry <code class="paramref">presetGeometry</code> (<code>rect</code>, <code>roundRect</code>,
+<code>ellipse</code>, <code>rightArrow</code> and the rest, as ECMA-376 names them), filled and outlined in the theme's first
+accent colour as PowerPoint draws a new shape, with <code class="paramref">text</code> centred in it.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public AutoShape AddShape(string presetGeometry, ShapeTransform transform, string text = &quot;&quot;)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>presetGeometry</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd></dd>
+    <dt><code>transform</code> <a class="xref" href="Egap.Presentations.ShapeTransform.html">ShapeTransform</a></dt>
+    <dd></dd>
+    <dt><code>text</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Egap.Presentations.AutoShape.html">AutoShape</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a></dt>
+    <dd><p>The geometry is null or empty.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p>The text is null.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentoutofrangeexception">ArgumentOutOfRangeException</a></dt>
+    <dd><p>The width or height is negative.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Egap_Presentations_SlideShapeCollection_AddTable_" data-uid="Egap.Presentations.SlideShapeCollection.AddTable*"></a>
+
+  <h3 id="Egap_Presentations_SlideShapeCollection_AddTable_System_Int32_System_Int32_Egap_Presentations_ShapeTransform_" data-uid="Egap.Presentations.SlideShapeCollection.AddTable(System.Int32,System.Int32,Egap.Presentations.ShapeTransform)">
+  AddTable(int, int, ShapeTransform)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Presentations/ShapeBuilding.cs/#L122"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Adds a table of <code class="paramref">rows</code> by <code class="paramref">columns</code> empty cells filling <code class="paramref">transform</code>,
+in PowerPoint's default table style (<a class="xref" href="Egap.Presentations.SlideTable.html#Egap_Presentations_SlideTable_DefaultStyleId">DefaultStyleId</a>) with a header row and banded rows.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public GraphicFrame AddTable(int rows, int columns, ShapeTransform transform)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>rows</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd></dd>
+    <dt><code>columns</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd></dd>
+    <dt><code>transform</code> <a class="xref" href="Egap.Presentations.ShapeTransform.html">ShapeTransform</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Egap.Presentations.GraphicFrame.html">GraphicFrame</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentoutofrangeexception">ArgumentOutOfRangeException</a></dt>
+    <dd><p>There are fewer than one row or column, or the width or height is negative.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="Egap_Presentations_SlideShapeCollection_AddTextBox_" data-uid="Egap.Presentations.SlideShapeCollection.AddTextBox*"></a>
+
+  <h3 id="Egap_Presentations_SlideShapeCollection_AddTextBox_Egap_Presentations_ShapeTransform_System_String_" data-uid="Egap.Presentations.SlideShapeCollection.AddTextBox(Egap.Presentations.ShapeTransform,System.String)">
+  AddTextBox(ShapeTransform, string)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Presentations/ShapeBuilding.cs/#L47"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Adds a text box: <code class="paramref">text</code> in a frame with no fill or outline that grows to fit it.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public AutoShape AddTextBox(ShapeTransform transform, string text)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>transform</code> <a class="xref" href="Egap.Presentations.ShapeTransform.html">ShapeTransform</a></dt>
+    <dd></dd>
+    <dt><code>text</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Egap.Presentations.AutoShape.html">AutoShape</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p>The text is null.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentoutofrangeexception">ArgumentOutOfRangeException</a></dt>
+    <dd><p>The width or height is negative.</p>
+</dd>
+  </dl>
+
+
+
   <a id="Egap_Presentations_SlideShapeCollection_FindById_" data-uid="Egap.Presentations.SlideShapeCollection.FindById*"></a>
 
   <h3 id="Egap_Presentations_SlideShapeCollection_FindById_System_UInt32_" data-uid="Egap.Presentations.SlideShapeCollection.FindById(System.UInt32)">
   FindById(uint)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Presentations/Shapes.cs/#L499"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Presentations/Shapes.cs/#L625"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>The shape with the id <code class="paramref">id</code> here or in a group inside, or null.</p>
@@ -281,7 +573,7 @@ change is made in that branch only, and the other keeps the values it had.</p>
 
   <h3 id="Egap_Presentations_SlideShapeCollection_GetEnumerator" data-uid="Egap.Presentations.SlideShapeCollection.GetEnumerator">
   GetEnumerator()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Presentations/Shapes.cs/#L518"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Presentations/Shapes.cs/#L644"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Returns an enumerator that iterates through the collection.</p>
@@ -310,11 +602,55 @@ change is made in that branch only, and the other keeps the values it had.</p>
 
 
 
+  <a id="Egap_Presentations_SlideShapeCollection_Remove_" data-uid="Egap.Presentations.SlideShapeCollection.Remove*"></a>
+
+  <h3 id="Egap_Presentations_SlideShapeCollection_Remove_Egap_Presentations_SlideShape_" data-uid="Egap.Presentations.SlideShapeCollection.Remove(Egap.Presentations.SlideShape)">
+  Remove(SlideShape)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Presentations/ShapeBuilding.cs/#L139"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Removes <code class="paramref">shape</code>. Connectors attached to it stay where they are.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool Remove(SlideShape shape)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>shape</code> <a class="xref" href="Egap.Presentations.SlideShape.html">SlideShape</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p>Whether the shape was here.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p>The shape is null.</p>
+</dd>
+  </dl>
+
+
+
 
 </article>
 
         <div class="contribution d-print-none">
-          <a href="https://github.com/inexin/Egap/blob/main/src/Egap.Presentations/Shapes.cs/#L463" class="edit-link">Edit this page</a>
+          <a href="https://github.com/inexin/Egap/blob/main/src/Egap.Presentations/Shapes.cs/#L583" class="edit-link">Edit this page</a>
         </div>
 
 

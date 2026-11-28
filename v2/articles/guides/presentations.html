@@ -87,8 +87,9 @@
         <article data-uid="">
 <h1 id="presentations">Presentations</h1>
 
-<p>Egap.Presentations loads PowerPoint files and lets you read and edit their slides from code: the slide masters, their
-layouts and themes, the slides, and the shapes on each, with their ids, names, positions, placeholders and text. It reads
+<p>Egap.Presentations loads and makes PowerPoint files and lets you read and edit their slides from code: the slide
+masters, their layouts and themes, the slides, and the shapes on each, with their ids, names, positions, placeholders and
+text, tables, notes, comments and sections. It reads
 PPTX, PPTM, POTX, POTM, PPSX and PPSM files, in transitional or Strict namespaces. The types are in
 <code>Egap.Presentations</code>.</p>
 <div class="NOTE">
@@ -157,7 +158,7 @@ its preset (<code>rect</code>, <code>ellipse</code>, <code>rightArrow</code>), a
 <li><code>GraphicFrame</code>: a table, chart, SmartArt diagram or embedded object, kept as it is; <code>Kind</code> says which.</li>
 </ul>
 <p><code>Transform</code> gives a shape's position, size, rotation and flips in EMUs (914,400 to the inch), with the position and size in
-points too; it is null for a placeholder that takes its position from its layout. <code>Placeholder</code> gives a placeholder's type
+points too; it is null for a placeholder that takes its position from its layout (<code>EffectiveTransform</code> follows it there). <code>Placeholder</code> gives a placeholder's type
 and index, which match it to its layout's placeholder. A shape PowerPoint wrote two ways (<code>mc:AlternateContent</code>, for newer
 and older readers) is read and changed in the branch Egap understands; the other branch keeps its values.</p>
 <pre><code class="lang-csharp">using Egap.Presentations;
@@ -178,13 +179,113 @@ deck.Save(&quot;quarterly.pptx&quot;);
 </code></pre>
 <p>A run's text is replaced in place, so it keeps its font, size and colour. <code>TextBody.Text</code> and <code>TextParagraph.Text</code> give the
 text with paragraphs ended by <code>\r</code> and line breaks as <code>\v</code>, as Egap.Documents' text does.</p>
+<h2 id="building-a-deck">Building a deck</h2>
+<p><code>Presentation.Create()</code> makes a new 16:9 presentation with no slides: one slide master with Egap's own theme (Office-like
+colours, Calibri Light and Calibri) and the eleven standard layouts, from Title Slide to Vertical Title and Text.
+<code>SlideMaster.GetLayout</code> finds a layout by its type. <code>Slides.Add</code> and <code>Slides.Insert</code> add a slide that follows a layout,
+with an empty placeholder for each of the layout's but the date, footer and slide number; <code>Remove</code>, <code>RemoveAt</code> and <code>Move</code>
+take a slide out or move it, and a removed slide's notes page, comments and the pictures only it used go with it.</p>
+<p><code>Shapes.AddShape</code> adds a preset shape (<code>rect</code>, <code>roundRect</code>, <code>ellipse</code> and the rest) filled in the theme's first accent
+colour, <code>AddTextBox</code> a text box, <code>AddPicture</code> a PNG, JPEG, GIF, BMP or TIFF picture (an image stored once however often it
+is used), <code>AddGroup</code> a group to add shapes to, <code>AddConnector</code> a line whose <code>Start</code> and <code>End</code> attach it to shapes, and
+<code>AddTable</code> a table. Each new shape gets an id no other shape on its slide has. Setting <code>TextBody.Text</code> replaces a shape's
+text, paragraphs ended by <code>\r</code> and line breaks as <code>\v</code>, keeping the first run's formatting.</p>
+<pre><code class="lang-csharp">using Egap.Presentations;
+
+Presentation deck = Presentation.Create();
+SlideMaster master = deck.SlideMasters[0];
+
+Slide cover = deck.Slides.Add(master.GetLayout(SlideLayoutType.Title)!);
+((AutoShape)cover.Shapes[0]).TextBody!.Text = &quot;Quarterly review&quot;;
+((AutoShape)cover.Shapes[1]).TextBody!.Text = &quot;Third quarter&quot;;
+
+Slide shapes = deck.Slides.Add(master.GetLayout(SlideLayoutType.TitleOnly)!);
+((AutoShape)shapes.Shapes[0]).TextBody!.Text = &quot;Process&quot;;
+AutoShape plan = shapes.Shapes.AddShape(&quot;roundRect&quot;, ShapeTransform.FromPoints(60, 150, 200, 100), &quot;Plan&quot;);
+AutoShape ship = shapes.Shapes.AddShape(&quot;ellipse&quot;, ShapeTransform.FromPoints(500, 150, 160, 100), &quot;Ship&quot;);
+ConnectorShape arrow = shapes.Shapes.AddConnector(ShapeTransform.FromPoints(260, 200, 240, 0));
+arrow.Start = new ShapeConnection(plan.Id, 3);
+arrow.End = new ShapeConnection(ship.Id, 1);
+shapes.Shapes.AddTextBox(ShapeTransform.FromPoints(60, 300, 400, 40), &quot;Two steps\vfrom idea to customer&quot;);
+shapes.Shapes.AddPicture(File.ReadAllBytes(&quot;logo.png&quot;), ShapeTransform.FromPoints(760, 30, 160, 80));
+
+deck.Save(&quot;review.pptx&quot;);
+</code></pre>
+<h2 id="placeholders-and-inheritance">Placeholders and inheritance</h2>
+<p>A placeholder on a slide takes what it does not set itself from the matching placeholder on its layout, and that one from
+the master's. <code>InheritedPlaceholder</code> gives the placeholder one step up: for a slide's placeholder the layout's with the same
+index, or else the same type; for a layout's, the master's of the same type, a centred title taking the master's title and
+the content kinds (subtitle, content, table, chart, picture) its body. <code>EffectiveTransform</code> is where the shape is drawn: its
+own <code>Transform</code>, or the first one up the chain.</p>
+<pre><code class="lang-csharp">using Egap.Presentations;
+
+Presentation deck = Presentation.Load(&quot;quarterly.pptx&quot;);
+foreach (SlideShape shape in deck.Slides[0].Shapes)
+{
+    SlideShape? fromLayout = shape.InheritedPlaceholder;
+    Console.WriteLine($&quot;{shape.Name}: drawn at {shape.EffectiveTransform}, own {shape.Transform}, from {fromLayout?.Owner.Name}&quot;);
+}
+</code></pre>
+<h2 id="tables">Tables</h2>
+<p><code>GraphicFrame.Table</code> gives a table frame's table: its <code>Columns</code> (grid widths), <code>Rows</code> (heights) and their <code>Cells</code>, one per
+grid column. A merged block shows the text of its top left cell: <code>ColumnSpan</code> and <code>RowSpan</code> give its size, and the cells
+it covers say so with <code>IsCoveredHorizontally</code> and <code>IsCoveredVertically</code>; <code>Origin</code> finds the cell whose text a block shows.
+<code>InsertRow</code>, <code>AddRow</code>, <code>InsertColumn</code>, <code>AddColumn</code>, <code>RemoveRow</code> and <code>RemoveColumn</code> change the grid and keep merges whole,
+<code>Merge</code> and <code>Split</code> merge cells and split them again, and <code>StyleId</code> names the table style.</p>
+<pre><code class="lang-csharp">using Egap.Presentations;
+
+Presentation deck = Presentation.Create();
+Slide slide = deck.Slides.Add(deck.SlideMasters[0].GetLayout(SlideLayoutType.TitleOnly)!);
+((AutoShape)slide.Shapes[0]).TextBody!.Text = &quot;Sales&quot;;
+
+SlideTable table = slide.Shapes.AddTable(3, 3, ShapeTransform.FromPoints(60, 150, 600, 120)).Table!;
+string[] header = [&quot;Region&quot;, &quot;Q2&quot;, &quot;Q3&quot;];
+for (int column = 0; column &lt; 3; column++)
+{
+    table.Cell(0, column).Text = header[column];
+}
+
+table.Cell(1, 0).Text = &quot;North&quot;;
+table.Cell(2, 0).Text = &quot;South&quot;;
+table.AddRow().Cells[0].Text = &quot;Total&quot;;
+table.Merge(3, 1, 1, 2).Text = &quot;Up 12 % on the half&quot;;
+deck.Save(&quot;sales.pptx&quot;);
+</code></pre>
+<h2 id="notes-comments-and-sections">Notes, comments and sections</h2>
+<p><code>Slide.NotesText</code> gets and sets the speaker's notes; setting it on a slide without notes makes a notes page, and a notes
+master when the presentation has none. <code>Slide.Notes</code> is the notes page itself.</p>
+<p><code>Slide.Comments</code> lists a slide's comment threads, each with its <code>Replies</code>. Both kinds are read: the modern, threaded
+comments of PowerPoint for Microsoft 365 and the older kind. Comments need an author from
+<code>Presentation.CommentAuthors.Add</code>; new comments are modern unless the presentation has authors of the older kind only
+(<code>CommentAuthors.WritesModern</code>). <code>Comments.Add</code> starts a thread, <code>SlideComment.Reply</code> answers it and <code>Comments.Remove</code>
+takes a comment (with its replies) away.</p>
+<p><code>Presentation.Sections</code> groups the slides in named runs, as PowerPoint's slide sorter shows them. <code>Sections.Add(name)</code> adds
+a section at the end, <code>Add(name, slide)</code> one starting at a slide, <code>MoveSlide</code> moves a slide into a section, and <code>Remove</code>
+merges a section's slides into the one before it. Slides added, moved and removed stay in step with their sections.</p>
+<pre><code class="lang-csharp">using Egap.Presentations;
+
+Presentation deck = Presentation.Load(&quot;review.pptx&quot;);
+Slide cover = deck.Slides[0];
+cover.NotesText = &quot;Welcome everyone.\rKeep this under a minute.&quot;;
+
+CommentAuthor reviewer = deck.CommentAuthors.Add(&quot;Ada Example&quot;, &quot;AE&quot;);
+CommentAuthor author = deck.CommentAuthors.Add(&quot;Bob Example&quot;, &quot;BE&quot;);
+SlideComment question = cover.Comments.Add(reviewer, &quot;Should the date be on the cover?&quot;);
+question.Reply(author, &quot;Added it to the subtitle.&quot;);
+
+SlideSection opening = deck.Sections.Add(&quot;Opening&quot;);     // the first section takes every slide
+SlideSection detail = deck.Sections.Add(&quot;Detail&quot;, deck.Slides[1]);
+opening.Name = &quot;Introduction&quot;;
+Console.WriteLine($&quot;{detail.Name}: {detail.Slides.Count} slides&quot;);
+deck.Save(&quot;review.pptx&quot;);
+</code></pre>
 <h2 id="known-limits">Known limits</h2>
 <ul>
-<li>Slides, shapes and text cannot be added or removed yet; a loaded file's slides and shapes are read and edited in place.</li>
-<li>Fills, outlines, text formatting, tables, charts, notes pages, comments, transitions and animations are kept and written
-back, but not in the model.</li>
-<li>A shape's inherited position and text styles (from its layout and master placeholder) are not worked out; <code>Transform</code> is
-the shape's own.</li>
+<li>Fills, outlines and text formatting are kept and written back but not in the model; new shapes take the theme's look.
+Charts, SmartArt, transitions and animations are kept as they are.</li>
+<li>New placeholders on a slide copy the layout's type and index only; the inherited text and list styles are not worked
+out, only the position (<code>EffectiveTransform</code>).</li>
+<li>Removing a slide leaves links to it from other slides as they are.</li>
 <li>Encrypted presentations and PowerPoint 97-2003 files (PPT) are not read.</li>
 <li>Slides are not rendered to images or PDF.</li>
 </ul>

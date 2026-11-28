@@ -8801,6 +8801,34 @@
     },
     {
       "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Presentations.CommentAuthor.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Presentations.CommentAuthor.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Presentations.CommentAuthor",
+      "Summary": "<p sourcefile=\"api/Egap.Presentations.CommentAuthor.yml\" sourcestartlinenumber=\"1\">Someone who wrote comments: in the comment authors part of PowerPoint 2007 to 2019 comments (<code>p:cmAuthor</code>), or the\nauthors part of modern, threaded comments ([MS-PPTX] 2.16, <code>p188:author</code>).</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Presentations.CommentAuthorCollection.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Presentations.CommentAuthorCollection.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Presentations.CommentAuthorCollection",
+      "Summary": "<p sourcefile=\"api/Egap.Presentations.CommentAuthorCollection.yml\" sourcestartlinenumber=\"1\">The authors of a presentation's comments, of both kinds. <xref href=\"Egap.Presentations.CommentAuthorCollection.Add(System.String%2cSystem.String)\" data-throw-if-not-resolved=\"false\"></xref> adds one of the kind the\npresentation writes: modern, unless it has authors of the older kind only.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
       "source_relative_path": "api/Egap.Presentations.ConnectorShape.yml",
       "output": {
         ".html": {
@@ -8857,6 +8885,34 @@
     },
     {
       "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Presentations.NotesMaster.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Presentations.NotesMaster.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Presentations.NotesMaster",
+      "Summary": "<p sourcefile=\"api/Egap.Presentations.NotesMaster.yml\" sourcestartlinenumber=\"1\">The notes master (<code>p:notesMaster</code>): the layout and text styles of every notes page.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Presentations.NotesSlide.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Presentations.NotesSlide.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Presentations.NotesSlide",
+      "Summary": "<p sourcefile=\"api/Egap.Presentations.NotesSlide.yml\" sourcestartlinenumber=\"1\">A slide's notes page (<code>p:notes</code>): the speaker's notes and a picture of the slide, laid out by the notes master.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
       "source_relative_path": "api/Egap.Presentations.PictureShape.yml",
       "output": {
         ".html": {
@@ -8895,7 +8951,7 @@
       "Uid": null,
       "IsMRef": true,
       "Title": "Egap.Presentations.Presentation",
-      "Summary": "<p sourcefile=\"api/Egap.Presentations.Presentation.yml\" sourcestartlinenumber=\"1\">A PowerPoint presentation: its slides, the slide layouts they follow and the slide masters those belong to. A loaded\npresentation keeps its file whole, so a save writes back every part and every element the model does not hold, as it was,\nand only the parts whose content the model changed are written again.</p>\n"
+      "Summary": "<p sourcefile=\"api/Egap.Presentations.Presentation.yml\" sourcestartlinenumber=\"1\">Adding, removing and moving slides: the parts, relationships and slide list entries they need.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -8993,7 +9049,7 @@
       "Uid": null,
       "IsMRef": true,
       "Title": "Egap.Presentations.Slide",
-      "Summary": "<p sourcefile=\"api/Egap.Presentations.Slide.yml\" sourcestartlinenumber=\"1\">A slide: the layout it follows, its shapes, and whether the show skips it.</p>\n"
+      "Summary": "<p sourcefile=\"api/Egap.Presentations.Slide.yml\" sourcestartlinenumber=\"1\">The comments on a slide.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -9022,6 +9078,34 @@
       "IsMRef": true,
       "Title": "Egap.Presentations.SlideCollection",
       "Summary": "<p sourcefile=\"api/Egap.Presentations.SlideCollection.yml\" sourcestartlinenumber=\"1\">The slides of a presentation, in the order they are shown. A slide the presentation lists whose part is missing from\nthe file is left out; its entry is written back as it was.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Presentations.SlideComment.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Presentations.SlideComment.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Presentations.SlideComment",
+      "Summary": "<p sourcefile=\"api/Egap.Presentations.SlideComment.yml\" sourcestartlinenumber=\"1\">A comment on a slide, or a reply to one: of the older kind (<code>p:cm</code>, replies linked by <code>p15:threadingInfo</code>) or a\nmodern, threaded one ([MS-PPTX] 2.16, <code>p188:cm</code> and <code>p188:reply</code>).</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Presentations.SlideCommentCollection.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Presentations.SlideCommentCollection.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Presentations.SlideCommentCollection",
+      "Summary": "<p sourcefile=\"api/Egap.Presentations.SlideCommentCollection.yml\" sourcestartlinenumber=\"1\">The comment threads on a slide, of both kinds, oldest first; each with its replies. The list is read when\n<xref href=\"Egap.Presentations.Slide.Comments\" data-throw-if-not-resolved=\"false\"></xref> is; read it again after a change made another way.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -9067,6 +9151,34 @@
     },
     {
       "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Presentations.SlideSection.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Presentations.SlideSection.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Presentations.SlideSection",
+      "Summary": "<p sourcefile=\"api/Egap.Presentations.SlideSection.yml\" sourcestartlinenumber=\"1\">A section of slides (<code>p14:section</code>): a name and a run of slides in the order shown.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Presentations.SlideSectionCollection.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Presentations.SlideSectionCollection.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Presentations.SlideSectionCollection",
+      "Summary": "<p sourcefile=\"api/Egap.Presentations.SlideSectionCollection.yml\" sourcestartlinenumber=\"1\">The sections a presentation's slides are grouped in, as PowerPoint's slide sorter shows them ([MS-PPTX] 2.3.3.25,\n<code>p14:sectionLst</code>). Sections split the slides in the order shown: each holds a run of them, and every slide is in\none when there are any. Empty when the presentation has none.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
       "source_relative_path": "api/Egap.Presentations.SlideShape.yml",
       "output": {
         ".html": {
@@ -9091,7 +9203,7 @@
       "Uid": null,
       "IsMRef": true,
       "Title": "Egap.Presentations.SlideShapeCollection",
-      "Summary": "<p sourcefile=\"api/Egap.Presentations.SlideShapeCollection.yml\" sourcestartlinenumber=\"1\">The shapes of a slide, layout, master or group, in the order they are drawn: the first is at the back. A shape written two\nways in <code>mc:AlternateContent</code>, for newer and older readers, is read from the branch this reader understands; a\nchange is made in that branch only, and the other keeps the values it had.</p>\n"
+      "Summary": "<p sourcefile=\"api/Egap.Presentations.SlideShapeCollection.yml\" sourcestartlinenumber=\"1\">Adding and removing shapes.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -9106,6 +9218,62 @@
       "IsMRef": true,
       "Title": "Egap.Presentations.SlideSize",
       "Summary": "<p sourcefile=\"api/Egap.Presentations.SlideSize.yml\" sourcestartlinenumber=\"1\">The size of a slide or notes page, in EMUs (English Metric Units: 914,400 to the inch, 12,700 to the point).</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Presentations.SlideTable.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Presentations.SlideTable.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Presentations.SlideTable",
+      "Summary": "<p sourcefile=\"api/Egap.Presentations.SlideTable.yml\" sourcestartlinenumber=\"1\">A table in a <xref href=\"Egap.Presentations.GraphicFrame\" data-throw-if-not-resolved=\"false\"></xref> (<code>a:tbl</code>): its grid of columns and rows, the cells' text and how cells are\nmerged. Cell, row and table formatting the model does not hold (borders, fills, margins) are kept as they are. A row,\ncolumn or cell object stays valid until a row or column is added or removed; read them again from the table then.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Presentations.SlideTableCell.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Presentations.SlideTableCell.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Presentations.SlideTableCell",
+      "Summary": "<p sourcefile=\"api/Egap.Presentations.SlideTableCell.yml\" sourcestartlinenumber=\"1\">A cell of a table (<code>a:tc</code>): its text, and how it is merged. A merged block shows the text of its top left cell\n(<xref href=\"Egap.Presentations.SlideTableCell.Origin\" data-throw-if-not-resolved=\"false\"></xref>); the cells it covers keep their own, hidden.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Presentations.SlideTableColumn.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Presentations.SlideTableColumn.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Presentations.SlideTableColumn",
+      "Summary": "<p sourcefile=\"api/Egap.Presentations.SlideTableColumn.yml\" sourcestartlinenumber=\"1\">A column of a table's grid (<code>a:gridCol</code>).</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Egap.Presentations.SlideTableRow.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Egap.Presentations.SlideTableRow.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Egap.Presentations.SlideTableRow",
+      "Summary": "<p sourcefile=\"api/Egap.Presentations.SlideTableRow.yml\" sourcestartlinenumber=\"1\">A row of a table (<code>a:tr</code>).</p>\n"
     },
     {
       "type": "ManagedReference",

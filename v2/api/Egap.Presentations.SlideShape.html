@@ -203,6 +203,39 @@ back where they change; everything else the shape holds is kept as it was.</p>
 
 
 
+  <a id="Egap_Presentations_SlideShape_EffectiveTransform_" data-uid="Egap.Presentations.SlideShape.EffectiveTransform*"></a>
+
+  <h3 id="Egap_Presentations_SlideShape_EffectiveTransform" data-uid="Egap.Presentations.SlideShape.EffectiveTransform">
+  EffectiveTransform
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Presentations/Shapes.cs/#L160"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>The position the shape is drawn at: its own <a class="xref" href="Egap.Presentations.SlideShape.html#Egap_Presentations_SlideShape_Transform">Transform</a>, or for a placeholder without one, its
+<a class="xref" href="Egap.Presentations.SlideShape.html#Egap_Presentations_SlideShape_InheritedPlaceholder">InheritedPlaceholder</a>'s, from the layout or the master. Null when no one in the chain sets one.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public ShapeTransform? EffectiveTransform { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Egap.Presentations.ShapeTransform.html">ShapeTransform</a>?</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
   <a id="Egap_Presentations_SlideShape_Group_" data-uid="Egap.Presentations.SlideShape.Group*"></a>
 
   <h3 id="Egap_Presentations_SlideShape_Group" data-uid="Egap.Presentations.SlideShape.Group">
@@ -289,6 +322,41 @@ back where they change; everything else the shape holds is kept as it was.</p>
   <h4 class="section">Property Value</h4>
   <dl class="parameters">
     <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.uint32">uint</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Egap_Presentations_SlideShape_InheritedPlaceholder_" data-uid="Egap.Presentations.SlideShape.InheritedPlaceholder*"></a>
+
+  <h3 id="Egap_Presentations_SlideShape_InheritedPlaceholder" data-uid="Egap.Presentations.SlideShape.InheritedPlaceholder">
+  InheritedPlaceholder
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Presentations/Shapes.cs/#L136"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>The placeholder this one takes what it does not set itself from: for a slide's placeholder, its layout's; for a
+layout's, its master's; null for a master's, a notes page's without a master, or a shape that is not a placeholder.
+A slide's placeholder is matched by index first and then by type; a layout's or notes page's by type, a centred title taking the
+master's title and the content kinds (subtitle, content, chart, table, picture and the rest) its body.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public SlideShape? InheritedPlaceholder { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Egap.Presentations.SlideShape.html">SlideShape</a></dt>
     <dd></dd>
   </dl>
 

@@ -58193,6 +58193,157 @@ references:
   commentId: F:Egap.Presentations.ColorMapSlot.Text2
   fullName: Egap.Presentations.ColorMapSlot.Text2
   nameWithType: ColorMapSlot.Text2
+- uid: Egap.Presentations.CommentAuthor
+  name: CommentAuthor
+  href: api/Egap.Presentations.CommentAuthor.html
+  commentId: T:Egap.Presentations.CommentAuthor
+  fullName: Egap.Presentations.CommentAuthor
+  nameWithType: CommentAuthor
+- uid: Egap.Presentations.CommentAuthor.Id
+  name: Id
+  href: api/Egap.Presentations.CommentAuthor.html#Egap_Presentations_CommentAuthor_Id
+  commentId: P:Egap.Presentations.CommentAuthor.Id
+  fullName: Egap.Presentations.CommentAuthor.Id
+  nameWithType: CommentAuthor.Id
+- uid: Egap.Presentations.CommentAuthor.Id*
+  name: Id
+  href: api/Egap.Presentations.CommentAuthor.html#Egap_Presentations_CommentAuthor_Id_
+  commentId: Overload:Egap.Presentations.CommentAuthor.Id
+  isSpec: "True"
+  fullName: Egap.Presentations.CommentAuthor.Id
+  nameWithType: CommentAuthor.Id
+- uid: Egap.Presentations.CommentAuthor.Initials
+  name: Initials
+  href: api/Egap.Presentations.CommentAuthor.html#Egap_Presentations_CommentAuthor_Initials
+  commentId: P:Egap.Presentations.CommentAuthor.Initials
+  fullName: Egap.Presentations.CommentAuthor.Initials
+  nameWithType: CommentAuthor.Initials
+- uid: Egap.Presentations.CommentAuthor.Initials*
+  name: Initials
+  href: api/Egap.Presentations.CommentAuthor.html#Egap_Presentations_CommentAuthor_Initials_
+  commentId: Overload:Egap.Presentations.CommentAuthor.Initials
+  isSpec: "True"
+  fullName: Egap.Presentations.CommentAuthor.Initials
+  nameWithType: CommentAuthor.Initials
+- uid: Egap.Presentations.CommentAuthor.IsModern
+  name: IsModern
+  href: api/Egap.Presentations.CommentAuthor.html#Egap_Presentations_CommentAuthor_IsModern
+  commentId: P:Egap.Presentations.CommentAuthor.IsModern
+  fullName: Egap.Presentations.CommentAuthor.IsModern
+  nameWithType: CommentAuthor.IsModern
+- uid: Egap.Presentations.CommentAuthor.IsModern*
+  name: IsModern
+  href: api/Egap.Presentations.CommentAuthor.html#Egap_Presentations_CommentAuthor_IsModern_
+  commentId: Overload:Egap.Presentations.CommentAuthor.IsModern
+  isSpec: "True"
+  fullName: Egap.Presentations.CommentAuthor.IsModern
+  nameWithType: CommentAuthor.IsModern
+- uid: Egap.Presentations.CommentAuthor.Name
+  name: Name
+  href: api/Egap.Presentations.CommentAuthor.html#Egap_Presentations_CommentAuthor_Name
+  commentId: P:Egap.Presentations.CommentAuthor.Name
+  fullName: Egap.Presentations.CommentAuthor.Name
+  nameWithType: CommentAuthor.Name
+- uid: Egap.Presentations.CommentAuthor.Name*
+  name: Name
+  href: api/Egap.Presentations.CommentAuthor.html#Egap_Presentations_CommentAuthor_Name_
+  commentId: Overload:Egap.Presentations.CommentAuthor.Name
+  isSpec: "True"
+  fullName: Egap.Presentations.CommentAuthor.Name
+  nameWithType: CommentAuthor.Name
+- uid: Egap.Presentations.CommentAuthor.Presentation
+  name: Presentation
+  href: api/Egap.Presentations.CommentAuthor.html#Egap_Presentations_CommentAuthor_Presentation
+  commentId: P:Egap.Presentations.CommentAuthor.Presentation
+  fullName: Egap.Presentations.CommentAuthor.Presentation
+  nameWithType: CommentAuthor.Presentation
+- uid: Egap.Presentations.CommentAuthor.Presentation*
+  name: Presentation
+  href: api/Egap.Presentations.CommentAuthor.html#Egap_Presentations_CommentAuthor_Presentation_
+  commentId: Overload:Egap.Presentations.CommentAuthor.Presentation
+  isSpec: "True"
+  fullName: Egap.Presentations.CommentAuthor.Presentation
+  nameWithType: CommentAuthor.Presentation
+- uid: Egap.Presentations.CommentAuthorCollection
+  name: CommentAuthorCollection
+  href: api/Egap.Presentations.CommentAuthorCollection.html
+  commentId: T:Egap.Presentations.CommentAuthorCollection
+  fullName: Egap.Presentations.CommentAuthorCollection
+  nameWithType: CommentAuthorCollection
+- uid: Egap.Presentations.CommentAuthorCollection.Add(System.String,System.String)
+  name: Add(string, string)
+  href: api/Egap.Presentations.CommentAuthorCollection.html#Egap_Presentations_CommentAuthorCollection_Add_System_String_System_String_
+  commentId: M:Egap.Presentations.CommentAuthorCollection.Add(System.String,System.String)
+  name.vb: Add(String, String)
+  fullName: Egap.Presentations.CommentAuthorCollection.Add(string, string)
+  fullName.vb: Egap.Presentations.CommentAuthorCollection.Add(String, String)
+  nameWithType: CommentAuthorCollection.Add(string, string)
+  nameWithType.vb: CommentAuthorCollection.Add(String, String)
+- uid: Egap.Presentations.CommentAuthorCollection.Add*
+  name: Add
+  href: api/Egap.Presentations.CommentAuthorCollection.html#Egap_Presentations_CommentAuthorCollection_Add_
+  commentId: Overload:Egap.Presentations.CommentAuthorCollection.Add
+  isSpec: "True"
+  fullName: Egap.Presentations.CommentAuthorCollection.Add
+  nameWithType: CommentAuthorCollection.Add
+- uid: Egap.Presentations.CommentAuthorCollection.Count
+  name: Count
+  href: api/Egap.Presentations.CommentAuthorCollection.html#Egap_Presentations_CommentAuthorCollection_Count
+  commentId: P:Egap.Presentations.CommentAuthorCollection.Count
+  fullName: Egap.Presentations.CommentAuthorCollection.Count
+  nameWithType: CommentAuthorCollection.Count
+- uid: Egap.Presentations.CommentAuthorCollection.Count*
+  name: Count
+  href: api/Egap.Presentations.CommentAuthorCollection.html#Egap_Presentations_CommentAuthorCollection_Count_
+  commentId: Overload:Egap.Presentations.CommentAuthorCollection.Count
+  isSpec: "True"
+  fullName: Egap.Presentations.CommentAuthorCollection.Count
+  nameWithType: CommentAuthorCollection.Count
+- uid: Egap.Presentations.CommentAuthorCollection.GetEnumerator
+  name: GetEnumerator()
+  href: api/Egap.Presentations.CommentAuthorCollection.html#Egap_Presentations_CommentAuthorCollection_GetEnumerator
+  commentId: M:Egap.Presentations.CommentAuthorCollection.GetEnumerator
+  fullName: Egap.Presentations.CommentAuthorCollection.GetEnumerator()
+  nameWithType: CommentAuthorCollection.GetEnumerator()
+- uid: Egap.Presentations.CommentAuthorCollection.GetEnumerator*
+  name: GetEnumerator
+  href: api/Egap.Presentations.CommentAuthorCollection.html#Egap_Presentations_CommentAuthorCollection_GetEnumerator_
+  commentId: Overload:Egap.Presentations.CommentAuthorCollection.GetEnumerator
+  isSpec: "True"
+  fullName: Egap.Presentations.CommentAuthorCollection.GetEnumerator
+  nameWithType: CommentAuthorCollection.GetEnumerator
+- uid: Egap.Presentations.CommentAuthorCollection.Item(System.Int32)
+  name: this[int]
+  href: api/Egap.Presentations.CommentAuthorCollection.html#Egap_Presentations_CommentAuthorCollection_Item_System_Int32_
+  commentId: P:Egap.Presentations.CommentAuthorCollection.Item(System.Int32)
+  name.vb: this[](Integer)
+  fullName: Egap.Presentations.CommentAuthorCollection.this[int]
+  fullName.vb: Egap.Presentations.CommentAuthorCollection.this[](Integer)
+  nameWithType: CommentAuthorCollection.this[int]
+  nameWithType.vb: CommentAuthorCollection.this[](Integer)
+- uid: Egap.Presentations.CommentAuthorCollection.Item*
+  name: this
+  href: api/Egap.Presentations.CommentAuthorCollection.html#Egap_Presentations_CommentAuthorCollection_Item_
+  commentId: Overload:Egap.Presentations.CommentAuthorCollection.Item
+  isSpec: "True"
+  name.vb: this[]
+  fullName: Egap.Presentations.CommentAuthorCollection.this
+  fullName.vb: Egap.Presentations.CommentAuthorCollection.this[]
+  nameWithType: CommentAuthorCollection.this
+  nameWithType.vb: CommentAuthorCollection.this[]
+- uid: Egap.Presentations.CommentAuthorCollection.WritesModern
+  name: WritesModern
+  href: api/Egap.Presentations.CommentAuthorCollection.html#Egap_Presentations_CommentAuthorCollection_WritesModern
+  commentId: P:Egap.Presentations.CommentAuthorCollection.WritesModern
+  fullName: Egap.Presentations.CommentAuthorCollection.WritesModern
+  nameWithType: CommentAuthorCollection.WritesModern
+- uid: Egap.Presentations.CommentAuthorCollection.WritesModern*
+  name: WritesModern
+  href: api/Egap.Presentations.CommentAuthorCollection.html#Egap_Presentations_CommentAuthorCollection_WritesModern_
+  commentId: Overload:Egap.Presentations.CommentAuthorCollection.WritesModern
+  isSpec: "True"
+  fullName: Egap.Presentations.CommentAuthorCollection.WritesModern
+  nameWithType: CommentAuthorCollection.WritesModern
 - uid: Egap.Presentations.ConnectorShape
   name: ConnectorShape
   href: api/Egap.Presentations.ConnectorShape.html
@@ -58270,6 +58421,19 @@ references:
   isSpec: "True"
   fullName: Egap.Presentations.GraphicFrame.Kind
   nameWithType: GraphicFrame.Kind
+- uid: Egap.Presentations.GraphicFrame.Table
+  name: Table
+  href: api/Egap.Presentations.GraphicFrame.html#Egap_Presentations_GraphicFrame_Table
+  commentId: P:Egap.Presentations.GraphicFrame.Table
+  fullName: Egap.Presentations.GraphicFrame.Table
+  nameWithType: GraphicFrame.Table
+- uid: Egap.Presentations.GraphicFrame.Table*
+  name: Table
+  href: api/Egap.Presentations.GraphicFrame.html#Egap_Presentations_GraphicFrame_Table_
+  commentId: Overload:Egap.Presentations.GraphicFrame.Table
+  isSpec: "True"
+  fullName: Egap.Presentations.GraphicFrame.Table
+  nameWithType: GraphicFrame.Table
 - uid: Egap.Presentations.GraphicFrame.Transform
   name: Transform
   href: api/Egap.Presentations.GraphicFrame.html#Egap_Presentations_GraphicFrame_Transform
@@ -58351,6 +58515,83 @@ references:
   isSpec: "True"
   fullName: Egap.Presentations.GroupShape.Shapes
   nameWithType: GroupShape.Shapes
+- uid: Egap.Presentations.NotesMaster
+  name: NotesMaster
+  href: api/Egap.Presentations.NotesMaster.html
+  commentId: T:Egap.Presentations.NotesMaster
+  fullName: Egap.Presentations.NotesMaster
+  nameWithType: NotesMaster
+- uid: Egap.Presentations.NotesMaster.ColorMap
+  name: ColorMap
+  href: api/Egap.Presentations.NotesMaster.html#Egap_Presentations_NotesMaster_ColorMap
+  commentId: P:Egap.Presentations.NotesMaster.ColorMap
+  fullName: Egap.Presentations.NotesMaster.ColorMap
+  nameWithType: NotesMaster.ColorMap
+- uid: Egap.Presentations.NotesMaster.ColorMap*
+  name: ColorMap
+  href: api/Egap.Presentations.NotesMaster.html#Egap_Presentations_NotesMaster_ColorMap_
+  commentId: Overload:Egap.Presentations.NotesMaster.ColorMap
+  isSpec: "True"
+  fullName: Egap.Presentations.NotesMaster.ColorMap
+  nameWithType: NotesMaster.ColorMap
+- uid: Egap.Presentations.NotesSlide
+  name: NotesSlide
+  href: api/Egap.Presentations.NotesSlide.html
+  commentId: T:Egap.Presentations.NotesSlide
+  fullName: Egap.Presentations.NotesSlide
+  nameWithType: NotesSlide
+- uid: Egap.Presentations.NotesSlide.ColorMap
+  name: ColorMap
+  href: api/Egap.Presentations.NotesSlide.html#Egap_Presentations_NotesSlide_ColorMap
+  commentId: P:Egap.Presentations.NotesSlide.ColorMap
+  fullName: Egap.Presentations.NotesSlide.ColorMap
+  nameWithType: NotesSlide.ColorMap
+- uid: Egap.Presentations.NotesSlide.ColorMap*
+  name: ColorMap
+  href: api/Egap.Presentations.NotesSlide.html#Egap_Presentations_NotesSlide_ColorMap_
+  commentId: Overload:Egap.Presentations.NotesSlide.ColorMap
+  isSpec: "True"
+  fullName: Egap.Presentations.NotesSlide.ColorMap
+  nameWithType: NotesSlide.ColorMap
+- uid: Egap.Presentations.NotesSlide.Master
+  name: Master
+  href: api/Egap.Presentations.NotesSlide.html#Egap_Presentations_NotesSlide_Master
+  commentId: P:Egap.Presentations.NotesSlide.Master
+  fullName: Egap.Presentations.NotesSlide.Master
+  nameWithType: NotesSlide.Master
+- uid: Egap.Presentations.NotesSlide.Master*
+  name: Master
+  href: api/Egap.Presentations.NotesSlide.html#Egap_Presentations_NotesSlide_Master_
+  commentId: Overload:Egap.Presentations.NotesSlide.Master
+  isSpec: "True"
+  fullName: Egap.Presentations.NotesSlide.Master
+  nameWithType: NotesSlide.Master
+- uid: Egap.Presentations.NotesSlide.NotesBody
+  name: NotesBody
+  href: api/Egap.Presentations.NotesSlide.html#Egap_Presentations_NotesSlide_NotesBody
+  commentId: P:Egap.Presentations.NotesSlide.NotesBody
+  fullName: Egap.Presentations.NotesSlide.NotesBody
+  nameWithType: NotesSlide.NotesBody
+- uid: Egap.Presentations.NotesSlide.NotesBody*
+  name: NotesBody
+  href: api/Egap.Presentations.NotesSlide.html#Egap_Presentations_NotesSlide_NotesBody_
+  commentId: Overload:Egap.Presentations.NotesSlide.NotesBody
+  isSpec: "True"
+  fullName: Egap.Presentations.NotesSlide.NotesBody
+  nameWithType: NotesSlide.NotesBody
+- uid: Egap.Presentations.NotesSlide.Slide
+  name: Slide
+  href: api/Egap.Presentations.NotesSlide.html#Egap_Presentations_NotesSlide_Slide
+  commentId: P:Egap.Presentations.NotesSlide.Slide
+  fullName: Egap.Presentations.NotesSlide.Slide
+  nameWithType: NotesSlide.Slide
+- uid: Egap.Presentations.NotesSlide.Slide*
+  name: Slide
+  href: api/Egap.Presentations.NotesSlide.html#Egap_Presentations_NotesSlide_Slide_
+  commentId: Overload:Egap.Presentations.NotesSlide.Slide
+  isSpec: "True"
+  fullName: Egap.Presentations.NotesSlide.Slide
+  nameWithType: NotesSlide.Slide
 - uid: Egap.Presentations.PictureShape
   name: PictureShape
   href: api/Egap.Presentations.PictureShape.html
@@ -58504,6 +58745,32 @@ references:
   commentId: T:Egap.Presentations.Presentation
   fullName: Egap.Presentations.Presentation
   nameWithType: Presentation
+- uid: Egap.Presentations.Presentation.CommentAuthors
+  name: CommentAuthors
+  href: api/Egap.Presentations.Presentation.html#Egap_Presentations_Presentation_CommentAuthors
+  commentId: P:Egap.Presentations.Presentation.CommentAuthors
+  fullName: Egap.Presentations.Presentation.CommentAuthors
+  nameWithType: Presentation.CommentAuthors
+- uid: Egap.Presentations.Presentation.CommentAuthors*
+  name: CommentAuthors
+  href: api/Egap.Presentations.Presentation.html#Egap_Presentations_Presentation_CommentAuthors_
+  commentId: Overload:Egap.Presentations.Presentation.CommentAuthors
+  isSpec: "True"
+  fullName: Egap.Presentations.Presentation.CommentAuthors
+  nameWithType: Presentation.CommentAuthors
+- uid: Egap.Presentations.Presentation.Create
+  name: Create()
+  href: api/Egap.Presentations.Presentation.html#Egap_Presentations_Presentation_Create
+  commentId: M:Egap.Presentations.Presentation.Create
+  fullName: Egap.Presentations.Presentation.Create()
+  nameWithType: Presentation.Create()
+- uid: Egap.Presentations.Presentation.Create*
+  name: Create
+  href: api/Egap.Presentations.Presentation.html#Egap_Presentations_Presentation_Create_
+  commentId: Overload:Egap.Presentations.Presentation.Create
+  isSpec: "True"
+  fullName: Egap.Presentations.Presentation.Create
+  nameWithType: Presentation.Create
 - uid: Egap.Presentations.Presentation.Format
   name: Format
   href: api/Egap.Presentations.Presentation.html#Egap_Presentations_Presentation_Format
@@ -58542,6 +58809,19 @@ references:
   isSpec: "True"
   fullName: Egap.Presentations.Presentation.Load
   nameWithType: Presentation.Load
+- uid: Egap.Presentations.Presentation.NotesMaster
+  name: NotesMaster
+  href: api/Egap.Presentations.Presentation.html#Egap_Presentations_Presentation_NotesMaster
+  commentId: P:Egap.Presentations.Presentation.NotesMaster
+  fullName: Egap.Presentations.Presentation.NotesMaster
+  nameWithType: Presentation.NotesMaster
+- uid: Egap.Presentations.Presentation.NotesMaster*
+  name: NotesMaster
+  href: api/Egap.Presentations.Presentation.html#Egap_Presentations_Presentation_NotesMaster_
+  commentId: Overload:Egap.Presentations.Presentation.NotesMaster
+  isSpec: "True"
+  fullName: Egap.Presentations.Presentation.NotesMaster
+  nameWithType: Presentation.NotesMaster
 - uid: Egap.Presentations.Presentation.NotesMasterPartName
   name: NotesMasterPartName
   href: api/Egap.Presentations.Presentation.html#Egap_Presentations_Presentation_NotesMasterPartName
@@ -58590,6 +58870,19 @@ references:
   isSpec: "True"
   fullName: Egap.Presentations.Presentation.Save
   nameWithType: Presentation.Save
+- uid: Egap.Presentations.Presentation.Sections
+  name: Sections
+  href: api/Egap.Presentations.Presentation.html#Egap_Presentations_Presentation_Sections
+  commentId: P:Egap.Presentations.Presentation.Sections
+  fullName: Egap.Presentations.Presentation.Sections
+  nameWithType: Presentation.Sections
+- uid: Egap.Presentations.Presentation.Sections*
+  name: Sections
+  href: api/Egap.Presentations.Presentation.html#Egap_Presentations_Presentation_Sections_
+  commentId: Overload:Egap.Presentations.Presentation.Sections
+  isSpec: "True"
+  fullName: Egap.Presentations.Presentation.Sections
+  nameWithType: Presentation.Sections
 - uid: Egap.Presentations.Presentation.SlideMasters
   name: SlideMasters
   href: api/Egap.Presentations.Presentation.html#Egap_Presentations_Presentation_SlideMasters
@@ -59117,6 +59410,19 @@ references:
   isSpec: "True"
   fullName: Egap.Presentations.Slide.ColorMapOverride
   nameWithType: Slide.ColorMapOverride
+- uid: Egap.Presentations.Slide.Comments
+  name: Comments
+  href: api/Egap.Presentations.Slide.html#Egap_Presentations_Slide_Comments
+  commentId: P:Egap.Presentations.Slide.Comments
+  fullName: Egap.Presentations.Slide.Comments
+  nameWithType: Slide.Comments
+- uid: Egap.Presentations.Slide.Comments*
+  name: Comments
+  href: api/Egap.Presentations.Slide.html#Egap_Presentations_Slide_Comments_
+  commentId: Overload:Egap.Presentations.Slide.Comments
+  isSpec: "True"
+  fullName: Egap.Presentations.Slide.Comments
+  nameWithType: Slide.Comments
 - uid: Egap.Presentations.Slide.Hidden
   name: Hidden
   href: api/Egap.Presentations.Slide.html#Egap_Presentations_Slide_Hidden
@@ -59156,6 +59462,19 @@ references:
   isSpec: "True"
   fullName: Egap.Presentations.Slide.Master
   nameWithType: Slide.Master
+- uid: Egap.Presentations.Slide.Notes
+  name: Notes
+  href: api/Egap.Presentations.Slide.html#Egap_Presentations_Slide_Notes
+  commentId: P:Egap.Presentations.Slide.Notes
+  fullName: Egap.Presentations.Slide.Notes
+  nameWithType: Slide.Notes
+- uid: Egap.Presentations.Slide.Notes*
+  name: Notes
+  href: api/Egap.Presentations.Slide.html#Egap_Presentations_Slide_Notes_
+  commentId: Overload:Egap.Presentations.Slide.Notes
+  isSpec: "True"
+  fullName: Egap.Presentations.Slide.Notes
+  nameWithType: Slide.Notes
 - uid: Egap.Presentations.Slide.NotesPartName
   name: NotesPartName
   href: api/Egap.Presentations.Slide.html#Egap_Presentations_Slide_NotesPartName
@@ -59169,6 +59488,19 @@ references:
   isSpec: "True"
   fullName: Egap.Presentations.Slide.NotesPartName
   nameWithType: Slide.NotesPartName
+- uid: Egap.Presentations.Slide.NotesText
+  name: NotesText
+  href: api/Egap.Presentations.Slide.html#Egap_Presentations_Slide_NotesText
+  commentId: P:Egap.Presentations.Slide.NotesText
+  fullName: Egap.Presentations.Slide.NotesText
+  nameWithType: Slide.NotesText
+- uid: Egap.Presentations.Slide.NotesText*
+  name: NotesText
+  href: api/Egap.Presentations.Slide.html#Egap_Presentations_Slide_NotesText_
+  commentId: Overload:Egap.Presentations.Slide.NotesText
+  isSpec: "True"
+  fullName: Egap.Presentations.Slide.NotesText
+  nameWithType: Slide.NotesText
 - uid: Egap.Presentations.Slide.SlideId
   name: SlideId
   href: api/Egap.Presentations.Slide.html#Egap_Presentations_Slide_SlideId
@@ -59259,6 +59591,19 @@ references:
   commentId: T:Egap.Presentations.SlideCollection
   fullName: Egap.Presentations.SlideCollection
   nameWithType: SlideCollection
+- uid: Egap.Presentations.SlideCollection.Add(Egap.Presentations.SlideLayout)
+  name: Add(SlideLayout)
+  href: api/Egap.Presentations.SlideCollection.html#Egap_Presentations_SlideCollection_Add_Egap_Presentations_SlideLayout_
+  commentId: M:Egap.Presentations.SlideCollection.Add(Egap.Presentations.SlideLayout)
+  fullName: Egap.Presentations.SlideCollection.Add(Egap.Presentations.SlideLayout)
+  nameWithType: SlideCollection.Add(SlideLayout)
+- uid: Egap.Presentations.SlideCollection.Add*
+  name: Add
+  href: api/Egap.Presentations.SlideCollection.html#Egap_Presentations_SlideCollection_Add_
+  commentId: Overload:Egap.Presentations.SlideCollection.Add
+  isSpec: "True"
+  fullName: Egap.Presentations.SlideCollection.Add
+  nameWithType: SlideCollection.Add
 - uid: Egap.Presentations.SlideCollection.Count
   name: Count
   href: api/Egap.Presentations.SlideCollection.html#Egap_Presentations_SlideCollection_Count
@@ -59301,6 +59646,35 @@ references:
   isSpec: "True"
   fullName: Egap.Presentations.SlideCollection.GetEnumerator
   nameWithType: SlideCollection.GetEnumerator
+- uid: Egap.Presentations.SlideCollection.IndexOf(Egap.Presentations.Slide)
+  name: IndexOf(Slide)
+  href: api/Egap.Presentations.SlideCollection.html#Egap_Presentations_SlideCollection_IndexOf_Egap_Presentations_Slide_
+  commentId: M:Egap.Presentations.SlideCollection.IndexOf(Egap.Presentations.Slide)
+  fullName: Egap.Presentations.SlideCollection.IndexOf(Egap.Presentations.Slide)
+  nameWithType: SlideCollection.IndexOf(Slide)
+- uid: Egap.Presentations.SlideCollection.IndexOf*
+  name: IndexOf
+  href: api/Egap.Presentations.SlideCollection.html#Egap_Presentations_SlideCollection_IndexOf_
+  commentId: Overload:Egap.Presentations.SlideCollection.IndexOf
+  isSpec: "True"
+  fullName: Egap.Presentations.SlideCollection.IndexOf
+  nameWithType: SlideCollection.IndexOf
+- uid: Egap.Presentations.SlideCollection.Insert(System.Int32,Egap.Presentations.SlideLayout)
+  name: Insert(int, SlideLayout)
+  href: api/Egap.Presentations.SlideCollection.html#Egap_Presentations_SlideCollection_Insert_System_Int32_Egap_Presentations_SlideLayout_
+  commentId: M:Egap.Presentations.SlideCollection.Insert(System.Int32,Egap.Presentations.SlideLayout)
+  name.vb: Insert(Integer, SlideLayout)
+  fullName: Egap.Presentations.SlideCollection.Insert(int, Egap.Presentations.SlideLayout)
+  fullName.vb: Egap.Presentations.SlideCollection.Insert(Integer, Egap.Presentations.SlideLayout)
+  nameWithType: SlideCollection.Insert(int, SlideLayout)
+  nameWithType.vb: SlideCollection.Insert(Integer, SlideLayout)
+- uid: Egap.Presentations.SlideCollection.Insert*
+  name: Insert
+  href: api/Egap.Presentations.SlideCollection.html#Egap_Presentations_SlideCollection_Insert_
+  commentId: Overload:Egap.Presentations.SlideCollection.Insert
+  isSpec: "True"
+  fullName: Egap.Presentations.SlideCollection.Insert
+  nameWithType: SlideCollection.Insert
 - uid: Egap.Presentations.SlideCollection.Item(System.Int32)
   name: this[int]
   href: api/Egap.Presentations.SlideCollection.html#Egap_Presentations_SlideCollection_Item_System_Int32_
@@ -59320,6 +59694,257 @@ references:
   fullName.vb: Egap.Presentations.SlideCollection.this[]
   nameWithType: SlideCollection.this
   nameWithType.vb: SlideCollection.this[]
+- uid: Egap.Presentations.SlideCollection.Move(Egap.Presentations.Slide,System.Int32)
+  name: Move(Slide, int)
+  href: api/Egap.Presentations.SlideCollection.html#Egap_Presentations_SlideCollection_Move_Egap_Presentations_Slide_System_Int32_
+  commentId: M:Egap.Presentations.SlideCollection.Move(Egap.Presentations.Slide,System.Int32)
+  name.vb: Move(Slide, Integer)
+  fullName: Egap.Presentations.SlideCollection.Move(Egap.Presentations.Slide, int)
+  fullName.vb: Egap.Presentations.SlideCollection.Move(Egap.Presentations.Slide, Integer)
+  nameWithType: SlideCollection.Move(Slide, int)
+  nameWithType.vb: SlideCollection.Move(Slide, Integer)
+- uid: Egap.Presentations.SlideCollection.Move*
+  name: Move
+  href: api/Egap.Presentations.SlideCollection.html#Egap_Presentations_SlideCollection_Move_
+  commentId: Overload:Egap.Presentations.SlideCollection.Move
+  isSpec: "True"
+  fullName: Egap.Presentations.SlideCollection.Move
+  nameWithType: SlideCollection.Move
+- uid: Egap.Presentations.SlideCollection.Remove(Egap.Presentations.Slide)
+  name: Remove(Slide)
+  href: api/Egap.Presentations.SlideCollection.html#Egap_Presentations_SlideCollection_Remove_Egap_Presentations_Slide_
+  commentId: M:Egap.Presentations.SlideCollection.Remove(Egap.Presentations.Slide)
+  fullName: Egap.Presentations.SlideCollection.Remove(Egap.Presentations.Slide)
+  nameWithType: SlideCollection.Remove(Slide)
+- uid: Egap.Presentations.SlideCollection.Remove*
+  name: Remove
+  href: api/Egap.Presentations.SlideCollection.html#Egap_Presentations_SlideCollection_Remove_
+  commentId: Overload:Egap.Presentations.SlideCollection.Remove
+  isSpec: "True"
+  fullName: Egap.Presentations.SlideCollection.Remove
+  nameWithType: SlideCollection.Remove
+- uid: Egap.Presentations.SlideCollection.RemoveAt(System.Int32)
+  name: RemoveAt(int)
+  href: api/Egap.Presentations.SlideCollection.html#Egap_Presentations_SlideCollection_RemoveAt_System_Int32_
+  commentId: M:Egap.Presentations.SlideCollection.RemoveAt(System.Int32)
+  name.vb: RemoveAt(Integer)
+  fullName: Egap.Presentations.SlideCollection.RemoveAt(int)
+  fullName.vb: Egap.Presentations.SlideCollection.RemoveAt(Integer)
+  nameWithType: SlideCollection.RemoveAt(int)
+  nameWithType.vb: SlideCollection.RemoveAt(Integer)
+- uid: Egap.Presentations.SlideCollection.RemoveAt*
+  name: RemoveAt
+  href: api/Egap.Presentations.SlideCollection.html#Egap_Presentations_SlideCollection_RemoveAt_
+  commentId: Overload:Egap.Presentations.SlideCollection.RemoveAt
+  isSpec: "True"
+  fullName: Egap.Presentations.SlideCollection.RemoveAt
+  nameWithType: SlideCollection.RemoveAt
+- uid: Egap.Presentations.SlideComment
+  name: SlideComment
+  href: api/Egap.Presentations.SlideComment.html
+  commentId: T:Egap.Presentations.SlideComment
+  fullName: Egap.Presentations.SlideComment
+  nameWithType: SlideComment
+- uid: Egap.Presentations.SlideComment.Author
+  name: Author
+  href: api/Egap.Presentations.SlideComment.html#Egap_Presentations_SlideComment_Author
+  commentId: P:Egap.Presentations.SlideComment.Author
+  fullName: Egap.Presentations.SlideComment.Author
+  nameWithType: SlideComment.Author
+- uid: Egap.Presentations.SlideComment.Author*
+  name: Author
+  href: api/Egap.Presentations.SlideComment.html#Egap_Presentations_SlideComment_Author_
+  commentId: Overload:Egap.Presentations.SlideComment.Author
+  isSpec: "True"
+  fullName: Egap.Presentations.SlideComment.Author
+  nameWithType: SlideComment.Author
+- uid: Egap.Presentations.SlideComment.Created
+  name: Created
+  href: api/Egap.Presentations.SlideComment.html#Egap_Presentations_SlideComment_Created
+  commentId: P:Egap.Presentations.SlideComment.Created
+  fullName: Egap.Presentations.SlideComment.Created
+  nameWithType: SlideComment.Created
+- uid: Egap.Presentations.SlideComment.Created*
+  name: Created
+  href: api/Egap.Presentations.SlideComment.html#Egap_Presentations_SlideComment_Created_
+  commentId: Overload:Egap.Presentations.SlideComment.Created
+  isSpec: "True"
+  fullName: Egap.Presentations.SlideComment.Created
+  nameWithType: SlideComment.Created
+- uid: Egap.Presentations.SlideComment.IsModern
+  name: IsModern
+  href: api/Egap.Presentations.SlideComment.html#Egap_Presentations_SlideComment_IsModern
+  commentId: P:Egap.Presentations.SlideComment.IsModern
+  fullName: Egap.Presentations.SlideComment.IsModern
+  nameWithType: SlideComment.IsModern
+- uid: Egap.Presentations.SlideComment.IsModern*
+  name: IsModern
+  href: api/Egap.Presentations.SlideComment.html#Egap_Presentations_SlideComment_IsModern_
+  commentId: Overload:Egap.Presentations.SlideComment.IsModern
+  isSpec: "True"
+  fullName: Egap.Presentations.SlideComment.IsModern
+  nameWithType: SlideComment.IsModern
+- uid: Egap.Presentations.SlideComment.IsResolved
+  name: IsResolved
+  href: api/Egap.Presentations.SlideComment.html#Egap_Presentations_SlideComment_IsResolved
+  commentId: P:Egap.Presentations.SlideComment.IsResolved
+  fullName: Egap.Presentations.SlideComment.IsResolved
+  nameWithType: SlideComment.IsResolved
+- uid: Egap.Presentations.SlideComment.IsResolved*
+  name: IsResolved
+  href: api/Egap.Presentations.SlideComment.html#Egap_Presentations_SlideComment_IsResolved_
+  commentId: Overload:Egap.Presentations.SlideComment.IsResolved
+  isSpec: "True"
+  fullName: Egap.Presentations.SlideComment.IsResolved
+  nameWithType: SlideComment.IsResolved
+- uid: Egap.Presentations.SlideComment.Parent
+  name: Parent
+  href: api/Egap.Presentations.SlideComment.html#Egap_Presentations_SlideComment_Parent
+  commentId: P:Egap.Presentations.SlideComment.Parent
+  fullName: Egap.Presentations.SlideComment.Parent
+  nameWithType: SlideComment.Parent
+- uid: Egap.Presentations.SlideComment.Parent*
+  name: Parent
+  href: api/Egap.Presentations.SlideComment.html#Egap_Presentations_SlideComment_Parent_
+  commentId: Overload:Egap.Presentations.SlideComment.Parent
+  isSpec: "True"
+  fullName: Egap.Presentations.SlideComment.Parent
+  nameWithType: SlideComment.Parent
+- uid: Egap.Presentations.SlideComment.Replies
+  name: Replies
+  href: api/Egap.Presentations.SlideComment.html#Egap_Presentations_SlideComment_Replies
+  commentId: P:Egap.Presentations.SlideComment.Replies
+  fullName: Egap.Presentations.SlideComment.Replies
+  nameWithType: SlideComment.Replies
+- uid: Egap.Presentations.SlideComment.Replies*
+  name: Replies
+  href: api/Egap.Presentations.SlideComment.html#Egap_Presentations_SlideComment_Replies_
+  commentId: Overload:Egap.Presentations.SlideComment.Replies
+  isSpec: "True"
+  fullName: Egap.Presentations.SlideComment.Replies
+  nameWithType: SlideComment.Replies
+- uid: Egap.Presentations.SlideComment.Reply(Egap.Presentations.CommentAuthor,System.String)
+  name: Reply(CommentAuthor, string)
+  href: api/Egap.Presentations.SlideComment.html#Egap_Presentations_SlideComment_Reply_Egap_Presentations_CommentAuthor_System_String_
+  commentId: M:Egap.Presentations.SlideComment.Reply(Egap.Presentations.CommentAuthor,System.String)
+  name.vb: Reply(CommentAuthor, String)
+  fullName: Egap.Presentations.SlideComment.Reply(Egap.Presentations.CommentAuthor, string)
+  fullName.vb: Egap.Presentations.SlideComment.Reply(Egap.Presentations.CommentAuthor, String)
+  nameWithType: SlideComment.Reply(CommentAuthor, string)
+  nameWithType.vb: SlideComment.Reply(CommentAuthor, String)
+- uid: Egap.Presentations.SlideComment.Reply*
+  name: Reply
+  href: api/Egap.Presentations.SlideComment.html#Egap_Presentations_SlideComment_Reply_
+  commentId: Overload:Egap.Presentations.SlideComment.Reply
+  isSpec: "True"
+  fullName: Egap.Presentations.SlideComment.Reply
+  nameWithType: SlideComment.Reply
+- uid: Egap.Presentations.SlideComment.Slide
+  name: Slide
+  href: api/Egap.Presentations.SlideComment.html#Egap_Presentations_SlideComment_Slide
+  commentId: P:Egap.Presentations.SlideComment.Slide
+  fullName: Egap.Presentations.SlideComment.Slide
+  nameWithType: SlideComment.Slide
+- uid: Egap.Presentations.SlideComment.Slide*
+  name: Slide
+  href: api/Egap.Presentations.SlideComment.html#Egap_Presentations_SlideComment_Slide_
+  commentId: Overload:Egap.Presentations.SlideComment.Slide
+  isSpec: "True"
+  fullName: Egap.Presentations.SlideComment.Slide
+  nameWithType: SlideComment.Slide
+- uid: Egap.Presentations.SlideComment.Text
+  name: Text
+  href: api/Egap.Presentations.SlideComment.html#Egap_Presentations_SlideComment_Text
+  commentId: P:Egap.Presentations.SlideComment.Text
+  fullName: Egap.Presentations.SlideComment.Text
+  nameWithType: SlideComment.Text
+- uid: Egap.Presentations.SlideComment.Text*
+  name: Text
+  href: api/Egap.Presentations.SlideComment.html#Egap_Presentations_SlideComment_Text_
+  commentId: Overload:Egap.Presentations.SlideComment.Text
+  isSpec: "True"
+  fullName: Egap.Presentations.SlideComment.Text
+  nameWithType: SlideComment.Text
+- uid: Egap.Presentations.SlideCommentCollection
+  name: SlideCommentCollection
+  href: api/Egap.Presentations.SlideCommentCollection.html
+  commentId: T:Egap.Presentations.SlideCommentCollection
+  fullName: Egap.Presentations.SlideCommentCollection
+  nameWithType: SlideCommentCollection
+- uid: Egap.Presentations.SlideCommentCollection.Add(Egap.Presentations.CommentAuthor,System.String)
+  name: Add(CommentAuthor, string)
+  href: api/Egap.Presentations.SlideCommentCollection.html#Egap_Presentations_SlideCommentCollection_Add_Egap_Presentations_CommentAuthor_System_String_
+  commentId: M:Egap.Presentations.SlideCommentCollection.Add(Egap.Presentations.CommentAuthor,System.String)
+  name.vb: Add(CommentAuthor, String)
+  fullName: Egap.Presentations.SlideCommentCollection.Add(Egap.Presentations.CommentAuthor, string)
+  fullName.vb: Egap.Presentations.SlideCommentCollection.Add(Egap.Presentations.CommentAuthor, String)
+  nameWithType: SlideCommentCollection.Add(CommentAuthor, string)
+  nameWithType.vb: SlideCommentCollection.Add(CommentAuthor, String)
+- uid: Egap.Presentations.SlideCommentCollection.Add*
+  name: Add
+  href: api/Egap.Presentations.SlideCommentCollection.html#Egap_Presentations_SlideCommentCollection_Add_
+  commentId: Overload:Egap.Presentations.SlideCommentCollection.Add
+  isSpec: "True"
+  fullName: Egap.Presentations.SlideCommentCollection.Add
+  nameWithType: SlideCommentCollection.Add
+- uid: Egap.Presentations.SlideCommentCollection.Count
+  name: Count
+  href: api/Egap.Presentations.SlideCommentCollection.html#Egap_Presentations_SlideCommentCollection_Count
+  commentId: P:Egap.Presentations.SlideCommentCollection.Count
+  fullName: Egap.Presentations.SlideCommentCollection.Count
+  nameWithType: SlideCommentCollection.Count
+- uid: Egap.Presentations.SlideCommentCollection.Count*
+  name: Count
+  href: api/Egap.Presentations.SlideCommentCollection.html#Egap_Presentations_SlideCommentCollection_Count_
+  commentId: Overload:Egap.Presentations.SlideCommentCollection.Count
+  isSpec: "True"
+  fullName: Egap.Presentations.SlideCommentCollection.Count
+  nameWithType: SlideCommentCollection.Count
+- uid: Egap.Presentations.SlideCommentCollection.GetEnumerator
+  name: GetEnumerator()
+  href: api/Egap.Presentations.SlideCommentCollection.html#Egap_Presentations_SlideCommentCollection_GetEnumerator
+  commentId: M:Egap.Presentations.SlideCommentCollection.GetEnumerator
+  fullName: Egap.Presentations.SlideCommentCollection.GetEnumerator()
+  nameWithType: SlideCommentCollection.GetEnumerator()
+- uid: Egap.Presentations.SlideCommentCollection.GetEnumerator*
+  name: GetEnumerator
+  href: api/Egap.Presentations.SlideCommentCollection.html#Egap_Presentations_SlideCommentCollection_GetEnumerator_
+  commentId: Overload:Egap.Presentations.SlideCommentCollection.GetEnumerator
+  isSpec: "True"
+  fullName: Egap.Presentations.SlideCommentCollection.GetEnumerator
+  nameWithType: SlideCommentCollection.GetEnumerator
+- uid: Egap.Presentations.SlideCommentCollection.Item(System.Int32)
+  name: this[int]
+  href: api/Egap.Presentations.SlideCommentCollection.html#Egap_Presentations_SlideCommentCollection_Item_System_Int32_
+  commentId: P:Egap.Presentations.SlideCommentCollection.Item(System.Int32)
+  name.vb: this[](Integer)
+  fullName: Egap.Presentations.SlideCommentCollection.this[int]
+  fullName.vb: Egap.Presentations.SlideCommentCollection.this[](Integer)
+  nameWithType: SlideCommentCollection.this[int]
+  nameWithType.vb: SlideCommentCollection.this[](Integer)
+- uid: Egap.Presentations.SlideCommentCollection.Item*
+  name: this
+  href: api/Egap.Presentations.SlideCommentCollection.html#Egap_Presentations_SlideCommentCollection_Item_
+  commentId: Overload:Egap.Presentations.SlideCommentCollection.Item
+  isSpec: "True"
+  name.vb: this[]
+  fullName: Egap.Presentations.SlideCommentCollection.this
+  fullName.vb: Egap.Presentations.SlideCommentCollection.this[]
+  nameWithType: SlideCommentCollection.this
+  nameWithType.vb: SlideCommentCollection.this[]
+- uid: Egap.Presentations.SlideCommentCollection.Remove(Egap.Presentations.SlideComment)
+  name: Remove(SlideComment)
+  href: api/Egap.Presentations.SlideCommentCollection.html#Egap_Presentations_SlideCommentCollection_Remove_Egap_Presentations_SlideComment_
+  commentId: M:Egap.Presentations.SlideCommentCollection.Remove(Egap.Presentations.SlideComment)
+  fullName: Egap.Presentations.SlideCommentCollection.Remove(Egap.Presentations.SlideComment)
+  nameWithType: SlideCommentCollection.Remove(SlideComment)
+- uid: Egap.Presentations.SlideCommentCollection.Remove*
+  name: Remove
+  href: api/Egap.Presentations.SlideCommentCollection.html#Egap_Presentations_SlideCommentCollection_Remove_
+  commentId: Overload:Egap.Presentations.SlideCommentCollection.Remove
+  isSpec: "True"
+  fullName: Egap.Presentations.SlideCommentCollection.Remove
+  nameWithType: SlideCommentCollection.Remove
 - uid: Egap.Presentations.SlideLayout
   name: SlideLayout
   href: api/Egap.Presentations.SlideLayout.html
@@ -59619,6 +60244,19 @@ references:
   isSpec: "True"
   fullName: Egap.Presentations.SlideMaster.ColorMap
   nameWithType: SlideMaster.ColorMap
+- uid: Egap.Presentations.SlideMaster.GetLayout(Egap.Presentations.SlideLayoutType)
+  name: GetLayout(SlideLayoutType)
+  href: api/Egap.Presentations.SlideMaster.html#Egap_Presentations_SlideMaster_GetLayout_Egap_Presentations_SlideLayoutType_
+  commentId: M:Egap.Presentations.SlideMaster.GetLayout(Egap.Presentations.SlideLayoutType)
+  fullName: Egap.Presentations.SlideMaster.GetLayout(Egap.Presentations.SlideLayoutType)
+  nameWithType: SlideMaster.GetLayout(SlideLayoutType)
+- uid: Egap.Presentations.SlideMaster.GetLayout*
+  name: GetLayout
+  href: api/Egap.Presentations.SlideMaster.html#Egap_Presentations_SlideMaster_GetLayout_
+  commentId: Overload:Egap.Presentations.SlideMaster.GetLayout
+  isSpec: "True"
+  fullName: Egap.Presentations.SlideMaster.GetLayout
+  nameWithType: SlideMaster.GetLayout
 - uid: Egap.Presentations.SlideMaster.Layouts
   name: Layouts
   href: api/Egap.Presentations.SlideMaster.html#Egap_Presentations_SlideMaster_Layouts
@@ -59645,6 +60283,166 @@ references:
   isSpec: "True"
   fullName: Egap.Presentations.SlideMaster.Theme
   nameWithType: SlideMaster.Theme
+- uid: Egap.Presentations.SlideSection
+  name: SlideSection
+  href: api/Egap.Presentations.SlideSection.html
+  commentId: T:Egap.Presentations.SlideSection
+  fullName: Egap.Presentations.SlideSection
+  nameWithType: SlideSection
+- uid: Egap.Presentations.SlideSection.Id
+  name: Id
+  href: api/Egap.Presentations.SlideSection.html#Egap_Presentations_SlideSection_Id
+  commentId: P:Egap.Presentations.SlideSection.Id
+  fullName: Egap.Presentations.SlideSection.Id
+  nameWithType: SlideSection.Id
+- uid: Egap.Presentations.SlideSection.Id*
+  name: Id
+  href: api/Egap.Presentations.SlideSection.html#Egap_Presentations_SlideSection_Id_
+  commentId: Overload:Egap.Presentations.SlideSection.Id
+  isSpec: "True"
+  fullName: Egap.Presentations.SlideSection.Id
+  nameWithType: SlideSection.Id
+- uid: Egap.Presentations.SlideSection.Name
+  name: Name
+  href: api/Egap.Presentations.SlideSection.html#Egap_Presentations_SlideSection_Name
+  commentId: P:Egap.Presentations.SlideSection.Name
+  fullName: Egap.Presentations.SlideSection.Name
+  nameWithType: SlideSection.Name
+- uid: Egap.Presentations.SlideSection.Name*
+  name: Name
+  href: api/Egap.Presentations.SlideSection.html#Egap_Presentations_SlideSection_Name_
+  commentId: Overload:Egap.Presentations.SlideSection.Name
+  isSpec: "True"
+  fullName: Egap.Presentations.SlideSection.Name
+  nameWithType: SlideSection.Name
+- uid: Egap.Presentations.SlideSection.Slides
+  name: Slides
+  href: api/Egap.Presentations.SlideSection.html#Egap_Presentations_SlideSection_Slides
+  commentId: P:Egap.Presentations.SlideSection.Slides
+  fullName: Egap.Presentations.SlideSection.Slides
+  nameWithType: SlideSection.Slides
+- uid: Egap.Presentations.SlideSection.Slides*
+  name: Slides
+  href: api/Egap.Presentations.SlideSection.html#Egap_Presentations_SlideSection_Slides_
+  commentId: Overload:Egap.Presentations.SlideSection.Slides
+  isSpec: "True"
+  fullName: Egap.Presentations.SlideSection.Slides
+  nameWithType: SlideSection.Slides
+- uid: Egap.Presentations.SlideSectionCollection
+  name: SlideSectionCollection
+  href: api/Egap.Presentations.SlideSectionCollection.html
+  commentId: T:Egap.Presentations.SlideSectionCollection
+  fullName: Egap.Presentations.SlideSectionCollection
+  nameWithType: SlideSectionCollection
+- uid: Egap.Presentations.SlideSectionCollection.Add(System.String)
+  name: Add(string)
+  href: api/Egap.Presentations.SlideSectionCollection.html#Egap_Presentations_SlideSectionCollection_Add_System_String_
+  commentId: M:Egap.Presentations.SlideSectionCollection.Add(System.String)
+  name.vb: Add(String)
+  fullName: Egap.Presentations.SlideSectionCollection.Add(string)
+  fullName.vb: Egap.Presentations.SlideSectionCollection.Add(String)
+  nameWithType: SlideSectionCollection.Add(string)
+  nameWithType.vb: SlideSectionCollection.Add(String)
+- uid: Egap.Presentations.SlideSectionCollection.Add(System.String,Egap.Presentations.Slide)
+  name: Add(string, Slide)
+  href: api/Egap.Presentations.SlideSectionCollection.html#Egap_Presentations_SlideSectionCollection_Add_System_String_Egap_Presentations_Slide_
+  commentId: M:Egap.Presentations.SlideSectionCollection.Add(System.String,Egap.Presentations.Slide)
+  name.vb: Add(String, Slide)
+  fullName: Egap.Presentations.SlideSectionCollection.Add(string, Egap.Presentations.Slide)
+  fullName.vb: Egap.Presentations.SlideSectionCollection.Add(String, Egap.Presentations.Slide)
+  nameWithType: SlideSectionCollection.Add(string, Slide)
+  nameWithType.vb: SlideSectionCollection.Add(String, Slide)
+- uid: Egap.Presentations.SlideSectionCollection.Add*
+  name: Add
+  href: api/Egap.Presentations.SlideSectionCollection.html#Egap_Presentations_SlideSectionCollection_Add_
+  commentId: Overload:Egap.Presentations.SlideSectionCollection.Add
+  isSpec: "True"
+  fullName: Egap.Presentations.SlideSectionCollection.Add
+  nameWithType: SlideSectionCollection.Add
+- uid: Egap.Presentations.SlideSectionCollection.Count
+  name: Count
+  href: api/Egap.Presentations.SlideSectionCollection.html#Egap_Presentations_SlideSectionCollection_Count
+  commentId: P:Egap.Presentations.SlideSectionCollection.Count
+  fullName: Egap.Presentations.SlideSectionCollection.Count
+  nameWithType: SlideSectionCollection.Count
+- uid: Egap.Presentations.SlideSectionCollection.Count*
+  name: Count
+  href: api/Egap.Presentations.SlideSectionCollection.html#Egap_Presentations_SlideSectionCollection_Count_
+  commentId: Overload:Egap.Presentations.SlideSectionCollection.Count
+  isSpec: "True"
+  fullName: Egap.Presentations.SlideSectionCollection.Count
+  nameWithType: SlideSectionCollection.Count
+- uid: Egap.Presentations.SlideSectionCollection.GetEnumerator
+  name: GetEnumerator()
+  href: api/Egap.Presentations.SlideSectionCollection.html#Egap_Presentations_SlideSectionCollection_GetEnumerator
+  commentId: M:Egap.Presentations.SlideSectionCollection.GetEnumerator
+  fullName: Egap.Presentations.SlideSectionCollection.GetEnumerator()
+  nameWithType: SlideSectionCollection.GetEnumerator()
+- uid: Egap.Presentations.SlideSectionCollection.GetEnumerator*
+  name: GetEnumerator
+  href: api/Egap.Presentations.SlideSectionCollection.html#Egap_Presentations_SlideSectionCollection_GetEnumerator_
+  commentId: Overload:Egap.Presentations.SlideSectionCollection.GetEnumerator
+  isSpec: "True"
+  fullName: Egap.Presentations.SlideSectionCollection.GetEnumerator
+  nameWithType: SlideSectionCollection.GetEnumerator
+- uid: Egap.Presentations.SlideSectionCollection.Item(System.Int32)
+  name: this[int]
+  href: api/Egap.Presentations.SlideSectionCollection.html#Egap_Presentations_SlideSectionCollection_Item_System_Int32_
+  commentId: P:Egap.Presentations.SlideSectionCollection.Item(System.Int32)
+  name.vb: this[](Integer)
+  fullName: Egap.Presentations.SlideSectionCollection.this[int]
+  fullName.vb: Egap.Presentations.SlideSectionCollection.this[](Integer)
+  nameWithType: SlideSectionCollection.this[int]
+  nameWithType.vb: SlideSectionCollection.this[](Integer)
+- uid: Egap.Presentations.SlideSectionCollection.Item*
+  name: this
+  href: api/Egap.Presentations.SlideSectionCollection.html#Egap_Presentations_SlideSectionCollection_Item_
+  commentId: Overload:Egap.Presentations.SlideSectionCollection.Item
+  isSpec: "True"
+  name.vb: this[]
+  fullName: Egap.Presentations.SlideSectionCollection.this
+  fullName.vb: Egap.Presentations.SlideSectionCollection.this[]
+  nameWithType: SlideSectionCollection.this
+  nameWithType.vb: SlideSectionCollection.this[]
+- uid: Egap.Presentations.SlideSectionCollection.MoveSlide(Egap.Presentations.Slide,Egap.Presentations.SlideSection)
+  name: MoveSlide(Slide, SlideSection)
+  href: api/Egap.Presentations.SlideSectionCollection.html#Egap_Presentations_SlideSectionCollection_MoveSlide_Egap_Presentations_Slide_Egap_Presentations_SlideSection_
+  commentId: M:Egap.Presentations.SlideSectionCollection.MoveSlide(Egap.Presentations.Slide,Egap.Presentations.SlideSection)
+  fullName: Egap.Presentations.SlideSectionCollection.MoveSlide(Egap.Presentations.Slide, Egap.Presentations.SlideSection)
+  nameWithType: SlideSectionCollection.MoveSlide(Slide, SlideSection)
+- uid: Egap.Presentations.SlideSectionCollection.MoveSlide*
+  name: MoveSlide
+  href: api/Egap.Presentations.SlideSectionCollection.html#Egap_Presentations_SlideSectionCollection_MoveSlide_
+  commentId: Overload:Egap.Presentations.SlideSectionCollection.MoveSlide
+  isSpec: "True"
+  fullName: Egap.Presentations.SlideSectionCollection.MoveSlide
+  nameWithType: SlideSectionCollection.MoveSlide
+- uid: Egap.Presentations.SlideSectionCollection.Remove(Egap.Presentations.SlideSection)
+  name: Remove(SlideSection)
+  href: api/Egap.Presentations.SlideSectionCollection.html#Egap_Presentations_SlideSectionCollection_Remove_Egap_Presentations_SlideSection_
+  commentId: M:Egap.Presentations.SlideSectionCollection.Remove(Egap.Presentations.SlideSection)
+  fullName: Egap.Presentations.SlideSectionCollection.Remove(Egap.Presentations.SlideSection)
+  nameWithType: SlideSectionCollection.Remove(SlideSection)
+- uid: Egap.Presentations.SlideSectionCollection.Remove*
+  name: Remove
+  href: api/Egap.Presentations.SlideSectionCollection.html#Egap_Presentations_SlideSectionCollection_Remove_
+  commentId: Overload:Egap.Presentations.SlideSectionCollection.Remove
+  isSpec: "True"
+  fullName: Egap.Presentations.SlideSectionCollection.Remove
+  nameWithType: SlideSectionCollection.Remove
+- uid: Egap.Presentations.SlideSectionCollection.SectionOf(Egap.Presentations.Slide)
+  name: SectionOf(Slide)
+  href: api/Egap.Presentations.SlideSectionCollection.html#Egap_Presentations_SlideSectionCollection_SectionOf_Egap_Presentations_Slide_
+  commentId: M:Egap.Presentations.SlideSectionCollection.SectionOf(Egap.Presentations.Slide)
+  fullName: Egap.Presentations.SlideSectionCollection.SectionOf(Egap.Presentations.Slide)
+  nameWithType: SlideSectionCollection.SectionOf(Slide)
+- uid: Egap.Presentations.SlideSectionCollection.SectionOf*
+  name: SectionOf
+  href: api/Egap.Presentations.SlideSectionCollection.html#Egap_Presentations_SlideSectionCollection_SectionOf_
+  commentId: Overload:Egap.Presentations.SlideSectionCollection.SectionOf
+  isSpec: "True"
+  fullName: Egap.Presentations.SlideSectionCollection.SectionOf
+  nameWithType: SlideSectionCollection.SectionOf
 - uid: Egap.Presentations.SlideShape
   name: SlideShape
   href: api/Egap.Presentations.SlideShape.html
@@ -59664,6 +60462,19 @@ references:
   isSpec: "True"
   fullName: Egap.Presentations.SlideShape.Description
   nameWithType: SlideShape.Description
+- uid: Egap.Presentations.SlideShape.EffectiveTransform
+  name: EffectiveTransform
+  href: api/Egap.Presentations.SlideShape.html#Egap_Presentations_SlideShape_EffectiveTransform
+  commentId: P:Egap.Presentations.SlideShape.EffectiveTransform
+  fullName: Egap.Presentations.SlideShape.EffectiveTransform
+  nameWithType: SlideShape.EffectiveTransform
+- uid: Egap.Presentations.SlideShape.EffectiveTransform*
+  name: EffectiveTransform
+  href: api/Egap.Presentations.SlideShape.html#Egap_Presentations_SlideShape_EffectiveTransform_
+  commentId: Overload:Egap.Presentations.SlideShape.EffectiveTransform
+  isSpec: "True"
+  fullName: Egap.Presentations.SlideShape.EffectiveTransform
+  nameWithType: SlideShape.EffectiveTransform
 - uid: Egap.Presentations.SlideShape.Group
   name: Group
   href: api/Egap.Presentations.SlideShape.html#Egap_Presentations_SlideShape_Group
@@ -59703,6 +60514,19 @@ references:
   isSpec: "True"
   fullName: Egap.Presentations.SlideShape.Id
   nameWithType: SlideShape.Id
+- uid: Egap.Presentations.SlideShape.InheritedPlaceholder
+  name: InheritedPlaceholder
+  href: api/Egap.Presentations.SlideShape.html#Egap_Presentations_SlideShape_InheritedPlaceholder
+  commentId: P:Egap.Presentations.SlideShape.InheritedPlaceholder
+  fullName: Egap.Presentations.SlideShape.InheritedPlaceholder
+  nameWithType: SlideShape.InheritedPlaceholder
+- uid: Egap.Presentations.SlideShape.InheritedPlaceholder*
+  name: InheritedPlaceholder
+  href: api/Egap.Presentations.SlideShape.html#Egap_Presentations_SlideShape_InheritedPlaceholder_
+  commentId: Overload:Egap.Presentations.SlideShape.InheritedPlaceholder
+  isSpec: "True"
+  fullName: Egap.Presentations.SlideShape.InheritedPlaceholder
+  nameWithType: SlideShape.InheritedPlaceholder
 - uid: Egap.Presentations.SlideShape.Name
   name: Name
   href: api/Egap.Presentations.SlideShape.html#Egap_Presentations_SlideShape_Name
@@ -59761,6 +60585,99 @@ references:
   commentId: T:Egap.Presentations.SlideShapeCollection
   fullName: Egap.Presentations.SlideShapeCollection
   nameWithType: SlideShapeCollection
+- uid: Egap.Presentations.SlideShapeCollection.AddConnector(Egap.Presentations.ShapeTransform,System.String)
+  name: AddConnector(ShapeTransform, string)
+  href: api/Egap.Presentations.SlideShapeCollection.html#Egap_Presentations_SlideShapeCollection_AddConnector_Egap_Presentations_ShapeTransform_System_String_
+  commentId: M:Egap.Presentations.SlideShapeCollection.AddConnector(Egap.Presentations.ShapeTransform,System.String)
+  name.vb: AddConnector(ShapeTransform, String)
+  fullName: Egap.Presentations.SlideShapeCollection.AddConnector(Egap.Presentations.ShapeTransform, string)
+  fullName.vb: Egap.Presentations.SlideShapeCollection.AddConnector(Egap.Presentations.ShapeTransform, String)
+  nameWithType: SlideShapeCollection.AddConnector(ShapeTransform, string)
+  nameWithType.vb: SlideShapeCollection.AddConnector(ShapeTransform, String)
+- uid: Egap.Presentations.SlideShapeCollection.AddConnector*
+  name: AddConnector
+  href: api/Egap.Presentations.SlideShapeCollection.html#Egap_Presentations_SlideShapeCollection_AddConnector_
+  commentId: Overload:Egap.Presentations.SlideShapeCollection.AddConnector
+  isSpec: "True"
+  fullName: Egap.Presentations.SlideShapeCollection.AddConnector
+  nameWithType: SlideShapeCollection.AddConnector
+- uid: Egap.Presentations.SlideShapeCollection.AddGroup(Egap.Presentations.ShapeTransform)
+  name: AddGroup(ShapeTransform)
+  href: api/Egap.Presentations.SlideShapeCollection.html#Egap_Presentations_SlideShapeCollection_AddGroup_Egap_Presentations_ShapeTransform_
+  commentId: M:Egap.Presentations.SlideShapeCollection.AddGroup(Egap.Presentations.ShapeTransform)
+  fullName: Egap.Presentations.SlideShapeCollection.AddGroup(Egap.Presentations.ShapeTransform)
+  nameWithType: SlideShapeCollection.AddGroup(ShapeTransform)
+- uid: Egap.Presentations.SlideShapeCollection.AddGroup*
+  name: AddGroup
+  href: api/Egap.Presentations.SlideShapeCollection.html#Egap_Presentations_SlideShapeCollection_AddGroup_
+  commentId: Overload:Egap.Presentations.SlideShapeCollection.AddGroup
+  isSpec: "True"
+  fullName: Egap.Presentations.SlideShapeCollection.AddGroup
+  nameWithType: SlideShapeCollection.AddGroup
+- uid: Egap.Presentations.SlideShapeCollection.AddPicture(System.ReadOnlyMemory{System.Byte},System.Nullable{Egap.Presentations.ShapeTransform})
+  name: AddPicture(ReadOnlyMemory<byte>, ShapeTransform?)
+  href: api/Egap.Presentations.SlideShapeCollection.html#Egap_Presentations_SlideShapeCollection_AddPicture_System_ReadOnlyMemory_System_Byte__System_Nullable_Egap_Presentations_ShapeTransform__
+  commentId: M:Egap.Presentations.SlideShapeCollection.AddPicture(System.ReadOnlyMemory{System.Byte},System.Nullable{Egap.Presentations.ShapeTransform})
+  name.vb: AddPicture(ReadOnlyMemory(Of Byte), ShapeTransform?)
+  fullName: Egap.Presentations.SlideShapeCollection.AddPicture(System.ReadOnlyMemory<byte>, Egap.Presentations.ShapeTransform?)
+  fullName.vb: Egap.Presentations.SlideShapeCollection.AddPicture(System.ReadOnlyMemory(Of Byte), Egap.Presentations.ShapeTransform?)
+  nameWithType: SlideShapeCollection.AddPicture(ReadOnlyMemory<byte>, ShapeTransform?)
+  nameWithType.vb: SlideShapeCollection.AddPicture(ReadOnlyMemory(Of Byte), ShapeTransform?)
+- uid: Egap.Presentations.SlideShapeCollection.AddPicture*
+  name: AddPicture
+  href: api/Egap.Presentations.SlideShapeCollection.html#Egap_Presentations_SlideShapeCollection_AddPicture_
+  commentId: Overload:Egap.Presentations.SlideShapeCollection.AddPicture
+  isSpec: "True"
+  fullName: Egap.Presentations.SlideShapeCollection.AddPicture
+  nameWithType: SlideShapeCollection.AddPicture
+- uid: Egap.Presentations.SlideShapeCollection.AddShape(System.String,Egap.Presentations.ShapeTransform,System.String)
+  name: AddShape(string, ShapeTransform, string)
+  href: api/Egap.Presentations.SlideShapeCollection.html#Egap_Presentations_SlideShapeCollection_AddShape_System_String_Egap_Presentations_ShapeTransform_System_String_
+  commentId: M:Egap.Presentations.SlideShapeCollection.AddShape(System.String,Egap.Presentations.ShapeTransform,System.String)
+  name.vb: AddShape(String, ShapeTransform, String)
+  fullName: Egap.Presentations.SlideShapeCollection.AddShape(string, Egap.Presentations.ShapeTransform, string)
+  fullName.vb: Egap.Presentations.SlideShapeCollection.AddShape(String, Egap.Presentations.ShapeTransform, String)
+  nameWithType: SlideShapeCollection.AddShape(string, ShapeTransform, string)
+  nameWithType.vb: SlideShapeCollection.AddShape(String, ShapeTransform, String)
+- uid: Egap.Presentations.SlideShapeCollection.AddShape*
+  name: AddShape
+  href: api/Egap.Presentations.SlideShapeCollection.html#Egap_Presentations_SlideShapeCollection_AddShape_
+  commentId: Overload:Egap.Presentations.SlideShapeCollection.AddShape
+  isSpec: "True"
+  fullName: Egap.Presentations.SlideShapeCollection.AddShape
+  nameWithType: SlideShapeCollection.AddShape
+- uid: Egap.Presentations.SlideShapeCollection.AddTable(System.Int32,System.Int32,Egap.Presentations.ShapeTransform)
+  name: AddTable(int, int, ShapeTransform)
+  href: api/Egap.Presentations.SlideShapeCollection.html#Egap_Presentations_SlideShapeCollection_AddTable_System_Int32_System_Int32_Egap_Presentations_ShapeTransform_
+  commentId: M:Egap.Presentations.SlideShapeCollection.AddTable(System.Int32,System.Int32,Egap.Presentations.ShapeTransform)
+  name.vb: AddTable(Integer, Integer, ShapeTransform)
+  fullName: Egap.Presentations.SlideShapeCollection.AddTable(int, int, Egap.Presentations.ShapeTransform)
+  fullName.vb: Egap.Presentations.SlideShapeCollection.AddTable(Integer, Integer, Egap.Presentations.ShapeTransform)
+  nameWithType: SlideShapeCollection.AddTable(int, int, ShapeTransform)
+  nameWithType.vb: SlideShapeCollection.AddTable(Integer, Integer, ShapeTransform)
+- uid: Egap.Presentations.SlideShapeCollection.AddTable*
+  name: AddTable
+  href: api/Egap.Presentations.SlideShapeCollection.html#Egap_Presentations_SlideShapeCollection_AddTable_
+  commentId: Overload:Egap.Presentations.SlideShapeCollection.AddTable
+  isSpec: "True"
+  fullName: Egap.Presentations.SlideShapeCollection.AddTable
+  nameWithType: SlideShapeCollection.AddTable
+- uid: Egap.Presentations.SlideShapeCollection.AddTextBox(Egap.Presentations.ShapeTransform,System.String)
+  name: AddTextBox(ShapeTransform, string)
+  href: api/Egap.Presentations.SlideShapeCollection.html#Egap_Presentations_SlideShapeCollection_AddTextBox_Egap_Presentations_ShapeTransform_System_String_
+  commentId: M:Egap.Presentations.SlideShapeCollection.AddTextBox(Egap.Presentations.ShapeTransform,System.String)
+  name.vb: AddTextBox(ShapeTransform, String)
+  fullName: Egap.Presentations.SlideShapeCollection.AddTextBox(Egap.Presentations.ShapeTransform, string)
+  fullName.vb: Egap.Presentations.SlideShapeCollection.AddTextBox(Egap.Presentations.ShapeTransform, String)
+  nameWithType: SlideShapeCollection.AddTextBox(ShapeTransform, string)
+  nameWithType.vb: SlideShapeCollection.AddTextBox(ShapeTransform, String)
+- uid: Egap.Presentations.SlideShapeCollection.AddTextBox*
+  name: AddTextBox
+  href: api/Egap.Presentations.SlideShapeCollection.html#Egap_Presentations_SlideShapeCollection_AddTextBox_
+  commentId: Overload:Egap.Presentations.SlideShapeCollection.AddTextBox
+  isSpec: "True"
+  fullName: Egap.Presentations.SlideShapeCollection.AddTextBox
+  nameWithType: SlideShapeCollection.AddTextBox
 - uid: Egap.Presentations.SlideShapeCollection.Count
   name: Count
   href: api/Egap.Presentations.SlideShapeCollection.html#Egap_Presentations_SlideShapeCollection_Count
@@ -59822,6 +60739,19 @@ references:
   fullName.vb: Egap.Presentations.SlideShapeCollection.this[]
   nameWithType: SlideShapeCollection.this
   nameWithType.vb: SlideShapeCollection.this[]
+- uid: Egap.Presentations.SlideShapeCollection.Remove(Egap.Presentations.SlideShape)
+  name: Remove(SlideShape)
+  href: api/Egap.Presentations.SlideShapeCollection.html#Egap_Presentations_SlideShapeCollection_Remove_Egap_Presentations_SlideShape_
+  commentId: M:Egap.Presentations.SlideShapeCollection.Remove(Egap.Presentations.SlideShape)
+  fullName: Egap.Presentations.SlideShapeCollection.Remove(Egap.Presentations.SlideShape)
+  nameWithType: SlideShapeCollection.Remove(SlideShape)
+- uid: Egap.Presentations.SlideShapeCollection.Remove*
+  name: Remove
+  href: api/Egap.Presentations.SlideShapeCollection.html#Egap_Presentations_SlideShapeCollection_Remove_
+  commentId: Overload:Egap.Presentations.SlideShapeCollection.Remove
+  isSpec: "True"
+  fullName: Egap.Presentations.SlideShapeCollection.Remove
+  nameWithType: SlideShapeCollection.Remove
 - uid: Egap.Presentations.SlideSize
   name: SlideSize
   href: api/Egap.Presentations.SlideSize.html
@@ -59915,6 +60845,447 @@ references:
   isSpec: "True"
   fullName: Egap.Presentations.SlideSize.WidthPoints
   nameWithType: SlideSize.WidthPoints
+- uid: Egap.Presentations.SlideTable
+  name: SlideTable
+  href: api/Egap.Presentations.SlideTable.html
+  commentId: T:Egap.Presentations.SlideTable
+  fullName: Egap.Presentations.SlideTable
+  nameWithType: SlideTable
+- uid: Egap.Presentations.SlideTable.AddColumn(System.Int64)
+  name: AddColumn(long)
+  href: api/Egap.Presentations.SlideTable.html#Egap_Presentations_SlideTable_AddColumn_System_Int64_
+  commentId: M:Egap.Presentations.SlideTable.AddColumn(System.Int64)
+  name.vb: AddColumn(Long)
+  fullName: Egap.Presentations.SlideTable.AddColumn(long)
+  fullName.vb: Egap.Presentations.SlideTable.AddColumn(Long)
+  nameWithType: SlideTable.AddColumn(long)
+  nameWithType.vb: SlideTable.AddColumn(Long)
+- uid: Egap.Presentations.SlideTable.AddColumn*
+  name: AddColumn
+  href: api/Egap.Presentations.SlideTable.html#Egap_Presentations_SlideTable_AddColumn_
+  commentId: Overload:Egap.Presentations.SlideTable.AddColumn
+  isSpec: "True"
+  fullName: Egap.Presentations.SlideTable.AddColumn
+  nameWithType: SlideTable.AddColumn
+- uid: Egap.Presentations.SlideTable.AddRow
+  name: AddRow()
+  href: api/Egap.Presentations.SlideTable.html#Egap_Presentations_SlideTable_AddRow
+  commentId: M:Egap.Presentations.SlideTable.AddRow
+  fullName: Egap.Presentations.SlideTable.AddRow()
+  nameWithType: SlideTable.AddRow()
+- uid: Egap.Presentations.SlideTable.AddRow*
+  name: AddRow
+  href: api/Egap.Presentations.SlideTable.html#Egap_Presentations_SlideTable_AddRow_
+  commentId: Overload:Egap.Presentations.SlideTable.AddRow
+  isSpec: "True"
+  fullName: Egap.Presentations.SlideTable.AddRow
+  nameWithType: SlideTable.AddRow
+- uid: Egap.Presentations.SlideTable.Cell(System.Int32,System.Int32)
+  name: Cell(int, int)
+  href: api/Egap.Presentations.SlideTable.html#Egap_Presentations_SlideTable_Cell_System_Int32_System_Int32_
+  commentId: M:Egap.Presentations.SlideTable.Cell(System.Int32,System.Int32)
+  name.vb: Cell(Integer, Integer)
+  fullName: Egap.Presentations.SlideTable.Cell(int, int)
+  fullName.vb: Egap.Presentations.SlideTable.Cell(Integer, Integer)
+  nameWithType: SlideTable.Cell(int, int)
+  nameWithType.vb: SlideTable.Cell(Integer, Integer)
+- uid: Egap.Presentations.SlideTable.Cell*
+  name: Cell
+  href: api/Egap.Presentations.SlideTable.html#Egap_Presentations_SlideTable_Cell_
+  commentId: Overload:Egap.Presentations.SlideTable.Cell
+  isSpec: "True"
+  fullName: Egap.Presentations.SlideTable.Cell
+  nameWithType: SlideTable.Cell
+- uid: Egap.Presentations.SlideTable.Columns
+  name: Columns
+  href: api/Egap.Presentations.SlideTable.html#Egap_Presentations_SlideTable_Columns
+  commentId: P:Egap.Presentations.SlideTable.Columns
+  fullName: Egap.Presentations.SlideTable.Columns
+  nameWithType: SlideTable.Columns
+- uid: Egap.Presentations.SlideTable.Columns*
+  name: Columns
+  href: api/Egap.Presentations.SlideTable.html#Egap_Presentations_SlideTable_Columns_
+  commentId: Overload:Egap.Presentations.SlideTable.Columns
+  isSpec: "True"
+  fullName: Egap.Presentations.SlideTable.Columns
+  nameWithType: SlideTable.Columns
+- uid: Egap.Presentations.SlideTable.DefaultStyleId
+  name: DefaultStyleId
+  href: api/Egap.Presentations.SlideTable.html#Egap_Presentations_SlideTable_DefaultStyleId
+  commentId: F:Egap.Presentations.SlideTable.DefaultStyleId
+  fullName: Egap.Presentations.SlideTable.DefaultStyleId
+  nameWithType: SlideTable.DefaultStyleId
+- uid: Egap.Presentations.SlideTable.Frame
+  name: Frame
+  href: api/Egap.Presentations.SlideTable.html#Egap_Presentations_SlideTable_Frame
+  commentId: P:Egap.Presentations.SlideTable.Frame
+  fullName: Egap.Presentations.SlideTable.Frame
+  nameWithType: SlideTable.Frame
+- uid: Egap.Presentations.SlideTable.Frame*
+  name: Frame
+  href: api/Egap.Presentations.SlideTable.html#Egap_Presentations_SlideTable_Frame_
+  commentId: Overload:Egap.Presentations.SlideTable.Frame
+  isSpec: "True"
+  fullName: Egap.Presentations.SlideTable.Frame
+  nameWithType: SlideTable.Frame
+- uid: Egap.Presentations.SlideTable.InsertColumn(System.Int32,System.Int64)
+  name: InsertColumn(int, long)
+  href: api/Egap.Presentations.SlideTable.html#Egap_Presentations_SlideTable_InsertColumn_System_Int32_System_Int64_
+  commentId: M:Egap.Presentations.SlideTable.InsertColumn(System.Int32,System.Int64)
+  name.vb: InsertColumn(Integer, Long)
+  fullName: Egap.Presentations.SlideTable.InsertColumn(int, long)
+  fullName.vb: Egap.Presentations.SlideTable.InsertColumn(Integer, Long)
+  nameWithType: SlideTable.InsertColumn(int, long)
+  nameWithType.vb: SlideTable.InsertColumn(Integer, Long)
+- uid: Egap.Presentations.SlideTable.InsertColumn*
+  name: InsertColumn
+  href: api/Egap.Presentations.SlideTable.html#Egap_Presentations_SlideTable_InsertColumn_
+  commentId: Overload:Egap.Presentations.SlideTable.InsertColumn
+  isSpec: "True"
+  fullName: Egap.Presentations.SlideTable.InsertColumn
+  nameWithType: SlideTable.InsertColumn
+- uid: Egap.Presentations.SlideTable.InsertRow(System.Int32)
+  name: InsertRow(int)
+  href: api/Egap.Presentations.SlideTable.html#Egap_Presentations_SlideTable_InsertRow_System_Int32_
+  commentId: M:Egap.Presentations.SlideTable.InsertRow(System.Int32)
+  name.vb: InsertRow(Integer)
+  fullName: Egap.Presentations.SlideTable.InsertRow(int)
+  fullName.vb: Egap.Presentations.SlideTable.InsertRow(Integer)
+  nameWithType: SlideTable.InsertRow(int)
+  nameWithType.vb: SlideTable.InsertRow(Integer)
+- uid: Egap.Presentations.SlideTable.InsertRow*
+  name: InsertRow
+  href: api/Egap.Presentations.SlideTable.html#Egap_Presentations_SlideTable_InsertRow_
+  commentId: Overload:Egap.Presentations.SlideTable.InsertRow
+  isSpec: "True"
+  fullName: Egap.Presentations.SlideTable.InsertRow
+  nameWithType: SlideTable.InsertRow
+- uid: Egap.Presentations.SlideTable.Merge(System.Int32,System.Int32,System.Int32,System.Int32)
+  name: Merge(int, int, int, int)
+  href: api/Egap.Presentations.SlideTable.html#Egap_Presentations_SlideTable_Merge_System_Int32_System_Int32_System_Int32_System_Int32_
+  commentId: M:Egap.Presentations.SlideTable.Merge(System.Int32,System.Int32,System.Int32,System.Int32)
+  name.vb: Merge(Integer, Integer, Integer, Integer)
+  fullName: Egap.Presentations.SlideTable.Merge(int, int, int, int)
+  fullName.vb: Egap.Presentations.SlideTable.Merge(Integer, Integer, Integer, Integer)
+  nameWithType: SlideTable.Merge(int, int, int, int)
+  nameWithType.vb: SlideTable.Merge(Integer, Integer, Integer, Integer)
+- uid: Egap.Presentations.SlideTable.Merge*
+  name: Merge
+  href: api/Egap.Presentations.SlideTable.html#Egap_Presentations_SlideTable_Merge_
+  commentId: Overload:Egap.Presentations.SlideTable.Merge
+  isSpec: "True"
+  fullName: Egap.Presentations.SlideTable.Merge
+  nameWithType: SlideTable.Merge
+- uid: Egap.Presentations.SlideTable.RemoveColumn(System.Int32)
+  name: RemoveColumn(int)
+  href: api/Egap.Presentations.SlideTable.html#Egap_Presentations_SlideTable_RemoveColumn_System_Int32_
+  commentId: M:Egap.Presentations.SlideTable.RemoveColumn(System.Int32)
+  name.vb: RemoveColumn(Integer)
+  fullName: Egap.Presentations.SlideTable.RemoveColumn(int)
+  fullName.vb: Egap.Presentations.SlideTable.RemoveColumn(Integer)
+  nameWithType: SlideTable.RemoveColumn(int)
+  nameWithType.vb: SlideTable.RemoveColumn(Integer)
+- uid: Egap.Presentations.SlideTable.RemoveColumn*
+  name: RemoveColumn
+  href: api/Egap.Presentations.SlideTable.html#Egap_Presentations_SlideTable_RemoveColumn_
+  commentId: Overload:Egap.Presentations.SlideTable.RemoveColumn
+  isSpec: "True"
+  fullName: Egap.Presentations.SlideTable.RemoveColumn
+  nameWithType: SlideTable.RemoveColumn
+- uid: Egap.Presentations.SlideTable.RemoveRow(System.Int32)
+  name: RemoveRow(int)
+  href: api/Egap.Presentations.SlideTable.html#Egap_Presentations_SlideTable_RemoveRow_System_Int32_
+  commentId: M:Egap.Presentations.SlideTable.RemoveRow(System.Int32)
+  name.vb: RemoveRow(Integer)
+  fullName: Egap.Presentations.SlideTable.RemoveRow(int)
+  fullName.vb: Egap.Presentations.SlideTable.RemoveRow(Integer)
+  nameWithType: SlideTable.RemoveRow(int)
+  nameWithType.vb: SlideTable.RemoveRow(Integer)
+- uid: Egap.Presentations.SlideTable.RemoveRow*
+  name: RemoveRow
+  href: api/Egap.Presentations.SlideTable.html#Egap_Presentations_SlideTable_RemoveRow_
+  commentId: Overload:Egap.Presentations.SlideTable.RemoveRow
+  isSpec: "True"
+  fullName: Egap.Presentations.SlideTable.RemoveRow
+  nameWithType: SlideTable.RemoveRow
+- uid: Egap.Presentations.SlideTable.Rows
+  name: Rows
+  href: api/Egap.Presentations.SlideTable.html#Egap_Presentations_SlideTable_Rows
+  commentId: P:Egap.Presentations.SlideTable.Rows
+  fullName: Egap.Presentations.SlideTable.Rows
+  nameWithType: SlideTable.Rows
+- uid: Egap.Presentations.SlideTable.Rows*
+  name: Rows
+  href: api/Egap.Presentations.SlideTable.html#Egap_Presentations_SlideTable_Rows_
+  commentId: Overload:Egap.Presentations.SlideTable.Rows
+  isSpec: "True"
+  fullName: Egap.Presentations.SlideTable.Rows
+  nameWithType: SlideTable.Rows
+- uid: Egap.Presentations.SlideTable.Split(Egap.Presentations.SlideTableCell)
+  name: Split(SlideTableCell)
+  href: api/Egap.Presentations.SlideTable.html#Egap_Presentations_SlideTable_Split_Egap_Presentations_SlideTableCell_
+  commentId: M:Egap.Presentations.SlideTable.Split(Egap.Presentations.SlideTableCell)
+  fullName: Egap.Presentations.SlideTable.Split(Egap.Presentations.SlideTableCell)
+  nameWithType: SlideTable.Split(SlideTableCell)
+- uid: Egap.Presentations.SlideTable.Split*
+  name: Split
+  href: api/Egap.Presentations.SlideTable.html#Egap_Presentations_SlideTable_Split_
+  commentId: Overload:Egap.Presentations.SlideTable.Split
+  isSpec: "True"
+  fullName: Egap.Presentations.SlideTable.Split
+  nameWithType: SlideTable.Split
+- uid: Egap.Presentations.SlideTable.StyleId
+  name: StyleId
+  href: api/Egap.Presentations.SlideTable.html#Egap_Presentations_SlideTable_StyleId
+  commentId: P:Egap.Presentations.SlideTable.StyleId
+  fullName: Egap.Presentations.SlideTable.StyleId
+  nameWithType: SlideTable.StyleId
+- uid: Egap.Presentations.SlideTable.StyleId*
+  name: StyleId
+  href: api/Egap.Presentations.SlideTable.html#Egap_Presentations_SlideTable_StyleId_
+  commentId: Overload:Egap.Presentations.SlideTable.StyleId
+  isSpec: "True"
+  fullName: Egap.Presentations.SlideTable.StyleId
+  nameWithType: SlideTable.StyleId
+- uid: Egap.Presentations.SlideTableCell
+  name: SlideTableCell
+  href: api/Egap.Presentations.SlideTableCell.html
+  commentId: T:Egap.Presentations.SlideTableCell
+  fullName: Egap.Presentations.SlideTableCell
+  nameWithType: SlideTableCell
+- uid: Egap.Presentations.SlideTableCell.ColumnIndex
+  name: ColumnIndex
+  href: api/Egap.Presentations.SlideTableCell.html#Egap_Presentations_SlideTableCell_ColumnIndex
+  commentId: P:Egap.Presentations.SlideTableCell.ColumnIndex
+  fullName: Egap.Presentations.SlideTableCell.ColumnIndex
+  nameWithType: SlideTableCell.ColumnIndex
+- uid: Egap.Presentations.SlideTableCell.ColumnIndex*
+  name: ColumnIndex
+  href: api/Egap.Presentations.SlideTableCell.html#Egap_Presentations_SlideTableCell_ColumnIndex_
+  commentId: Overload:Egap.Presentations.SlideTableCell.ColumnIndex
+  isSpec: "True"
+  fullName: Egap.Presentations.SlideTableCell.ColumnIndex
+  nameWithType: SlideTableCell.ColumnIndex
+- uid: Egap.Presentations.SlideTableCell.ColumnSpan
+  name: ColumnSpan
+  href: api/Egap.Presentations.SlideTableCell.html#Egap_Presentations_SlideTableCell_ColumnSpan
+  commentId: P:Egap.Presentations.SlideTableCell.ColumnSpan
+  fullName: Egap.Presentations.SlideTableCell.ColumnSpan
+  nameWithType: SlideTableCell.ColumnSpan
+- uid: Egap.Presentations.SlideTableCell.ColumnSpan*
+  name: ColumnSpan
+  href: api/Egap.Presentations.SlideTableCell.html#Egap_Presentations_SlideTableCell_ColumnSpan_
+  commentId: Overload:Egap.Presentations.SlideTableCell.ColumnSpan
+  isSpec: "True"
+  fullName: Egap.Presentations.SlideTableCell.ColumnSpan
+  nameWithType: SlideTableCell.ColumnSpan
+- uid: Egap.Presentations.SlideTableCell.IsCoveredHorizontally
+  name: IsCoveredHorizontally
+  href: api/Egap.Presentations.SlideTableCell.html#Egap_Presentations_SlideTableCell_IsCoveredHorizontally
+  commentId: P:Egap.Presentations.SlideTableCell.IsCoveredHorizontally
+  fullName: Egap.Presentations.SlideTableCell.IsCoveredHorizontally
+  nameWithType: SlideTableCell.IsCoveredHorizontally
+- uid: Egap.Presentations.SlideTableCell.IsCoveredHorizontally*
+  name: IsCoveredHorizontally
+  href: api/Egap.Presentations.SlideTableCell.html#Egap_Presentations_SlideTableCell_IsCoveredHorizontally_
+  commentId: Overload:Egap.Presentations.SlideTableCell.IsCoveredHorizontally
+  isSpec: "True"
+  fullName: Egap.Presentations.SlideTableCell.IsCoveredHorizontally
+  nameWithType: SlideTableCell.IsCoveredHorizontally
+- uid: Egap.Presentations.SlideTableCell.IsCoveredVertically
+  name: IsCoveredVertically
+  href: api/Egap.Presentations.SlideTableCell.html#Egap_Presentations_SlideTableCell_IsCoveredVertically
+  commentId: P:Egap.Presentations.SlideTableCell.IsCoveredVertically
+  fullName: Egap.Presentations.SlideTableCell.IsCoveredVertically
+  nameWithType: SlideTableCell.IsCoveredVertically
+- uid: Egap.Presentations.SlideTableCell.IsCoveredVertically*
+  name: IsCoveredVertically
+  href: api/Egap.Presentations.SlideTableCell.html#Egap_Presentations_SlideTableCell_IsCoveredVertically_
+  commentId: Overload:Egap.Presentations.SlideTableCell.IsCoveredVertically
+  isSpec: "True"
+  fullName: Egap.Presentations.SlideTableCell.IsCoveredVertically
+  nameWithType: SlideTableCell.IsCoveredVertically
+- uid: Egap.Presentations.SlideTableCell.Origin
+  name: Origin
+  href: api/Egap.Presentations.SlideTableCell.html#Egap_Presentations_SlideTableCell_Origin
+  commentId: P:Egap.Presentations.SlideTableCell.Origin
+  fullName: Egap.Presentations.SlideTableCell.Origin
+  nameWithType: SlideTableCell.Origin
+- uid: Egap.Presentations.SlideTableCell.Origin*
+  name: Origin
+  href: api/Egap.Presentations.SlideTableCell.html#Egap_Presentations_SlideTableCell_Origin_
+  commentId: Overload:Egap.Presentations.SlideTableCell.Origin
+  isSpec: "True"
+  fullName: Egap.Presentations.SlideTableCell.Origin
+  nameWithType: SlideTableCell.Origin
+- uid: Egap.Presentations.SlideTableCell.Row
+  name: Row
+  href: api/Egap.Presentations.SlideTableCell.html#Egap_Presentations_SlideTableCell_Row
+  commentId: P:Egap.Presentations.SlideTableCell.Row
+  fullName: Egap.Presentations.SlideTableCell.Row
+  nameWithType: SlideTableCell.Row
+- uid: Egap.Presentations.SlideTableCell.Row*
+  name: Row
+  href: api/Egap.Presentations.SlideTableCell.html#Egap_Presentations_SlideTableCell_Row_
+  commentId: Overload:Egap.Presentations.SlideTableCell.Row
+  isSpec: "True"
+  fullName: Egap.Presentations.SlideTableCell.Row
+  nameWithType: SlideTableCell.Row
+- uid: Egap.Presentations.SlideTableCell.RowIndex
+  name: RowIndex
+  href: api/Egap.Presentations.SlideTableCell.html#Egap_Presentations_SlideTableCell_RowIndex
+  commentId: P:Egap.Presentations.SlideTableCell.RowIndex
+  fullName: Egap.Presentations.SlideTableCell.RowIndex
+  nameWithType: SlideTableCell.RowIndex
+- uid: Egap.Presentations.SlideTableCell.RowIndex*
+  name: RowIndex
+  href: api/Egap.Presentations.SlideTableCell.html#Egap_Presentations_SlideTableCell_RowIndex_
+  commentId: Overload:Egap.Presentations.SlideTableCell.RowIndex
+  isSpec: "True"
+  fullName: Egap.Presentations.SlideTableCell.RowIndex
+  nameWithType: SlideTableCell.RowIndex
+- uid: Egap.Presentations.SlideTableCell.RowSpan
+  name: RowSpan
+  href: api/Egap.Presentations.SlideTableCell.html#Egap_Presentations_SlideTableCell_RowSpan
+  commentId: P:Egap.Presentations.SlideTableCell.RowSpan
+  fullName: Egap.Presentations.SlideTableCell.RowSpan
+  nameWithType: SlideTableCell.RowSpan
+- uid: Egap.Presentations.SlideTableCell.RowSpan*
+  name: RowSpan
+  href: api/Egap.Presentations.SlideTableCell.html#Egap_Presentations_SlideTableCell_RowSpan_
+  commentId: Overload:Egap.Presentations.SlideTableCell.RowSpan
+  isSpec: "True"
+  fullName: Egap.Presentations.SlideTableCell.RowSpan
+  nameWithType: SlideTableCell.RowSpan
+- uid: Egap.Presentations.SlideTableCell.Text
+  name: Text
+  href: api/Egap.Presentations.SlideTableCell.html#Egap_Presentations_SlideTableCell_Text
+  commentId: P:Egap.Presentations.SlideTableCell.Text
+  fullName: Egap.Presentations.SlideTableCell.Text
+  nameWithType: SlideTableCell.Text
+- uid: Egap.Presentations.SlideTableCell.Text*
+  name: Text
+  href: api/Egap.Presentations.SlideTableCell.html#Egap_Presentations_SlideTableCell_Text_
+  commentId: Overload:Egap.Presentations.SlideTableCell.Text
+  isSpec: "True"
+  fullName: Egap.Presentations.SlideTableCell.Text
+  nameWithType: SlideTableCell.Text
+- uid: Egap.Presentations.SlideTableCell.TextBody
+  name: TextBody
+  href: api/Egap.Presentations.SlideTableCell.html#Egap_Presentations_SlideTableCell_TextBody
+  commentId: P:Egap.Presentations.SlideTableCell.TextBody
+  fullName: Egap.Presentations.SlideTableCell.TextBody
+  nameWithType: SlideTableCell.TextBody
+- uid: Egap.Presentations.SlideTableCell.TextBody*
+  name: TextBody
+  href: api/Egap.Presentations.SlideTableCell.html#Egap_Presentations_SlideTableCell_TextBody_
+  commentId: Overload:Egap.Presentations.SlideTableCell.TextBody
+  isSpec: "True"
+  fullName: Egap.Presentations.SlideTableCell.TextBody
+  nameWithType: SlideTableCell.TextBody
+- uid: Egap.Presentations.SlideTableColumn
+  name: SlideTableColumn
+  href: api/Egap.Presentations.SlideTableColumn.html
+  commentId: T:Egap.Presentations.SlideTableColumn
+  fullName: Egap.Presentations.SlideTableColumn
+  nameWithType: SlideTableColumn
+- uid: Egap.Presentations.SlideTableColumn.Index
+  name: Index
+  href: api/Egap.Presentations.SlideTableColumn.html#Egap_Presentations_SlideTableColumn_Index
+  commentId: P:Egap.Presentations.SlideTableColumn.Index
+  fullName: Egap.Presentations.SlideTableColumn.Index
+  nameWithType: SlideTableColumn.Index
+- uid: Egap.Presentations.SlideTableColumn.Index*
+  name: Index
+  href: api/Egap.Presentations.SlideTableColumn.html#Egap_Presentations_SlideTableColumn_Index_
+  commentId: Overload:Egap.Presentations.SlideTableColumn.Index
+  isSpec: "True"
+  fullName: Egap.Presentations.SlideTableColumn.Index
+  nameWithType: SlideTableColumn.Index
+- uid: Egap.Presentations.SlideTableColumn.Table
+  name: Table
+  href: api/Egap.Presentations.SlideTableColumn.html#Egap_Presentations_SlideTableColumn_Table
+  commentId: P:Egap.Presentations.SlideTableColumn.Table
+  fullName: Egap.Presentations.SlideTableColumn.Table
+  nameWithType: SlideTableColumn.Table
+- uid: Egap.Presentations.SlideTableColumn.Table*
+  name: Table
+  href: api/Egap.Presentations.SlideTableColumn.html#Egap_Presentations_SlideTableColumn_Table_
+  commentId: Overload:Egap.Presentations.SlideTableColumn.Table
+  isSpec: "True"
+  fullName: Egap.Presentations.SlideTableColumn.Table
+  nameWithType: SlideTableColumn.Table
+- uid: Egap.Presentations.SlideTableColumn.Width
+  name: Width
+  href: api/Egap.Presentations.SlideTableColumn.html#Egap_Presentations_SlideTableColumn_Width
+  commentId: P:Egap.Presentations.SlideTableColumn.Width
+  fullName: Egap.Presentations.SlideTableColumn.Width
+  nameWithType: SlideTableColumn.Width
+- uid: Egap.Presentations.SlideTableColumn.Width*
+  name: Width
+  href: api/Egap.Presentations.SlideTableColumn.html#Egap_Presentations_SlideTableColumn_Width_
+  commentId: Overload:Egap.Presentations.SlideTableColumn.Width
+  isSpec: "True"
+  fullName: Egap.Presentations.SlideTableColumn.Width
+  nameWithType: SlideTableColumn.Width
+- uid: Egap.Presentations.SlideTableRow
+  name: SlideTableRow
+  href: api/Egap.Presentations.SlideTableRow.html
+  commentId: T:Egap.Presentations.SlideTableRow
+  fullName: Egap.Presentations.SlideTableRow
+  nameWithType: SlideTableRow
+- uid: Egap.Presentations.SlideTableRow.Cells
+  name: Cells
+  href: api/Egap.Presentations.SlideTableRow.html#Egap_Presentations_SlideTableRow_Cells
+  commentId: P:Egap.Presentations.SlideTableRow.Cells
+  fullName: Egap.Presentations.SlideTableRow.Cells
+  nameWithType: SlideTableRow.Cells
+- uid: Egap.Presentations.SlideTableRow.Cells*
+  name: Cells
+  href: api/Egap.Presentations.SlideTableRow.html#Egap_Presentations_SlideTableRow_Cells_
+  commentId: Overload:Egap.Presentations.SlideTableRow.Cells
+  isSpec: "True"
+  fullName: Egap.Presentations.SlideTableRow.Cells
+  nameWithType: SlideTableRow.Cells
+- uid: Egap.Presentations.SlideTableRow.Height
+  name: Height
+  href: api/Egap.Presentations.SlideTableRow.html#Egap_Presentations_SlideTableRow_Height
+  commentId: P:Egap.Presentations.SlideTableRow.Height
+  fullName: Egap.Presentations.SlideTableRow.Height
+  nameWithType: SlideTableRow.Height
+- uid: Egap.Presentations.SlideTableRow.Height*
+  name: Height
+  href: api/Egap.Presentations.SlideTableRow.html#Egap_Presentations_SlideTableRow_Height_
+  commentId: Overload:Egap.Presentations.SlideTableRow.Height
+  isSpec: "True"
+  fullName: Egap.Presentations.SlideTableRow.Height
+  nameWithType: SlideTableRow.Height
+- uid: Egap.Presentations.SlideTableRow.Index
+  name: Index
+  href: api/Egap.Presentations.SlideTableRow.html#Egap_Presentations_SlideTableRow_Index
+  commentId: P:Egap.Presentations.SlideTableRow.Index
+  fullName: Egap.Presentations.SlideTableRow.Index
+  nameWithType: SlideTableRow.Index
+- uid: Egap.Presentations.SlideTableRow.Index*
+  name: Index
+  href: api/Egap.Presentations.SlideTableRow.html#Egap_Presentations_SlideTableRow_Index_
+  commentId: Overload:Egap.Presentations.SlideTableRow.Index
+  isSpec: "True"
+  fullName: Egap.Presentations.SlideTableRow.Index
+  nameWithType: SlideTableRow.Index
+- uid: Egap.Presentations.SlideTableRow.Table
+  name: Table
+  href: api/Egap.Presentations.SlideTableRow.html#Egap_Presentations_SlideTableRow_Table
+  commentId: P:Egap.Presentations.SlideTableRow.Table
+  fullName: Egap.Presentations.SlideTableRow.Table
+  nameWithType: SlideTableRow.Table
+- uid: Egap.Presentations.SlideTableRow.Table*
+  name: Table
+  href: api/Egap.Presentations.SlideTableRow.html#Egap_Presentations_SlideTableRow_Table_
+  commentId: Overload:Egap.Presentations.SlideTableRow.Table
+  isSpec: "True"
+  fullName: Egap.Presentations.SlideTableRow.Table
+  nameWithType: SlideTableRow.Table
 - uid: Egap.Presentations.TextBody
   name: TextBody
   href: api/Egap.Presentations.TextBody.html

@@ -89,7 +89,7 @@
 
 
   <h1 id="Egap_Presentations_ConnectorShape" data-uid="Egap.Presentations.ConnectorShape" class="text-break">
-Class ConnectorShape  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Presentations/Shapes.cs/#L359"><i class="bi bi-code-slash"></i></a>
+Class ConnectorShape  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Presentations/Shapes.cs/#L416"><i class="bi bi-code-slash"></i></a>
   </h1>
 
   <div class="facts text-secondary">
@@ -147,6 +147,12 @@ Class ConnectorShape  <a class="header-action link-secondary" title="View source
       <a class="xref" href="Egap.Presentations.SlideShape.html#Egap_Presentations_SlideShape_Transform">SlideShape.Transform</a>
     </div>
     <div>
+      <a class="xref" href="Egap.Presentations.SlideShape.html#Egap_Presentations_SlideShape_InheritedPlaceholder">SlideShape.InheritedPlaceholder</a>
+    </div>
+    <div>
+      <a class="xref" href="Egap.Presentations.SlideShape.html#Egap_Presentations_SlideShape_EffectiveTransform">SlideShape.EffectiveTransform</a>
+    </div>
+    <div>
       <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)">object.Equals(object)</a>
     </div>
     <div>
@@ -179,7 +185,7 @@ Class ConnectorShape  <a class="header-action link-secondary" title="View source
 
   <h3 id="Egap_Presentations_ConnectorShape_End" data-uid="Egap.Presentations.ConnectorShape.End">
   End
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Presentations/Shapes.cs/#L373"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Presentations/Shapes.cs/#L436"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>The shape and connection site the connector ends at (<code>a:endCxn</code>), or null when its end is free.</p>
@@ -187,7 +193,7 @@ Class ConnectorShape  <a class="header-action link-secondary" title="View source
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public ShapeConnection? End { get; }</code></pre>
+    <pre><code class="lang-csharp hljs">public ShapeConnection? End { get; set; }</code></pre>
   </div>
 
 
@@ -203,6 +209,9 @@ Class ConnectorShape  <a class="header-action link-secondary" title="View source
 
 
 
+  <h4 class="section" id="Egap_Presentations_ConnectorShape_End_remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>Setting it attaches the end, as <a class="xref" href="Egap.Presentations.ConnectorShape.html#Egap_Presentations_ConnectorShape_Start">Start</a> does.</p>
+</div>
 
 
 
@@ -211,7 +220,7 @@ Class ConnectorShape  <a class="header-action link-secondary" title="View source
 
   <h3 id="Egap_Presentations_ConnectorShape_PresetGeometry" data-uid="Egap.Presentations.ConnectorShape.PresetGeometry">
   PresetGeometry
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Presentations/Shapes.cs/#L367"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Presentations/Shapes.cs/#L424"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>The name of the connector's preset geometry, such as <code>line</code>, <code>straightConnector1</code> or <code>bentConnector3</code>.</p>
@@ -243,7 +252,7 @@ Class ConnectorShape  <a class="header-action link-secondary" title="View source
 
   <h3 id="Egap_Presentations_ConnectorShape_Start" data-uid="Egap.Presentations.ConnectorShape.Start">
   Start
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Presentations/Shapes.cs/#L370"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Presentations/Shapes.cs/#L428"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>The shape and connection site the connector starts at (<code>a:stCxn</code>), or null when its start is free.</p>
@@ -251,7 +260,7 @@ Class ConnectorShape  <a class="header-action link-secondary" title="View source
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public ShapeConnection? Start { get; }</code></pre>
+    <pre><code class="lang-csharp hljs">public ShapeConnection? Start { get; set; }</code></pre>
   </div>
 
 
@@ -267,6 +276,9 @@ Class ConnectorShape  <a class="header-action link-secondary" title="View source
 
 
 
+  <h4 class="section" id="Egap_Presentations_ConnectorShape_Start_remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>Setting it attaches the start; PowerPoint moves the line to the site when it next lays the slide out.</p>
+</div>
 
 
 
@@ -275,7 +287,7 @@ Class ConnectorShape  <a class="header-action link-secondary" title="View source
 </article>
 
         <div class="contribution d-print-none">
-          <a href="https://github.com/inexin/Egap/blob/main/src/Egap.Presentations/Shapes.cs/#L359" class="edit-link">Edit this page</a>
+          <a href="https://github.com/inexin/Egap/blob/main/src/Egap.Presentations/Shapes.cs/#L416" class="edit-link">Edit this page</a>
         </div>
 
 

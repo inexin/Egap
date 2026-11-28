@@ -89,7 +89,7 @@
 
 
   <h1 id="Egap_Presentations_GraphicFrame" data-uid="Egap.Presentations.GraphicFrame" class="text-break">
-Class GraphicFrame  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Presentations/Shapes.cs/#L386"><i class="bi bi-code-slash"></i></a>
+Class GraphicFrame  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Presentations/Shapes.cs/#L489"><i class="bi bi-code-slash"></i></a>
   </h1>
 
   <div class="facts text-secondary">
@@ -145,6 +145,12 @@ and written back; <a class="xref" href="Egap.Presentations.GraphicFrame.html#Ega
       <a class="xref" href="Egap.Presentations.SlideShape.html#Egap_Presentations_SlideShape_Placeholder">SlideShape.Placeholder</a>
     </div>
     <div>
+      <a class="xref" href="Egap.Presentations.SlideShape.html#Egap_Presentations_SlideShape_InheritedPlaceholder">SlideShape.InheritedPlaceholder</a>
+    </div>
+    <div>
+      <a class="xref" href="Egap.Presentations.SlideShape.html#Egap_Presentations_SlideShape_EffectiveTransform">SlideShape.EffectiveTransform</a>
+    </div>
+    <div>
       <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)">object.Equals(object)</a>
     </div>
     <div>
@@ -177,7 +183,7 @@ and written back; <a class="xref" href="Egap.Presentations.GraphicFrame.html#Ega
 
   <h3 id="Egap_Presentations_GraphicFrame_GraphicDataUri" data-uid="Egap.Presentations.GraphicFrame.GraphicDataUri">
   GraphicDataUri
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Presentations/Shapes.cs/#L404"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Presentations/Shapes.cs/#L524"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>The URI that names the kind of content (<code>a:graphicData/@uri</code>), as the file spells it.</p>
@@ -209,7 +215,7 @@ and written back; <a class="xref" href="Egap.Presentations.GraphicFrame.html#Ega
 
   <h3 id="Egap_Presentations_GraphicFrame_Kind" data-uid="Egap.Presentations.GraphicFrame.Kind">
   Kind
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Presentations/Shapes.cs/#L394"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Presentations/Shapes.cs/#L499"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>What the frame holds.</p>
@@ -237,11 +243,43 @@ and written back; <a class="xref" href="Egap.Presentations.GraphicFrame.html#Ega
 
 
 
+  <a id="Egap_Presentations_GraphicFrame_Table_" data-uid="Egap.Presentations.GraphicFrame.Table*"></a>
+
+  <h3 id="Egap_Presentations_GraphicFrame_Table" data-uid="Egap.Presentations.GraphicFrame.Table">
+  Table
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Presentations/Shapes.cs/#L509"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>The table the frame holds, or null when it holds something else.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public SlideTable? Table { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Egap.Presentations.SlideTable.html">SlideTable</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
   <a id="Egap_Presentations_GraphicFrame_Transform_" data-uid="Egap.Presentations.GraphicFrame.Transform*"></a>
 
   <h3 id="Egap_Presentations_GraphicFrame_Transform" data-uid="Egap.Presentations.GraphicFrame.Transform">
   Transform
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Presentations/Shapes.cs/#L412"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Presentations/Shapes.cs/#L532"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>The frame's position and size (<code>p:xfrm</code>), in EMUs with points alongside. A frame always has one; setting null
@@ -283,7 +321,7 @@ is not allowed.</p>
 </article>
 
         <div class="contribution d-print-none">
-          <a href="https://github.com/inexin/Egap/blob/main/src/Egap.Presentations/Shapes.cs/#L386" class="edit-link">Edit this page</a>
+          <a href="https://github.com/inexin/Egap/blob/main/src/Egap.Presentations/Shapes.cs/#L489" class="edit-link">Edit this page</a>
         </div>
 
 

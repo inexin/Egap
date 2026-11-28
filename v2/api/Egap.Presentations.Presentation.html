@@ -6,7 +6,7 @@
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <meta name="title" content="Class Presentation | Egap ">
       
-      <meta name="description" content="A PowerPoint presentation: its slides, the slide layouts they follow and the slide masters those belong to. A loaded presentation keeps its file whole, so a save writes back every part and every element the model does not hold, as it was, and only the parts whose content the model changed are written again.">
+      <meta name="description" content="Adding, removing and moving slides: the parts, relationships and slide list entries they need.">
       <link rel="icon" href="../images/favicon.ico">
       <link rel="stylesheet" href="../public/docfx.min.css">
       <link rel="stylesheet" href="../public/main.css">
@@ -97,9 +97,7 @@ Class Presentation  <a class="header-action link-secondary" title="View source" 
   <dl><dt>Assembly</dt><dd>Egap.Presentations.dll</dd></dl>
   </div>
 
-  <div class="markdown summary"><p>A PowerPoint presentation: its slides, the slide layouts they follow and the slide masters those belong to. A loaded
-presentation keeps its file whole, so a save writes back every part and every element the model does not hold, as it was,
-and only the parts whose content the model changed are written again.</p>
+  <div class="markdown summary"><p>Adding, removing and moving slides: the parts, relationships and slide list entries they need.</p>
 </div>
   <div class="markdown conceptual"></div>
 
@@ -152,11 +150,43 @@ and only the parts whose content the model changed are written again.</p>
 </h2>
 
 
+  <a id="Egap_Presentations_Presentation_CommentAuthors_" data-uid="Egap.Presentations.Presentation.CommentAuthors*"></a>
+
+  <h3 id="Egap_Presentations_Presentation_CommentAuthors" data-uid="Egap.Presentations.Presentation.CommentAuthors">
+  CommentAuthors
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Presentations/Presentation.cs/#L116"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>The authors of the presentation's comments, of both kinds; add one to comment on a slide.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public CommentAuthorCollection CommentAuthors { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Egap.Presentations.CommentAuthorCollection.html">CommentAuthorCollection</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
   <a id="Egap_Presentations_Presentation_Format_" data-uid="Egap.Presentations.Presentation.Format*"></a>
 
   <h3 id="Egap_Presentations_Presentation_Format" data-uid="Egap.Presentations.Presentation.Format">
   Format
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Presentations/Presentation.cs/#L36"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Presentations/Presentation.cs/#L39"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>The kind of file the presentation was loaded from; a save writes the same kind.</p>
@@ -184,15 +214,47 @@ and only the parts whose content the model changed are written again.</p>
 
 
 
+  <a id="Egap_Presentations_Presentation_NotesMaster_" data-uid="Egap.Presentations.Presentation.NotesMaster*"></a>
+
+  <h3 id="Egap_Presentations_Presentation_NotesMaster" data-uid="Egap.Presentations.Presentation.NotesMaster">
+  NotesMaster
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Presentations/Presentation.cs/#L101"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>The notes master, which lays out every notes page, or null when the presentation has none.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public NotesMaster? NotesMaster { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Egap.Presentations.NotesMaster.html">NotesMaster</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
   <a id="Egap_Presentations_Presentation_NotesMasterPartName_" data-uid="Egap.Presentations.Presentation.NotesMasterPartName*"></a>
 
   <h3 id="Egap_Presentations_Presentation_NotesMasterPartName" data-uid="Egap.Presentations.Presentation.NotesMasterPartName">
   NotesMasterPartName
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Presentations/Presentation.cs/#L95"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Presentations/Presentation.cs/#L98"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>The name of the notes master's part, such as <code>/ppt/notesMasters/notesMaster1.xml</code>, or null when the presentation
-has none. The notes master and the notes pages are kept as they are and written back with the file.</p>
+has none. Setting a slide's notes makes one when there is none.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -221,7 +283,7 @@ has none. The notes master and the notes pages are kept as they are and written 
 
   <h3 id="Egap_Presentations_Presentation_NotesSize" data-uid="Egap.Presentations.Presentation.NotesSize">
   NotesSize
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Presentations/Presentation.cs/#L83"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Presentations/Presentation.cs/#L86"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>The size of the notes pages, in EMUs with points alongside (<code>p:notesSz</code>).</p>
@@ -249,11 +311,43 @@ has none. The notes master and the notes pages are kept as they are and written 
 
 
 
+  <a id="Egap_Presentations_Presentation_Sections_" data-uid="Egap.Presentations.Presentation.Sections*"></a>
+
+  <h3 id="Egap_Presentations_Presentation_Sections" data-uid="Egap.Presentations.Presentation.Sections">
+  Sections
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Presentations/Presentation.cs/#L119"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>The sections the slides are grouped in; empty when the presentation has none.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public SlideSectionCollection Sections { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Egap.Presentations.SlideSectionCollection.html">SlideSectionCollection</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
   <a id="Egap_Presentations_Presentation_SlideMasters_" data-uid="Egap.Presentations.Presentation.SlideMasters*"></a>
 
   <h3 id="Egap_Presentations_Presentation_SlideMasters" data-uid="Egap.Presentations.Presentation.SlideMasters">
   SlideMasters
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Presentations/Presentation.cs/#L86"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Presentations/Presentation.cs/#L89"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>The slide masters, in the order the presentation lists them, each with its layouts and theme.</p>
@@ -285,7 +379,7 @@ has none. The notes master and the notes pages are kept as they are and written 
 
   <h3 id="Egap_Presentations_Presentation_SlideSize" data-uid="Egap.Presentations.Presentation.SlideSize">
   SlideSize
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Presentations/Presentation.cs/#L43"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Presentations/Presentation.cs/#L46"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>The size of every slide, in EMUs with points alongside (<code>p:sldSz</code>). Setting it changes the size the slides are
@@ -324,7 +418,7 @@ shown and printed at; their shapes keep their positions.</p>
 
   <h3 id="Egap_Presentations_Presentation_Slides" data-uid="Egap.Presentations.Presentation.Slides">
   Slides
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Presentations/Presentation.cs/#L89"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Presentations/Presentation.cs/#L92"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>The slides, in the order they are shown.</p>
@@ -356,11 +450,45 @@ shown and printed at; their shapes keep their positions.</p>
 </h2>
 
 
+  <a id="Egap_Presentations_Presentation_Create_" data-uid="Egap.Presentations.Presentation.Create*"></a>
+
+  <h3 id="Egap_Presentations_Presentation_Create" data-uid="Egap.Presentations.Presentation.Create">
+  Create()
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Presentations/Presentation.cs/#L182"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>A new presentation with 16:9 slides and no slides yet: one slide master with Egap's own theme (Office-like colours,
+Calibri Light and Calibri) and the eleven standard layouts, from Title Slide to Vertical Title and Text. Add slides
+with <a class="xref" href="Egap.Presentations.SlideCollection.html#Egap_Presentations_SlideCollection_Add_Egap_Presentations_SlideLayout_">Add(SlideLayout)</a>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static Presentation Create()</code></pre>
+  </div>
+
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Egap.Presentations.Presentation.html">Presentation</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
   <a id="Egap_Presentations_Presentation_Load_" data-uid="Egap.Presentations.Presentation.Load*"></a>
 
   <h3 id="Egap_Presentations_Presentation_Load_System_IO_Stream_Egap_Presentations_PresentationLoadOptions_" data-uid="Egap.Presentations.Presentation.Load(System.IO.Stream,Egap.Presentations.PresentationLoadOptions)">
   Load(Stream, PresentationLoadOptions?)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Presentations/Presentation.cs/#L112"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Presentations/Presentation.cs/#L152"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Loads a PowerPoint file from a stream, which is left open.</p>
@@ -411,7 +539,7 @@ shown and printed at; their shapes keep their positions.</p>
 
   <h3 id="Egap_Presentations_Presentation_Load_System_String_Egap_Presentations_PresentationLoadOptions_" data-uid="Egap.Presentations.Presentation.Load(System.String,Egap.Presentations.PresentationLoadOptions)">
   Load(string, PresentationLoadOptions?)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Presentations/Presentation.cs/#L101"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Presentations/Presentation.cs/#L141"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Loads a PowerPoint file: PPTX, PPTM, POTX, POTM, PPSX or PPSM, transitional or Strict.</p>
@@ -462,7 +590,7 @@ shown and printed at; their shapes keep their positions.</p>
 
   <h3 id="Egap_Presentations_Presentation_Save_System_IO_Stream_" data-uid="Egap.Presentations.Presentation.Save(System.IO.Stream)">
   Save(Stream)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Presentations/Presentation.cs/#L154"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Presentations/Presentation.cs/#L208"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Saves the presentation to a stream, which is left open.</p>
@@ -500,7 +628,7 @@ shown and printed at; their shapes keep their positions.</p>
 
   <h3 id="Egap_Presentations_Presentation_Save_System_String_" data-uid="Egap.Presentations.Presentation.Save(System.String)">
   Save(string)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Presentations/Presentation.cs/#L142"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Presentations/Presentation.cs/#L196"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Saves the presentation to a file. The file is the same kind as the one loaded (<a class="xref" href="Egap.Presentations.Presentation.html#Egap_Presentations_Presentation_Format">Format</a>), whatever the

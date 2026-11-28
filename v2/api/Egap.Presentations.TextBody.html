@@ -155,7 +155,7 @@ styles are kept as they are.</p>
 
   <h3 id="Egap_Presentations_TextBody_Paragraphs" data-uid="Egap.Presentations.TextBody.Paragraphs">
   Paragraphs
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Presentations/Text.cs/#L31"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Presentations/Text.cs/#L28"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>The paragraphs, in order.</p>
@@ -187,10 +187,10 @@ styles are kept as they are.</p>
 
   <h3 id="Egap_Presentations_TextBody_Shape" data-uid="Egap.Presentations.TextBody.Shape">
   Shape
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Presentations/Text.cs/#L28"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Presentations/Text.cs/#L25"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>The shape the text is in.</p>
+  <div class="markdown level1 summary"><p>The shape the text is in: for a table cell's text, the table's frame.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -219,7 +219,7 @@ styles are kept as they are.</p>
 
   <h3 id="Egap_Presentations_TextBody_Text" data-uid="Egap.Presentations.TextBody.Text">
   Text
-  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Presentations/Text.cs/#L37"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/inexin/Egap/blob/main/src/Egap.Presentations/Text.cs/#L39"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>The text of every paragraph, each ended by <a class="xref" href="Egap.Documents.ControlChar.html#Egap_Documents_ControlChar_ParagraphBreak">ParagraphBreak</a> but the last, with line breaks as
@@ -228,7 +228,7 @@ styles are kept as they are.</p>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public string Text { get; }</code></pre>
+    <pre><code class="lang-csharp hljs">public string Text { get; set; }</code></pre>
   </div>
 
 
@@ -244,7 +244,17 @@ styles are kept as they are.</p>
 
 
 
+  <h4 class="section" id="Egap_Presentations_TextBody_Text_remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>Setting it replaces the paragraphs: one for each part between paragraph breaks, with <code>a:br</code> for line breaks. The
+new paragraphs take the first paragraph's properties and the first run's formatting, so a title keeps its look.</p>
+</div>
 
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p>The text set is null.</p>
+</dd>
+  </dl>
 
 
 
