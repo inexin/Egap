@@ -47,6 +47,35 @@ public class HyphenationLayoutTests
     }
 
     [Fact]
+    public void JustifiedLinesThatShrinkIgnoreTheZone()
+    {
+        // Word 2013 and later hyphenate justified lines whatever room they leave; ragged lines keep to the zone.
+        int Count(ParagraphAlignment alignment, bool shrink)
+        {
+            Document document = new();
+            document.Settings.AutoHyphenation = true;
+            document.Settings.HyphenationZone = 36;
+            document.Settings.WordCompatibility.ShrinkJustifiedSpaces = shrink;
+            document.Styles.DefaultRunFormat.Language = "en-US";
+            Body body = document.AddSection().Body;
+            List<Paragraph> paragraphs = [];
+            for (double indent = 200; indent < 320; indent += 4)
+            {
+                Paragraph paragraph = body.AddParagraph(Words);
+                paragraph.Format.RightIndent = indent;
+                paragraph.Format.Alignment = alignment;
+                paragraphs.Add(paragraph);
+            }
+
+            DocumentLayout layout = document.Layout(new LayoutOptions { Fonts = Fonts });
+            return paragraphs.Sum(p => Hyphenated(layout, p));
+        }
+
+        Assert.True(Count(ParagraphAlignment.Justify, shrink: true) > Count(ParagraphAlignment.Justify, shrink: false));
+        Assert.Equal(Count(ParagraphAlignment.Left, shrink: false), Count(ParagraphAlignment.Left, shrink: true));
+    }
+
+    [Fact]
     public void WordsAreHyphenatedOnlyWhereTheSettingsAskForIt()
     {
         (Document off, Paragraph offFirst, _) = Sample(hyphenate: false);

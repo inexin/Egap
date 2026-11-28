@@ -1,3 +1,5 @@
 #nullable enable
 Egap.Documents.FieldKind.DisplayBarcode = 30 -> Egap.Documents.FieldKind
 Egap.Documents.FieldKind.MergeBarcode = 31 -> Egap.Documents.FieldKind
+Egap.Documents.WordCompatibility.ShrinkJustifiedSpaces.get -> bool
+Egap.Documents.WordCompatibility.ShrinkJustifiedSpaces.set -> void

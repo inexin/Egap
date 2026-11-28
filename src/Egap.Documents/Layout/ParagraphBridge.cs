@@ -119,6 +119,9 @@ internal sealed class ParagraphBridge(FontProvider fonts, Document document, Rev
     /// were made for.</summary>
     private (long Version, HyphenationOptions Options)? hyphenation;
 
+    /// <summary>The same options without a hyphenation zone, for justified paragraphs whose spaces shrink, made when needed.</summary>
+    private (long Version, HyphenationOptions Options)? hyphenationNoZone;
+
     /// <summary>How tracked changes show: <see cref="RevisionView.Final"/> or <see cref="RevisionView.Markup"/>.</summary>
     public RevisionView View => view;
 
@@ -762,9 +765,26 @@ internal sealed class ParagraphBridge(FontProvider fonts, Document document, Rev
     /// <summary>Text with no word to hyphenate: spaces, tabs, digits and common punctuation.</summary>
     private static readonly System.Buffers.SearchValues<char> NotWords = System.Buffers.SearchValues.Create(" 	 ​0123456789.,;:!?-()[]\"'–—‘’“”");
 
-    /// <summary>The document's hyphenation settings as Egami's options, made again when the settings change.</summary>
-    private HyphenationOptions HyphenationOf(DocumentSettings settings)
+    /// <summary>
+    /// The document's hyphenation settings as Egami's options, made again when the settings change; with
+    /// <paramref name="noZone"/>, without the hyphenation zone. Word 2013 and later hyphenate justified lines whose spaces
+    /// shrink (<see cref="WordCompatibility.ShrinkJustifiedSpaces"/>) whatever room the line leaves: its PDFs of justified
+    /// German, English and Norwegian prose hyphenate lines that leave as little as 11 points of an 18-point zone.
+    /// </summary>
+    private HyphenationOptions HyphenationOf(DocumentSettings settings, bool noZone = false)
     {
+        if (noZone)
+        {
+            if (hyphenationNoZone is { } zoneless && zoneless.Version == document.FormattingVersion)
+            {
+                return zoneless.Options;
+            }
+
+            HyphenationOptions without = HyphenationOf(settings) with { Zone = 0 };
+            hyphenationNoZone = (document.FormattingVersion, without);
+            return without;
+        }
+
         if (hyphenation is { } made && made.Version == document.FormattingVersion)
         {
             return made.Options;
@@ -860,6 +880,8 @@ internal sealed class ParagraphBridge(FontProvider fonts, Document document, Rev
         }
 
         bool autoHyphens = dictionaries is not null && document.Settings.AutoHyphenation && !format.SuppressAutoHyphens;
+        bool shrinks = format.Alignment is ParagraphAlignment.Justify or ParagraphAlignment.Distribute
+            && document.Settings.WordCompatibility.ShrinkJustifiedSpaces;
         return new EgamiParagraphStyle
         {
             DefaultStyle = defaultStyle ?? new TextStyle(),
@@ -873,6 +895,8 @@ internal sealed class ParagraphBridge(FontProvider fonts, Document document, Rev
             },
             AlignLast = format.Alignment == ParagraphAlignment.Distribute ? TextAlignLast.Justify : TextAlignLast.Auto,
             Justify = format.Alignment == ParagraphAlignment.Justify && format.Kashida != KashidaLevel.None ? TextJustify.Kashida : TextJustify.Auto,
+            // Word 2013 and later fit one more word on a justified line when its spaces can shrink to take it.
+            SpaceShrink = shrinks ? 0.25f : 0,
             Kashida = format.Kashida switch
             {
                 KashidaLevel.Low => EgamiKashidaLevel.Low,
@@ -888,7 +912,7 @@ internal sealed class ParagraphBridge(FontProvider fonts, Document document, Rev
             // Word hyphenates automatically where the settings ask for it and the paragraph does not suppress it, with the
             // settings' limit of lines in a row, zone and capitals switch.
             Hyphens = autoHyphens ? Hyphens.Auto : Hyphens.Manual,
-            Hyphenation = autoHyphens ? WithLimits(HyphenationOf(document.Settings), format) : null,
+            Hyphenation = autoHyphens ? WithLimits(HyphenationOf(document.Settings, noZone: shrinks), format) : null,
             LineFill = format.LineFill ?? lineFill,
             Fallback = fonts.Fallback,
             MaxLines = format.MaxLines > 0 ? format.MaxLines : null,

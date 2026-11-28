@@ -112,6 +112,9 @@ internal sealed partial class OdtReader
     private void ReadDocument()
     {
         document.Settings.CompatibilityMode = 15;
+
+        // LibreOffice only stretches justified lines.
+        document.Settings.WordCompatibility.ShrinkJustifiedSpaces = false;
         ReadSettings();
         ReadStyleTables();
         ReadMeta();
