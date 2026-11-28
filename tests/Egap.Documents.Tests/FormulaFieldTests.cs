@@ -69,9 +69,11 @@ public sealed class FormulaFieldTests
     [InlineData(" = ROUND(-2.5, 0) ", "-3")]
     [InlineData(" = 2 > 1 + 2 ", "0")]
     [InlineData(" = - - 3 ", "3")]
-    [InlineData(" = A1 ", "!A1 Is Not In Table")]
-    [InlineData(" = SUM(ABOVE) ", "!ABOVE Is Not In Table")]
-    [InlineData(" = Missing ", "!Undefined Bookmark, Missing")]
+    [InlineData(" = A1 ", "0")]
+    [InlineData(" = SUM(ABOVE) + 1 ", "1")]
+    [InlineData(" = 2^3^2 ", "512")]
+    [InlineData(" = -2^2 ", "4")]
+    [InlineData(" = Missing ", "!Undefined Bookmark, MISSING")]
     [InlineData(" = FOO(1) ", "!Syntax Error, (")]
     [InlineData(" = IF(1, 2) ", "!Syntax Error, )")]
     [InlineData(" = ABS(1, 2) ", "!Syntax Error, ,")]
@@ -101,7 +103,7 @@ public sealed class FormulaFieldTests
 
         Row total = table.AddRow();
         Field[] fields = new Field[3];
-        string[] codes = ["= COUNT(B2:C3)", "= SUM(ABOVE)", "= SUM(R2C3:R3C3) \\# \"#,##0.00\""];
+        string[] codes = ["= COUNT(B2:C3)", "= SUM(ABOVE)", "= SUM(C2:C3) \\# \"#,##0.00\""];
         for (int c = 0; c < 3; c++)
         {
             Cell cell = total.AddCell();

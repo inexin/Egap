@@ -218,11 +218,12 @@ internal sealed class FormulaEvaluator
 
     private Expr Power()
     {
+        // Word raises to powers from the right: 2^3^2 is 2^9.
         Expr left = Unary();
-        while (IsOperator("^"))
+        if (IsOperator("^"))
         {
             Next();
-            left = new Binary("^", left, Unary());
+            return new Binary("^", left, Power());
         }
 
         return left;
@@ -580,6 +581,17 @@ internal sealed class FormulaEvaluator
         switch (expr)
         {
             case Range range:
+                if (range.Table is null && cell?.GetAncestor<Table>() is null)
+                {
+                    // Outside a table a range names no cells, as a single reference does.
+                    if (scalar)
+                    {
+                        values.Add(0);
+                    }
+
+                    return true;
+                }
+
                 Table table = TableFor(range.Table, range.First + ":" + range.Last);
                 foreach (Cell c in RangeCells(table, range.First, range.Last))
                 {
@@ -601,9 +613,15 @@ internal sealed class FormulaEvaluator
         string upper = name.ToUpperInvariant();
         if (reference.Table is null && upper is "LEFT" or "RIGHT" or "ABOVE" or "BELOW")
         {
+            // Outside a table there are no cells to read: the reference counts as an empty cell, as in Word.
             if (cell?.GetAncestor<Table>() is not { } here)
             {
-                throw new FormulaException("!" + name + " Is Not In Table");
+                if (scalar)
+                {
+                    values.Add(0);
+                }
+
+                return true;
             }
 
             foreach (double v in Positional(here, upper))
@@ -657,10 +675,22 @@ internal sealed class FormulaEvaluator
 
         if (IsCellName(name))
         {
-            throw new FormulaException("!" + name + " Is Not In Table");
+            CellAddress(name);
+            if (scalar)
+            {
+                values.Add(0);
+            }
+
+            return true;
         }
 
-        throw new FormulaException("!Undefined Bookmark, " + name);
+        throw Undefined(name);
+    }
+
+    /// <summary>Word's error for a name that is no bookmark, which it shows in capitals.</summary>
+    private static FormulaException Undefined(string name)
+    {
+        return new FormulaException("!Undefined Bookmark, " + name.ToUpperInvariant());
     }
 
     private void AddCell(Cell c, List<double> values, bool scalar)
@@ -679,7 +709,7 @@ internal sealed class FormulaEvaluator
         {
             if (bookmarks(bookmark) is not { } found)
             {
-                throw new FormulaException("!Undefined Bookmark, " + bookmark);
+                throw Undefined(bookmark);
             }
 
             return found.Start.GetAncestor<Table>() ?? throw new FormulaException("!" + reference + " Is Not In Table");
@@ -729,6 +759,12 @@ internal sealed class FormulaEvaluator
         Cell?[][] grid = Grid(table);
         int columns = grid.Length == 0 ? 0 : grid.Max(r => r.Length);
         int r1, c1, r2, c2;
+        if (IsRowColumnName(first) || IsRowColumnName(last))
+        {
+            // Word takes RnCn for single cells only.
+            throw new FormulaException("!Syntax Error, :");
+        }
+
         if (IsCellName(first) && IsCellName(last))
         {
             (r1, c1) = CellAddress(first);
@@ -791,8 +827,8 @@ internal sealed class FormulaEvaluator
     }
 
     /// <summary>
-    /// The table's cells by grid position: a cell spanning columns fills each of them, and a cell continuing a vertical merge
-    /// is the merge's first cell.
+    /// The table's cells as Word counts them for references: each row's cells in order, whatever columns a cell spans, and a
+    /// cell continuing a vertical merge standing for the merge's first cell (the cell above it in the same grid column).
     /// </summary>
     private Cell?[][] Grid(Table table)
     {
@@ -802,25 +838,29 @@ internal sealed class FormulaEvaluator
         }
 
         Cell?[][] grid = new Cell?[table.Rows.Count][];
+        List<Cell?> above = [], columns = [];
         for (int r = 0; r < grid.Length; r++)
         {
             List<Cell?> row = [];
+            columns.Clear();
             foreach (Cell c in table.Rows[r].Cells)
             {
                 int span = Math.Max(1, c.Format.GridSpan ?? 1);
                 Cell? owner = c;
-                if (c.Format.VerticalMerge == VerticalMerge.Continue && r > 0 && row.Count < grid[r - 1].Length)
+                if (c.Format.VerticalMerge == VerticalMerge.Continue && columns.Count < above.Count)
                 {
-                    owner = grid[r - 1][row.Count] ?? c;
+                    owner = above[columns.Count] ?? c;
                 }
 
+                row.Add(owner);
                 for (int i = 0; i < span; i++)
                 {
-                    row.Add(owner);
+                    columns.Add(owner);
                 }
             }
 
             grid[r] = [.. row];
+            (above, columns) = (columns, above);
         }
 
         grids[table] = grid;
@@ -854,10 +894,16 @@ internal sealed class FormulaEvaluator
         TryCellAddress(name, out int row, out int column);
         if (row < 0 || column < 0)
         {
-            throw new FormulaException("!Table Index Cannot be Zero");
+            // Word reads A0 as the name R0C1, which no bookmark has.
+            throw Undefined(string.Create(CultureInfo.InvariantCulture, $"R{row + 1}C{column + 1}"));
         }
 
         return (row, column);
+    }
+
+    private static bool IsRowColumnName(string name)
+    {
+        return name.Length >= 4 && name[0] is 'R' or 'r' && char.IsAsciiDigit(name[1]) && TryCellAddress(name, out _, out _);
     }
 
     /// <summary>Zero-based row and column of an A1 or RnCn name; -1 for an index of zero.</summary>

@@ -108,7 +108,7 @@ internal milestones whose public API was frozen and reviewed, and they are liste
 - Formula fields: `FieldKind.Formula` (`= expression`), which `UpdateFields` and `Field.Update` now compute as Word does:
   `+ - * / % ^`, comparisons, parentheses, Word's eighteen functions (`SUM`, `AVERAGE`, `IF`, `ROUND` and the rest),
   bookmarks and nested fields, and in a table cell A1 and RnCn references, ranges and `LEFT`, `RIGHT`, `ABOVE` and
-  `BELOW`, with merged cells by grid position and cells holding currency signs and digit grouping. The DOCX reader takes
+  `BELOW`, with a row's cells counted in order as Word counts them and cells holding currency signs and digit grouping. The DOCX reader takes
   the document's decimal symbol and list separator for them. Errors show Word's texts, such as `!Zero Divide`.
 - `\#` numeric pictures follow Word's rules for every field, a mail merge's included: `#` shows a space for a missing
   digit, `x` drops digits, `-` and `+` show the sign, text in apostrophes, and positive, negative and zero sections.

@@ -217,8 +217,8 @@ the comparisons `= <> < <= > >=` (1 when true, 0 when not) and parentheses; Word
 `COUNT`, `DEFINED`, `FALSE`, `IF`, `INT`, `MAX`, `MIN`, `MOD`, `NOT`, `OR`, `PRODUCT`, `ROUND`, `SIGN`, `SUM` and `TRUE`;
 bookmark names (the number a bookmark holds) and nested fields. In a table cell a formula reads the table's cells: `B2` or
 `R2C2`, ranges such as `A1:C3`, `B:B` and `2:2`, lists such as `A1,B3`, and `LEFT`, `RIGHT`, `ABOVE` and `BELOW`, the
-numbers next to the field's cell up to the first empty or text cell after them. Merged cells count by their place in the
-table's grid. `SUM(Prices)` adds the cells a bookmark covers, and `SUM(Prices B:B)` reads a column of a bookmarked table.
+numbers next to the field's cell up to the first empty or text cell after them. As in Word, a row's cells count in order
+whatever columns they span, and `RnCn` names single cells only. `SUM(Prices)` adds the cells a bookmark covers, and `SUM(Prices B:B)` reads a column of a bookmarked table.
 Cells may hold currency signs and digit grouping, such as `$1,234.50`. The decimal symbol and the separator between a
 function's arguments are the document's (Word's `decimalSymbol` and `listSeparator` settings), a period and a comma unless
 the file names others. Without a `\#` picture a result shows at most two decimals. A formula that cannot be worked out shows

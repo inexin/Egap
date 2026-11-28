@@ -127,7 +127,7 @@ def formulas():
     BOOKMARKS.clear()
     plain = [
         ("= 2+3", "5"), ("=2+3*4", "14"), ("= (2+3)*4", "20"), ("= 10/4", "2.5"), ("= 1/3", "0.33"), ("= 2^10", "1024"),
-        ("= -2^2", "4"), ("= 2^3^2", "64"), ("= 50%", "0.5"), ("= 200*10%", "20"), ("= 7-10", "-3"), ("= 3 > 2", "1"),
+        ("= -2^2", "4"), ("= 2^3^2", "512"), ("= 50%", "0.5"), ("= 200*10%", "20"), ("= 7-10", "-3"), ("= 3 > 2", "1"),
         ("= 3 < 2", "0"), ("= 2 = 2", "1"), ("= 2 <> 2", "0"), ("= 2 <= 2", "1"), ("= 3 >= 4", "0"), ("= 1 + 2 > 2", "1"),
         ("= ABS(-4.5)", "4.5"), ("= AND(1, 0)", "0"), ("= OR(1, 0)", "1"), ("= NOT(0)", "1"), ("= AVERAGE(1, 2, 3, 4)", "2.5"),
         ("= COUNT(1, 2, 3)", "3"), ("= DEFINED(Price)", "1"), ("= DEFINED(Missing)", "0"), ("= FALSE", "0"), ("= TRUE", "1"),
@@ -143,7 +143,7 @@ def formulas():
         ("= 0 \\# \"0.00;(0.00);'zero'\"", "zero"), ('= 33 \\# "##%"', "33%"), ("= 347.44 \\# \"$##0.00 'is sales tax'\"", "$347.44 is sales tax"),
         ('= -5 \\# "0.00"', "-5.00"),
         ("= 2 +", "!Unexpected End of Formula"), ("= (1+2", "!Unexpected End of Formula"), ("= 5 $ 3", "!Syntax Error, $"),
-        ("= 1/0", "!Zero Divide"), ("= Nothing + 1", "!Undefined Bookmark, Nothing"), ("= A1 + 1", "!A1 Is Not In Table"),
+        ("= 1/0", "!Zero Divide"), ("= Nothing + 1", "!Undefined Bookmark, NOTHING"), ("= A1 + 1", "1"),
         ([" IF ", ("= 2*60", "120"), ' > 100 "big" "small" '], "big"), (' IF Price > 10 "dear" "cheap" ', "dear"),
         (' IF Price < 10 "dear" "cheap" ', "cheap"),
     ]
@@ -168,8 +168,8 @@ def formulas():
     blocks.append(table([
         [[("[", "Numbers"), "1"], "2", "3", ("= SUM(LEFT)", "6")],
         ["4", "5", "6", ("= SUM(LEFT)", "15")],
-        [("= SUM(A1:A2)", "5"), ("= B1*B2", "10"), ("= SUM(R1C3:R2C3)", "9"), ("= SUM(A1:C2)", "21")],
-        [("= AVERAGE(1:1)", "3"), ("= COUNT(A1,B2,C1)", "3"), ("= A0", "!Table Index Cannot be Zero"), [("= PRODUCT(B1:C1)", "6"), ("]", "Numbers")]],
+        [("= SUM(A1:A2)", "5"), ("= B1*B2", "10"), ("= SUM(R1C3:R2C3)", "!Syntax Error, :"), ("= SUM(A1:C2)", "21")],
+        [("= AVERAGE(1:1)", "3"), ("= COUNT(A1,B2,C1)", "3"), ("= R2C1 + C1", "7"), [("= PRODUCT(B1:C1)", "6"), ("]", "Numbers")]],
     ]))
     blocks.append(line("Column B", "= SUM(Numbers B1:B2)", "7"))
 
@@ -181,11 +181,11 @@ def formulas():
         ["3", None, None],
     ]))
 
-    # Merged cells by grid position.
+    # Merged cells: a row's cells count in order.
     blocks.append(table([
         [{"content": "10", "span": 2}, "5"],
         ["1", "2", ("= SUM(A1:C1)", "15")],
-        [{"content": "100", "merge": "restart"}, "3", ("= B1", "10")],
+        [{"content": "100", "merge": "restart"}, "3", ("= B1", "5")],
         [{"content": None, "merge": "continue"}, "4", ("= SUM(A3:A4)", "100")],
         [("= SUM(ABOVE)", "111"), None, None],
     ]))
