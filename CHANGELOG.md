@@ -13,6 +13,10 @@ internal milestones whose public API was frozen and reviewed, and they are liste
 
 ## Egap.Documents 2.4.0 (unreleased)
 
+- Thai, Lao, Khmer and Myanmar text, written without spaces between words, breaks into lines between dictionary words,
+  where before a line broke only at a space or overflowed. `Find` and `Replace` with `WholeWord` and `Compare` use the
+  same word boundaries: a whole Thai word is found inside a run of letters, and a changed word is a change of that word,
+  not of the whole run.
 - Built on Egami 1.6.0-preview.1, Egami.Metafiles 1.1.0-preview.1 and Egami.Barcodes 1.1.0-preview.1;
   Egami.Fonts.Substitutes stays at 1.1.0.
 - The package carries `AGENTS.md`, a guide for AI coding assistants with the package's own names, entry points,
@@ -40,6 +44,8 @@ internal milestones whose public API was frozen and reviewed, and they are liste
 
 ## Egap.Pdf 2.4.0 (unreleased)
 
+- `FindText`, redaction and text replacement with `WholeWord` find whole Thai, Lao, Khmer and Myanmar words inside a run
+  of letters with no spaces, at the word boundaries of Egami's dictionaries.
 - Built on Egami 1.6.0-preview.1 and Egami.Barcodes 1.1.0-preview.1.
 - The package carries `AGENTS.md`, a guide for AI coding assistants with the package's own names, entry points,
   samples and common mistakes. The docs site publishes the same guides under `agents/`, and `llms.txt`, a list of every

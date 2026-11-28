@@ -25,13 +25,27 @@ internal static class TextSearch
         }
 
         string pattern = string.Join(@"\s+", parts.Select(Regex.Escape));
+        RegexOptions flags = RegexOptions.CultureInvariant | (options.MatchCase ? RegexOptions.None : RegexOptions.IgnoreCase);
         if (options.WholeWord)
         {
-            pattern = @"(?<![\p{L}\p{N}_])" + pattern + @"(?![\p{L}\p{N}_])";
+            // Thai, Lao, Khmer and Myanmar have no spaces between words: an edge of such a letter is checked against the
+            // dictionary word boundaries instead of the letters next to it.
+            bool dictionaryStart = DictionaryWords.IsComplexContext(parts[0], first: true);
+            bool dictionaryEnd = DictionaryWords.IsComplexContext(parts[^1], first: false);
+            pattern = (dictionaryStart ? string.Empty : @"(?<![\p{L}\p{N}_])") + pattern + (dictionaryEnd ? string.Empty : @"(?![\p{L}\p{N}_])");
+            if (dictionaryStart || dictionaryEnd)
+            {
+                return new DictionaryWords.WholeWordRegex(pattern, flags, Timeout, dictionaryStart, dictionaryEnd);
+            }
         }
 
-        RegexOptions flags = RegexOptions.CultureInvariant | (options.MatchCase ? RegexOptions.None : RegexOptions.IgnoreCase);
         return new Regex(pattern, flags, Timeout);
+    }
+
+    /// <summary>The matches of <paramref name="pattern"/> in <paramref name="text"/>, whole words only where it says so.</summary>
+    public static IEnumerable<Match> Matches(Regex pattern, string text)
+    {
+        return pattern is DictionaryWords.WholeWordRegex words ? words.WholeWords(text) : pattern.Matches(text);
     }
 
     /// <summary>Every match on one page.</summary>
@@ -43,7 +57,7 @@ internal static class TextSearch
         List<PdfTextMatch> matches = [];
         foreach (Block block in Blocks(text.Lines))
         {
-            for (Match m = pattern.Match(block.Text); m.Success; m = m.NextMatch())
+            foreach (Match m in Matches(pattern, block.Text))
             {
                 if (m.Length > 0 && ToMatch(pageIndex, block, m.Index, m.Length) is { } match)
                 {

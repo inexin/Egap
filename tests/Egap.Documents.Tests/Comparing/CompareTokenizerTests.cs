@@ -15,6 +15,17 @@ public sealed class CompareTokenizerTests
     }
 
     [Fact]
+    public void ThaiWithoutSpacesSplitsIntoDictionaryWords()
+    {
+        // "Thai language is a language": a change of one word is a change of one token, not of the whole run.
+        ParagraphTokens tokens = ParagraphTokens.Create(Paragraph("ภาษาไทยเป็นภาษา"), new TokenTable(false, false, false));
+
+        Assert.Equal(["ภาษา", "ไทย", "เป็น", "ภาษา"], Texts(tokens));
+        Assert.Equal([true, true, true, true], tokens.Words);
+        Assert.Equal(tokens.Ids[0], tokens.Ids[3]);
+    }
+
+    [Fact]
     public void AtomsStandAloneAndFieldsAreOneToken()
     {
         Document document = new();

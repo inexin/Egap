@@ -69,6 +69,10 @@ tabular or old-style figures and stylistic sets. Paragraphs choose where lines m
 `word-break` and `overflow-wrap` read into the same settings. DOCX keeps the features Word has (ligatures, number forms
 and spacing, stylistic sets, contextual alternates); Word has no word spacing or overline.
 
+Thai, Lao, Khmer and Myanmar, written without spaces between words, break into lines between words that Egami's word
+dictionaries find, as Word and browsers break them; before, such a line broke only at a space or overflowed. Find and
+Replace with `WholeWord`, PDF text search and document comparison use the same word boundaries.
+
 A justified paragraph can also stretch its Arabic lines with tatweels (kashida) between letters, as Word's low, medium
 and high kashida alignments do: set `ParagraphFormat.Kashida` to `KashidaLevel.Low`, `Medium` or `High` with
 `ParagraphAlignment.Justify`. What the tatweels do not take goes to word spaces, and lines in other scripts justify at
