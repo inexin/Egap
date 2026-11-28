@@ -196,6 +196,22 @@ public class EditingTests
     }
 
     [Fact]
+    public void WholeWordsInThaiFollowTheDictionary()
+    {
+        // "Thai language is a language": no spaces, so the word edges are the dictionary's.
+        Paragraph p = new Document().AddSection().Body.AddParagraph("ภาษาไทยเป็นภาษา");
+        FindOptions whole = new() { WholeWord = true };
+
+        Assert.Equal([0, 11], p.Find("ภาษา", whole).Select(m => m.Start));
+        Assert.Equal([4], p.Find("ไทย", whole).Select(m => m.Start));
+        Assert.Empty(p.Find("ภา", whole));
+        Assert.Empty(p.Find("ษาไ", whole));
+        Assert.Equal(2, p.Find("ภา").Count);
+        Assert.Equal(1, p.Replace("ไทย", "ลาว", whole));
+        Assert.Equal("ภาษาลาวเป็นภาษา", p.GetText());
+    }
+
+    [Fact]
     public void ReplaceWithOptionsAndRegex()
     {
         Document doc = new();

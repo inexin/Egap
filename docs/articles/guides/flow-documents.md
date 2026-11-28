@@ -69,6 +69,10 @@ tabular or old-style figures and stylistic sets. Paragraphs choose where lines m
 `word-break` and `overflow-wrap` read into the same settings. DOCX keeps the features Word has (ligatures, number forms
 and spacing, stylistic sets, contextual alternates); Word has no word spacing or overline.
 
+Thai, Lao, Khmer and Myanmar, written without spaces between words, break into lines between words that Egami's word
+dictionaries find, as Word and browsers break them; before, such a line broke only at a space or overflowed. Find and
+Replace with `WholeWord`, PDF text search and document comparison use the same word boundaries.
+
 Justified and distributed paragraphs break lines as Word 2013 and later do: a line takes one more word when its spaces
 can shrink to fit it, by up to a quarter of their width, so justified text often takes fewer lines than in a browser, and
 they hyphenate without the hyphenation zone, as Word does.
@@ -152,6 +156,43 @@ Document label = new();
 DocumentBuilder builder = new(label);
 builder.Writeln("Parcel 2026-118");
 builder.InsertBarcode(Barcode.Code128("PARCEL-2026-118"), 200, 50);
+label.Save("label.docx");
+```
+
+### Barcode fields
+
+Word's own barcodes are fields: `DISPLAYBARCODE "data" TYPE [switches]`, and `MERGEBARCODE FieldName TYPE [switches]` in a
+mail merge template. Egap reads them from DOCX, RTF and DOC as `FieldKind.DisplayBarcode` and `FieldKind.MergeBarcode`, keeps
+their codes when it saves, and layout, PDF export and rendering draw a DISPLAYBARCODE field's symbol, in vectors, in place
+of its result, as Word does. The types are Word's: `QR`, `CODE128`, `CODE39`, `NW7` (Codabar), `EAN13` and `JAN13`, `EAN8`
+and `JAN8`, `UPCA`, `UPCE`, `ITF14` and `CASE`, and `JPPOST` (the Japan Post customer barcode). The switches:
+
+| Switch | Meaning |
+| --- | --- |
+| `\s n` | Scale in percent, 10 to 1000. |
+| `\h n` | Height in twips: a linear symbol's bars, or a QR Code's side. |
+| `\r n` | Rotation in quarter turns clockwise, 0 to 3. |
+| `\f n`, `\b n` | Foreground and background colour, 0xRRGGBB; no background by default. |
+| `\t` | The text under a linear symbol. |
+| `\q n` | QR error correction, 0 to 3 or L, M, Q, H. |
+| `\p` | EAN and UPC style: `SUP2` and `SUP5` take an add-on after a space in the data. |
+| `\x` | Puts right a wrong check digit (EAN, JAN, UPC, ITF-14). |
+| `\d`, `\c` | Code 39 and NW7 start and stop characters, ITF-14 style: Egap always draws them, and bearer bars. |
+
+Word does not say what size it draws a symbol at, so Egap draws each at its standard's nominal size at 100 %: an X of
+0.33 mm for EAN and UPC, 1.016 mm for ITF-14, 0.254 mm for Code 128, Code 39 and NW7, the manual's 0.6 mm for Japan Post and
+0.53 mm for a QR Code module. Data a type cannot hold draws nothing, and the field shows its stored result (Word shows an
+error there). A mail merge makes each MERGEBARCODE field the DISPLAYBARCODE field of its value, with the same type and
+switches, as Word does; one without a value is removed with a warning.
+
+```csharp
+using Egap.Documents;
+
+Document label = new();
+Paragraph paragraph = label.AddSection().Body.AddParagraph("Track your parcel: ");
+paragraph.AddField("DISPLAYBARCODE \"https://egap.dev/t/118\" QR \\q 3 \\s 80");
+paragraph.AddRun(" ");
+paragraph.AddField("DISPLAYBARCODE \"490123456789\" JAN13 \\t");
 label.Save("label.docx");
 ```
 

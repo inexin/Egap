@@ -40,12 +40,26 @@ internal static class FindReplace
     {
         ArgumentException.ThrowIfNullOrEmpty(find);
         string pattern = Regex.Escape(find);
+        RegexOptions flags = (options.MatchCase ? RegexOptions.None : RegexOptions.IgnoreCase) | RegexOptions.CultureInvariant;
         if (options.WholeWord)
         {
-            pattern = @"\b" + pattern + @"\b";
+            // Thai, Lao, Khmer and Myanmar have no spaces between words, so \b never falls inside a run of their letters:
+            // an edge of such a letter is checked against the dictionary word boundaries instead.
+            bool dictionaryStart = DictionaryWords.IsComplexContext(find, first: true);
+            bool dictionaryEnd = DictionaryWords.IsComplexContext(find, first: false);
+            pattern = (dictionaryStart ? string.Empty : @"\b") + pattern + (dictionaryEnd ? string.Empty : @"\b");
+            if (dictionaryStart || dictionaryEnd)
+            {
+                return new DictionaryWords.WholeWordRegex(pattern, flags, Timeout, dictionaryStart, dictionaryEnd);
+            }
         }
 
-        return new Regex(pattern, (options.MatchCase ? RegexOptions.None : RegexOptions.IgnoreCase) | RegexOptions.CultureInvariant, Timeout);
+        return new Regex(pattern, flags, Timeout);
+    }
+
+    private static IEnumerable<Match> MatchesIn(Regex regex, string text)
+    {
+        return regex is DictionaryWords.WholeWordRegex words ? words.WholeWords(text) : regex.Matches(text);
     }
 
     public static int Replace(Node scope, string find, string replacement, FindOptions? options)
@@ -64,7 +78,7 @@ internal static class FindReplace
         foreach (Paragraph paragraph in scope is Paragraph p ? [p] : scope.Descendants<Paragraph>())
         {
             (string text, _) = TextOf(paragraph, options);
-            foreach (Match match in regex.Matches(text))
+            foreach (Match match in MatchesIn(regex, text))
             {
                 if (match.Length > 0)
                 {
@@ -99,7 +113,7 @@ internal static class FindReplace
             return 0;
         }
 
-        List<Match> matches = [.. regex.Matches(text).Where(m => m.Length > 0)];
+        List<Match> matches = [.. MatchesIn(regex, text).Where(m => m.Length > 0)];
 
         // From the last match back, so earlier offsets stay right while later text changes.
         for (int i = matches.Count - 1; i >= 0; i--)

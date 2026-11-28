@@ -13,6 +13,10 @@ internal milestones whose public API was frozen and reviewed, and they are liste
 
 ## Egap.Documents 2.4.0 (unreleased)
 
+- Thai, Lao, Khmer and Myanmar text, written without spaces between words, breaks into lines between dictionary words,
+  where before a line broke only at a space or overflowed. `Find` and `Replace` with `WholeWord` and `Compare` use the
+  same word boundaries: a whole Thai word is found inside a run of letters, and a changed word is a change of that word,
+  not of the whole run.
 - Justified lines before breaks are laid out as Word lays them out. The line before a manual line break (Shift+Enter) or
   a display equation now stretches to the margins, unless the document has Word's `doNotExpandShiftReturn`, which the new
   `WordCompatibility.DoNotExpandShiftReturn` reads and writes (it used to be listed in `OtherSettings`). The line before a
@@ -38,6 +42,10 @@ internal milestones whose public API was frozen and reviewed, and they are liste
   recognises EPS as `application/postscript`, DOCX and ODT keep EPS parts with an `.eps` name, and RTF writes the preview
   as a PNG. Egap loads pictures with Egami.Metafiles' format registered, so a metafile preview loads wherever Egami
   decodes a picture.
+- Word's barcode fields: `FieldKind.DisplayBarcode` and `FieldKind.MergeBarcode`. Layout, PDF export and rendering draw a
+  DISPLAYBARCODE field's symbol in vectors in place of its result (QR, CODE128, CODE39, NW7, EAN13/JAN13, EAN8/JAN8, UPCA,
+  UPCE, ITF14/CASE and JPPOST, with the `\s`, `\h`, `\r`, `\f`, `\b`, `\t`, `\q`, `\p` and `\x` switches), DOCX, RTF
+  and DOC keep the fields, and a mail merge makes each MERGEBARCODE field the DISPLAYBARCODE field of its value.
 - Ruby: a `Ruby` inline holds its base's inlines and the annotation's `Text`, `TextFormat`, `Position`, `Alignment`,
   `FontSize`, `Raise`, `BaseFontSize` and `Language`. Layout sets the annotation over (or under) its base as Word
   does, without overhang, and makes room for it in the line; tagged PDF puts base and annotation in Ruby, RB and RT
@@ -88,6 +96,8 @@ internal milestones whose public API was frozen and reviewed, and they are liste
 
 ## Egap.Pdf 2.4.0 (unreleased)
 
+- `FindText`, redaction and text replacement with `WholeWord` find whole Thai, Lao, Khmer and Myanmar words inside a run
+  of letters with no spaces, at the word boundaries of Egami's dictionaries.
 - Built on Egami 1.6.0-preview.1 and Egami.Barcodes 1.1.0-preview.1.
 - The package carries `AGENTS.md`, a guide for AI coding assistants with the package's own names, entry points,
   samples and common mistakes. The docs site publishes the same guides under `agents/`, and `llms.txt`, a list of every
