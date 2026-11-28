@@ -43,6 +43,9 @@ internal sealed class EpubReader
         this.container = container;
         this.package = package;
         this.options = options;
+
+        // Reading systems lay chapters out as browsers do, only stretching justified lines.
+        document.Settings.WordCompatibility.ShrinkJustifiedSpaces = false;
     }
 
     public static Document Read(Stream stream, EpubLoadOptions options, out IReadOnlyList<ConversionWarning> warnings)

@@ -1,1 +1,3 @@
 #nullable enable
+Egap.Documents.WordCompatibility.ShrinkJustifiedSpaces.get -> bool
+Egap.Documents.WordCompatibility.ShrinkJustifiedSpaces.set -> void
