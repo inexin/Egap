@@ -100,6 +100,36 @@ public sealed class ContentTests
     }
 
     [Fact]
+    public void AMergeSplitsAWiderMergeItCutsInto()
+    {
+        SlideTable table = NewTable(3, 3);
+        table.Merge(0, 0, 1, 3);
+
+        table.Merge(0, 0, 1, 2);
+
+        Assert.Equal(2, table.Cell(0, 0).ColumnSpan);
+        Assert.Same(table.Cell(0, 0), table.Cell(0, 1).Origin);
+        Assert.False(table.Cell(0, 2).IsCoveredHorizontally);
+        Assert.Same(table.Cell(0, 2), table.Cell(0, 2).Origin);
+    }
+
+    [Fact]
+    public void AMergeSplitsAMergeFromOutsideTheBlock()
+    {
+        SlideTable table = NewTable(3, 3);
+        table.Merge(0, 0, 1, 2);
+
+        table.Merge(0, 1, 2, 1);
+
+        Assert.Equal((1, 1), (table.Cell(0, 0).RowSpan, table.Cell(0, 0).ColumnSpan));
+        SlideTableCell origin = table.Cell(0, 1);
+        Assert.False(origin.IsCoveredHorizontally);
+        Assert.Equal((2, 1), (origin.RowSpan, origin.ColumnSpan));
+        Assert.Same(origin, table.Cell(1, 1).Origin);
+        Assert.Same(table.Cell(0, 0), table.Cell(0, 0).Origin);
+    }
+
+    [Fact]
     public void CellsAreMergedAndSplit()
     {
         SlideTable table = LoadTable();
@@ -394,6 +424,13 @@ public sealed class ContentTests
         $"<p:cm authorId=\"0\" dt=\"2026-01-0{index}T10:00:00.000\" idx=\"{index}\"><p:pos x=\"10\" y=\"10\"/><p:text>{text}</p:text>"
         + (parent is null ? "" : $"<p:extLst><p:ext uri=\"{{C676402C-5697-4E1C-873F-D02D1690AC5C}}\"><p15:threadingInfo timeZoneBias=\"0\"><p15:parentCm authorId=\"0\" idx=\"{parent}\"/></p15:threadingInfo></p:ext></p:extLst>")
         + "</p:cm>";
+
+    private static SlideTable NewTable(int rows, int columns)
+    {
+        Presentation presentation = Presentation.Create();
+        Slide slide = presentation.Slides.Add(presentation.SlideMasters[0].Layouts[6]);
+        return slide.Shapes.AddTable(rows, columns, new ShapeTransform(0, 0, 3000, 300)).Table!;
+    }
 
     private static string Cell(string text, string attributes = "") =>
         $"<a:tc {attributes}><a:txBody><a:bodyPr/><a:lstStyle/><a:p><a:r><a:rPr lang=\"en-US\"/><a:t>{text}</a:t></a:r></a:p></a:txBody><a:tcPr/></a:tc>";

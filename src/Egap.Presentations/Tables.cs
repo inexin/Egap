@@ -311,7 +311,7 @@ public sealed class SlideTable
     /// <summary>
     /// Merges the <paramref name="rowSpan"/> by <paramref name="columnSpan"/> cells from <paramref name="row"/> and
     /// <paramref name="column"/> into one, which shows the top left cell's text; the others keep theirs, hidden, as
-    /// PowerPoint does. Cells already merged in the block are split first.
+    /// PowerPoint does. A merge that covers any cell of the block, even one reaching past it, is split first.
     /// </summary>
     /// <exception cref="ArgumentOutOfRangeException">The block does not fit in the table, or a span is below 1.</exception>
     public SlideTableCell Merge(int row, int column, int rowSpan, int columnSpan)
@@ -320,6 +320,15 @@ public sealed class SlideTable
         ArgumentOutOfRangeException.ThrowIfLessThan(columnSpan, 1);
         _ = Cell(row, column);
         _ = Cell(row + rowSpan - 1, column + columnSpan - 1);
+        IEnumerable<SlideTableCell> block = rows.Skip(row).Take(rowSpan).SelectMany(r => r.Cells.Skip(column).Take(columnSpan));
+        foreach (SlideTableCell origin in DistinctOrigins(block))
+        {
+            if (origin.RowSpan > 1 || origin.ColumnSpan > 1)
+            {
+                Split(origin);
+            }
+        }
+
         for (int r = row; r < row + rowSpan; r++)
         {
             for (int c = column; c < column + columnSpan; c++)
