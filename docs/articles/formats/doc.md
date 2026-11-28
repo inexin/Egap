@@ -2,7 +2,7 @@
 
 Egap.Documents reads Word's binary documents and templates, the DOC and DOT files of Word 97 to 2003, and those of Word 6
 and Word 95. It needs no add-on package. Egap does not write DOC: save a document read from one as DOCX, or in any other
-format Egap writes.
+format Egap writes (RTF, which Word opens as readily, writes SVG pictures, charts and shapes as EMF vectors).
 
 ## Reading
 

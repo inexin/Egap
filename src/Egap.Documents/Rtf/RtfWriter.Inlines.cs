@@ -2,8 +2,10 @@ using System.Buffers.Binary;
 using System.Globalization;
 
 using Egami;
+using Egami.Drawing;
 using Egami.Formats;
 using Egami.Formats.Png;
+using Egami.Metafiles;
 
 namespace Egap.Documents.Rtf;
 
@@ -148,6 +150,9 @@ internal sealed partial class RtfWriter
                 bool pictureGroup = OpenMarked(inline);
                 WritePicture(picture);
                 CloseMarked(pictureGroup);
+                break;
+            case Shape shape when shape.Kind == ShapeKind.Other && shape.TextBox is null
+                && WriteDrawing(shape.Floating, shape.Width, shape.Height, shape.Title, shape.Description, (c, r) => Layout.PageDrawing.DrawDrawing(shape, c, r)):
                 break;
             case Shape shape:
                 WriteShape(shape);
@@ -527,28 +532,131 @@ internal sealed partial class RtfWriter
         {
             ShapeGroup(floating, picture.Width, picture.Height, 75, () =>
             {
-                Property("pib", () => PictGroup(picture.Image, picture.Width, picture.Height, picture.Crop, null, null));
+                Property("pib", () => PictGroup(picture.Image, picture.Width, picture.Height, picture.Crop, null, null, inShape: true));
                 TextProperty("wzTitle", picture.Title);
                 TextProperty("wzDescription", picture.Description);
             });
             return;
         }
 
-        PictGroup(picture.Image, picture.Width, picture.Height, picture.Crop, picture.Title, picture.Description);
+        PictGroup(picture.Image, picture.Width, picture.Height, picture.Crop, picture.Title, picture.Description, inShape: false);
+    }
+
+    /// <summary>
+    /// A drawing Egap draws itself (a chart, shape group, SmartArt or DrawingML shape, which RTF has no form of) written as an
+    /// EMF picture, inline or floating as the drawing is; false, writing nothing, when it cannot be drawn.
+    /// </summary>
+    private bool WriteDrawing(FloatingPlacement? floating, double width, double height, string? title, string? description, Func<Canvas, RectF, bool> draw)
+    {
+        if (Metafile(draw, width, height) is not { } emf)
+        {
+            return false;
+        }
+
+        if (floating is not null)
+        {
+            ShapeGroup(floating, width, height, 75, () =>
+            {
+                Property("pib", () => VectorPict(emf, draw, width, height, default, null, null, inShape: true));
+                TextProperty("wzTitle", title);
+                TextProperty("wzDescription", description);
+            });
+        }
+        else
+        {
+            VectorPict(emf, draw, width, height, default, title, description, inShape: false);
+        }
+
+        return true;
     }
 
     /// <summary>
     /// A <c>\pict</c> group: the picture shown at <paramref name="width"/> by <paramref name="height"/> points after its crop.
-    /// PNG, JPEG and EMF are written as they are, WMF without its placeable header; other images are converted to PNG.
+    /// PNG, JPEG and EMF are written as they are, WMF without its placeable header, and SVG as an EMF of its vectors; other
+    /// images are converted to PNG.
     /// </summary>
-    private void PictGroup(ImageData image, double width, double height, (double Left, double Top, double Right, double Bottom) crop, string? title, string? description)
+    private void PictGroup(ImageData image, double width, double height, (double Left, double Top, double Right, double Bottom) crop, string? title, string? description, bool inShape)
     {
+        if (image.ContentType == "image/svg+xml" && Layout.PictureDrawers.For("image/svg+xml") is { } drawer)
+        {
+            ReadOnlyMemory<byte> svg = image.Bytes;
+            bool Draw(Canvas canvas, RectF rect)
+            {
+                drawer.Draw(svg, canvas, rect);
+                return true;
+            }
+
+            if (Metafile(Draw, width, height) is { } emf)
+            {
+                VectorPict(emf, Draw, width, height, crop, title, description, inShape);
+                return;
+            }
+        }
+
         if (Blip(image, width, height) is not { } blip)
         {
             warnings.Add(ConversionWarningKind.PictureDropped, "A picture Egap could not convert for RTF was left out.");
             return;
         }
 
+        Pict(blip, width, height, crop, title, description);
+    }
+
+    /// <summary>
+    /// Vectors as an EMF (EMF+ with GDI records beside them, which Word draws), in <c>\shppict</c> with a PNG of the same
+    /// drawing in <c>\nonshppict</c> for readers without EMF; a shape's own picture (<c>\sp pib</c>) holds the EMF alone.
+    /// </summary>
+    private void VectorPict(byte[] emf, Func<Canvas, RectF, bool> draw, double width, double height, (double Left, double Top, double Right, double Bottom) crop, string? title, string? description, bool inShape)
+    {
+        if (inShape)
+        {
+            Pict((emf, "emfblip", null), width, height, crop, title, description);
+            return;
+        }
+
+        Destination("shppict");
+        Pict((emf, "emfblip", null), width, height, crop, title, description);
+        Close();
+        if (Rendered(draw, width, height) is { } png)
+        {
+            Open();
+            Word("nonshppict");
+            Pict(png, width, height, crop, null, null);
+            Close();
+        }
+    }
+
+    /// <summary>What <paramref name="draw"/> draws over <paramref name="width"/> by <paramref name="height"/> points as an EMF file, or null when it draws nothing.</summary>
+    private static byte[]? Metafile(Func<Canvas, RectF, bool> draw, double width, double height)
+    {
+        if (!(width > 0 && height > 0 && double.IsFinite(width) && double.IsFinite(height)))
+        {
+            return null;
+        }
+
+        // The canvas's units are pixels at the EMF's resolution; the drawing is in points, scaled to them.
+        float scale = EmfWriteOptions.Default.Dpi / 72f;
+        float pixelsWide = (float)Math.Clamp(width * scale, 1, 32767), pixelsHigh = (float)Math.Clamp(height * scale, 1, 32767);
+        try
+        {
+            using MemoryStream stream = new();
+            bool drawn;
+            using (EmfCanvas canvas = new(stream, pixelsWide, pixelsHigh))
+            {
+                canvas.Scale(pixelsWide / (float)width, pixelsHigh / (float)height);
+                drawn = draw(canvas, new RectF(0, 0, (float)width, (float)height));
+            }
+
+            return drawn ? stream.ToArray() : null;
+        }
+        catch (Exception e) when (Layout.PictureDrawers.IsDrawFailure(e))
+        {
+            return null;
+        }
+    }
+
+    private void Pict((ReadOnlyMemory<byte> Bytes, string Word, (long, long)? Pixels) blip, double width, double height, (double Left, double Top, double Right, double Bottom) crop, string? title, string? description)
+    {
         Open();
         Word("pict");
         if (!string.IsNullOrEmpty(title) || !string.IsNullOrEmpty(description))
@@ -622,8 +730,14 @@ internal sealed partial class RtfWriter
                     ? (bytes[22..], "wmetafile", null)
                     : (bytes, "wmetafile", null);
             case "image/svg+xml":
-                warnings.Add(ConversionWarningKind.PictureDropped, "RTF has no SVG pictures; each was written as a PNG.");
-                return Rendered(bytes, width, height);
+                warnings.Add(ConversionWarningKind.PictureDropped, "RTF has no SVG pictures; an SVG Egap could not write as an EMF was written as a PNG.");
+                return Layout.PictureDrawers.For("image/svg+xml") is { } drawer
+                    ? Rendered((canvas, rect) =>
+                    {
+                        drawer.Draw(bytes, canvas, rect);
+                        return true;
+                    }, width, height)
+                    : null;
         }
 
         try
@@ -639,10 +753,10 @@ internal sealed partial class RtfWriter
         }
     }
 
-    /// <summary>An SVG picture drawn as a PNG at twice its size in pixels at 96 an inch.</summary>
-    private static (ReadOnlyMemory<byte> Bytes, string Word, (long, long)? Pixels)? Rendered(ReadOnlyMemory<byte> svg, double width, double height)
+    /// <summary>A drawing in points as a PNG at twice its size in pixels at 96 an inch, or null when it draws nothing.</summary>
+    private static (ReadOnlyMemory<byte> Bytes, string Word, (long, long)? Pixels)? Rendered(Func<Canvas, RectF, bool> draw, double width, double height)
     {
-        if (Layout.PictureDrawers.For("image/svg+xml") is not { } drawer)
+        if (!(width > 0 && height > 0 && double.IsFinite(width) && double.IsFinite(height)))
         {
             return null;
         }
@@ -652,9 +766,13 @@ internal sealed partial class RtfWriter
         try
         {
             using Raster<Egami.Pixels.Rgba8> raster = Raster.Create(pixelsWide, pixelsHigh, new Egami.Pixels.Rgba8(0, 0, 0, 0));
-            using (Egami.Drawing.RasterCanvas<Egami.Pixels.Rgba8> canvas = new(raster))
+            using (RasterCanvas<Egami.Pixels.Rgba8> canvas = new(raster))
             {
-                drawer.Draw(svg, canvas, new Egami.Drawing.RectF(0, 0, pixelsWide, pixelsHigh));
+                canvas.Scale(pixelsWide / (float)width, pixelsHigh / (float)height);
+                if (!draw(canvas, new RectF(0, 0, (float)width, (float)height)))
+                {
+                    return null;
+                }
             }
 
             using MemoryStream png = new();
@@ -896,6 +1014,12 @@ internal sealed partial class RtfWriter
             warnings.Add(ConversionWarningKind.DrawingDropped, "Content kept from another format was written as its picture.");
             Picture picture = new(document, fallback, island.Width, island.Height) { Floating = island.Floating };
             WritePicture(picture);
+            return;
+        }
+
+        if (WriteDrawing(island.Floating, island.Width, island.Height, null, null, (c, r) => Layout.PageDrawing.DrawDrawing(island, c, r)))
+        {
+            warnings.Add(ConversionWarningKind.DrawingDropped, "Charts, shape groups and SmartArt RTF cannot hold were written as EMF pictures of them.");
             return;
         }
 
