@@ -1,13 +1,14 @@
 #nullable enable
-Egap.Documents.Layout.LayoutWarningKind.PictureNotDrawn = 4 -> Egap.Documents.Layout.LayoutWarningKind
-Egap.Documents.FieldKind.DisplayBarcode = 30 -> Egap.Documents.FieldKind
-Egap.Documents.FieldKind.MergeBarcode = 31 -> Egap.Documents.FieldKind
 Egap.Documents.EmphasisMark
 Egap.Documents.EmphasisMark.Circle = 3 -> Egap.Documents.EmphasisMark
 Egap.Documents.EmphasisMark.Comma = 2 -> Egap.Documents.EmphasisMark
 Egap.Documents.EmphasisMark.Dot = 1 -> Egap.Documents.EmphasisMark
 Egap.Documents.EmphasisMark.None = 0 -> Egap.Documents.EmphasisMark
 Egap.Documents.EmphasisMark.UnderDot = 4 -> Egap.Documents.EmphasisMark
+Egap.Documents.FieldKind.DisplayBarcode = 30 -> Egap.Documents.FieldKind
+Egap.Documents.FieldKind.Formula = 32 -> Egap.Documents.FieldKind
+Egap.Documents.FieldKind.MergeBarcode = 31 -> Egap.Documents.FieldKind
+Egap.Documents.Layout.LayoutWarningKind.PictureNotDrawn = 4 -> Egap.Documents.Layout.LayoutWarningKind
 Egap.Documents.ResolvedRunFormat.CombineUpright.get -> bool
 Egap.Documents.ResolvedRunFormat.Emphasis.get -> Egap.Documents.EmphasisMark
 Egap.Documents.Ruby
@@ -41,19 +42,19 @@ Egap.Documents.RunFormat.CombineUpright.get -> bool?
 Egap.Documents.RunFormat.CombineUpright.set -> void
 Egap.Documents.RunFormat.Emphasis.get -> Egap.Documents.EmphasisMark?
 Egap.Documents.RunFormat.Emphasis.set -> void
+Egap.Documents.Shape.TextVerticalAlignment.get -> Egap.Documents.VerticalAlignment
+Egap.Documents.Shape.TextVerticalAlignment.set -> void
+Egap.Documents.WordCompatibility.DoNotExpandShiftReturn.get -> bool
+Egap.Documents.WordCompatibility.DoNotExpandShiftReturn.set -> void
+Egap.Documents.WordCompatibility.DoNotUseHtmlParagraphAutoSpacing.get -> bool
+Egap.Documents.WordCompatibility.DoNotUseHtmlParagraphAutoSpacing.set -> void
+Egap.Documents.WordCompatibility.DoNotVerticallyAlignInTextBox.get -> bool
+Egap.Documents.WordCompatibility.DoNotVerticallyAlignInTextBox.set -> void
+Egap.Documents.WordCompatibility.ShrinkJustifiedSpaces.get -> bool
+Egap.Documents.WordCompatibility.ShrinkJustifiedSpaces.set -> void
+Egap.Documents.WordCompatibility.UnderlineTabInNumberedList.get -> bool
+Egap.Documents.WordCompatibility.UnderlineTabInNumberedList.set -> void
 override Egap.Documents.Ruby.Clone(bool deep = true) -> Egap.Documents.Ruby!
 override Egap.Documents.Ruby.ToString() -> string!
 virtual Egap.Documents.DocumentVisitor.VisitRubyEnd(Egap.Documents.Ruby! ruby) -> Egap.Documents.VisitorAction
 virtual Egap.Documents.DocumentVisitor.VisitRubyStart(Egap.Documents.Ruby! ruby) -> Egap.Documents.VisitorAction
-Egap.Documents.WordCompatibility.DoNotExpandShiftReturn.get -> bool
-Egap.Documents.WordCompatibility.DoNotExpandShiftReturn.set -> void
-Egap.Documents.WordCompatibility.ShrinkJustifiedSpaces.get -> bool
-Egap.Documents.WordCompatibility.ShrinkJustifiedSpaces.set -> void
-Egap.Documents.WordCompatibility.DoNotUseHtmlParagraphAutoSpacing.get -> bool
-Egap.Documents.WordCompatibility.DoNotUseHtmlParagraphAutoSpacing.set -> void
-Egap.Documents.Shape.TextVerticalAlignment.get -> Egap.Documents.VerticalAlignment
-Egap.Documents.Shape.TextVerticalAlignment.set -> void
-Egap.Documents.WordCompatibility.DoNotVerticallyAlignInTextBox.get -> bool
-Egap.Documents.WordCompatibility.DoNotVerticallyAlignInTextBox.set -> void
-Egap.Documents.WordCompatibility.UnderlineTabInNumberedList.get -> bool
-Egap.Documents.WordCompatibility.UnderlineTabInNumberedList.set -> void
