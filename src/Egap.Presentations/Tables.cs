@@ -96,19 +96,26 @@ public sealed class SlideTable
         ArgumentOutOfRangeException.ThrowIfGreaterThan(index, rows.Count);
         SlideTableRow? model = rows.Count == 0 ? null : rows[Math.Max(0, index - 1)];
         XElement row = new(PptxNames.A + "tr", new XAttribute("h", PptxNames.Text(model?.Height ?? 370840)));
+        List<XElement> cells = [];
         for (int column = 0; column < columns.Count; column++)
         {
             XElement? like = model?.Cells.ElementAtOrDefault(column)?.Element;
-            XElement cell = NewCell(like?.Element(PptxNames.A + "tcPr"));
-            if (index > 0 && index < rows.Count && rows[index].Cells.ElementAtOrDefault(column) is { IsCoveredVertically: true } below)
-            {
-                // Inside a vertical merge: the new cell is covered too, and the merge one row longer.
-                cell.SetAttributeValue("vMerge", "1");
-                below.Origin.Element.SetAttributeValue("rowSpan", PptxNames.Text(below.Origin.RowSpan + 1));
-            }
-
-            row.Add(cell);
+            cells.Add(NewCell(like?.Element(PptxNames.A + "tcPr")));
         }
+
+        // A merge the new row falls inside grows by one row, once, and covers the new row's cells under it.
+        IEnumerable<SlideTableCell> crossing = index > 0 && index < rows.Count ? rows[index].Cells.Where(c => c.IsCoveredVertically) : [];
+        foreach (SlideTableCell origin in DistinctOrigins(crossing))
+        {
+            origin.Element.SetAttributeValue("rowSpan", PptxNames.Text(origin.RowSpan + 1));
+            for (int column = origin.ColumnIndex; column < Math.Min(cells.Count, origin.ColumnIndex + origin.ColumnSpan); column++)
+            {
+                cells[column].SetAttributeValue("vMerge", "1");
+                cells[column].SetAttributeValue("hMerge", column > origin.ColumnIndex ? "1" : null);
+            }
+        }
+
+        row.Add(cells);
 
         if (index < rows.Count)
         {
@@ -140,20 +147,34 @@ public sealed class SlideTable
     {
         ArgumentOutOfRangeException.ThrowIfNegative(index);
         ArgumentOutOfRangeException.ThrowIfGreaterThanOrEqual(index, rows.Count);
-        foreach (SlideTableCell cell in rows[index].Cells)
+        IReadOnlyList<SlideTableCell> removed = rows[index].Cells;
+        foreach (SlideTableCell origin in DistinctOrigins(removed.Where(c => c.IsCoveredVertically)))
         {
-            if (cell.RowSpan > 1 && index + 1 < rows.Count && rows[index + 1].Cells.ElementAtOrDefault(cell.ColumnIndex) is { } next)
+            // A merge from above loses a row, once.
+            origin.Element.SetAttributeValue("rowSpan", origin.RowSpan > 2 ? PptxNames.Text(origin.RowSpan - 1) : null);
+        }
+
+        foreach (SlideTableCell origin in removed.Where(c => !c.IsCoveredVertically && !c.IsCoveredHorizontally && c.RowSpan > 1))
+        {
+            // A merge that starts in this row starts in the row below now, with the origin's content and the rest of its span.
+            if (index + 1 >= rows.Count)
             {
-                // The merge starts in the row below now: move the origin's content and span there.
-                XElement replacement = new(cell.Element);
-                replacement.SetAttributeValue("rowSpan", cell.RowSpan > 2 ? PptxNames.Text(cell.RowSpan - 1) : null);
-                replacement.SetAttributeValue("hMerge", (string?)next.Element.Attribute("hMerge"));
-                next.Element.ReplaceWith(replacement);
+                continue;
             }
-            else if (cell.IsCoveredVertically)
+
+            IReadOnlyList<SlideTableCell> next = rows[index + 1].Cells;
+            for (int column = origin.ColumnIndex; column < Math.Min(next.Count, origin.ColumnIndex + origin.ColumnSpan); column++)
             {
-                SlideTableCell origin = cell.Origin;
-                origin.Element.SetAttributeValue("rowSpan", origin.RowSpan > 2 ? PptxNames.Text(origin.RowSpan - 1) : null);
+                if (column == origin.ColumnIndex)
+                {
+                    XElement replacement = new(origin.Element);
+                    replacement.SetAttributeValue("rowSpan", origin.RowSpan > 2 ? PptxNames.Text(origin.RowSpan - 1) : null);
+                    next[column].Element.ReplaceWith(replacement);
+                }
+                else
+                {
+                    next[column].Element.Attribute("vMerge")?.Remove();
+                }
             }
         }
 
@@ -183,16 +204,29 @@ public sealed class SlideTable
             Grid.Add(column);
         }
 
+        // A merge the new column falls inside grows by one column, once, and covers the new column's cells beside it.
+        Dictionary<int, bool> covered = [];
+        IEnumerable<SlideTableCell> crossing = index > 0
+            ? rows.Select(r => r.Cells.ElementAtOrDefault(index)).OfType<SlideTableCell>().Where(c => c.IsCoveredHorizontally)
+            : [];
+        foreach (SlideTableCell origin in DistinctOrigins(crossing))
+        {
+            origin.Element.SetAttributeValue("gridSpan", PptxNames.Text(origin.ColumnSpan + 1));
+            for (int row = origin.RowIndex; row < Math.Min(rows.Count, origin.RowIndex + origin.RowSpan); row++)
+            {
+                covered[row] = row > origin.RowIndex;
+            }
+        }
+
         foreach (SlideTableRow row in rows)
         {
             IReadOnlyList<SlideTableCell> cells = row.Cells;
             SlideTableCell? like = cells.Count == 0 ? null : cells[Math.Clamp(index - 1, 0, cells.Count - 1)];
             XElement cell = NewCell(like?.Element.Element(PptxNames.A + "tcPr"));
-            if (index > 0 && index < cells.Count && cells[index].IsCoveredHorizontally)
+            if (covered.TryGetValue(row.Index, out bool below))
             {
                 cell.SetAttributeValue("hMerge", "1");
-                SlideTableCell origin = cells[index].Origin;
-                origin.Element.SetAttributeValue("gridSpan", PptxNames.Text(origin.ColumnSpan + 1));
+                cell.SetAttributeValue("vMerge", below ? "1" : null);
             }
 
             if (index < cells.Count)
@@ -232,30 +266,37 @@ public sealed class SlideTable
         ArgumentOutOfRangeException.ThrowIfNegative(index);
         ArgumentOutOfRangeException.ThrowIfGreaterThanOrEqual(index, columns.Count);
         long width = columns[index].Width;
-        foreach (SlideTableRow row in rows)
+        List<SlideTableCell> removed = [.. rows.Select(r => r.Cells.ElementAtOrDefault(index)).OfType<SlideTableCell>()];
+        foreach (SlideTableCell origin in DistinctOrigins(removed.Where(c => c.IsCoveredHorizontally)))
         {
-            IReadOnlyList<SlideTableCell> cells = row.Cells;
-            if (index >= cells.Count)
-            {
-                continue;
-            }
-
-            SlideTableCell cell = cells[index];
-            if (cell.ColumnSpan > 1 && index + 1 < cells.Count)
-            {
-                XElement replacement = new(cell.Element);
-                replacement.SetAttributeValue("gridSpan", cell.ColumnSpan > 2 ? PptxNames.Text(cell.ColumnSpan - 1) : null);
-                replacement.SetAttributeValue("vMerge", (string?)cells[index + 1].Element.Attribute("vMerge"));
-                cells[index + 1].Element.ReplaceWith(replacement);
-            }
-            else if (cell.IsCoveredHorizontally)
-            {
-                SlideTableCell origin = cell.Origin;
-                origin.Element.SetAttributeValue("gridSpan", origin.ColumnSpan > 2 ? PptxNames.Text(origin.ColumnSpan - 1) : null);
-            }
-
-            cell.Element.Remove();
+            // A merge from the left loses a column, once.
+            origin.Element.SetAttributeValue("gridSpan", origin.ColumnSpan > 2 ? PptxNames.Text(origin.ColumnSpan - 1) : null);
         }
+
+        foreach (SlideTableCell origin in removed.Where(c => !c.IsCoveredVertically && !c.IsCoveredHorizontally && c.ColumnSpan > 1))
+        {
+            // A merge that starts in this column starts in the column at its right now, with the origin's content.
+            for (int row = origin.RowIndex; row < Math.Min(rows.Count, origin.RowIndex + origin.RowSpan); row++)
+            {
+                if (rows[row].Cells.ElementAtOrDefault(index + 1) is not { } next)
+                {
+                    continue;
+                }
+
+                if (row == origin.RowIndex)
+                {
+                    XElement replacement = new(origin.Element);
+                    replacement.SetAttributeValue("gridSpan", origin.ColumnSpan > 2 ? PptxNames.Text(origin.ColumnSpan - 1) : null);
+                    next.Element.ReplaceWith(replacement);
+                }
+                else
+                {
+                    next.Element.Attribute("hMerge")?.Remove();
+                }
+            }
+        }
+
+        removed.ForEach(c => c.Element.Remove());
 
         columns[index].Element.Remove();
         if (Frame.Transform is { } frame)
@@ -329,6 +370,13 @@ public sealed class SlideTable
     }
 
     internal void Changed() => Frame.Changed();
+
+    /// <summary>The cells whose merges cover <paramref name="cells"/>, each once.</summary>
+    private static List<SlideTableCell> DistinctOrigins(IEnumerable<SlideTableCell> cells)
+    {
+        HashSet<XElement> seen = [];
+        return [.. cells.Select(c => c.Origin).Where(o => seen.Add(o.Element))];
+    }
 
     private static XElement NewCell(XElement? properties) => new(PptxNames.A + "tc",
         TextBody.NewElement("", PptxNames.A + "txBody"),

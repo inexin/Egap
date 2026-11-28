@@ -348,33 +348,50 @@ internal static class Comments
         if (LegacyPartName(slide) is { } legacy)
         {
             XElement root = slide.Presentation.Package.Xml(slide.Presentation.Package.GetPart(legacy)!).Root;
-            Dictionary<(string?, string?), SlideComment> byIndex = [];
-            List<(SlideComment Comment, XElement Parent)> replies = [];
+            List<(XElement Element, (string?, string?) Key)> entries = [];
+            Dictionary<(string?, string?), (string?, string?)?> parents = [];
             foreach (XElement cm in root.Elements(PptxNames.P + "cm"))
             {
+                (string?, string?) key = ((string?)cm.Attribute("authorId"), (string?)cm.Attribute("idx"));
                 XElement? parent = Threading(cm)?.Element(PptxNames.P15 + "parentCm");
-                SlideComment comment = new(slide, cm, null);
-                byIndex[((string?)cm.Attribute("authorId"), (string?)cm.Attribute("idx"))] = comment;
-                if (parent is null)
+                entries.Add((cm, key));
+                parents.TryAdd(key, parent is null ? null : ((string?)parent.Attribute("authorId"), (string?)parent.Attribute("idx")));
+            }
+
+            // A comment's thread is the one its parents lead up to, so a reply to a reply joins the first comment's thread.
+            Dictionary<(string?, string?), SlideComment> roots = [];
+            List<(XElement Element, (string?, string?) Root)> replies = [];
+            foreach ((XElement element, (string?, string?) key) in entries)
+            {
+                (string?, string?) top = key;
+                HashSet<(string?, string?)> seen = [top];
+                while (parents.GetValueOrDefault(top) is { } up && parents.ContainsKey(up) && seen.Add(up))
                 {
-                    threads.Add(comment);
+                    top = up;
+                }
+
+                if (top == key)
+                {
+                    SlideComment thread = new(slide, element, null);
+                    roots.TryAdd(key, thread);
+                    threads.Add(thread);
                 }
                 else
                 {
-                    replies.Add((comment, parent));
+                    replies.Add((element, top));
                 }
             }
 
-            foreach ((SlideComment comment, XElement parent) in replies)
+            foreach ((XElement element, (string?, string?) top) in replies)
             {
-                if (byIndex.TryGetValue(((string?)parent.Attribute("authorId"), (string?)parent.Attribute("idx")), out SlideComment? thread))
+                if (roots.TryGetValue(top, out SlideComment? thread))
                 {
-                    SlideComment reply = new(slide, comment.Element, thread.Parent ?? thread);
-                    (thread.Parent ?? thread).ReplyList.Add(reply);
+                    thread.ReplyList.Add(new SlideComment(slide, element, thread));
                 }
                 else
                 {
-                    threads.Add(comment);
+                    // Parents that only lead round in a circle: the comment stands as a thread of its own.
+                    threads.Add(new SlideComment(slide, element, null));
                 }
             }
         }

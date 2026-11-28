@@ -117,6 +117,60 @@ public sealed class ContentTests
     }
 
     [Fact]
+    public void BlockMergesGrowAndShrinkOnceForEachRowOrColumn()
+    {
+        Presentation presentation = Presentation.Create();
+        Slide slide = presentation.Slides.Add(presentation.SlideMasters[0].Layouts[6]);
+        SlideTable table = slide.Shapes.AddTable(4, 4, new ShapeTransform(0, 0, 4000, 400)).Table!;
+        table.Merge(0, 0, 3, 2).Text = "Block";
+
+        table.InsertRow(1);
+        AssertBlock(table, 4, 2);
+        table.InsertColumn(1, 1000);
+        AssertBlock(table, 4, 3);
+        table.RemoveRow(2);
+        AssertBlock(table, 3, 3);
+        table.RemoveColumn(1);
+        AssertBlock(table, 3, 2);
+
+        // Removing the block's first row and column passes it on, still whole.
+        table.RemoveRow(0);
+        AssertBlock(table, 2, 2);
+        table.RemoveColumn(0);
+        AssertBlock(table, 2, 1);
+        Assert.Equal("Block", table.Cell(0, 0).Text);
+        AssertBlock(Reread(table), 2, 1);
+    }
+
+    [Theory]
+    [InlineData("insert row", 4, 2)]
+    [InlineData("remove row", 2, 2)]
+    [InlineData("insert column", 3, 3)]
+    [InlineData("remove column", 3, 1)]
+    [InlineData("remove first row", 2, 2)]
+    [InlineData("remove first column", 3, 1)]
+    public void EachEditChangesABlockMergeOnce(string edit, int rowSpan, int columnSpan)
+    {
+        Presentation presentation = Presentation.Create();
+        Slide slide = presentation.Slides.Add(presentation.SlideMasters[0].Layouts[6]);
+        SlideTable table = slide.Shapes.AddTable(4, 4, new ShapeTransform(0, 0, 4000, 400)).Table!;
+        table.Merge(0, 0, 3, 2).Text = "Block";
+
+        switch (edit)
+        {
+            case "insert row": table.InsertRow(1); break;
+            case "remove row": table.RemoveRow(1); break;
+            case "insert column": table.InsertColumn(1, 1000); break;
+            case "remove column": table.RemoveColumn(1); break;
+            case "remove first row": table.RemoveRow(0); break;
+            default: table.RemoveColumn(0); break;
+        }
+
+        AssertBlock(table, rowSpan, columnSpan);
+        Assert.Equal("Block", table.Cell(0, 0).Text);
+    }
+
+    [Fact]
     public void ATableIsAddedToASlide()
     {
         Presentation presentation = Presentation.Create();
@@ -244,6 +298,29 @@ public sealed class ContentTests
     }
 
     [Fact]
+    public void OlderRepliesToRepliesJoinTheirThread()
+    {
+        Presentation presentation = Presentation.Create();
+        Slide slide = presentation.Slides.Add(presentation.SlideMasters[0].Layouts[6]);
+        PackagePart authors = presentation.Package.AddXmlPart("/ppt/commentAuthors.xml", DefaultTemplate.Ct + "commentAuthors+xml",
+            DefaultTemplate.Parse($"<p:cmAuthorLst {DefaultTemplate.Namespaces}><p:cmAuthor id=\"0\" name=\"Ann\" initials=\"A\" lastIdx=\"3\" clrIdx=\"0\"/></p:cmAuthorLst>"));
+        presentation.Package.AddRelationship(presentation.Main.Part.Name, PptxNames.Office + "commentAuthors", authors.Name);
+        PackagePart comments = presentation.Package.AddXmlPart("/ppt/comments/comment1.xml", DefaultTemplate.Ct + "comments+xml",
+            DefaultTemplate.Parse($"<p:cmLst {DefaultTemplate.Namespaces} xmlns:p15=\"http://schemas.microsoft.com/office/powerpoint/2012/main\">"
+                + LegacyComment(1, "Root", null) + LegacyComment(2, "Reply", 1) + LegacyComment(3, "Reply to the reply", 2) + "</p:cmLst>"));
+        presentation.Package.AddRelationship(slide.PartName, PptxNames.Office + "comments", comments.Name);
+
+        Slide read = BuildingTests.Reload(presentation).Slides[0];
+        SlideComment thread = Assert.Single(read.Comments);
+        Assert.Equal(["Reply", "Reply to the reply"], thread.Replies.Select(r => r.Text));
+        Assert.All(thread.Replies, r => Assert.Same(thread, r.Parent));
+
+        read.Comments.Remove(read.Comments[0]);
+        Assert.Empty(read.Comments);
+        Assert.DoesNotContain(BuildingTests.PartNames(read.Presentation), p => p.StartsWith("ppt/comments/", StringComparison.Ordinal));
+    }
+
+    [Fact]
     public void SectionsSplitTheSlidesAndFollowTheirChanges()
     {
         Presentation presentation = Presentation.Create();
@@ -296,6 +373,27 @@ public sealed class ContentTests
         Assert.Equal(presentation.Slides, only.Slides);
         Assert.Contains(SlideSectionCollection.ExtensionUri, BuildingTests.Reload(presentation).Main.Root.ToString(SaveOptions.DisableFormatting), StringComparison.Ordinal);
     }
+
+    private static void AssertBlock(SlideTable table, int rowSpan, int columnSpan)
+    {
+        SlideTableCell origin = table.Cell(0, 0);
+        Assert.Equal((rowSpan, columnSpan), (origin.RowSpan, origin.ColumnSpan));
+        foreach (SlideTableRow row in table.Rows)
+        {
+            foreach (SlideTableCell cell in row.Cells)
+            {
+                bool inside = cell.RowIndex < rowSpan && cell.ColumnIndex < columnSpan;
+                Assert.Equal(inside, ReferenceEquals(origin, cell.Origin));
+                Assert.Equal(inside && cell.RowIndex > 0, cell.IsCoveredVertically);
+                Assert.Equal(inside && cell.ColumnIndex > 0, cell.IsCoveredHorizontally);
+            }
+        }
+    }
+
+    private static string LegacyComment(int index, string text, int? parent) =>
+        $"<p:cm authorId=\"0\" dt=\"2026-01-0{index}T10:00:00.000\" idx=\"{index}\"><p:pos x=\"10\" y=\"10\"/><p:text>{text}</p:text>"
+        + (parent is null ? "" : $"<p:extLst><p:ext uri=\"{{C676402C-5697-4E1C-873F-D02D1690AC5C}}\"><p15:threadingInfo timeZoneBias=\"0\"><p15:parentCm authorId=\"0\" idx=\"{parent}\"/></p15:threadingInfo></p:ext></p:extLst>")
+        + "</p:cm>";
 
     private static string Cell(string text, string attributes = "") =>
         $"<a:tc {attributes}><a:txBody><a:bodyPr/><a:lstStyle/><a:p><a:r><a:rPr lang=\"en-US\"/><a:t>{text}</a:t></a:r></a:p></a:txBody><a:tcPr/></a:tc>";
