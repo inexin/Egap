@@ -31,6 +31,22 @@ internal milestones whose public API was frozen and reviewed, and they are liste
   and removal.
 - Sections: `Presentation.Sections`, added, renamed, removed and with slides moved between them, kept in step when slides
   are added, moved or removed.
+- Encrypted presentations: `PresentationLoadOptions.Password` opens agile and standard encryption, a missing or wrong
+  password throwing `DocumentPasswordException`; `PresentationSaveOptions.Password` saves with agile encryption. The
+  password to modify (`p:modifyVerifier`) is kept, and `SetModifyPassword`, `HasModifyPassword` and
+  `VerifyModifyPassword` set, clear and check it.
+- File kinds: `Save(path, options)` writes the kind its extension names and `Save(stream, options)` the settable
+  `Presentation.Format`, or `PresentationSaveOptions.Format`; the main part's content type changes with the kind, and a deck
+  with macros saved as a kind without them leaves its VBA project out of the file.
+- Transitions: `Slide.Transition` reads and sets the effect (those of PowerPoint 2007, 2010 and 2013, and Morph), speed or
+  duration, direction, advance on click and after a time, and keeps its sound; null removes it.
+- Animations: `Slide.Timing` lists the effects (shape, preset class, id and subtype, trigger, delay, duration) from the
+  timing tree, which is kept whole; `RemoveAnimations()` and `RemoveAnimations(shape)` remove them, and removing a shape
+  removes its animations.
+- `Presentation.Properties`: core, application (company, manager) and custom properties, written in place;
+  `Presentation.SlideShow`: show type (speaker, window, kiosk), loop, timings, narration and animations.
+- A fuzz target (`tests/Egap.Presentations.Fuzz`: `pptx`, `pptxedit`, `pptxcrypt`) and benchmarks
+  (`benchmarks/Egap.Presentations.Benchmarks`).
 
 ## Egap.Cli 2.4.0 (unreleased)
 

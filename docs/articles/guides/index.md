@@ -38,7 +38,8 @@ One document model for DOCX, DOC, RTF, OpenDocument Text, HTML, Markdown and pla
 
 PowerPoint files read and edited from code.
 
-- [Presentations](presentations.md): masters, layouts, themes, slides and shapes, and saving with everything else kept.
+- [Presentations](presentations.md): masters, layouts, themes, slides and shapes, transitions and animations, passwords
+  and file kinds, and saving with everything else kept.
 
 ## Egap.Spreadsheets
 

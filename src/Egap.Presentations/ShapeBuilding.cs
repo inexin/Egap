@@ -133,7 +133,10 @@ public sealed partial class SlideShapeCollection
                 SlideTable.NewElement(rows, columns, transform.Width, transform.Height)))));
     }
 
-    /// <summary>Removes <paramref name="shape"/>. Connectors attached to it stay where they are.</summary>
+    /// <summary>
+    /// Removes <paramref name="shape"/> and its animations (and, for a group, those of the shapes in it). Connectors attached
+    /// to it stay where they are.
+    /// </summary>
     /// <returns>Whether the shape was here.</returns>
     /// <exception cref="ArgumentNullException">The shape is null.</exception>
     public bool Remove(SlideShape shape)
@@ -146,6 +149,7 @@ public sealed partial class SlideShapeCollection
 
         XElement element = shape.Element;
         XElement? alternate = element.Ancestors().FirstOrDefault(MarkupCompatibility.IsAlternateContent);
+        owner.RemoveAnimationsOf(element);
         (alternate ?? element).Remove();
         owner.Xml.MarkChanged();
         return true;
