@@ -103,6 +103,12 @@ public enum FieldKind
 
     /// <summary>MERGEBARCODE: a barcode of a mail merge field's value; a mail merge makes it a DISPLAYBARCODE field.</summary>
     MergeBarcode,
+
+    /// <summary>
+    /// = (formula): a calculation, such as <c>= SUM(ABOVE) \# "#,##0.00"</c>, over numbers, bookmarks, nested fields and,
+    /// in a table, the table's cells.
+    /// </summary>
+    Formula,
 }
 
 /// <summary>
@@ -245,6 +251,40 @@ public sealed class Field
     /// <summary>The kind, from the code's first word.</summary>
     public FieldKind Kind => KindOf(Code);
 
+    /// <summary>The code with each nested field replaced by its result, as Word reads an IF's or a formula's operands.</summary>
+    internal string ResolvedCode
+    {
+        get
+        {
+            StringBuilder text = new();
+            Stack<bool> inCode = new();
+            int codeLevels = 0;
+            foreach (Inline inline in CodeNodes)
+            {
+                switch (inline)
+                {
+                    case FieldStart:
+                        inCode.Push(true);
+                        codeLevels++;
+                        break;
+                    case FieldSeparator when inCode.Count > 0 && inCode.Peek():
+                        inCode.Pop();
+                        inCode.Push(false);
+                        codeLevels--;
+                        break;
+                    case FieldEnd when inCode.Count > 0:
+                        codeLevels -= inCode.Pop() ? 1 : 0;
+                        break;
+                    case Run run when codeLevels == 0:
+                        text.Append(run.Text);
+                        break;
+                }
+            }
+
+            return text.ToString();
+        }
+    }
+
     /// <summary>
     /// Recomputes this field's result, as <see cref="Document.UpdateFields"/> does for every field: a table of contents is
     /// rebuilt from the headings, for example. Page fields are filled by layout instead.
@@ -289,6 +329,12 @@ public sealed class Field
     public static FieldKind KindOf(string code)
     {
         ArgumentNullException.ThrowIfNull(code);
+        ReadOnlySpan<char> trimmed = code.AsSpan().TrimStart();
+        if (trimmed.Length > 0 && trimmed[0] == '=')
+        {
+            return FieldKind.Formula;
+        }
+
         string word = code.TrimStart().Split([' ', '\t', '\\', '"'], 2)[0].ToUpperInvariant();
         return word switch
         {

@@ -140,8 +140,16 @@ public sealed class DocumentSettings
         set => Set(ref hyphenateCapitals, value);
     }
 
+    /// <summary>The decimal symbol formula fields read and write (Word's w:decimalSymbol), a period unless the file names another.</summary>
+    internal char DecimalSymbol { get; set; } = '.';
+
+    /// <summary>The symbol between a formula function's arguments (Word's w:listSeparator), a comma unless the file names another.</summary>
+    internal char ListSeparator { get; set; } = ',';
+
     internal void CopyFrom(DocumentSettings source)
     {
+        DecimalSymbol = source.DecimalSymbol;
+        ListSeparator = source.ListSeparator;
         defaultTabStop = source.defaultTabStop;
         evenAndOddHeaders = source.evenAndOddHeaders;
         footnoteNumberStyle = source.footnoteNumberStyle;

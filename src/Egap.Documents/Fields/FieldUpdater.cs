@@ -5,14 +5,17 @@ namespace Egap.Documents;
 
 /// <summary>
 /// Recomputes the fields Egap understands (Phase 6 design Q8): dates and times, document properties, REF, NOTEREF, SEQ,
-/// STYLEREF, HYPERLINK, IF on simple comparisons and TOC. Page fields (PAGE, NUMPAGES, SECTIONPAGES, PAGEREF) are left to
+/// STYLEREF, HYPERLINK, IF, formulas (= fields) and TOC. Nested fields are updated before the field holding them, so an IF
+/// or a formula reads their new results. Page fields (PAGE, NUMPAGES, SECTIONPAGES, PAGEREF) are left to
 /// the layout engine; locked fields and fields Egap does not know keep their stored result.
 /// </summary>
 internal sealed class FieldUpdater
 {
+    private static readonly System.Buffers.SearchValues<char> FormulaOperators = System.Buffers.SearchValues.Create("+-*/^%()");
     private readonly Document document;
     private readonly DateTimeOffset now;
     private readonly Dictionary<FieldStart, int> sequenceValues = [];
+    private Dictionary<string, Bookmark>? bookmarks;
 
     private FieldUpdater(Document document, DateTimeOffset now)
     {
@@ -85,8 +88,14 @@ internal sealed class FieldUpdater
 
     private bool Update(Field field)
     {
+        FieldKind kind = field.Kind;
+        if (kind is FieldKind.Formula or FieldKind.If)
+        {
+            return UpdateCalculation(field, kind);
+        }
+
         FieldCode code = FieldCode.Parse(field.Code);
-        switch (field.Kind)
+        switch (kind)
         {
             case FieldKind.Toc:
                 return TableOfContents.Build(field, code);
@@ -94,7 +103,7 @@ internal sealed class FieldUpdater
                 return false;
         }
 
-        string? result = field.Kind switch
+        string? result = kind switch
         {
             FieldKind.Date => FormatDate(now, code, "M/d/yyyy"),
             FieldKind.Time => FormatDate(now, code, "h:mm am/pm"),
@@ -113,7 +122,6 @@ internal sealed class FieldUpdater
             FieldKind.NoteRef => NoteRef(code),
             FieldKind.Seq => sequenceValues.TryGetValue(field.Start, out int value) && !code.Has("\\H") ? value.ToString(CultureInfo.InvariantCulture) : code.Has("\\H") ? "" : null,
             FieldKind.StyleRef => StyleRef(field, code),
-            FieldKind.If => If(code),
             FieldKind.Hyperlink => field.Result.Length > 0 ? null : code.Arguments.FirstOrDefault(),
             _ => null,
         };
@@ -206,16 +214,66 @@ internal sealed class FieldUpdater
         return found is null ? null : VisibleText(found);
     }
 
-    private static string? If(FieldCode code)
+    /// <summary>
+    /// A formula or an IF field, whose operands are read from the code with nested fields' new results in place: a formula
+    /// shows its value in its \# picture (two decimals at most without one) or Word's error text.
+    /// </summary>
+    private bool UpdateCalculation(Field field, FieldKind kind)
+    {
+        string resolved = field.ResolvedCode;
+        FieldCode code = FieldCode.Parse(resolved);
+        string? result;
+        if (kind == FieldKind.If)
+        {
+            result = If(field, code);
+        }
+        else
+        {
+            int equals = resolved.IndexOf('=', StringComparison.Ordinal);
+            int switches = resolved.IndexOf('\\', equals + 1);
+            string expression = switches < 0 ? resolved[(equals + 1)..] : resolved[(equals + 1)..switches];
+            (double value, string? error) = FormulaEvaluator.Evaluate(expression, document, field.Start, Bookmark);
+            if (error is not null)
+            {
+                SetResult(field, error);
+                return true;
+            }
+
+            char decimalSymbol = document.Settings.DecimalSymbol;
+            result = code.Switch("\\#") is { Length: > 0 } picture ? NumberPicture.Format(value, picture, decimalSymbol) : FormulaEvaluator.FormatDefault(value, decimalSymbol);
+            SetResult(field, code.ApplyGeneralFormat(result));
+            return true;
+        }
+
+        if (result is null)
+        {
+            return false;
+        }
+
+        if (code.Switch("\\#") is { } numberPicture && double.TryParse(result, NumberStyles.Float, CultureInfo.InvariantCulture, out double number))
+        {
+            result = FieldCode.FormatNumber(number, numberPicture);
+        }
+
+        SetResult(field, code.ApplyGeneralFormat(result));
+        return true;
+    }
+
+    /// <summary>
+    /// IF left operator right "true text" "false text": numbers (a bookmark's, a nested field's or a formula's) compare as
+    /// numbers; otherwise = and &lt;&gt; compare text with * and ? wildcards.
+    /// </summary>
+    private string? If(Field field, FieldCode code)
     {
         if (code.Arguments.Count < 5)
         {
             return null;
         }
 
-        string left = code.Arguments[0], op = code.Arguments[1], right = code.Arguments[2];
-        bool numeric = double.TryParse(left, NumberStyles.Float, CultureInfo.InvariantCulture, out double a)
-            & double.TryParse(right, NumberStyles.Float, CultureInfo.InvariantCulture, out double b);
+        string left = Operand(code.Arguments[0]), op = code.Arguments[1], right = Operand(code.Arguments[2]);
+        double? first = Number(left), second = Number(right);
+        bool numeric = first is not null && second is not null;
+        double a = first ?? 0, b = second ?? 0;
         int comparison = numeric ? a.CompareTo(b) : string.Compare(left, right, StringComparison.Ordinal);
         bool truth = op switch
         {
@@ -228,6 +286,40 @@ internal sealed class FieldUpdater
             _ => false,
         };
         return truth ? code.Arguments[3] : code.Arguments[4];
+
+        // A bookmark's name stands for its text.
+        string Operand(string text) => text.Length > 0 && (char.IsLetter(text[0]) || text[0] == '_') && Bookmark(text) is { } bookmark ? bookmark.Text.Replace(ControlChar.ParagraphBreak, ' ') : text;
+
+        double? Number(string text)
+        {
+            if (FormulaEvaluator.ParseNumber(text, document.Settings.DecimalSymbol) is double value)
+            {
+                return value;
+            }
+
+            if (text.AsSpan().IndexOfAny(FormulaOperators) < 0)
+            {
+                return null;
+            }
+
+            (double result, string? error) = FormulaEvaluator.Evaluate(text, document, field.Start, Bookmark);
+            return error is null ? result : null;
+        }
+    }
+
+    /// <summary>The bookmark named <paramref name="name"/>, as <see cref="Document.GetBookmark"/> finds it, from one walk of the document.</summary>
+    private Bookmark? Bookmark(string name)
+    {
+        if (bookmarks is null)
+        {
+            bookmarks = new(StringComparer.OrdinalIgnoreCase);
+            foreach (Bookmark bookmark in document.GetBookmarks())
+            {
+                bookmarks.TryAdd(bookmark.Name, bookmark);
+            }
+        }
+
+        return bookmarks.GetValueOrDefault(name);
     }
 
     private static bool Wildcard(string text, string pattern)
