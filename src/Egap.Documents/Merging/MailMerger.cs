@@ -287,6 +287,7 @@ internal sealed class MailMerger(Document document, MailMergeOptions options)
             }
         }
 
+        merged |= FillBarcodes(roots, record);
         if (!merged)
         {
             return;
@@ -312,6 +313,59 @@ internal sealed class MailMerger(Document document, MailMergeOptions options)
                 }
             }
         }
+    }
+
+    /// <summary>
+    /// Makes each MERGEBARCODE field (<c>MERGEBARCODE Name TYPE [switches]</c>) the DISPLAYBARCODE field of its value, with
+    /// the same type and switches, as Word's merge leaves it; a field without a value goes, with a warning.
+    /// </summary>
+    private bool FillBarcodes(List<Node> roots, IMergeData record)
+    {
+        bool merged = false;
+        foreach (Field field in roots.SelectMany(r => r.Descendants<FieldStart>()).Select(s => s.GetField()).OfType<Field>().Where(f => f.Kind == FieldKind.MergeBarcode).Reverse().ToList())
+        {
+            if (field.Start.Parent is null || field.Start.GetField() is not { } current)
+            {
+                continue;
+            }
+
+            FieldCode code = FieldCode.Parse(current.Code);
+            if (code.Arguments.Count < 2 || current.CodeNodes.Any(n => n is not Run))
+            {
+                continue;
+            }
+
+            merged = true;
+            string name = code.Arguments[0];
+            if (!MergeData.TryGetPath(record, name, out object? value) || Text(value) is not { Length: > 0 } data)
+            {
+                warnings.Add(ConversionWarningKind.MergeFieldsRemoved, $"Merge barcode {name} has no value in the data");
+                Replace(current, "");
+                continue;
+            }
+
+            System.Text.StringBuilder display = new(" DISPLAYBARCODE ");
+            display.Append(Quoted(data)).Append(' ').Append(code.Arguments[1]);
+            foreach ((string switchName, string? switchValue) in code.Switches)
+            {
+                display.Append(' ').Append(switchName);
+                if (switchValue is not null)
+                {
+                    display.Append(' ').Append(Quoted(switchValue));
+                }
+            }
+
+            List<Run> runs = [.. current.CodeNodes.OfType<Run>()];
+            runs[0].Text = display.Append(' ').ToString();
+            foreach (Run run in runs.Skip(1))
+            {
+                run.Remove();
+            }
+        }
+
+        return merged;
+
+        static string Quoted(string text) => "\"" + text.Replace("\\", "\\\\", StringComparison.Ordinal).Replace("\"", "\\\"", StringComparison.Ordinal) + "\"";
     }
 
     /// <summary>TableStart:Name and TableEnd:Name fields, which mark repeated regions rather than take a value.</summary>
@@ -353,16 +407,7 @@ internal sealed class MailMerger(Document document, MailMergeOptions options)
         }
         else
         {
-            text = value switch
-            {
-                null => "",
-                string s => s,
-                DateTimeOffset d => d.ToString("d", culture),
-                DateTime d => d.ToString("d", culture),
-                DateOnly d => d.ToString("d", culture),
-                IFormattable f => f.ToString(null, culture),
-                _ => value.ToString() ?? "",
-            };
+            text = Text(value);
         }
 
         text = code.ApplyGeneralFormat(text);
@@ -373,6 +418,18 @@ internal sealed class MailMerger(Document document, MailMergeOptions options)
 
         return text;
     }
+
+    /// <summary>A value as text in the merge's culture.</summary>
+    private string Text(object? value) => value switch
+    {
+        null => "",
+        string s => s,
+        DateTimeOffset d => d.ToString("d", culture),
+        DateTime d => d.ToString("d", culture),
+        DateOnly d => d.ToString("d", culture),
+        IFormattable f => f.ToString(null, culture),
+        _ => value.ToString() ?? "",
+    };
 
     private double? Number(object? value) => value switch
     {

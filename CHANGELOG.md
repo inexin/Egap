@@ -36,6 +36,10 @@ internal milestones whose public API was frozen and reviewed, and they are liste
 - Needs Egami.Fonts 1.6.0 (`ParagraphStyle.JustifyLineBreaks`, `StretchNoBreakSpaces` and `SpaceShrink`).
 - Built on Egami 1.6.0-preview.1, Egami.Metafiles 1.1.0-preview.1 and Egami.Barcodes 1.1.0-preview.1;
   Egami.Fonts.Substitutes stays at 1.1.0.
+- Word's barcode fields: `FieldKind.DisplayBarcode` and `FieldKind.MergeBarcode`. Layout, PDF export and rendering draw a
+  DISPLAYBARCODE field's symbol in vectors in place of its result (QR, CODE128, CODE39, NW7, EAN13/JAN13, EAN8/JAN8, UPCA,
+  UPCE, ITF14/CASE and JPPOST, with the `\s`, `\h`, `\r`, `\f`, `\b`, `\t`, `\q`, `\p` and `\x` switches), DOCX, RTF
+  and DOC keep the fields, and a mail merge makes each MERGEBARCODE field the DISPLAYBARCODE field of its value.
 - Ruby: a `Ruby` inline holds its base's inlines and the annotation's `Text`, `TextFormat`, `Position`, `Alignment`,
   `FontSize`, `Raise`, `BaseFontSize` and `Language`. Layout sets the annotation over (or under) its base as Word
   does, without overhang, and makes room for it in the line; tagged PDF puts base and annotation in Ruby, RB and RT
