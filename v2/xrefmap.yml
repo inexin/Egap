@@ -31850,6 +31850,19 @@ references:
   isSpec: "True"
   fullName: Egap.Documents.WordCompatibility.DoNotExpandShiftReturn
   nameWithType: WordCompatibility.DoNotExpandShiftReturn
+- uid: Egap.Documents.WordCompatibility.DoNotUseHtmlParagraphAutoSpacing
+  name: DoNotUseHtmlParagraphAutoSpacing
+  href: api/Egap.Documents.WordCompatibility.html#Egap_Documents_WordCompatibility_DoNotUseHtmlParagraphAutoSpacing
+  commentId: P:Egap.Documents.WordCompatibility.DoNotUseHtmlParagraphAutoSpacing
+  fullName: Egap.Documents.WordCompatibility.DoNotUseHtmlParagraphAutoSpacing
+  nameWithType: WordCompatibility.DoNotUseHtmlParagraphAutoSpacing
+- uid: Egap.Documents.WordCompatibility.DoNotUseHtmlParagraphAutoSpacing*
+  name: DoNotUseHtmlParagraphAutoSpacing
+  href: api/Egap.Documents.WordCompatibility.html#Egap_Documents_WordCompatibility_DoNotUseHtmlParagraphAutoSpacing_
+  commentId: Overload:Egap.Documents.WordCompatibility.DoNotUseHtmlParagraphAutoSpacing
+  isSpec: "True"
+  fullName: Egap.Documents.WordCompatibility.DoNotUseHtmlParagraphAutoSpacing
+  nameWithType: WordCompatibility.DoNotUseHtmlParagraphAutoSpacing
 - uid: Egap.Documents.WordCompatibility.DoNotUseIndentAsNumberingTabStop
   name: DoNotUseIndentAsNumberingTabStop
   href: api/Egap.Documents.WordCompatibility.html#Egap_Documents_WordCompatibility_DoNotUseIndentAsNumberingTabStop
