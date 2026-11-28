@@ -124,6 +124,8 @@ default for the compatibility mode, so changing the mode changes every flag nobo
 | `DoNotExpandShiftReturn` | In a justified paragraph, the line before a manual line break (Shift+Enter) or a display equation stays at the start, like a last line, instead of stretching to the margins. |
 | `ShrinkJustifiedSpaces` | A justified line takes one more word when its spaces can shrink by up to a quarter to fit it (Word 2013 and later; not saved to DOCX). |
 | `DoNotUseHtmlParagraphAutoSpacing` | Space after and space before add up, and automatic spacing is a fixed 5 points before and 10 after. |
+| `DoNotVerticallyAlignInTextBox` | Text boxes lay their text out from the top, whatever their `Shape.TextVerticalAlignment` says. |
+| `UnderlineTabInNumberedList` | The tab after an underlined list label is underlined too; without it only the label's text is. |
 
 Justified lines before breaks follow Word: without `DoNotExpandShiftReturn`, which new documents lack, the line before a
 manual line break or a display equation stretches like any wrapped line. Page and column breaks do not follow the flag:

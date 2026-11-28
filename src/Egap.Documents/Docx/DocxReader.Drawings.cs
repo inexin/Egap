@@ -265,8 +265,8 @@ internal sealed partial class DocxReader
     }
 
     /// <summary>
-    /// A text box's insets (lIns, tIns, rIns, bIns) where the file gives any, and whether it resizes to fit its text
-    /// (spAutoFit).
+    /// A text box's insets (lIns, tIns, rIns, bIns) where the file gives any, where its text sits (anchor), and whether it
+    /// resizes to fit its text (spAutoFit).
     /// </summary>
     private static void ReadBodyProperties(XElement? bodyPr, Shape shape)
     {
@@ -282,6 +282,12 @@ internal sealed partial class DocxReader
             shape.TextInsets = (left ?? 7.2, top ?? 3.6, right ?? 7.2, bottom ?? 3.6);
         }
 
+        shape.TextVerticalAlignment = (string?)bodyPr.Attribute("anchor") switch
+        {
+            "ctr" => VerticalAlignment.Center,
+            "b" => VerticalAlignment.Bottom,
+            _ => VerticalAlignment.Top,
+        };
         if (bodyPr.Element(Ns.A + "spAutoFit") is not null)
         {
             shape.FitToText = true;
@@ -492,6 +498,12 @@ internal sealed partial class DocxReader
                     _ => ShapeKind.Rectangle,
                 }, width, height), state, element);
                 box.Floating = VmlPlacement(style, shape);
+                box.TextVerticalAlignment = (style is null ? null : CssValue(style, "v-text-anchor")) switch
+                {
+                    "middle" or "middle-center" or "middle-baseline" => VerticalAlignment.Center,
+                    "bottom" or "bottom-center" or "bottom-baseline" or "bottom-center-baseline" => VerticalAlignment.Bottom,
+                    _ => VerticalAlignment.Top,
+                };
                 ReadTextBox(content, box);
                 DocxExtension.Of(box).Snapshot = ShapeState.Of(box);
                 return;

@@ -31,6 +31,8 @@ Namespace: `Egap.Presentations`, with `Egap.Documents` for `DocumentException`, 
   `GroupShape` (`Shapes`, `ChildArea`), `ConnectorShape` (`Start`, `End`) and `GraphicFrame` (`Kind`). Each has `Id`,
   `Name`, `Description`, `Placeholder` and `Transform`.
 - `TextBody.Paragraphs`, `TextParagraph.Runs`, `TextRun.Text` (settable, keeps the run's formatting).
+- `slide.Render(SlideRenderOptions)` (`Dpi`, `Width`, `Fonts`, `Date`) gives a `Raster<Rgba8>`; `slide.Draw(canvas)` draws
+  onto any Egami.Drawing `Canvas`, one unit to the point. Layouts, masters and notes pages have the same members.
 
 ## Samples
 
@@ -58,6 +60,10 @@ Passwords and file kinds:
 
 {{snippet guides/presentations.md#Passwords and file kinds}}
 
+Draw slides as pictures:
+
+{{snippet guides/presentations.md#Drawing slides}}
+
 Transitions and animations:
 
 {{snippet guides/presentations.md#Transitions and animations}}
@@ -77,3 +83,5 @@ Transitions and animations:
 - Building a new `SlideTransition` to change one setting of a loaded one; that drops its sound and effect settings. Use
   `slide.Transition with { ... }`.
 - Expecting a save to keep the encryption. Without `PresentationSaveOptions.Password` the file is written unencrypted.
+- Drawing onto a pixel canvas without scaling it. `Draw` works one canvas unit to the point; scale the canvas by
+  dpi / 72 first, or call `Render`, which does.

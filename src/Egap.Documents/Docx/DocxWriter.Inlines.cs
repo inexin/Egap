@@ -776,6 +776,11 @@ internal sealed partial class DocxWriter
             }
         }
 
+        if (shape.TextVerticalAlignment != VerticalAlignment.Top)
+        {
+            bodyPr.Add(new XAttribute("anchor", shape.TextVerticalAlignment == VerticalAlignment.Center ? "ctr" : "b"));
+        }
+
         if (shape.FitToText)
         {
             bodyPr.Add(new XElement(Ns.A + "spAutoFit"));

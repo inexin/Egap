@@ -47,6 +47,14 @@ internal milestones whose public API was frozen and reviewed, and they are liste
   `Presentation.SlideShow`: show type (speaker, window, kiosk), loop, timings, narration and animations.
 - A fuzz target (`tests/Egap.Presentations.Fuzz`: `pptx`, `pptxedit`, `pptxcrypt`) and benchmarks
   (`benchmarks/Egap.Presentations.Benchmarks`).
+- Drawing slides: `Render` draws a slide, layout, master or notes page as a `Raster<Rgba8>` and `Draw` onto any Egami
+  canvas, with `SlideRenderOptions` for the resolution or width, the fonts and the date fields show. It draws the
+  background, the master's and layout's shapes, shapes with their geometry, fills, outlines and effects, groups and
+  pictures (cropped, stretched or tiled), and text with its full inheritance from layout, master and text styles: body
+  insets, anchoring, columns, vertical text and the stored autofit scale; paragraph alignment, indents, spacing, tab stops
+  and right-to-left text; character, numbered and picture bullets; run fonts, sizes, styles, underlines, capitals,
+  spacing, fills, outlines, highlights and hyperlink colours; and slide number and date fields. Lines are spaced and placed
+  as PowerPoint places them. Tables, charts, SmartArt, embedded objects, media and embedded fonts are left out for now.
 
 ## Egap.Cli 2.4.0 (unreleased)
 
@@ -127,6 +135,12 @@ internal milestones whose public API was frozen and reviewed, and they are liste
   `style:text-emphasis`) draws its marks beside the text; tagged PDF marks them as artifacts.
 - Tate-chu-yoko: `RunFormat.CombineUpright` (Word's horizontal in vertical, `w:eastAsianLayout w:vert`) reads and writes
   in DOCX; Egap lays text out horizontally, where it changes nothing. Two lines in one (`w:combine`) stays as it was.
+- Text boxes place their text at the top, centred or at the bottom: `Shape.TextVerticalAlignment`, read from and written
+  to DOCX (`wps:bodyPr anchor`, and VML's `v-text-anchor` on reading), RTF and DOC (`anchorText`). Text taller than the box
+  starts at the top. `WordCompatibility.DoNotVerticallyAlignInTextBox` (Word's `doNotVertAlignInTxbx`, RTF's `\notvatxbx`)
+  lays every text box out from the top, as Word does under it.
+- The tab after an underlined list label is no longer underlined, as in Word; `WordCompatibility.UnderlineTabInNumberedList`
+  (Word's `underlineTabInNumList`) underlines it again.
 - The RTF writer writes SVG pictures (barcodes among them), charts, shape groups, SmartArt and DrawingML shapes as EMF
   pictures (EMF+ with GDI records beside them, through Egami.Metafiles' `EmfCanvas`), so Word shows them as vectors,
   with a PNG of each in `\nonshppict` for readers without EMF. SVG pictures were PNGs, and charts, shape groups and

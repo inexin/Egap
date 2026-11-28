@@ -42,12 +42,18 @@ Egap.Documents.RunFormat.CombineUpright.get -> bool?
 Egap.Documents.RunFormat.CombineUpright.set -> void
 Egap.Documents.RunFormat.Emphasis.get -> Egap.Documents.EmphasisMark?
 Egap.Documents.RunFormat.Emphasis.set -> void
+Egap.Documents.Shape.TextVerticalAlignment.get -> Egap.Documents.VerticalAlignment
+Egap.Documents.Shape.TextVerticalAlignment.set -> void
 Egap.Documents.WordCompatibility.DoNotExpandShiftReturn.get -> bool
 Egap.Documents.WordCompatibility.DoNotExpandShiftReturn.set -> void
 Egap.Documents.WordCompatibility.DoNotUseHtmlParagraphAutoSpacing.get -> bool
 Egap.Documents.WordCompatibility.DoNotUseHtmlParagraphAutoSpacing.set -> void
+Egap.Documents.WordCompatibility.DoNotVerticallyAlignInTextBox.get -> bool
+Egap.Documents.WordCompatibility.DoNotVerticallyAlignInTextBox.set -> void
 Egap.Documents.WordCompatibility.ShrinkJustifiedSpaces.get -> bool
 Egap.Documents.WordCompatibility.ShrinkJustifiedSpaces.set -> void
+Egap.Documents.WordCompatibility.UnderlineTabInNumberedList.get -> bool
+Egap.Documents.WordCompatibility.UnderlineTabInNumberedList.set -> void
 override Egap.Documents.Ruby.Clone(bool deep = true) -> Egap.Documents.Ruby!
 override Egap.Documents.Ruby.ToString() -> string!
 virtual Egap.Documents.DocumentVisitor.VisitRubyEnd(Egap.Documents.Ruby! ruby) -> Egap.Documents.VisitorAction
