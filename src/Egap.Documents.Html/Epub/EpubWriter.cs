@@ -558,15 +558,7 @@ internal sealed class EpubWriter
     /// </summary>
     private string EmbedFonts()
     {
-        HashSet<int> characters = [' '];
-        foreach (Paragraph paragraph in document.Descendants<Paragraph>())
-        {
-            foreach (Rune rune in paragraph.GetText().EnumerateRunes())
-            {
-                characters.Add(rune.Value);
-            }
-        }
-
+        HashSet<int> characters = FontSubsets.Characters(document);
         StringBuilder css = new();
         List<EmbeddedFont> fonts = [.. document.EmbeddedFonts];
         for (int i = 0; i < fonts.Count; i++)
@@ -587,29 +579,13 @@ internal sealed class EpubWriter
 
     private byte[] Subset(ReadOnlyMemory<byte> data, HashSet<int> characters)
     {
-        try
+        if (FontSubsets.Subset(data, characters) is { } subset)
         {
-            Egami.Fonts.Typeface face = Egami.Fonts.Typeface.FromMemory(data);
-            if ((face.Embedding & Egami.Fonts.FontEmbedding.NoSubsetting) != 0)
-            {
-                return data.ToArray();
-            }
+            return subset;
+        }
 
-            // The glyphs the shaper draws the characters with, renumbered densely, with GSUB, GPOS, GDEF, kern and MATH cut down
-            // to them, so a reading system shapes the text as the full font would (ligatures, contextual forms, kerning).
-            Egami.Fonts.FontSubset subset = Egami.Fonts.FontSubsetter.Subset(face, [0, .. Egami.Fonts.FontSubsetter.GlyphsFor(face, characters)], new Egami.Fonts.SubsetOptions
-            {
-                KeepCmap = true,
-                LayoutClosure = true,
-                Characters = characters,
-            });
-            return subset.Data.ToArray();
-        }
-        catch (Exception e) when (e is NotSupportedException or InvalidDataException or FormatException or ArgumentException or IndexOutOfRangeException)
-        {
-            warnings.Add(ConversionWarningKind.FormattingDropped, "fonts that could not be subset, embedded whole");
-            return data.ToArray();
-        }
+        warnings.Add(ConversionWarningKind.FormattingDropped, "fonts that could not be subset, embedded whole");
+        return data.ToArray();
     }
 
     private string EncryptionXml()

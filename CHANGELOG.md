@@ -25,6 +25,7 @@ internal milestones whose public API was frozen and reviewed, and they are liste
   text's characters are drawn with, renumbered, where before it kept every glyph id up to the last one used. Ligatures,
   contextual forms, mark positions and kerning (GSUB, GPOS, GDEF and kern) are kept for those glyphs, so the text shapes as
   with the full font, and the character map holds only the characters used.
+- MHTML archives embed `Document.EmbeddedFonts` as the same subsets, where before they embedded each font whole.
 - The package carries `AGENTS.md`, a guide for AI coding assistants with the package's own names, entry points,
   samples and common mistakes. The docs site publishes the same guides under `agents/`, and `llms.txt`, a list of every
   page for AI assistants.

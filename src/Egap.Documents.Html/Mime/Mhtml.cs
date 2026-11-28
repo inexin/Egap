@@ -147,7 +147,7 @@ internal static class MhtmlWriter
             },
         };
 
-        string fonts = FontFaces(document.EmbeddedFonts, (name, type, data) => resources.Add((Root + name, type, data)));
+        string fonts = FontFaces(document.EmbeddedFonts, FontSubsets.Characters(document), (name, type, data) => resources.Add((Root + name, type, data)));
         string html = HtmlWriter.Write(document, inner, null, fonts, out warnings);
         byte[] htmlBytes = Encoding.UTF8.GetBytes(html);
         string boundary = "----MultipartBoundary--" + Convert.ToHexString(SHA256.HashData(htmlBytes).AsSpan(0, 16)) + "----";
@@ -185,18 +185,19 @@ internal static class MhtmlWriter
     }
 
     /// <summary>
-    /// @font-face rules for the document's embedded fonts, each font handed to <paramref name="store"/> under the name the
-    /// rule links to.
+    /// @font-face rules for the document's embedded fonts, each font, subset to <paramref name="characters"/> with its layout
+    /// kept (whole if it cannot be subset), handed to <paramref name="store"/> under the name the rule links to.
     /// </summary>
-    internal static string FontFaces(IList<EmbeddedFont> fonts, Action<string, string, ReadOnlyMemory<byte>> store)
+    internal static string FontFaces(IList<EmbeddedFont> fonts, IReadOnlyCollection<int> characters, Action<string, string, ReadOnlyMemory<byte>> store)
     {
         StringBuilder css = new();
         for (int i = 0; i < fonts.Count; i++)
         {
             EmbeddedFont font = fonts[i];
-            (string extension, string type) = FontType(font.Data.Span);
+            ReadOnlyMemory<byte> data = FontSubsets.Subset(font.Data, characters) ?? font.Data;
+            (string extension, string type) = FontType(data.Span);
             string name = "font" + (i + 1).ToString(CultureInfo.InvariantCulture) + extension;
-            store(name, type, font.Data);
+            store(name, type, data);
             css.Append("@font-face { font-family: \"").Append(font.Family.Replace("\"", "", StringComparison.Ordinal)).Append("\"; src: url(\"")
                 .Append(name).Append("\"); font-weight: ").Append(font.Bold ? "bold" : "normal").Append("; font-style: ")
                 .Append(font.Italic ? "italic" : "normal").Append("; }\n");
