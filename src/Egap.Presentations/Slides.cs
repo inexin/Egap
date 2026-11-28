@@ -10,7 +10,7 @@ namespace Egap.Presentations;
 /// What slides, slide layouts and slide masters have in common: a part of the file, a name, and a tree of shapes
 /// (<c>p:cSld</c>).
 /// </summary>
-public abstract class SlideBase
+public abstract partial class SlideBase
 {
     private SlideShapeCollection? shapes;
 

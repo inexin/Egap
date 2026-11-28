@@ -17,6 +17,8 @@ internal sealed class PptxPackage
 {
     public const string ContentTypesName = "/[Content_Types].xml";
     private const string RelationshipsContentType = "application/vnd.openxmlformats-package.relationships+xml";
+    private const string VbaProjectRelationship = "http://schemas.microsoft.com/office/2006/relationships/vbaProject";
+    private const string VbaProjectContentType = "application/vnd.ms-office.vbaProject";
     private static readonly XNamespace RelationshipsNs = "http://schemas.openxmlformats.org/package/2006/relationships";
     private static readonly XNamespace TypesNs = "http://schemas.openxmlformats.org/package/2006/content-types";
 
@@ -51,7 +53,7 @@ internal sealed class PptxPackage
             stream.Position = start;
             if (read == 8 && head.SequenceEqual((ReadOnlySpan<byte>)[0xD0, 0xCF, 0x11, 0xE0, 0xA1, 0xB1, 0x1A, 0xE1]))
             {
-                throw new DocumentException("The file is a compound file, not a PPTX package: an encrypted presentation or a PowerPoint 97-2003 file (PPT), which Egap.Presentations does not read.");
+                throw new DocumentException("The file is a compound file, not a PPTX package: a PowerPoint 97-2003 file (PPT), which Egap.Presentations does not read, or one encrypted with rights management.");
             }
         }
 
@@ -277,13 +279,16 @@ internal sealed class PptxPackage
         return file.Length == 0 ? "/" : folder + file;
     }
 
-    /// <summary>The first name <paramref name="prefix"/><c>n</c><paramref name="extension"/>, from 1, that no part has.</summary>
+    /// <summary>
+    /// The first name <paramref name="prefix"/><c>n</c><paramref name="extension"/>, from 1, that no part has and no
+    /// relationship points at: a new part must not take over a relationship left pointing at a missing one.
+    /// </summary>
     public string UniqueName(string prefix, string extension)
     {
         for (int i = 1; ; i++)
         {
             string name = prefix + i.ToString(CultureInfo.InvariantCulture) + extension;
-            if (!parts.ContainsKey(name))
+            if (!parts.ContainsKey(name) && !IsReferenced(name))
             {
                 return name;
             }
@@ -309,15 +314,87 @@ internal sealed class PptxPackage
     }
 
     /// <summary>Writes every part back: unchanged ones byte for byte, changed or new XML parts from their XML.</summary>
-    public void Save(Stream stream)
+    public void Save(Stream stream) => Save(stream, default);
+
+    /// <summary>
+    /// Writes every part back, with the main part's content type changed and the VBA project left out when
+    /// <paramref name="options"/> say so; the package itself does not change.
+    /// </summary>
+    public void Save(Stream stream, PackageSave options)
     {
+        HashSet<string> dropped = new(StringComparer.OrdinalIgnoreCase);
+        HashSet<string> droppedIds = new(StringComparer.Ordinal);
+        if (options.DropMacros && options.MainName is { } mainName)
+        {
+            Queue<string> queue = new();
+            foreach (OpcRelationship relationship in Relationships(mainName))
+            {
+                if (!relationship.External && OpcRelationshipTypes.Same(relationship.Type, VbaProjectRelationship))
+                {
+                    droppedIds.Add(relationship.Id);
+                    queue.Enqueue(relationship.TargetName);
+                }
+            }
+
+            // The project and what only it points at (its signature, vbaData.xml).
+            while (queue.TryDequeue(out string? name))
+            {
+                if (GetPart(name) is not { } part || !dropped.Add(part.Name))
+                {
+                    continue;
+                }
+
+                dropped.Add(OpcPackage.RelationshipsPartName(part.Name));
+                foreach (OpcRelationship relationship in Relationships(part.Name).Where(r => !r.External))
+                {
+                    queue.Enqueue(relationship.TargetName);
+                }
+            }
+        }
+
+        string? mainRels = options.MainName is null ? null : OpcPackage.RelationshipsPartName(options.MainName);
         using ZipArchive zip = new(stream, ZipArchiveMode.Create, leaveOpen: true);
         foreach (PackagePart part in order)
         {
+            if (dropped.Contains(part.Name))
+            {
+                continue;
+            }
+
+            byte[] data = part.CurrentData;
+            if (part.Name == ContentTypesName && (options.MainContentType is not null || dropped.Count > 0))
+            {
+                XDocument types = new(Xml(part).Document);
+                foreach (XElement element in types.Root!.Elements().ToList())
+                {
+                    string? partName = (string?)element.Attribute("PartName");
+                    if (element.Name.LocalName == "Override" && partName is not null && dropped.Contains(partName))
+                    {
+                        element.Remove();
+                    }
+                    else if (element.Name.LocalName == "Override" && options.MainContentType is not null && string.Equals(partName, options.MainName, StringComparison.OrdinalIgnoreCase))
+                    {
+                        element.SetAttributeValue("ContentType", options.MainContentType);
+                    }
+                    else if (dropped.Count > 0 && element.Name.LocalName == "Default" && (string?)element.Attribute("ContentType") == VbaProjectContentType)
+                    {
+                        element.Remove();
+                    }
+                }
+
+                data = OpcPackageWriter.Serialize(types);
+            }
+            else if (droppedIds.Count > 0 && string.Equals(part.Name, mainRels, StringComparison.OrdinalIgnoreCase))
+            {
+                XDocument rels = new(Xml(part).Document);
+                rels.Root!.Elements().Where(e => (string?)e.Attribute("Id") is { } id && droppedIds.Contains(id)).Remove();
+                data = OpcPackageWriter.Serialize(rels);
+            }
+
             ZipArchiveEntry entry = zip.CreateEntry(part.Name[1..], CompressionLevel.Optimal);
             entry.LastWriteTime = new DateTimeOffset(1980, 1, 1, 0, 0, 0, TimeSpan.Zero);
             using Stream output = entry.Open();
-            output.Write(part.CurrentData);
+            output.Write(data);
         }
     }
 
@@ -395,6 +472,9 @@ internal sealed class PptxPackage
         xml.MarkChanged();
     }
 }
+
+/// <summary>How a save writes the package out: the main part's name and new content type (null keeps it), and whether the VBA project goes.</summary>
+internal readonly record struct PackageSave(string? MainName, string? MainContentType, bool DropMacros);
 
 /// <summary>One part of the package: its name, content type and bytes as read, and its XML once the model reads it.</summary>
 internal sealed class PackagePart(string name, string contentType, byte[] data)

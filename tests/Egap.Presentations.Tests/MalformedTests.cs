@@ -96,4 +96,35 @@ public sealed class MalformedTests
 
         Assert.Throws<DocumentException>(() => Presentation.Load(new MemoryStream(empty.ToArray())));
     }
+    [Fact]
+    public void ASlidePartListedTwiceIsOneSlide()
+    {
+        PptxBuilder builder = new();
+        builder.Slides.Add(PptxBuilder.Rectangle(2, "Box", 0, 0, 100, 100, "Box"));
+        byte[] file = builder.Build();
+        string main = PptxBuilder.Entry(file, "ppt/presentation.xml");
+        int start = main.IndexOf("<p:sldId ", StringComparison.Ordinal);
+        string entry = main[start..(main.IndexOf("/>", start, StringComparison.Ordinal) + 2)];
+        string twice = main.Replace(entry, entry + entry.Replace("id=\"256\"", "id=\"300\"", StringComparison.Ordinal), StringComparison.Ordinal);
+        Presentation presentation = Presentation.Load(new MemoryStream(PptxBuilder.WithEntry(file, "ppt/presentation.xml", Encoding.UTF8.GetBytes(twice))));
+
+        Slide slide = Assert.Single(presentation.Slides);
+        Assert.True(slide.Shapes.Remove(slide.Shapes[^1]));
+        Assert.Empty(BuildingTests.Reload(presentation).Slides[0].Shapes);
+    }
+
+    [Fact]
+    public void ANewSlideDoesNotTakeOverARelationshipToAMissingPart()
+    {
+        PptxBuilder builder = new();
+        builder.Slides.Add("");
+        builder.Slides.Add("");
+        byte[] file = PptxBuilder.WithEntry(builder.Build(), "ppt/slides/slide2.xml", null);
+        Presentation presentation = Presentation.Load(new MemoryStream(file));
+        Assert.Single(presentation.Slides);
+
+        Slide added = presentation.Slides.Add(presentation.SlideMasters[0].Layouts[0]);
+        Assert.NotEqual("/ppt/slides/slide2.xml", added.PartName);
+        Assert.Equal(2, BuildingTests.Reload(presentation).Slides.Count);
+    }
 }
