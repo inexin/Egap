@@ -26,6 +26,7 @@ public sealed class WordCompatibility
         ("allowTextAfterFloatingTableBreak", true),
         ("", false),
         ("", false),
+        ("doNotExpandShiftReturn", false),
     ];
 
     internal const int AllowSpaceOfSameStyleInTableId = 0;
@@ -37,6 +38,7 @@ public sealed class WordCompatibility
     internal const int AllowTextAfterFloatingTableBreakId = 6;
     internal const int TableIndentFromCellTextId = 7;
     internal const int ShrinkJustifiedSpacesId = 8;
+    internal const int DoNotExpandShiftReturnId = 9;
 
     private readonly DocumentSettings settings;
     private readonly Document document;
@@ -147,6 +149,22 @@ public sealed class WordCompatibility
     }
 
     /// <summary>
+    /// In a justified paragraph, the line before a manual line break (Shift+Enter, <see cref="BreakKind.Line"/>) or before a
+    /// display equation is laid out like the paragraph's last line, at the start, instead of stretching to the width like a
+    /// wrapped line (Word's <c>doNotExpandShiftReturn</c>). Off by default, also in new documents, as in Word. Page and column
+    /// breaks do not follow it: in compatibility mode 15 (Word 2013) the line before them is laid out like a last line, below
+    /// mode 15 it stretches. Distributed paragraphs stretch every line either way. DOC and RTF files store the setting the
+    /// other way round (<c>fExpShRtn</c>, <c>\expshrtn</c>), so an RTF file without <c>\expshrtn</c> has it on, as Word reads
+    /// it. Documents read from ODT, HTML, EPUB and Markdown lay lines before a break out like last lines, as their own
+    /// applications do.
+    /// </summary>
+    public bool DoNotExpandShiftReturn
+    {
+        get => Get(DoNotExpandShiftReturnId);
+        set => Set(DoNotExpandShiftReturnId, value);
+    }
+
+    /// <summary>
     /// Word's compatibility options read from the file that Egap keeps but does not act on, by name: a <c>w:compat</c>
     /// child's local name with its value (<c>1</c> when on), or a <c>w:compatSetting</c>'s name with its <c>val</c>.
     /// </summary>
@@ -175,6 +193,12 @@ public sealed class WordCompatibility
 
     internal bool? GetExplicit(int id) => explicitValues[id];
 
+    /// <summary>
+    /// Whether justified lines before breaks and no-break spaces follow Word (<see cref="DoNotExpandShiftReturn"/>): true but
+    /// for documents the ODT, HTML, EPUB and Markdown readers make, which justify as their applications do. Not saved.
+    /// </summary>
+    internal bool JustifiesLikeWord { get; set; } = true;
+
     /// <summary>Sets what a reader found, without a change notification.</summary>
     internal void Load(bool?[] values, IEnumerable<KeyValuePair<string, string>> others)
     {
@@ -189,6 +213,7 @@ public sealed class WordCompatibility
     internal void CopyFrom(WordCompatibility source)
     {
         Load(source.explicitValues, source.other);
+        JustifiesLikeWord = source.JustifiesLikeWord;
     }
 
     private bool Get(int id)

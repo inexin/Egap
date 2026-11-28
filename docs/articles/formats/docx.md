@@ -115,7 +115,16 @@ default for the compatibility mode, so changing the mode changes every flag nobo
 | `DoNotBreakWrappedTables` | A floating table stays on one page. |
 | `AllowTextAfterFloatingTableBreak` | Text may follow a floating table on the page where it breaks. |
 | `TableIndentFromCellText` | A table's indent is measured to its first cell's text (Word before 2013; not saved to DOCX). |
+| `DoNotExpandShiftReturn` | In a justified paragraph, the line before a manual line break (Shift+Enter) or a display equation stays at the start, like a last line, instead of stretching to the margins. |
 | `ShrinkJustifiedSpaces` | A justified line takes one more word when its spaces can shrink by up to a quarter to fit it (Word 2013 and later; not saved to DOCX). |
+
+Justified lines before breaks follow Word: without `DoNotExpandShiftReturn`, which new documents lack, the line before a
+manual line break or a display equation stretches like any wrapped line. Page and column breaks do not follow the flag:
+in compatibility mode 15 the line before them stays at the start, in modes 14 and below it stretches. A manual line break
+that ends a paragraph leaves an empty line after it, as in Word. Distributed paragraphs stretch every line, and no-break
+spaces keep their width on justified lines. DOC and RTF files store the flag the other way round (`fExpShRtn`,
+`\expshrtn`); Egap reads and writes it as Word does, so an RTF file without `\expshrtn` has `DoNotExpandShiftReturn` on.
+Documents read from ODT, HTML, EPUB and Markdown keep their applications' rule: lines before a break stay at the start.
 
 A new document has Word 2013's options, and saving it writes them. A file's options go back as they were read; a flag
 you set is written, and the options Egap does not act on stay in the file and are listed in `OtherSettings`.
