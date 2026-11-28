@@ -23,6 +23,10 @@ internal milestones whose public API was frozen and reviewed, and they are liste
 - Needs Egami.Fonts 1.6.0 (`ParagraphStyle.SpaceShrink`).
 - Built on Egami 1.6.0-preview.1, Egami.Metafiles 1.1.0-preview.1 and Egami.Barcodes 1.1.0-preview.1;
   Egami.Fonts.Substitutes stays at 1.1.0.
+- The RTF writer writes SVG pictures (barcodes among them), charts, shape groups, SmartArt and DrawingML shapes as EMF
+  pictures (EMF+ with GDI records beside them, through Egami.Metafiles' `EmfCanvas`), so Word shows them as vectors,
+  with a PNG of each in `\nonshppict` for readers without EMF. SVG pictures were PNGs, and charts, shape groups and
+  SmartArt without a picture of their own were their text.
 - The package carries `AGENTS.md`, a guide for AI coding assistants with the package's own names, entry points,
   samples and common mistakes. The docs site publishes the same guides under `agents/`, and `llms.txt`, a list of every
   page for AI assistants.

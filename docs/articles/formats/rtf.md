@@ -76,7 +76,9 @@ Word's own files:
 - Fields (`\fldinst` and `\fldrslt`), bookmarks, hyperlinks as `HYPERLINK` fields, footnotes and endnotes, comments
   with their ranges and replies, and tracked insertions, deletions and formatting changes with the revision table.
 - Pictures: PNG, JPEG and EMF as they are, WMF without its placeable header, and other images (GIF, BMP, TIFF, WebP...)
-  converted to PNG; an SVG picture is drawn as a PNG. Floating pictures, text boxes and simple shapes are `\shp` groups.
+  converted to PNG. An SVG picture (a barcode is one) is an EMF of its vectors, EMF+ with GDI records beside them, in
+  `\shppict`, with a PNG of it in `\nonshppict` for readers without EMF; a floating one's shape holds the EMF alone.
+  Floating pictures, text boxes and simple shapes are `\shp` groups.
 
 Text is 7-bit: a character outside printable ASCII is a `\uN` escape with a one-character fallback for readers without
 Unicode (`\uc1`), and a character past U+FFFF is its two surrogates. A document read from RTF writes back what the
@@ -90,7 +92,9 @@ something out:
   DOCX gives them.
 - A theme colour or theme font is written as the colour or font it is in the document's theme.
 - A shape in the text is anchored to its line, as RTF shapes float.
-- Islands from other formats (HTML and DOCX ones) are written as their picture, or their text.
+- Islands from other formats (HTML and DOCX ones) are written as their picture. Charts, shape groups and SmartArt Egap
+  draws itself, and DrawingML shapes with no RTF shape type, are written as EMF pictures of what Egap draws, as SVG
+  pictures are; anything else is written as its text.
 - Semicolons and tabs in font, style, list and author names are left out: a semicolon ends a table entry.
 
 ## Editing restrictions
@@ -153,7 +157,8 @@ Writing:
 - Formatting a table style gives conditionally (a bold first row) is written as each cell's own formatting, and every
   cell's width is written.
 - Shapes in the text become floating shapes anchored to their line; a picture's source address and an SVG picture's
-  original are not written (the SVG is drawn as a PNG).
+  original are not written (the SVG is written as an EMF), and a chart or shape group written as an EMF reads back as a
+  picture.
 - Move revisions are written as insertions and deletions, with a `MovesSplit` warning. A tracked field, hyperlink or
   shape keeps its revision, and an inserted or deleted table row is marked at its end, as Word does.
 - Not written: a paragraph's "no list" override, a row's footer and hidden flags, a table style's band sizes, overline,
