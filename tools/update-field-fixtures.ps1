@@ -7,7 +7,8 @@
 # region settings, not the document's. So for each fixture the script sets those three in the current user's region
 # settings (HKCU:\Control Panel\International) to the fixture's own (its w:decimalSymbol and w:listSeparator, the grouping
 # symbol a comma for a decimal period and a period for a decimal comma), starts Word, and puts the settings back when it
-# is done, also when it fails. Close Word before running it.
+# is done, also when it fails. Word windows already open keep their settings, but Word or Excel started by anything
+# else during the run (about a minute) gets the fixture's symbols too.
 
 $ErrorActionPreference = 'Stop'
 Add-Type -AssemblyName System.IO.Compression.FileSystem
@@ -53,7 +54,7 @@ try {
             $decimal = $word.International(18)
             $list = $word.International(17)
             if ($decimal -ne $symbols.sDecimal -or $list -ne $symbols.sList) {
-                Write-Warning "$($fixture.Name): Word uses '$decimal' and '$list', not '$($symbols.sDecimal)' and '$($symbols.sList)'; skipped. Close every Word window and run again."
+                Write-Warning "$($fixture.Name): Word uses '$decimal' and '$list', not '$($symbols.sDecimal)' and '$($symbols.sList)'; skipped."
                 continue
             }
 
