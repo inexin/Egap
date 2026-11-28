@@ -2,8 +2,8 @@
 
 Egap.Presentations loads and makes PowerPoint files and lets you read and edit their slides from code: the slide
 masters, their layouts and themes, the slides, and the shapes on each, with their ids, names, positions, placeholders and
-text, tables, notes, comments and sections. It reads
-PPTX, PPTM, POTX, POTM, PPSX and PPSM files, in transitional or Strict namespaces. The types are in
+text, tables, notes, comments and sections, transitions and animations, and the file's properties. It reads
+PPTX, PPTM, POTX, POTM, PPSX and PPSM files, in transitional or Strict namespaces, encrypted or not. The types are in
 `Egap.Presentations`.
 
 > [!NOTE]
@@ -26,9 +26,10 @@ foreach (Slide slide in deck.Slides)
 
 ## Loading and saving
 
-`Presentation.Load` reads a file from a path or a stream. `Save` writes it back, as the same kind of file it was
-(`Presentation.Format`). Everything the model does not hold, from transitions and animations to charts, notes pages and
-parts it has never heard of, is written back as it was: a part the model did not change keeps its bytes, and a part it
+`Presentation.Load` reads a file from a path or a stream. `Save` to a path writes the kind of file its extension names;
+`Save` to a stream writes `Presentation.Format`, the kind it was loaded as until you set it (see
+[Passwords and file kinds](#passwords-and-file-kinds)). Everything the model does not hold, from charts and fills to notes
+pages and parts it has never heard of, is written back as it was: a part the model did not change keeps its bytes, and a part it
 changed keeps every element and attribute but the values set. A Strict file stays Strict.
 
 ```csharp
@@ -227,12 +228,137 @@ Console.WriteLine($"{detail.Name}: {detail.Slides.Count} slides");
 deck.Save("review.pptx");
 ```
 
+## Passwords and file kinds
+
+`PresentationLoadOptions.Password` opens an encrypted presentation, by agile encryption (PowerPoint 2010 and later) or
+standard encryption (PowerPoint 2007). A missing or wrong password throws `DocumentPasswordException`, whose
+`WrongPassword` tells the two apart. `PresentationSaveOptions.Password` encrypts the file it saves, with agile encryption
+(AES-256 and SHA-512, as PowerPoint writes it); without one, a save writes the file unencrypted, even when it was loaded
+encrypted.
+
+The password to modify is not encryption: PowerPoint opens the file read-only unless you give it. `SetModifyPassword` sets
+it (a salted SHA-512 hash, as PowerPoint 2013 and later write it) or removes it with null, `HasModifyPassword` tells whether
+there is one and `VerifyModifyPassword` checks one.
+
+Saving as another kind, with `PresentationSaveOptions.Format`, the extension of the path, or `Presentation.Format`, changes
+the main part's content type: a presentation becomes a template (`.potx`) or a show (`.ppsx`), which PowerPoint opens
+straight into the slide show. Saving a deck with macros (`.pptm`, `.potm`, `.ppsm`) as a kind without them leaves its VBA
+project and the parts only it uses out of the file; the presentation keeps them, so a later save with macros has them
+again.
+
+```csharp
+using Egap.Documents;
+using Egap.Presentations;
+
+try
+{
+    Presentation deck = Presentation.Load("board.pptx", new PresentationLoadOptions { Password = "open sesame" });
+    deck.SetModifyPassword("editors only");
+    deck.Save("board-show.ppsx", new PresentationSaveOptions { Password = "open sesame" });
+    deck.Save("board-template.potx");
+}
+catch (DocumentPasswordException e) when (e.WrongPassword)
+{
+    Console.WriteLine("That is not the password.");
+}
+```
+
+## Transitions and animations
+
+Egap keeps transitions and animations and lets you edit them; it does not play them.
+
+`Slide.Transition` is the slide's transition, or null when it has none: its `Type` (the effects of PowerPoint 2007, 2010
+and 2013, and Morph), `Speed` or `DurationMilliseconds`, `Direction`, `AdvanceOnClick` and `AdvanceAfterMilliseconds`, and
+the `SoundName` of a sound it plays. Setting it replaces the transition and null removes it. Effects newer than PowerPoint
+2007, and durations, are written as PowerPoint writes them, with a fade for older readers. Change a transition you read
+with a `with` expression, so that its sound and the effect's own settings stay.
+
+`Slide.Timing` lists the slide's animation effects in the order the show plays them: the shape each animates, its kind
+(`Entrance`, `Exit`, `Emphasis`, `MotionPath` and the rest), PowerPoint's preset number and variant, what starts it, its
+delay and duration, and for an effect a click on a shape starts, that shape. The timing tree itself is kept whole.
+`RemoveAnimations()` removes all of a slide's animations and `RemoveAnimations(shape)` those of one shape (and of the
+shapes in it, for a group). Removing a shape removes its animations too.
+
+```csharp
+using Egap.Presentations;
+
+Presentation deck = Presentation.Load("pitch.pptx");
+foreach (Slide slide in deck.Slides)
+{
+    slide.Transition = slide.Transition is { } transition
+        ? transition with { AdvanceAfterMilliseconds = 5000 }
+        : new SlideTransition(SlideTransitionType.Fade) { AdvanceAfterMilliseconds = 5000 };
+    foreach (AnimationEffect effect in slide.Timing.Effects)
+    {
+        Console.WriteLine($"{effect.Trigger} {effect.PresetClass} {effect.PresetId} on shape {effect.ShapeId}");
+    }
+}
+
+deck.Slides[0].RemoveAnimations();
+deck.Save("pitch-timed.pptx");
+```
+
+## Properties and show settings
+
+`Presentation.Properties` holds the file's title, subject, author, keywords, comments, category, who saved it last and
+when it was made, saved and printed, the company and manager, and custom properties by name (`GetCustom`, `SetCustom`,
+`CustomNames`). The names follow `DocumentProperties` in Egap.Documents. They are read from the file each time and written
+into it when set, so everything else in those parts stays as it was. Egap does not change the saved date on a save.
+
+`Presentation.SlideShow` is how the show runs: `Type` (a speaker, a reader in a window, or a kiosk, which loops by
+itself), `Loop`, `UseTimings`, `ShowNarration` and `WithoutAnimations`.
+
+```csharp
+using Egap.Presentations;
+
+Presentation deck = Presentation.Load("lobby.pptx");
+deck.Properties.Title = "Welcome";
+deck.Properties.Company = "Example Ltd";
+deck.Properties.SetCustom("Screen", "Lobby");
+deck.SlideShow.Type = SlideShowType.Kiosk;
+foreach (Slide slide in deck.Slides)
+{
+    slide.Transition = new SlideTransition(SlideTransitionType.Push) { AdvanceAfterMilliseconds = 8000, AdvanceOnClick = false };
+}
+
+deck.Save("lobby.ppsx");
+```
+
+## Recipes
+
+Short answers to common tasks in this area. Each one is complete: open, change, save.
+
+### Strip the animations and macros from a deck
+
+```csharp
+using Egap.Presentations;
+
+Presentation deck = Presentation.Load("handout.pptm");
+foreach (Slide slide in deck.Slides)
+{
+    slide.RemoveAnimations();
+    slide.Transition = null;
+}
+
+deck.Save("handout.pptx");     // a .pptx has no macros
+```
+
+### Encrypt a deck
+
+```csharp
+using Egap.Presentations;
+
+Presentation deck = Presentation.Load("salaries.pptx");
+deck.Save("salaries-locked.pptx", new PresentationSaveOptions { Password = "Long passphrase 2026" });
+```
+
 ## Known limits
 
 - Fills, outlines and text formatting are kept and written back but not in the model; new shapes take the theme's look.
-  Charts, SmartArt, transitions and animations are kept as they are.
+  Charts and SmartArt are kept as they are.
+- Transitions and animations are kept and can be set or removed, but not played; animation effects cannot be added.
 - New placeholders on a slide copy the layout's type and index only; the inherited text and list styles are not worked
   out, only the position (`EffectiveTransform`).
 - Removing a slide leaves links to it from other slides as they are.
-- Encrypted presentations and PowerPoint 97-2003 files (PPT) are not read.
+- PowerPoint 97-2003 files (PPT) and files protected with rights management (IRM) are not read.
 - Slides are not rendered to images or PDF.

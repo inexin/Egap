@@ -31,6 +31,22 @@ internal milestones whose public API was frozen and reviewed, and they are liste
   and removal.
 - Sections: `Presentation.Sections`, added, renamed, removed and with slides moved between them, kept in step when slides
   are added, moved or removed.
+- Encrypted presentations: `PresentationLoadOptions.Password` opens agile and standard encryption, a missing or wrong
+  password throwing `DocumentPasswordException`; `PresentationSaveOptions.Password` saves with agile encryption. The
+  password to modify (`p:modifyVerifier`) is kept, and `SetModifyPassword`, `HasModifyPassword` and
+  `VerifyModifyPassword` set, clear and check it.
+- File kinds: `Save(path, options)` writes the kind its extension names and `Save(stream, options)` the settable
+  `Presentation.Format`, or `PresentationSaveOptions.Format`; the main part's content type changes with the kind, and a deck
+  with macros saved as a kind without them leaves its VBA project out of the file.
+- Transitions: `Slide.Transition` reads and sets the effect (those of PowerPoint 2007, 2010 and 2013, and Morph), speed or
+  duration, direction, advance on click and after a time, and keeps its sound; null removes it.
+- Animations: `Slide.Timing` lists the effects (shape, preset class, id and subtype, trigger, delay, duration) from the
+  timing tree, which is kept whole; `RemoveAnimations()` and `RemoveAnimations(shape)` remove them, and removing a shape
+  removes its animations.
+- `Presentation.Properties`: core, application (company, manager) and custom properties, written in place;
+  `Presentation.SlideShow`: show type (speaker, window, kiosk), loop, timings, narration and animations.
+- A fuzz target (`tests/Egap.Presentations.Fuzz`: `pptx`, `pptxedit`, `pptxcrypt`) and benchmarks
+  (`benchmarks/Egap.Presentations.Benchmarks`).
 
 ## Egap.Cli 2.4.0 (unreleased)
 
@@ -45,6 +61,15 @@ internal milestones whose public API was frozen and reviewed, and they are liste
 
 ## Egap.Documents 2.4.0 (unreleased)
 
+- Space between paragraphs is laid out as Word lays it out: the larger of the first paragraph's space after and the next
+  one's space before, where Egap used to add them up. Automatic spacing (`SpaceBeforeAuto`, `SpaceAfterAuto`, Word's
+  beforeAutospacing and afterAutospacing), which was laid out as no space, is now Word's HTML spacing: 14 points, none
+  between items of one list, before the first paragraph of a story or at the top and bottom of a table cell. The new
+  `WordCompatibility.DoNotUseHtmlParagraphAutoSpacing` reads and writes Word's `doNotUseHTMLParagraphAutoSpacing` (it used
+  to be listed in `OtherSettings`): with it, spacing adds up and automatic spacing is 5 points before and 10 after. RTF
+  keeps it as `\htmautsp`, the other way round, so RTF files without `\htmautsp` add spacing up as before. This moves
+  paragraphs, and so page breaks, in Word documents whose paragraphs set both space after and space before, or automatic
+  spacing. Documents read from ODT, HTML, EPUB and Markdown keep adding spacing up.
 - Thai, Lao, Khmer and Myanmar text, written without spaces between words, breaks into lines between dictionary words,
   where before a line broke only at a space or overflowed. `Find` and `Replace` with `WholeWord` and `Compare` use the
   same word boundaries: a whole Thai word is found inside a run of letters, and a changed word is a change of that word,

@@ -2,6 +2,40 @@
 abstract Egap.Presentations.SlideBase.ColorMap.get -> Egap.Presentations.ColorMap!
 const Egap.Presentations.ShapeTransform.EmusPerPoint = 12700 -> int
 const Egap.Presentations.SlideTable.DefaultStyleId = "{5C22544A-7EE6-4342-B048-85BDC9FD1C3A}" -> string!
+Egap.Presentations.AnimationClass
+Egap.Presentations.AnimationClass.Emphasis = 3 -> Egap.Presentations.AnimationClass
+Egap.Presentations.AnimationClass.Entrance = 1 -> Egap.Presentations.AnimationClass
+Egap.Presentations.AnimationClass.Exit = 2 -> Egap.Presentations.AnimationClass
+Egap.Presentations.AnimationClass.Media = 6 -> Egap.Presentations.AnimationClass
+Egap.Presentations.AnimationClass.MotionPath = 4 -> Egap.Presentations.AnimationClass
+Egap.Presentations.AnimationClass.Other = 0 -> Egap.Presentations.AnimationClass
+Egap.Presentations.AnimationClass.Verb = 5 -> Egap.Presentations.AnimationClass
+Egap.Presentations.AnimationEffect
+Egap.Presentations.AnimationEffect.<Clone>$() -> Egap.Presentations.AnimationEffect!
+Egap.Presentations.AnimationEffect.AnimationEffect(uint? ShapeId, Egap.Presentations.AnimationClass PresetClass, int PresetId, int PresetSubtype, Egap.Presentations.AnimationTrigger Trigger, int DelayMilliseconds, int? DurationMilliseconds, uint? TriggerShapeId) -> void
+Egap.Presentations.AnimationEffect.Deconstruct(out uint? ShapeId, out Egap.Presentations.AnimationClass PresetClass, out int PresetId, out int PresetSubtype, out Egap.Presentations.AnimationTrigger Trigger, out int DelayMilliseconds, out int? DurationMilliseconds, out uint? TriggerShapeId) -> void
+Egap.Presentations.AnimationEffect.DelayMilliseconds.get -> int
+Egap.Presentations.AnimationEffect.DelayMilliseconds.init -> void
+Egap.Presentations.AnimationEffect.DurationMilliseconds.get -> int?
+Egap.Presentations.AnimationEffect.DurationMilliseconds.init -> void
+Egap.Presentations.AnimationEffect.Equals(Egap.Presentations.AnimationEffect? other) -> bool
+Egap.Presentations.AnimationEffect.PresetClass.get -> Egap.Presentations.AnimationClass
+Egap.Presentations.AnimationEffect.PresetClass.init -> void
+Egap.Presentations.AnimationEffect.PresetId.get -> int
+Egap.Presentations.AnimationEffect.PresetId.init -> void
+Egap.Presentations.AnimationEffect.PresetSubtype.get -> int
+Egap.Presentations.AnimationEffect.PresetSubtype.init -> void
+Egap.Presentations.AnimationEffect.ShapeId.get -> uint?
+Egap.Presentations.AnimationEffect.ShapeId.init -> void
+Egap.Presentations.AnimationEffect.Trigger.get -> Egap.Presentations.AnimationTrigger
+Egap.Presentations.AnimationEffect.Trigger.init -> void
+Egap.Presentations.AnimationEffect.TriggerShapeId.get -> uint?
+Egap.Presentations.AnimationEffect.TriggerShapeId.init -> void
+Egap.Presentations.AnimationTrigger
+Egap.Presentations.AnimationTrigger.AfterPrevious = 3 -> Egap.Presentations.AnimationTrigger
+Egap.Presentations.AnimationTrigger.OnClick = 1 -> Egap.Presentations.AnimationTrigger
+Egap.Presentations.AnimationTrigger.Other = 0 -> Egap.Presentations.AnimationTrigger
+Egap.Presentations.AnimationTrigger.WithPrevious = 2 -> Egap.Presentations.AnimationTrigger
 Egap.Presentations.AutoShape
 Egap.Presentations.AutoShape.IsTextBox.get -> bool
 Egap.Presentations.AutoShape.PresetGeometry.get -> string?
@@ -81,16 +115,22 @@ Egap.Presentations.PlaceholderType.Title = 1 -> Egap.Presentations.PlaceholderTy
 Egap.Presentations.Presentation
 Egap.Presentations.Presentation.CommentAuthors.get -> Egap.Presentations.CommentAuthorCollection!
 Egap.Presentations.Presentation.Format.get -> Egap.Presentations.PresentationFormat
+Egap.Presentations.Presentation.Format.set -> void
+Egap.Presentations.Presentation.HasModifyPassword.get -> bool
 Egap.Presentations.Presentation.NotesMaster.get -> Egap.Presentations.NotesMaster?
 Egap.Presentations.Presentation.NotesMasterPartName.get -> string?
 Egap.Presentations.Presentation.NotesSize.get -> Egap.Presentations.SlideSize
-Egap.Presentations.Presentation.Save(string! path) -> void
-Egap.Presentations.Presentation.Save(System.IO.Stream! stream) -> void
+Egap.Presentations.Presentation.Properties.get -> Egap.Presentations.PresentationProperties!
+Egap.Presentations.Presentation.Save(string! path, Egap.Presentations.PresentationSaveOptions? options = null) -> void
+Egap.Presentations.Presentation.Save(System.IO.Stream! stream, Egap.Presentations.PresentationSaveOptions? options = null) -> void
 Egap.Presentations.Presentation.Sections.get -> Egap.Presentations.SlideSectionCollection!
+Egap.Presentations.Presentation.SetModifyPassword(string? password) -> void
 Egap.Presentations.Presentation.SlideMasters.get -> System.Collections.Generic.IReadOnlyList<Egap.Presentations.SlideMaster!>!
 Egap.Presentations.Presentation.Slides.get -> Egap.Presentations.SlideCollection!
+Egap.Presentations.Presentation.SlideShow.get -> Egap.Presentations.SlideShowSettings!
 Egap.Presentations.Presentation.SlideSize.get -> Egap.Presentations.SlideSize
 Egap.Presentations.Presentation.SlideSize.set -> void
+Egap.Presentations.Presentation.VerifyModifyPassword(string? password) -> bool
 Egap.Presentations.PresentationFormat
 Egap.Presentations.PresentationFormat.Potm = 3 -> Egap.Presentations.PresentationFormat
 Egap.Presentations.PresentationFormat.Potx = 2 -> Egap.Presentations.PresentationFormat
@@ -101,7 +141,44 @@ Egap.Presentations.PresentationFormat.Pptx = 0 -> Egap.Presentations.Presentatio
 Egap.Presentations.PresentationLoadOptions
 Egap.Presentations.PresentationLoadOptions.Limits.get -> Egap.Documents.DocumentLimits!
 Egap.Presentations.PresentationLoadOptions.Limits.init -> void
+Egap.Presentations.PresentationLoadOptions.Password.get -> string?
+Egap.Presentations.PresentationLoadOptions.Password.init -> void
 Egap.Presentations.PresentationLoadOptions.PresentationLoadOptions() -> void
+Egap.Presentations.PresentationProperties
+Egap.Presentations.PresentationProperties.Application.get -> string?
+Egap.Presentations.PresentationProperties.Author.get -> string?
+Egap.Presentations.PresentationProperties.Author.set -> void
+Egap.Presentations.PresentationProperties.Category.get -> string?
+Egap.Presentations.PresentationProperties.Category.set -> void
+Egap.Presentations.PresentationProperties.Comments.get -> string?
+Egap.Presentations.PresentationProperties.Comments.set -> void
+Egap.Presentations.PresentationProperties.Company.get -> string?
+Egap.Presentations.PresentationProperties.Company.set -> void
+Egap.Presentations.PresentationProperties.Created.get -> System.DateTimeOffset?
+Egap.Presentations.PresentationProperties.Created.set -> void
+Egap.Presentations.PresentationProperties.CustomNames.get -> System.Collections.Generic.IReadOnlyCollection<string!>!
+Egap.Presentations.PresentationProperties.GetCustom(string! name) -> string?
+Egap.Presentations.PresentationProperties.Keywords.get -> string?
+Egap.Presentations.PresentationProperties.Keywords.set -> void
+Egap.Presentations.PresentationProperties.LastSavedBy.get -> string?
+Egap.Presentations.PresentationProperties.LastSavedBy.set -> void
+Egap.Presentations.PresentationProperties.Manager.get -> string?
+Egap.Presentations.PresentationProperties.Manager.set -> void
+Egap.Presentations.PresentationProperties.Printed.get -> System.DateTimeOffset?
+Egap.Presentations.PresentationProperties.Printed.set -> void
+Egap.Presentations.PresentationProperties.Saved.get -> System.DateTimeOffset?
+Egap.Presentations.PresentationProperties.Saved.set -> void
+Egap.Presentations.PresentationProperties.SetCustom(string! name, string? value) -> void
+Egap.Presentations.PresentationProperties.Subject.get -> string?
+Egap.Presentations.PresentationProperties.Subject.set -> void
+Egap.Presentations.PresentationProperties.Title.get -> string?
+Egap.Presentations.PresentationProperties.Title.set -> void
+Egap.Presentations.PresentationSaveOptions
+Egap.Presentations.PresentationSaveOptions.Format.get -> Egap.Presentations.PresentationFormat?
+Egap.Presentations.PresentationSaveOptions.Format.init -> void
+Egap.Presentations.PresentationSaveOptions.Password.get -> string?
+Egap.Presentations.PresentationSaveOptions.Password.init -> void
+Egap.Presentations.PresentationSaveOptions.PresentationSaveOptions() -> void
 Egap.Presentations.PresentationTheme
 Egap.Presentations.PresentationTheme.GetColor(Egap.Documents.ThemeColor color) -> Egami.Pixels.Rgba8
 Egap.Presentations.PresentationTheme.GetColor(Egap.Presentations.ColorMapSlot slot, Egap.Presentations.ColorMap! map) -> Egami.Pixels.Rgba8
@@ -161,7 +238,12 @@ Egap.Presentations.Slide.Notes.get -> Egap.Presentations.NotesSlide?
 Egap.Presentations.Slide.NotesPartName.get -> string?
 Egap.Presentations.Slide.NotesText.get -> string!
 Egap.Presentations.Slide.NotesText.set -> void
+Egap.Presentations.Slide.RemoveAnimations() -> bool
+Egap.Presentations.Slide.RemoveAnimations(Egap.Presentations.SlideShape! shape) -> bool
 Egap.Presentations.Slide.SlideId.get -> uint
+Egap.Presentations.Slide.Timing.get -> Egap.Presentations.SlideTiming!
+Egap.Presentations.Slide.Transition.get -> Egap.Presentations.SlideTransition?
+Egap.Presentations.Slide.Transition.set -> void
 Egap.Presentations.SlideBase
 Egap.Presentations.SlideBase.Name.get -> string!
 Egap.Presentations.SlideBase.PartName.get -> string!
@@ -278,6 +360,21 @@ Egap.Presentations.SlideShapeCollection.FindById(uint id) -> Egap.Presentations.
 Egap.Presentations.SlideShapeCollection.GetEnumerator() -> System.Collections.Generic.IEnumerator<Egap.Presentations.SlideShape!>!
 Egap.Presentations.SlideShapeCollection.Remove(Egap.Presentations.SlideShape! shape) -> bool
 Egap.Presentations.SlideShapeCollection.this[int index].get -> Egap.Presentations.SlideShape!
+Egap.Presentations.SlideShowSettings
+Egap.Presentations.SlideShowSettings.Loop.get -> bool
+Egap.Presentations.SlideShowSettings.Loop.set -> void
+Egap.Presentations.SlideShowSettings.ShowNarration.get -> bool
+Egap.Presentations.SlideShowSettings.ShowNarration.set -> void
+Egap.Presentations.SlideShowSettings.Type.get -> Egap.Presentations.SlideShowType
+Egap.Presentations.SlideShowSettings.Type.set -> void
+Egap.Presentations.SlideShowSettings.UseTimings.get -> bool
+Egap.Presentations.SlideShowSettings.UseTimings.set -> void
+Egap.Presentations.SlideShowSettings.WithoutAnimations.get -> bool
+Egap.Presentations.SlideShowSettings.WithoutAnimations.set -> void
+Egap.Presentations.SlideShowType
+Egap.Presentations.SlideShowType.Browsed = 1 -> Egap.Presentations.SlideShowType
+Egap.Presentations.SlideShowType.Kiosk = 2 -> Egap.Presentations.SlideShowType
+Egap.Presentations.SlideShowType.Presented = 0 -> Egap.Presentations.SlideShowType
 Egap.Presentations.SlideSize
 Egap.Presentations.SlideSize.Deconstruct(out long Width, out long Height) -> void
 Egap.Presentations.SlideSize.Equals(Egap.Presentations.SlideSize other) -> bool
@@ -327,6 +424,73 @@ Egap.Presentations.SlideTableRow.Height.get -> long
 Egap.Presentations.SlideTableRow.Height.set -> void
 Egap.Presentations.SlideTableRow.Index.get -> int
 Egap.Presentations.SlideTableRow.Table.get -> Egap.Presentations.SlideTable!
+Egap.Presentations.SlideTiming
+Egap.Presentations.SlideTiming.Effects.get -> System.Collections.Generic.IReadOnlyList<Egap.Presentations.AnimationEffect!>!
+Egap.Presentations.SlideTransition
+Egap.Presentations.SlideTransition.<Clone>$() -> Egap.Presentations.SlideTransition!
+Egap.Presentations.SlideTransition.AdvanceAfterMilliseconds.get -> int?
+Egap.Presentations.SlideTransition.AdvanceAfterMilliseconds.init -> void
+Egap.Presentations.SlideTransition.AdvanceOnClick.get -> bool
+Egap.Presentations.SlideTransition.AdvanceOnClick.init -> void
+Egap.Presentations.SlideTransition.Deconstruct(out Egap.Presentations.SlideTransitionType Type) -> void
+Egap.Presentations.SlideTransition.Direction.get -> string?
+Egap.Presentations.SlideTransition.Direction.init -> void
+Egap.Presentations.SlideTransition.DurationMilliseconds.get -> int?
+Egap.Presentations.SlideTransition.DurationMilliseconds.init -> void
+Egap.Presentations.SlideTransition.Equals(Egap.Presentations.SlideTransition? other) -> bool
+Egap.Presentations.SlideTransition.Preset.get -> string?
+Egap.Presentations.SlideTransition.Preset.init -> void
+Egap.Presentations.SlideTransition.SlideTransition(Egap.Presentations.SlideTransitionType Type) -> void
+Egap.Presentations.SlideTransition.SoundName.get -> string?
+Egap.Presentations.SlideTransition.Speed.get -> Egap.Presentations.TransitionSpeed
+Egap.Presentations.SlideTransition.Speed.init -> void
+Egap.Presentations.SlideTransition.Type.get -> Egap.Presentations.SlideTransitionType
+Egap.Presentations.SlideTransition.Type.init -> void
+Egap.Presentations.SlideTransitionType
+Egap.Presentations.SlideTransitionType.Blinds = 10 -> Egap.Presentations.SlideTransitionType
+Egap.Presentations.SlideTransitionType.Checker = 11 -> Egap.Presentations.SlideTransitionType
+Egap.Presentations.SlideTransitionType.Circle = 20 -> Egap.Presentations.SlideTransitionType
+Egap.Presentations.SlideTransitionType.Comb = 12 -> Egap.Presentations.SlideTransitionType
+Egap.Presentations.SlideTransitionType.Conveyor = 35 -> Egap.Presentations.SlideTransitionType
+Egap.Presentations.SlideTransitionType.Cover = 8 -> Egap.Presentations.SlideTransitionType
+Egap.Presentations.SlideTransitionType.Cut = 2 -> Egap.Presentations.SlideTransitionType
+Egap.Presentations.SlideTransitionType.Diamond = 21 -> Egap.Presentations.SlideTransitionType
+Egap.Presentations.SlideTransitionType.Dissolve = 13 -> Egap.Presentations.SlideTransitionType
+Egap.Presentations.SlideTransitionType.Doors = 31 -> Egap.Presentations.SlideTransitionType
+Egap.Presentations.SlideTransitionType.Fade = 3 -> Egap.Presentations.SlideTransitionType
+Egap.Presentations.SlideTransitionType.Ferris = 33 -> Egap.Presentations.SlideTransitionType
+Egap.Presentations.SlideTransitionType.Flash = 24 -> Egap.Presentations.SlideTransitionType
+Egap.Presentations.SlideTransitionType.Flip = 27 -> Egap.Presentations.SlideTransitionType
+Egap.Presentations.SlideTransitionType.FlyThrough = 39 -> Egap.Presentations.SlideTransitionType
+Egap.Presentations.SlideTransitionType.Gallery = 34 -> Egap.Presentations.SlideTransitionType
+Egap.Presentations.SlideTransitionType.Glitter = 37 -> Egap.Presentations.SlideTransitionType
+Egap.Presentations.SlideTransitionType.Honeycomb = 29 -> Egap.Presentations.SlideTransitionType
+Egap.Presentations.SlideTransitionType.Morph = 43 -> Egap.Presentations.SlideTransitionType
+Egap.Presentations.SlideTransitionType.Newsflash = 14 -> Egap.Presentations.SlideTransitionType
+Egap.Presentations.SlideTransitionType.None = 1 -> Egap.Presentations.SlideTransitionType
+Egap.Presentations.SlideTransitionType.Other = 0 -> Egap.Presentations.SlideTransitionType
+Egap.Presentations.SlideTransitionType.Pan = 36 -> Egap.Presentations.SlideTransitionType
+Egap.Presentations.SlideTransitionType.Plus = 22 -> Egap.Presentations.SlideTransitionType
+Egap.Presentations.SlideTransitionType.Preset = 42 -> Egap.Presentations.SlideTransitionType
+Egap.Presentations.SlideTransitionType.Prism = 30 -> Egap.Presentations.SlideTransitionType
+Egap.Presentations.SlideTransitionType.Push = 4 -> Egap.Presentations.SlideTransitionType
+Egap.Presentations.SlideTransitionType.Random = 15 -> Egap.Presentations.SlideTransitionType
+Egap.Presentations.SlideTransitionType.RandomBars = 9 -> Egap.Presentations.SlideTransitionType
+Egap.Presentations.SlideTransitionType.Reveal = 23 -> Egap.Presentations.SlideTransitionType
+Egap.Presentations.SlideTransitionType.Ripple = 28 -> Egap.Presentations.SlideTransitionType
+Egap.Presentations.SlideTransitionType.Shred = 40 -> Egap.Presentations.SlideTransitionType
+Egap.Presentations.SlideTransitionType.Split = 6 -> Egap.Presentations.SlideTransitionType
+Egap.Presentations.SlideTransitionType.Strips = 16 -> Egap.Presentations.SlideTransitionType
+Egap.Presentations.SlideTransitionType.Switch = 26 -> Egap.Presentations.SlideTransitionType
+Egap.Presentations.SlideTransitionType.Uncover = 7 -> Egap.Presentations.SlideTransitionType
+Egap.Presentations.SlideTransitionType.Vortex = 25 -> Egap.Presentations.SlideTransitionType
+Egap.Presentations.SlideTransitionType.Warp = 38 -> Egap.Presentations.SlideTransitionType
+Egap.Presentations.SlideTransitionType.Wedge = 18 -> Egap.Presentations.SlideTransitionType
+Egap.Presentations.SlideTransitionType.Wheel = 17 -> Egap.Presentations.SlideTransitionType
+Egap.Presentations.SlideTransitionType.WheelReverse = 41 -> Egap.Presentations.SlideTransitionType
+Egap.Presentations.SlideTransitionType.Window = 32 -> Egap.Presentations.SlideTransitionType
+Egap.Presentations.SlideTransitionType.Wipe = 5 -> Egap.Presentations.SlideTransitionType
+Egap.Presentations.SlideTransitionType.Zoom = 19 -> Egap.Presentations.SlideTransitionType
 Egap.Presentations.TextBody
 Egap.Presentations.TextBody.Paragraphs.get -> System.Collections.Generic.IReadOnlyList<Egap.Presentations.TextParagraph!>!
 Egap.Presentations.TextBody.Shape.get -> Egap.Presentations.SlideShape!
@@ -343,6 +507,13 @@ Egap.Presentations.TextRun.IsField.get -> bool
 Egap.Presentations.TextRun.Paragraph.get -> Egap.Presentations.TextParagraph!
 Egap.Presentations.TextRun.Text.get -> string!
 Egap.Presentations.TextRun.Text.set -> void
+Egap.Presentations.TransitionSpeed
+Egap.Presentations.TransitionSpeed.Fast = 2 -> Egap.Presentations.TransitionSpeed
+Egap.Presentations.TransitionSpeed.Medium = 1 -> Egap.Presentations.TransitionSpeed
+Egap.Presentations.TransitionSpeed.Slow = 0 -> Egap.Presentations.TransitionSpeed
+override Egap.Presentations.AnimationEffect.Equals(object? obj) -> bool
+override Egap.Presentations.AnimationEffect.GetHashCode() -> int
+override Egap.Presentations.AnimationEffect.ToString() -> string!
 override Egap.Presentations.GraphicFrame.Transform.get -> Egap.Presentations.ShapeTransform?
 override Egap.Presentations.GraphicFrame.Transform.set -> void
 override Egap.Presentations.NotesMaster.ColorMap.get -> Egap.Presentations.ColorMap!
@@ -357,6 +528,11 @@ override Egap.Presentations.Slide.ColorMap.get -> Egap.Presentations.ColorMap!
 override Egap.Presentations.SlideLayout.ColorMap.get -> Egap.Presentations.ColorMap!
 override Egap.Presentations.SlideMaster.ColorMap.get -> Egap.Presentations.ColorMap!
 override Egap.Presentations.SlideSize.GetHashCode() -> int
+override Egap.Presentations.SlideTransition.Equals(object? obj) -> bool
+override Egap.Presentations.SlideTransition.GetHashCode() -> int
+override Egap.Presentations.SlideTransition.ToString() -> string!
+static Egap.Presentations.AnimationEffect.operator !=(Egap.Presentations.AnimationEffect? left, Egap.Presentations.AnimationEffect? right) -> bool
+static Egap.Presentations.AnimationEffect.operator ==(Egap.Presentations.AnimationEffect? left, Egap.Presentations.AnimationEffect? right) -> bool
 static Egap.Presentations.ColorMap.Default.get -> Egap.Presentations.ColorMap!
 static Egap.Presentations.Presentation.Create() -> Egap.Presentations.Presentation!
 static Egap.Presentations.Presentation.Load(string! path, Egap.Presentations.PresentationLoadOptions? options = null) -> Egap.Presentations.Presentation!
@@ -371,6 +547,8 @@ static Egap.Presentations.ShapeTransform.operator ==(Egap.Presentations.ShapeTra
 static Egap.Presentations.SlideSize.FromPoints(double width, double height) -> Egap.Presentations.SlideSize
 static Egap.Presentations.SlideSize.operator !=(Egap.Presentations.SlideSize left, Egap.Presentations.SlideSize right) -> bool
 static Egap.Presentations.SlideSize.operator ==(Egap.Presentations.SlideSize left, Egap.Presentations.SlideSize right) -> bool
+static Egap.Presentations.SlideTransition.operator !=(Egap.Presentations.SlideTransition? left, Egap.Presentations.SlideTransition? right) -> bool
+static Egap.Presentations.SlideTransition.operator ==(Egap.Presentations.SlideTransition? left, Egap.Presentations.SlideTransition? right) -> bool
 virtual Egap.Presentations.SlideShape.Transform.get -> Egap.Presentations.ShapeTransform?
 virtual Egap.Presentations.SlideShape.Transform.set -> void
 ~override Egap.Presentations.ShapeConnection.Equals(object obj) -> bool

@@ -52,6 +52,9 @@ internal sealed partial class RtfReader
 
         // RTF's \expshrtn is the opposite of doNotExpandShiftReturn: Word reads a file without it as having the setting.
         document.Settings.WordCompatibility.DoNotExpandShiftReturn = true;
+
+        // \htmautsp turns HTML paragraph auto spacing on, the opposite of doNotUseHTMLParagraphAutoSpacing, the same way.
+        document.Settings.WordCompatibility.DoNotUseHtmlParagraphAutoSpacing = true;
     }
 
     public static Document Read(byte[] data, RtfLoadOptions options, out IReadOnlyList<ConversionWarning> warnings)

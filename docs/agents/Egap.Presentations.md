@@ -2,8 +2,8 @@
 # Egap.Presentations: guide for coding agents
 
 Egap.Presentations loads PowerPoint files (PPTX, PPTM, POTX, POTM, PPSX, PPSM, transitional or Strict) and makes new
-ones, reads and edits their slides, layouts, masters, shapes, tables, notes, comments and sections, and saves them with
-everything the model does not hold kept as it was.
+ones, reads and edits their slides, layouts, masters, shapes, tables, notes, comments, sections, transitions, animations
+and properties, opens and writes encrypted files, and saves them with everything the model does not hold kept as it was.
 
 Namespace: `Egap.Presentations`, with `Egap.Documents` for `DocumentException`, `ThemeColor` and `ThemeFont`, and
 `Egami.Pixels` for theme colours (`Rgba8`).
@@ -39,8 +39,13 @@ Egap has its own names. Use them, not names from other PDF, Word or Excel librar
 
 ## Entry points
 
-- `Presentation.Load(path | stream, PresentationLoadOptions)`, `Presentation.Create()` (16:9, eleven layouts) and
-  `presentation.Save(path | stream)`; `Format` is the kind of file, which a save keeps.
+- `Presentation.Load(path | stream, PresentationLoadOptions)` (`Password` for an encrypted file), `Presentation.Create()`
+  (16:9, eleven layouts) and `presentation.Save(path | stream, PresentationSaveOptions)` (`Format`, `Password`); a path's
+  extension picks the kind, a stream gets `presentation.Format` (settable).
+- `presentation.SetModifyPassword`, `HasModifyPassword`, `VerifyModifyPassword`; `presentation.Properties` (`Title`,
+  `Author`, `Company`, `SetCustom`); `presentation.SlideShow` (`Type`, `Loop`, `UseTimings`).
+- `slide.Transition` (`SlideTransition(type) { AdvanceAfterMilliseconds = ... }`, null removes),
+  `slide.Timing.Effects`, `slide.RemoveAnimations()`, `RemoveAnimations(shape)`.
 - `presentation.Slides.Add(layout)`, `Insert`, `Remove`, `RemoveAt`, `Move`; `master.GetLayout(SlideLayoutType.Title)`.
 - `slide.Shapes.AddShape(preset, transform, text)`, `AddTextBox`, `AddPicture(bytes)`, `AddGroup`, `AddConnector`,
   `AddTable(rows, columns, transform)`, `Remove`.
@@ -155,6 +160,46 @@ table.Merge(3, 1, 1, 2).Text = "Up 12 % on the half";
 deck.Save("sales.pptx");
 ```
 
+Passwords and file kinds:
+
+```csharp
+using Egap.Documents;
+using Egap.Presentations;
+
+try
+{
+    Presentation deck = Presentation.Load("board.pptx", new PresentationLoadOptions { Password = "open sesame" });
+    deck.SetModifyPassword("editors only");
+    deck.Save("board-show.ppsx", new PresentationSaveOptions { Password = "open sesame" });
+    deck.Save("board-template.potx");
+}
+catch (DocumentPasswordException e) when (e.WrongPassword)
+{
+    Console.WriteLine("That is not the password.");
+}
+```
+
+Transitions and animations:
+
+```csharp
+using Egap.Presentations;
+
+Presentation deck = Presentation.Load("pitch.pptx");
+foreach (Slide slide in deck.Slides)
+{
+    slide.Transition = slide.Transition is { } transition
+        ? transition with { AdvanceAfterMilliseconds = 5000 }
+        : new SlideTransition(SlideTransitionType.Fade) { AdvanceAfterMilliseconds = 5000 };
+    foreach (AnimationEffect effect in slide.Timing.Effects)
+    {
+        Console.WriteLine($"{effect.Trigger} {effect.PresetClass} {effect.PresetId} on shape {effect.ShapeId}");
+    }
+}
+
+deck.Slides[0].RemoveAnimations();
+deck.Save("pitch-timed.pptx");
+```
+
 ## Common mistakes
 
 - Expecting `Transform` on a placeholder. A placeholder that takes its position from its layout has a null `Transform`;
@@ -163,4 +208,10 @@ deck.Save("sales.pptx");
   `XPoints`, `WidthPoints` and `FromPoints` convert.
 - Setting a run's text to change a whole shape's text. `TextBody.Text` replaces every paragraph; `TextRun.Text` one run.
 - Holding table rows or cells across `AddRow`, `RemoveColumn` and the like; read them from the table again.
-- Catching the wrong exception. A file that is not a presentation throws `DocumentException` from `Egap.Documents`.
+- Catching the wrong exception. A file that is not a presentation throws `DocumentException` from `Egap.Documents`; a
+  missing or wrong password `DocumentPasswordException` (check `WrongPassword`).
+- Saving a `.pptm` to a `.pptx` path and expecting the macros: the extension picks the kind, and a kind without macros
+  leaves the VBA project out.
+- Building a new `SlideTransition` to change one setting of a loaded one; that drops its sound and effect settings. Use
+  `slide.Transition with { ... }`.
+- Expecting a save to keep the encryption. Without `PresentationSaveOptions.Password` the file is written unencrypted.

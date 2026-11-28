@@ -91,14 +91,22 @@ public sealed partial class ParagraphFormat : FormatBase
         set => SetLength(5, value);
     }
 
-    /// <summary>Space before chosen by the application, as HTML's margins (Word's beforeAutospacing).</summary>
+    /// <summary>
+    /// Space before chosen by the application, as HTML's margins (Word's beforeAutospacing), in place of
+    /// <see cref="SpaceBefore"/>: layout gives 14 points as Word does, none at the top of a story or a table cell or after an
+    /// item of the same list, and 5 points under <see cref="WordCompatibility.DoNotUseHtmlParagraphAutoSpacing"/>.
+    /// </summary>
     public bool? SpaceBeforeAuto
     {
         get => Get<bool>(6);
         set => SetRaw(6, value);
     }
 
-    /// <summary>Space after chosen by the application.</summary>
+    /// <summary>
+    /// Space after chosen by the application (Word's afterAutospacing), in place of <see cref="SpaceAfter"/>: layout gives 14
+    /// points as Word does, none at the bottom of a table cell or before an item of the same list, and 10 points under
+    /// <see cref="WordCompatibility.DoNotUseHtmlParagraphAutoSpacing"/>.
+    /// </summary>
     public bool? SpaceAfterAuto
     {
         get => Get<bool>(7);

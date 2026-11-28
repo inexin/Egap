@@ -2,6 +2,7 @@ using System.Xml.Linq;
 
 using Egap.Documents;
 using Egap.Documents.Docx;
+using Egap.Documents.Office;
 using Egap.Presentations.Pptx;
 
 namespace Egap.Presentations;
@@ -28,6 +29,8 @@ public sealed partial class Presentation
         Slides = new SlideCollection(this);
         Sections = new SlideSectionCollection(this);
         CommentAuthors = new CommentAuthorCollection(this);
+        Properties = new PresentationProperties(package);
+        SlideShow = new SlideShowSettings(this);
     }
 
     internal PptxPackage Package { get; }
@@ -35,8 +38,24 @@ public sealed partial class Presentation
     /// <summary>Whether the file was written in ISO/IEC 29500 Strict namespaces; a save keeps them.</summary>
     internal bool IsStrict => Package.IsStrict;
 
-    /// <summary>The kind of file the presentation was loaded from; a save writes the same kind.</summary>
-    public PresentationFormat Format { get; }
+    /// <summary>
+    /// The kind of file a save to a stream writes: the kind it was loaded from until set. Saving as another kind changes the
+    /// main part's content type; saving a deck with macros as a kind without them leaves its VBA project out of the file
+    /// (the presentation keeps it, for a later save with macros).
+    /// </summary>
+    public PresentationFormat Format { get; set; }
+
+    /// <summary>The title, author, dates and custom properties of the file.</summary>
+    public PresentationProperties Properties { get; }
+
+    /// <summary>How the slide show runs: speaker, window or kiosk, looping or not.</summary>
+    public SlideShowSettings SlideShow { get; }
+
+    /// <summary>
+    /// Whether the file has a password to modify it (<c>p:modifyVerifier</c>): PowerPoint opens it read-only without the
+    /// password. It is not encryption; anyone can read the file, and other programs may ignore it.
+    /// </summary>
+    public bool HasModifyPassword => main.Root.Element(PptxNames.P + "modifyVerifier") is not null;
 
     /// <summary>
     /// The size of every slide, in EMUs with points alongside (<c>p:sldSz</c>). Setting it changes the size the slides are
@@ -134,8 +153,12 @@ public sealed partial class Presentation
         }
     }
 
-    /// <summary>Loads a PowerPoint file: PPTX, PPTM, POTX, POTM, PPSX or PPSM, transitional or Strict.</summary>
+    /// <summary>
+    /// Loads a PowerPoint file: PPTX, PPTM, POTX, POTM, PPSX or PPSM, transitional or Strict, and encrypted with a password
+    /// (<see cref="PresentationLoadOptions.Password"/>) by agile or standard encryption.
+    /// </summary>
     /// <exception cref="ArgumentException">The path is null or empty.</exception>
+    /// <exception cref="DocumentPasswordException">The file is encrypted and the password is missing or wrong.</exception>
     /// <exception cref="DocumentException">The file is not a presentation Egap can read.</exception>
     /// <exception cref="DocumentLimitException">The file goes past one of <see cref="PresentationLoadOptions.Limits"/>.</exception>
     public static Presentation Load(string path, PresentationLoadOptions? options = null)
@@ -147,6 +170,7 @@ public sealed partial class Presentation
 
     /// <summary>Loads a PowerPoint file from a stream, which is left open.</summary>
     /// <exception cref="ArgumentNullException">The stream is null.</exception>
+    /// <exception cref="DocumentPasswordException">The file is encrypted and the password is missing or wrong.</exception>
     /// <exception cref="DocumentException">The stream does not hold a presentation Egap can read.</exception>
     /// <exception cref="DocumentLimitException">The file goes past one of <see cref="PresentationLoadOptions.Limits"/>.</exception>
     public static Presentation Load(Stream stream, PresentationLoadOptions? options = null)
@@ -160,7 +184,29 @@ public sealed partial class Presentation
             return Load(copy, options);
         }
 
-        PptxPackage package = PptxPackage.Read(stream, options?.Limits ?? new DocumentLimits());
+        DocumentLimits limits = options?.Limits ?? new DocumentLimits();
+        if (OfficeEncryption.IsEncryptedPackage(stream))
+        {
+            CompoundFile file;
+            try
+            {
+                file = CompoundFile.Read(stream, limits);
+            }
+            catch (InvalidDataException e)
+            {
+                throw new DocumentException("The encrypted presentation's compound file is damaged: " + e.Message, e);
+            }
+
+            if (options?.Password is null)
+            {
+                throw new DocumentPasswordException("The presentation is encrypted: give its password in the load options.", wrongPassword: false);
+            }
+
+            byte[] decrypted = OfficeEncryption.Decrypt(file, options.Password, null, limits);
+            return Load(new MemoryStream(decrypted, writable: false), new PresentationLoadOptions { Limits = limits });
+        }
+
+        PptxPackage package = PptxPackage.Read(stream, limits);
         PackagePart part = package.Related("/", OpcRelationshipTypes.OfficeDocument)
             ?? throw new DocumentException("The package has no main part: it is not a PowerPoint file.");
         XmlPart main = package.Xml(part);
@@ -189,26 +235,92 @@ public sealed partial class Presentation
     }
 
     /// <summary>
-    /// Saves the presentation to a file. The file is the same kind as the one loaded (<see cref="Format"/>), whatever the
-    /// extension: a PPTM saved as <c>.pptx</c> still holds its macros, and PowerPoint will not open it under that name.
+    /// Saves the presentation to a file as the kind its extension names (.pptx, .pptm, .potx, .potm, .ppsx or .ppsm), unless
+    /// <see cref="PresentationSaveOptions.Format"/> names one. A deck with macros saved as a kind without them leaves the
+    /// macros out. With <see cref="PresentationSaveOptions.Password"/>, the file is encrypted (agile encryption, as
+    /// PowerPoint 2010 and later write it).
     /// </summary>
-    /// <exception cref="ArgumentException">The path is null or empty.</exception>
-    public void Save(string path)
+    /// <exception cref="ArgumentException">The path is null or empty, the extension names no PowerPoint kind and the options name none, or the password is longer than 255 characters.</exception>
+    public void Save(string path, PresentationSaveOptions? options = null)
     {
         ArgumentException.ThrowIfNullOrEmpty(path);
+        PresentationFormat format = options?.Format ?? FormatOfExtension(Path.GetExtension(path))
+            ?? throw new ArgumentException($"No PowerPoint kind has the extension \"{Path.GetExtension(path)}\"; name one in the options.", nameof(path));
         using MemoryStream buffer = new();
-        Package.Save(buffer);
+        Write(buffer, format, options?.Password);
         using FileStream stream = File.Create(path);
         buffer.Position = 0;
         buffer.CopyTo(stream);
     }
 
-    /// <summary>Saves the presentation to a stream, which is left open.</summary>
+    /// <summary>Saves the presentation to a stream, which is left open, as <see cref="PresentationSaveOptions.Format"/> or else <see cref="Format"/>.</summary>
     /// <exception cref="ArgumentNullException">The stream is null.</exception>
-    public void Save(Stream stream)
+    /// <exception cref="ArgumentException">The password is longer than 255 characters.</exception>
+    public void Save(Stream stream, PresentationSaveOptions? options = null)
     {
         ArgumentNullException.ThrowIfNull(stream);
-        Package.Save(stream);
+        Write(stream, options?.Format ?? Format, options?.Password);
+    }
+
+    /// <summary>
+    /// Sets the password to modify the file, which PowerPoint asks for before it lets anyone edit (it opens the file
+    /// read-only otherwise), or removes it with null. The password is kept as a salted SHA-512 hash, as PowerPoint 2013 and
+    /// later write it.
+    /// </summary>
+    /// <exception cref="ArgumentException">The password is empty or longer than 255 characters.</exception>
+    public void SetModifyPassword(string? password)
+    {
+        if (password is not null)
+        {
+            ArgumentException.ThrowIfNullOrEmpty(password);
+            if (password.Length > OfficeEncryption.MaxPasswordLength)
+            {
+                throw new ArgumentException("A password can have at most 255 characters.", nameof(password));
+            }
+        }
+
+        if (main.Root.Element(PptxNames.P + "modifyVerifier") is { } old)
+        {
+            old.Remove();
+            main.MarkChanged();
+        }
+
+        if (password is not null)
+        {
+            InsertInOrder(ModifyVerifier.Create(password));
+        }
+    }
+
+    /// <summary>
+    /// Whether <paramref name="password"/> is the password to modify the file; true when it has none. Both of the forms
+    /// PowerPoint writes are checked: the algorithm name of 2013 and later, and the algorithm number of 2007 and 2010.
+    /// </summary>
+    /// <exception cref="DocumentException">The file's hash asks for more than ten million rounds.</exception>
+    public bool VerifyModifyPassword(string? password)
+    {
+        return ModifyVerifier.Verify(main.Root.Element(PptxNames.P + "modifyVerifier"), password);
+    }
+
+    private void Write(Stream stream, PresentationFormat format, string? password)
+    {
+        if (password is { Length: > OfficeEncryption.MaxPasswordLength })
+        {
+            throw new ArgumentException("A password can have at most 255 characters.", nameof(password));
+        }
+
+        string contentType = ContentTypeOf(format);
+        PackageSave save = new(main.Part.Name, contentType == main.Part.ContentType ? null : contentType,
+            DropMacros: format is PresentationFormat.Pptx or PresentationFormat.Potx or PresentationFormat.Ppsx);
+        if (string.IsNullOrEmpty(password))
+        {
+            Package.Save(stream, save);
+            return;
+        }
+
+        // PowerPoint's encrypted files: the package, encrypted, in a compound file.
+        using MemoryStream package = new();
+        Package.Save(package, save);
+        OfficeEncryption.Encrypt(package.GetBuffer().AsSpan(0, (int)package.Length), password, stream);
     }
 
     internal XmlPart Main => main;
@@ -271,9 +383,12 @@ public sealed partial class Presentation
             }
         }
 
+        // A slide part the list names twice is one slide: the second entry is kept in the file but not in the model, so that
+        // two slides never share one part's XML.
+        HashSet<string> slideParts = new(StringComparer.OrdinalIgnoreCase);
         foreach (XElement id in main.Root.Element(PptxNames.P + "sldIdLst")?.Elements(PptxNames.P + "sldId") ?? [])
         {
-            if (IdTarget(part, id, PptxNames.SlideRelationship) is not { } slidePart)
+            if (IdTarget(part, id, PptxNames.SlideRelationship) is not { } slidePart || !slideParts.Add(slidePart.Name))
             {
                 continue;
             }
@@ -289,6 +404,27 @@ public sealed partial class Presentation
     {
         return PptxNames.Long(element, "cx") is long cx && PptxNames.Long(element, "cy") is long cy ? new SlideSize(cx, cy) : null;
     }
+
+    private static string ContentTypeOf(PresentationFormat format) => format switch
+    {
+        PresentationFormat.Potx => MainContentType + "template.main+xml",
+        PresentationFormat.Ppsx => MainContentType + "slideshow.main+xml",
+        PresentationFormat.Pptm => MacroContentType + "presentation.macroEnabled.main+xml",
+        PresentationFormat.Potm => MacroContentType + "template.macroEnabled.main+xml",
+        PresentationFormat.Ppsm => MacroContentType + "slideshow.macroEnabled.main+xml",
+        _ => MainContentType + "presentation.main+xml",
+    };
+
+    private static PresentationFormat? FormatOfExtension(string extension) => extension.ToUpperInvariant() switch
+    {
+        ".PPTX" => PresentationFormat.Pptx,
+        ".PPTM" => PresentationFormat.Pptm,
+        ".POTX" => PresentationFormat.Potx,
+        ".POTM" => PresentationFormat.Potm,
+        ".PPSX" => PresentationFormat.Ppsx,
+        ".PPSM" => PresentationFormat.Ppsm,
+        _ => null,
+    };
 
     private static PresentationFormat FormatOf(string contentType) => contentType switch
     {
@@ -328,6 +464,19 @@ public sealed class PresentationLoadOptions
 {
     /// <summary>The limits the reader keeps to, against files made to use up memory; the defaults suit any real presentation.</summary>
     public DocumentLimits Limits { get; init; } = new();
+
+    /// <summary>The password of an encrypted file; ignored when the file is not encrypted.</summary>
+    public string? Password { get; init; }
+}
+
+/// <summary>How a presentation is saved.</summary>
+public sealed class PresentationSaveOptions
+{
+    /// <summary>The kind of file to write, or null for the one the path's extension names (or <see cref="Presentation.Format"/> for a stream).</summary>
+    public PresentationFormat? Format { get; init; }
+
+    /// <summary>A password to encrypt the file with (agile encryption: AES-256 and SHA-512), or null to write it unencrypted.</summary>
+    public string? Password { get; init; }
 }
 
 /// <summary>The size of a slide or notes page, in EMUs (English Metric Units: 914,400 to the inch, 12,700 to the point).</summary>
