@@ -121,6 +121,7 @@ default for the compatibility mode, so changing the mode changes every flag nobo
 | `DoNotBreakWrappedTables` | A floating table stays on one page. |
 | `AllowTextAfterFloatingTableBreak` | Text may follow a floating table on the page where it breaks. |
 | `TableIndentFromCellText` | A table's indent is measured to its first cell's text (Word before 2013; not saved to DOCX). |
+| `ShrinkJustifiedSpaces` | A justified line takes one more word when its spaces can shrink by up to a quarter to fit it (Word 2013 and later; not saved to DOCX). |
 
 A new document has Word 2013's options, and saving it writes them. A file's options go back as they were read; a flag
 you set is written, and the options Egap does not act on stay in the file and are listed in `OtherSettings`.

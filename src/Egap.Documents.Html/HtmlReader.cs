@@ -63,7 +63,17 @@ internal sealed partial class HtmlReader
 
     private HtmlReader(HtmlLoadOptions options, CssCascade cascade, Document? into)
     {
-        document = into ?? new Document();
+        if (into is null)
+        {
+            // Browsers only stretch justified lines.
+            document = new Document();
+            document.Settings.WordCompatibility.ShrinkJustifiedSpaces = false;
+        }
+        else
+        {
+            document = into;
+        }
+
         this.options = options;
         this.cascade = cascade;
     }
